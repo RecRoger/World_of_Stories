@@ -1,0 +1,14 @@
+.main{
+    &-header{
+        z-index: 100;
+        position: fixed;
+        top: 0;
+        box-shadow: 2px 0 5px 0px #00000080;
+        background: whitesmoke;
+    }
+    &-title{
+        margin: auto;
+        font-size: 20px;
+    }
+}
+

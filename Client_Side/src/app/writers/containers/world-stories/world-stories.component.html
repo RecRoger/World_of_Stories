@@ -1,0 +1,37 @@
+<div class="app-main_writers">
+    
+    <!-- seccion de ciudades -->
+    <ng-container *ngIf="!selectedCity">
+        <h2 class="mb-4">Ciudades</h2>
+        <app-cities-builder (citySelect)="getSelectedCity($event)"></app-cities-builder>
+    </ng-container>
+
+
+    <!-- seccion de lugares -->
+    <ng-container *ngIf="selectedCity && !selectedPlace">
+        <h2 class="mb-4">
+            <button class="btn btn-link" (click)="getSelectedCity(null)">
+                <i class="fas fa-angle-left fa-2x"></i>
+            </button>
+            Lugares de {{selectedCity.name}}
+        </h2>
+        <app-places-builder [city]="selectedCity" (placeSelect)="getSelectedPlace($event)"></app-places-builder>
+    </ng-container>
+
+    <!-- seccion de lugares -->
+    <ng-container *ngIf="selectedCity && selectedPlace">
+        <h2 class="mb-4">
+            <button class="btn btn-link" (click)="getSelectedCity(null)">
+                <i class="fas fa-angle-left fa-2x"></i>
+            </button>
+            <button class="btn btn-link" (click)="getSelectedPlace(null)">
+                <i class="fas fa-angle-left fa-2x"></i>
+            </button>
+            Personas y eventos de {{selectedPlace.name}} en {{selectedCity.name}}
+        </h2>
+
+        <!-- <app-places-builder [city]="selectedCity" (placeSelect)="getSelectedPlace($event)"></app-places-builder> -->
+        <app-npc-builder [place]="selectedPlace" (placeSelect)="getSelectedNPC($event)"></app-npc-builder>
+
+    </ng-container>
+</div>

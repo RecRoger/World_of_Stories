@@ -1,0 +1,46 @@
+
+<app-header [backBtn]="false"></app-header>
+<main class="container app-main">
+  <div class="mt-5 col-8 mx-auto position-relative">
+    
+    <div class="row">
+      <h4 class="col-12 mb-5">Que deseas hacer?</h4>
+      <div class="col-6">
+        <button class="btn btn-primary btn-block btn-lg" (click)="userChooseActivity(true)">
+          Escribir
+        </button>
+      </div>
+      <div class="col-6">
+        <button class="btn btn-primary btn-block btn-lg" (click)="userChooseActivity(false)">
+          Leer
+        </button>
+      </div>
+    </div>
+
+    <div class="card my-5 position-relative" *ngIf="rolConfirmation">
+      <app-loader class="loader" size="lg" *ngIf="loading"></app-loader>
+      <div class="row card-body">
+        <div class="col-8">
+          <p>
+            No posees el rol de
+            <span *ngIf="rolConfirmation=='R'">Lector,</span>
+            <span *ngIf="rolConfirmation=='W'">Escritor,</span> deseas obtenerlo y continuar?
+          </p>
+        </div>
+        <div class="col-4 text-center">
+          <button class="btn btn-secondary" (click)="addRol(rolConfirmation)">
+            Aceptar
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="mt-5 btn btn-secondary" (click)="getOut()">Volver</button>
+  </div>
+</main>
+
+
+<!-- <pre>
+    {{user | json}}
+  </pre> -->

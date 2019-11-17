@@ -1,0 +1,8 @@
+.loader{
+    position: absolute;
+    z-index: 2;
+    background: white;
+    width: calc(100% - 2rem);
+    height: 100%;
+    display: flex;
+}

@@ -1,0 +1,24 @@
+<div class="app-main_writers">
+  <h2>Bienvenido {{ user.username | titlecase}}!</h2>
+  <p>Este es <b>El Modo Escritor</b>. Aca podras escribir las aventuras de este nuevo mundo. <br>Donde te gustaria comenzar?</p>
+
+  <div class="row mt-4">
+
+    <div class="col-4">
+      <div class="card selectable"  (click)="redirectTo('writers/world')">
+        <div class="card-body d-flex">
+          <i class="fas fa-globe-americas fa-4x"></i>
+          <div class="my-auto ml-4">
+            Ciudades, lugares, personas e historias
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+  </div>
+</div>

@@ -1,0 +1,206 @@
+<div class="row text center" *ngIf="placesloading">
+        <app-loader class="mx-auto" size="lg"></app-loader>
+      </div>
+      
+      <div class="row" *ngIf="!placesloading">
+        <ng-container *ngFor="let place of places; let i = index">
+          <div class="col-6 mb-5">
+      
+            <!-- Carta de ciudad -->
+            <div class="card place-card">
+              <div class="card-header d-flex" (click)="togglePlaceInfo(i)">
+                <h4 class="card-title">
+                  {{place.name}}
+                </h4>
+                <small class="text-muted ml-auto">
+                  <span *ngIf="!place.published">Sin Publicar</span>
+                  <span *ngIf="place.published">Publicado el {{ place.publish_date | date}}</span>
+                </small>
+              </div>
+      
+              <ng-container *ngIf="placesTabs[i].place === place._id">
+                <ul class="nav nav-tabs mt-3">
+                  <li class="nav-item ml-2">
+                    <a class="nav-link" (click)="placesTabs[i].page = 0; placesTabs[i].tab = 'desc'" [ngClass]="{'active': placesTabs[i].tab == 'desc', 'disabled': placesTabs[i].editing }">
+                      Descripciones
+                      <span class="badge badge-pill" [ngClass]="{'badge-primary': !placesTabs[i].editing, 'badge-secondary': placesTabs[i].editing }">
+                        {{place?.description?.length}}
+                      </span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" (click)="placesTabs[i].page = 0; placesTabs[i].tab = 'entry'" [ngClass]="{'active': placesTabs[i].tab == 'entry', 'disabled': placesTabs[i].editing }">
+                      Entradas
+                      <span class="badge badge-pill" [ngClass]="{'badge-primary': !placesTabs[i].editing, 'badge-secondary': placesTabs[i].editing }">
+                        {{place.entry.length}}
+                      </span>
+                    </a>
+                  </li>
+                  <div class="ml-auto" *ngIf="!placesTabs[i].editing">
+                    <!-- boton de editar descripcion o viaje -->
+                    <button class="btn mr-2" (click)="editTale(i)">
+                      <i class="fas fa-pen"></i>
+                    </button>
+                    <!-- boton de nueva descripcion o viaje -->
+                    <button class="btn mr-2" (click)="newTale(i)">
+                      <i class="fas fa-plus"></i>
+                    </button>
+                  </div>
+                </ul>
+                <div class="card-body place-info d-flex flex-column">
+                  <!-- Descripciones -->
+                  <ng-container *ngIf="!placesTabs[i].editing && placesTabs[i].tab == 'desc'">
+                    <div>
+                      <p class="card-text">{{ place.description[placesTabs[i].page].tale }}</p>
+                      <p class="text-muted text-right"> - {{place.description[placesTabs[i].page].author}}</p>
+                    </div>
+                    <small class="text-muted ml-auto">
+                      <span *ngIf="!place.description[placesTabs[i].page].published">Sin Publicar</span>
+                      <span *ngIf="place.description[placesTabs[i].page].published">Publicado el {{ place.description[placesTabs[i].page].publish_date | date}}</span>
+                    </small>
+                    <div class="text-muted mt-auto text-center">
+                      <button class="btn btn-link" *ngIf="placesTabs[i].page!== 0" (click)="changePage(i,false)">
+                        <i class="fas fa-angle-left"></i>
+                      </button>
+                      {{placesTabs[i].page + 1}}/{{place.description.length}}
+                      <button class="btn btn-link" *ngIf="placesTabs[i].page + 1 !== place.description.length" (click)="changePage(i,true)">
+                        <i class="fas fa-angle-right"></i>
+                      </button>
+                    </div>
+                  </ng-container>
+                  <!-- Entradas -->
+                  <ng-container *ngIf="!placesTabs[i].editing && placesTabs[i].tab == 'entry'">
+                    <div>
+                      <p class="card-text">{{ place.entry[placesTabs[i].page].tale }}</p>
+                      <p class="text-muted text-right"> - {{place.entry[placesTabs[i].page].author}}</p>
+                    </div>
+                    <small class="text-muted ml-auto">
+                      <span *ngIf="!place.entry[placesTabs[i].page].published">Sin Publicar</span>
+                      <span *ngIf="place.entry[placesTabs[i].page].published">Publicado el {{ place.description[placesTabs[i].page].publish_date | date}}</span>
+                    </small>
+                    <div class="text-muted mt-auto text-center">
+                      <button class="btn btn-link" *ngIf="placesTabs[i].page!== 0" (click)="changePage(i,false)">
+                        <i class="fas fa-angle-left"></i>
+                      </button>
+                      {{placesTabs[i].page + 1}}/{{place.entry.length}}
+                      <button class="btn btn-link" *ngIf="placesTabs[i].page + 1 !== place.entry.length" (click)="changePage(i,true)">
+                        <i class="fas fa-angle-right"></i>
+                      </button>
+                    </div>
+                  </ng-container>
+      
+                  <!-- formulario de edicion y creacion -->
+                  <ng-container *ngIf="placesTabs[i].editing">
+                    <div class="d-flex">
+                      <div>
+                        <span *ngIf="placesTabs[i].tab == 'desc'">
+                          {{place.name}} es ...
+                        </span>
+                        <span *ngIf="placesTabs[i].tab == 'entry'">
+                          Entrando a {{place.name}} ...
+                        </span>
+                      </div>
+                      <div class="ml-auto" *ngIf="!placesTabs[i].newTale">
+                        <!-- boton de publicar descripcion o viaje -->
+                        <button class="btn mr-2" (click)="publishTale(i)">
+                          <span *ngIf="!placeForm.get('published').value">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                          </span>
+                          <span *ngIf="placeForm.get('published').value">
+                            <i class="fas fa-cloud-download-alt"></i>
+                          </span>
+                        </button>
+                        <!-- boton de eliminar descripcion o viaje -->
+                        <button class="btn mr-2" (click)="deleteTale(i)">
+                          <i class="fas fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <form [formGroup]="placeForm">
+                      <textarea class="form-control edition-area" formControlName="tale" rows="3"></textarea>
+                    </form>
+      
+                  </ng-container>
+                </div>
+                <div class="card-footer d-flex">
+                  <ng-container *ngIf="!placesTabs[i].editing">
+                    <button class="btn btn-secondary mr-auto" (click)="publishPlace(i)">
+                      <span *ngIf="!place.published">
+                        <i class="fas fa-cloud-upload-alt"></i> Publicar
+                      </span>
+                      <span *ngIf="place.published">
+                        <i class="fas fa-cloud-download-alt"></i> Quitar publicacion
+                      </span>
+                    </button>
+                    <button class="btn btn-primary ml-auto" (click)="selectPlace(i)">
+                      Personas y eventos
+                      <span class="badge badge-pill">
+                        {{place?.events?.length}}
+                      </span>
+                    </button>
+                  </ng-container>
+      
+                  <ng-container *ngIf="placesTabs[i].editing">
+                    <button class="btn btn-secondary ml-auto" (click)="savePlaceEdition(i, true)">Cancelar</button>
+                    <button class="btn btn-primary ml-4" (click)="savePlaceEdition(i)">Guardar</button>
+                  </ng-container>
+      
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </ng-container>
+      
+        <!-- Carta de Nuevo Lugar -->
+        <div class="col-6 mb-5">
+          <div class="card place-card">
+            <div class="card-header d-flex" (click)="toggleNewPlace()">
+              <h4 class="card-title">
+                Nuevo Lugar
+              </h4>
+            </div>
+            <ng-container *ngIf="newPlaceTab.newPlace">
+              <ul class="nav nav-tabs mt-3">
+                <li class="nav-item ml-2 mt-n1">
+                  <form [formGroup]="placeForm">
+                    <input type="text" class="form-control" formControlName="name" placeholder="Nombre del Lugar">
+                  </form>
+                </li>
+                <li class="nav-item ml-auto mr-2">
+                  <a class="nav-link" (click)="newPlaceTab.tab = 'desc'" [ngClass]="{'active': newPlaceTab.tab == 'desc', 'errorTab': placeForm?.get('description')?.invalid && placeForm?.get('description')?.touched }">
+                    Descripciones
+                  </a>
+                </li>
+                <li class="nav-item mr-2">
+                  <a class="nav-link" (click)="newPlaceTab.tab = 'entry'" [ngClass]="{'active': newPlaceTab.tab == 'entry', 'errorTab': placeForm?.get('entry')?.invalid && placeForm?.get('entry')?.touched}">
+                    Entrada
+                  </a>
+                </li>
+              </ul>
+              <div class="card-body place-info d-flex flex-column">
+                <!-- Descripciones -->
+                <ng-container *ngIf="newPlaceTab.tab == 'desc'">
+                  {{placeForm.get('name').value}} es ...
+                  <form [formGroup]="placeForm">
+                    <textarea class="form-control edition-area" formControlName="description" rows="3"></textarea>
+                  </form>
+                </ng-container>
+                <!-- Viajes -->
+                <ng-container *ngIf="newPlaceTab.tab == 'entry'">
+                  Entrando a {{placeForm.get('name').value}}...
+                  <form [formGroup]="placeForm">
+                    <textarea class="form-control edition-area" formControlName="entry" rows="3"></textarea>
+                  </form>
+                </ng-container>
+      
+              </div>
+              <div class="card-footer d-flex">
+      
+                <button class="btn btn-secondary ml-auto" (click)="addNewPlace(true)">Cancelar</button>
+                <button class="btn btn-primary ml-4" (click)="addNewPlace()">Guardar</button>
+      
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>

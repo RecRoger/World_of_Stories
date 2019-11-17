@@ -1,0 +1,19 @@
+<div class="position-absolute w-100 h-100 menu-backdrop" *ngIf="navOpen" (click)="navOpen = !navOpen">
+
+</div>
+<div class="menu-main d-flex border-right">
+  <nav class="menu-navbar nav flex-column" *ngIf="navOpen">
+    <a class="nav-link"  (click)="navOpen = !navOpen" routerLink="/writers">Home</a>
+    <a class="nav-link"  (click)="navOpen = !navOpen" routerLink="/writers/world">Historias</a>
+  </nav>
+  <div class="menu-btn" (click)="navOpen = !navOpen">
+    <i class="fas fa-2x" [ngClass]="{'fa-times text-white': navOpen,'fa-ellipsis-v': !navOpen}"></i>
+  </div>
+</div>
+
+<!-- <mat-drawer-container class="example-container" [hasBackdrop]="true">
+  <mat-drawer #drawer [mode]="over">I'm a drawer</mat-drawer>
+  <mat-drawer-content>
+    <button mat-raised-button (click)="drawer.toggle()">Toggle drawer</button>
+  </mat-drawer-content>
+</mat-drawer-container> -->
