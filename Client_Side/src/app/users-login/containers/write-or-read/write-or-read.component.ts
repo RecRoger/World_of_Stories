@@ -1,11 +1,13 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { UserModel } from 'src/app/shared/models/client_models/user.model';
-import { UserService } from '../../../shared/services/user.service';
 import { Router } from '@angular/router';
 import { UsersRoles } from 'src/app/shared/constants';
 import { AddUserRolRequest, AddUserRolURL, AddUserRolResponse } from '../../../shared/models/api_models/addUserRol.model';
 import { ResponseModel } from 'src/app/shared/models/client_models/response.model';
 import { HttpClient } from '@angular/common/http';
+import { Store } from '@ngxs/store';
+import { UserState } from 'src/app/shared/store/users/users.reducer';
+import { AddUserRoll } from 'src/app/shared/store/users/users.actions';
 
 @Component({
   selector: 'app-write-or-read',
@@ -16,7 +18,7 @@ export class WriteOrReadComponent implements OnInit {
 
   constructor(
     private cd: ChangeDetectorRef,
-    private userService: UserService,
+    private store: Store,
     private router: Router,
     private http: HttpClient,
   ) { }
@@ -29,7 +31,7 @@ export class WriteOrReadComponent implements OnInit {
 
 
   ngOnInit() {
-    this.user = this.userService.activeUserSnapchat;
+    this.user = this.store.selectSnapshot(UserState.getUser);
   }
 
   getOut() {
@@ -58,25 +60,12 @@ export class WriteOrReadComponent implements OnInit {
     this.rolConfirmation = '';
     this.loading = true;
     this.cd.markForCheck();
-    try {
-      const data: AddUserRolRequest = {
-        id: this.user._id,
-        rol: (rol === 'W') ? UsersRoles.W : UsersRoles.R
-      };
-
-      const resp: ResponseModel<AddUserRolResponse> = await this.http.post(AddUserRolURL, data).toPromise();
-      if (resp && resp.data && resp.data.nModified) {
-
-        await this.userService.updateActiveUser();
-        this.startActivity((rol === 'W') ? true : false);
-
-      } else {
-        this.errorMsg = 'No se ha encontrado usuario con esa clave y contraseña. Revise los datos.';
-      }
-    } catch (err) {
-      console.log('*** ERROR ***', err);
-      this.errorMsg = 'Ha ocurrido un problema consultando su usuario. Intente mas tarde';
-    }
+    const data: AddUserRolRequest = {
+      id: this.user._id,
+      rol: (rol === 'W') ? UsersRoles.W : UsersRoles.R
+    };
+    await this.store.dispatch(new AddUserRoll(data)).toPromise();
+    this.startActivity((rol === 'W') ? true : false);
     this.loading = false;
     this.cd.markForCheck();
   }

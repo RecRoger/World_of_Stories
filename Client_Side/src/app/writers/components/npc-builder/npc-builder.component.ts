@@ -3,10 +3,11 @@ import { UserModel } from 'src/app/shared/models/client_models/user.model';
 import { NpcModel } from 'src/app/shared/models/client_models/npc.model';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { UserService } from 'src/app/shared/services/user.service';
 import { PlaceModel } from 'src/app/shared/models/client_models/place.model';
 import { GetPlaceNpcsRequest, GetPlaceNpcsResponse, getPlaceNPCsURL } from 'src/app/shared/models/api_models/getNpcs.model';
 import { ResponseModel } from 'src/app/shared/models/client_models/response.model';
+import { Store } from '@ngxs/store';
+import { UserState } from 'src/app/shared/store/users/users.reducer';
 
 @Component({
   selector: 'app-npc-builder',
@@ -38,10 +39,10 @@ export class NpcBuilderComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private cd: ChangeDetectorRef,
+    private store: Store,
     private fb: FormBuilder,
-    private userService: UserService
   ) {
-    this.user = this.userService.activeUserSnapchat;
+    this.user = this.store.selectSnapshot(UserState.getUser);
   }
 
 

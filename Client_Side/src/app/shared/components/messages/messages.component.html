@@ -1,0 +1,5 @@
+<div class="messages" *ngIf="error">
+    <div class="alert " [ngClass]="{'alert-success': error.type==='success','alert-danger': error.type==='error','alert-primary': error.type==='info'}" role="alert">
+        {{error.text}}
+    </div>
+</div>

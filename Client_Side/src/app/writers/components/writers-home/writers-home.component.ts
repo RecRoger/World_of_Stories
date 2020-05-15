@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../shared/services/user.service';
 import { UserModel } from 'src/app/shared/models/client_models/user.model';
 import { Router } from '@angular/router';
+import { Store } from '@ngxs/store';
+import { UserState } from 'src/app/shared/store/users/users.reducer';
 
 @Component({
   selector: 'app-writers-home',
@@ -12,11 +13,11 @@ export class WritersHomeComponent implements OnInit {
   user: UserModel;
 
   constructor(
-    private userService: UserService,
+    private store: Store,
     private router: Router) { }
 
   ngOnInit() {
-    this.user = this.userService.activeUserSnapchat;
+    this.user = this.store.selectSnapshot(UserState.getUser);
   }
 
   redirectTo(url: string) {

@@ -3,14 +3,15 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { RequestService } from '../../../shared/services/request.service';
-import { GetUsersURL, GetUserRequest, GetUserResponse } from '../../../shared/models/api_models/getUsers.model';
+import { GetUserURL, GetUserRequest, GetUserResponse } from '../../../shared/models/api_models/getUsers.model';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef } from '@angular/core';
 import { AddUserResponse, AddUsersURL } from 'src/app/shared/models/api_models/addUser.model';
 import { AddUserRequest } from '../../../shared/models/api_models/addUser.model';
-import { ResponseModel } from 'src/app/shared/models/client_models/response.model';
-import { UserService } from 'src/app/shared/services/user.service';
 import { UserModel } from '../../../shared/models/client_models/user.model';
+import { Store } from '@ngxs/store';
+import { LoginUser, SigninUser } from 'src/app/shared/store/users/users.actions';
+import { isValid } from 'src/app/shared/utils/commons';
 
 @Component({
   selector: 'app-user-login',
@@ -28,10 +29,9 @@ export class UserLoginComponent implements OnInit {
   constructor(
     private router: Router,
     private fb: FormBuilder,
-    // private request: RequestService
+    private store: Store,
     private http: HttpClient,
-    private cd: ChangeDetectorRef,
-    private userService: UserService
+    private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -70,77 +70,40 @@ export class UserLoginComponent implements OnInit {
 
   async login() {
     this.errorMsg = null;
-    if (this.loginForm.valid) {
+    if (isValid(this.loginForm)) {
 
-      try {
-        this.loading = true;
-        const data: GetUserRequest = {
-          username: this.loginForm.get('username').value,
-          password: this.loginForm.get('password').value
-        };
+      this.loading = true;
+      const loginReq: GetUserRequest = {
+        password: this.loginForm.value.password,
+        username: this.loginForm.value.username
+      };
 
-        const resp: ResponseModel<GetUserResponse> = await this.http.post(GetUsersURL, data).toPromise();
-        if (resp && resp.data && resp.data.user) {
-          const user: UserModel = resp.data.user;
-          this.userService.updateActiveUser(user);
-          this.router.navigate(['/write-or-read']);
-
-        } else {
-          this.errorMsg = 'No se ha encontrado usuario con esa clave y contraseña. Revise los datos.';
-        }
-      } catch (err) {
-        console.log('*** ERROR ***', err);
-        this.errorMsg = 'Ha ocurrido un problema consultando su usuario. Intente mas tarde';
+      const state = await this.store.dispatch(new LoginUser(loginReq)).toPromise();
+      if (state.user && state.user.activedUser) {
+        this.router.navigate(['/write-or-read']);
+        this.loading = false;
+      } else {
+        this.loading = false;
       }
 
-      this.loading = false;
-
-
-    } else {
-      this.loginForm.markAsTouched();
-      this.loginForm.get('username').markAsTouched();
-      this.loginForm.get('password').markAsTouched();
     }
     this.cd.markForCheck();
   }
 
   async signin() {
     this.errorMsg = null;
-    if (this.loginForm.valid) {
+    if (isValid(this.loginForm)) {
 
-      try {
-        this.loading = true;
-        const data: AddUserRequest = {
-          username: this.loginForm.get('username').value,
-          password: this.loginForm.get('password').value
-        };
-        const resp: ResponseModel<AddUserResponse> = await this.http.post(AddUsersURL, data).toPromise();
-        // if (resp) {
-        if (resp && resp.data && resp.data.user) {
-          const user: UserModel = new UserModel();
-          user._id = resp.data.user._id;
-          user.username = resp.data.user.username;
-          user.password = resp.data.user.password;
-          user.characters = resp.data.user.characters;
-          user.rol = resp.data.user.rol;
+      this.loading = true;
 
-          this.userService.updateActiveUser(user);
+      const signReq: AddUserRequest = {
+        username: this.loginForm.get('username').value,
+        password: this.loginForm.get('password').value
+      };
+      await this.store.dispatch(new SigninUser(signReq)).toPromise();
 
-          this.router.navigate(['/write-or-read']);
-        } else {
-          this.errorMsg = 'Ha ocurrido un creando su usuario. Intente mas tarde';
-        }
-      } catch (err) {
-        console.log('*** ERROR ***', err);
-        this.errorMsg = 'Ha ocurrido un creando su usuario. Intente mas tarde';
-      }
       this.loading = false;
 
-    } else {
-      this.loginForm.markAsTouched();
-      this.loginForm.get('username').markAsTouched();
-      this.loginForm.get('password').markAsTouched();
-      this.loginForm.get('confirmation').markAsTouched();
     }
     this.cd.markForCheck();
   }

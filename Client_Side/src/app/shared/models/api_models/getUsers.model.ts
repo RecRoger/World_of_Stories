@@ -1,7 +1,7 @@
 import { environment } from 'src/environments/environment';
 
 
-export const GetUsersURL = environment.url + '/users/user';
+export const GetUserURL = environment.url + '/users/user';
 export const GetUsersByIdURL = environment.url + '/users/user_by_id';
 
 export class GetUserResponse {

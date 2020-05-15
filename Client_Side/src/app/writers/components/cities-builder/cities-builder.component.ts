@@ -21,8 +21,9 @@ import {
   UpdateCityTravelRequest
 } from '../../../shared/models/api_models/updateCity.model';
 import { UserModel } from 'src/app/shared/models/client_models/user.model';
-import { UserService } from '../../../shared/services/user.service';
 import { AddCityURL, AddCityRequest } from '../../../shared/models/api_models/addCity.model';
+import { Store } from '@ngxs/store';
+import { UserState } from 'src/app/shared/store/users/users.reducer';
 
 @Component({
   selector: 'app-cities-builder',
@@ -56,9 +57,9 @@ export class CitiesBuilderComponent implements OnInit {
     private http: HttpClient,
     private cd: ChangeDetectorRef,
     private fb: FormBuilder,
-    private userService: UserService
+    private store: Store
   ) {
-    this.user = this.userService.activeUserSnapchat;
+    this.user = this.store.selectSnapshot(UserState.getUser);
   }
 
 

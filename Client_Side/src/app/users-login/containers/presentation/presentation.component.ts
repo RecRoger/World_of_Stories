@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService } from 'src/app/shared/services/user.service';
+import { Store } from '@ngxs/store';
+import { LogonUser } from 'src/app/shared/store/users/users.actions';
 
 @Component({
   selector: 'app-presentation',
@@ -9,10 +10,10 @@ import { UserService } from 'src/app/shared/services/user.service';
 })
 export class PresentationComponent implements OnInit {
 
-  constructor(private router: Router, private userService: UserService) { }
+  constructor(private router: Router, private store: Store) { }
 
   ngOnInit() {
-    this.userService.updateActiveUser(null);
+    this.store.dispatch(new LogonUser());
   }
 
   login(type: string) {

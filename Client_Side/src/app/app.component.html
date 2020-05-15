@@ -1,1 +1,7 @@
+<ng-container *ngIf="(loader$ | async) as load">
+    <app-loader *ngIf="load>0" size="giant" class="blockScreen"></app-loader>
+</ng-container>
+
 <router-outlet></router-outlet>
+
+<app-messages></app-messages>

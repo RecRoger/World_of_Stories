@@ -1,5 +1,5 @@
 import mongoose, { Schema, model } from 'mongoose';
-import { publicTale, decisionOption } from './common.model';
+import { publicTale, decisionOption, readFragment } from './common.model';
 
 export interface NpcInterface extends mongoose.Document {
     _id: string,
@@ -21,7 +21,7 @@ export interface NpcInterface extends mongoose.Document {
 export interface ChapterInterface {
     _id: string,
     name?: string
-    story?: string,	                // narracion previa a batalla o decision.
+    story?: readFragment[],	                // narracion previa a batalla o decision.
     usersDecisions?: decisionOption[],
     end_location?: {
         location_Type?: string,    // place or city
@@ -45,14 +45,20 @@ const NpcsSchema = new Schema({
     name: String,
     npc_type: String,
     description: {
-        tale: String,
+        tale: [{
+            text: String,
+            animation: String
+        }],
         author: String,
         published: Boolean,
         write_date: Date,
         publish_date: Date,
     },
     meeting: {
-        tale: String,
+        tale: [{
+            text: String,
+            animation: String
+        }],
         author: String,
         published: Boolean,
         write_date: Date,
@@ -64,7 +70,10 @@ const NpcsSchema = new Schema({
         value: String
     }],
     rejected: {
-        tale: String,
+        tale: [{
+            text: String,
+            animation: String
+        }],
         author: String,
         published: Boolean,
         write_date: Date,
@@ -74,7 +83,10 @@ const NpcsSchema = new Schema({
     title: String,
     chapters: [{
         name: String,
-        story: String,	                // narracion previa a batalla o decision.
+        story: [{
+            text: String,
+            animation: String
+        }],	                // narracion previa a batalla o decision.
         usersDecisions: [{
             name: String,
             description: String,

@@ -1,7 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, Input, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserService } from 'src/app/shared/services/user.service';
 import { UserModel } from 'src/app/shared/models/client_models/user.model';
 import { CityModel } from 'src/app/shared/models/client_models/city.model';
 import { GetCityPlacesRequest, GetCityPlacesResponse } from 'src/app/shared/models/api_models/getPlaces.model';
@@ -22,6 +21,8 @@ import {
   publishPlaceURL
 } from 'src/app/shared/models/api_models/updatePlace.model';
 import { AddPlaceRequest, AddPlaceURL } from 'src/app/shared/models/api_models/addPlace.model';
+import { Store } from '@ngxs/store';
+import { UserState } from 'src/app/shared/store/users/users.reducer';
 
 @Component({
   selector: 'app-places-builder',
@@ -55,9 +56,9 @@ export class PlacesBuilderComponent implements OnInit {
     private http: HttpClient,
     private cd: ChangeDetectorRef,
     private fb: FormBuilder,
-    private userService: UserService
+    private store: Store
   ) {
-    this.user = this.userService.activeUserSnapchat;
+    this.user = this.store.selectSnapshot(UserState.getUser);
   }
 
 

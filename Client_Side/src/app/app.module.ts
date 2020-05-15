@@ -10,6 +10,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from 'src/app/app-router.module';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { NgxsModule } from '@ngxs/store';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
+import { UserState } from './shared/store/users/users.reducer';
+import { GeneralState } from './shared/store/general/general.reducer';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,6 +26,10 @@ import { SharedModule } from 'src/app/shared/shared.module';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    NgxsModule.forRoot([UserState, GeneralState], {
+      developmentMode: !environment.production
+    }),
+    NgxsReduxDevtoolsPluginModule.forRoot(),
     // TranslateModule.forRoot({
     //   loader: {
     //     provide: TranslateLoader,
