@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import NpcsSchema, { NpcInterface, ChapterInterface } from '../models/npcs.model';
-import { decisionOption } from '../models/common.model';
+import NpcsSchema, { NpcInterface, ChapterInterface } from '../schemas/npcs.model';
+import { decisionOption } from '../schemas/common.model';
 
 class ChaptersController {
 

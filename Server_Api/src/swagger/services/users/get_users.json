@@ -1,0 +1,84 @@
+{
+    "path": {
+        "get": {
+            "tags": [
+                "Users"
+            ],
+            "summary": "Get All Users",
+            "description": "Get all Users",
+            "operationId": "get_users",
+            "consumes": [
+                "application/json"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Success Operation",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseGetUsers"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {
+                                "users": [
+                                    {
+                                        "rol": [
+                                            "Writer"
+                                        ],
+                                        "characters": [],
+                                        "_id": "5eba19ac6ebb474d647903b7",
+                                        "username": "recroger",
+                                        "password": "123",
+                                        "__v": 0
+                                    },
+                                    {
+                                        "rol": [],
+                                        "characters": [],
+                                        "_id": "5ebdd3b52483b802ccd3ff05",
+                                        "username": "Eli",
+                                        "password": "456",
+                                        "__v": 0
+                                    },
+                                    {
+                                        "rol": [],
+                                        "characters": [],
+                                        "_id": "5f0b6bf1b0e0995294ac116d",
+                                        "username": "pedro",
+                                        "password": "123123",
+                                        "__v": 0
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Error response.",
+                    "schema": {
+                        "$ref": "#/definitions/ErrorMsg"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "ResponseGetUsers": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/User"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import UsersSchema, { UserInterface } from '../models/users.model';
+import UsersSchema, { UserInterface } from '../schemas/users.model';
 
 class UsersController {
 

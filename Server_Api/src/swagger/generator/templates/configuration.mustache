@@ -1,0 +1,107 @@
+/* tslint:disable */
+import { Injectable } from '@angular/core';
+
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { Inject, InjectionToken } from '@angular/core';
+
+export const SSTS = new InjectionToken<any>('SSTS');
+
+export class AppError {
+    constructor(public message, public code){ }
+    
+    toString() { 
+        return `AppError: ${this.message} (${this.code})`;
+    }
+}
+
+/**
+ * Global configuration for {{{unescapedAppDescription}}}
+ */
+@Injectable({
+  providedIn: 'root',
+})
+export class Configuration {
+  rootUrl: string = '{{{basePath}}}';
+}
+
+/**
+ * Base class for API services
+ */
+export class BaseService {
+  constructor(
+    protected config: Configuration,
+    protected http: HttpClient,
+    @Inject(SSTS) protected ssts: any
+  ) { }
+
+  private _rootUrl: string;
+
+  /**
+   * Returns the root url for API operations. If not set directly in this
+   * service, will fallback to ApiConfiguration.rootUrl.
+   */
+  get rootUrl(): string {
+    return this._rootUrl || this.config.rootUrl;
+  }
+
+  /**
+   * Sets the root URL for API operations in this service.
+   */
+  set rootUrl(rootUrl: string) {
+    this._rootUrl = rootUrl;
+  }  
+  
+  protected callService<RequestType extends any, ResponseType extends any>(UID: string, operationMethod:string, url: string, data?: RequestType): Observable<ResponseType> {
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          UID
+        })
+      };
+      
+      switch(operationMethod) {
+        case 'post': 
+          return this.http
+          .post<ResponseType>(
+              `${this.rootUrl}${url}`,
+              { data },
+              httpOptions
+          )
+        case 'get': 
+         return this.http
+          .get<ResponseType>(
+              `${this.rootUrl}${url}`,
+              httpOptions
+          )
+      }
+  }
+  
+  // 400, 500...
+  protected handleBrowserError(error: HttpErrorResponse, UID: string): Observable<never> {
+ 
+    this.ssts.tracelog.error( UID, `Response error - ${JSON.stringify(error)}`);
+
+    return throwError(new AppError(
+        'COMMON.APP_ERROR.CONNECTION_ERROR', `BE-${error.status.toString()} - ${UID}`));
+  }
+
+  // OK 200
+  protected handleServerResponse<ResponseType>(response: any, UID: string): ResponseType {
+    let error: AppError;
+   
+    if (response && response.header && response.header.result)
+    {
+      if(response.header.result.toLowerCase() === 'ok') {      
+        return response;
+      }else if (response && response.header && response.header.error) {
+        error = new AppError(response.header.error.message, response.header.error.code);        
+      }
+    }
+    if(!error){
+      error = new AppError('COMMON.APP_ERROR.CONNECTION_ERROR', `-1 - ${UID}`);
+    }
+    this.ssts.tracelog.error( UID, `Response error - ${JSON.stringify(response)}`);
+    throw error;   
+  }
+}

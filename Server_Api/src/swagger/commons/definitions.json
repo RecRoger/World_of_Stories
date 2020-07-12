@@ -1,0 +1,15 @@
+{
+    "ResponseData": {
+        "$ref": "../commons/models.json#/definitions/ResponseData"
+    },
+    "ErrorMsg": {
+        "$ref": "../commons/models.json#/definitions/ErrorMsg"
+    },
+    "User": {
+        "$ref": "../commons/models.json#/definitions/User"
+    },
+    "ResponseGetUsers":{
+        "$ref": "../services/users/get_users.json#/definitions/ResponseGetUsers"
+    }
+    
+}

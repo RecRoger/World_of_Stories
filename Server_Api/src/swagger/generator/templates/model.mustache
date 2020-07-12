@@ -1,0 +1,14 @@
+{{#models}}
+{{#model}}
+{{#tsImports}}
+import { {{classname}} } from './{{filename}}';
+{{/tsImports}}
+{{#tsImports}}{{/tsImports}}
+{{#description}}
+/**
+ * {{{description}}}
+ */
+{{/description}}
+{{#isEnum}}{{>modelEnum}}{{/isEnum}}{{^isEnum}}{{#isAlias}}{{>modelAlias}}{{/isAlias}}{{^isAlias}}{{#taggedUnions}}{{>modelTaggedUnion}}{{/taggedUnions}}{{^taggedUnions}}{{>modelGeneric}}{{/taggedUnions}}{{/isAlias}}{{/isEnum}}
+{{/model}}
+{{/models}}

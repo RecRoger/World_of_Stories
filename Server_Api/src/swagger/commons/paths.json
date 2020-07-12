@@ -1,0 +1,5 @@
+{
+    "/users": {
+        "$ref": "../services/users/get_users.json#/path"
+    }
+}

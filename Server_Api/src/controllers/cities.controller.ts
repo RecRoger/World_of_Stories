@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import CitiesSchema, { CityInterface } from '../models/cities.model';
+import CitiesSchema, { CityInterface } from '../schemas/cities.model';
 
 class CitiesController {
 

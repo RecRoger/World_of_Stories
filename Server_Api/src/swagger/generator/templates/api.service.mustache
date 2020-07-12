@@ -1,0 +1,78 @@
+/* tslint:disable */
+import { Inject, Injectable, Optional } from '@angular/core';
+import { HttpClient, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
+import { map as __map, filter as __filter, catchError, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
+import { Configuration } from '../configuration';
+import { BaseService } from '../configuration';
+
+{{#imports}}
+import { {{classname}} } from '../{{filename}}';
+{{/imports}}
+{{#withInterfaces}}
+import { {{classname}}Interface } from './{{classFilename}}Interface';
+{{/withInterfaces}}
+
+{{#operations}}
+
+{{#description}}
+/**
+ * {{&description}}
+ */
+{{/description}}
+{{^providedInRoot}}
+@Injectable()
+{{/providedInRoot}}
+{{#providedInRoot}}
+@Injectable({
+  providedIn: 'root'
+})
+{{/providedInRoot}}
+{{#withInterfaces}}
+export class {{classname}} implements {{classname}}Interface {
+{{/withInterfaces}}
+{{^withInterfaces}}
+export class {{classname}} extends BaseService{
+{{/withInterfaces}}
+
+    protected basePath = '{{{basePath}}}';
+{{#operation}}
+    /**
+     * {{summary}}
+     * {{notes}}
+     {{#allParams}}* @param {{paramName}} {{description}}
+     {{/allParams}}{{#useHttpClient}}* @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.{{/useHttpClient}}
+     */
+    {{#useHttpClient}}
+    public {{nickname}}({{#allParams}}{{^isConstEnumParam}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{/isConstEnumParam}}{{#hasMore}}, {{/hasMore}}{{/allParams}}): Observable<{{#returnType}}{{{returnType}}}{{#isResponseTypeFile}}|undefined{{/isResponseTypeFile}}{{/returnType}}{{^returnType}}any{{/returnType}}>{
+    {{/useHttpClient}}
+        const UID = this.ssts.uid.generate();
+        const mustDebugByUrl = this.rootUrl.includes('dev') || this.rootUrl.includes('qat');
+        if (mustDebugByUrl) {
+        this.ssts.tracelog.debug( UID, `Begin request - ${this.rootUrl}${`{{{path}}}`} -{{#allParams}} ${JSON.stringify({{paramName}}.toString())}{{#hasMore}}, {{/hasMore}}{{/allParams}}`);
+        } else {
+        this.ssts.tracelog.info( UID, `Begin request - ${this.rootUrl}${`{{{path}}}`}` );
+        }
+        
+        return this.callService<any, {{{returnType}}}>(UID, `{{{httpMethod}}}`, `{{{path}}}`{{#allParams}}, {{paramName}}{{/allParams}}).pipe(
+        catchError(error => this.handleBrowserError(error, UID)),
+        __map(response => this.handleServerResponse<{{{returnType}}}>(response, UID)),
+        tap(response => {
+            const _{{{returnType}}} = new {{{returnType}}}();
+            _{{{returnType}}}.header = response.header;
+            _{{{returnType}}}.data = response.data;
+            
+            if (mustDebugByUrl) {
+            this.ssts.tracelog.debug(
+                UID,
+                `Response OK - ${this.rootUrl}${`{{{path}}}`} -  ${JSON.stringify(_{{{returnType}}}.toString())}`
+            );
+            }
+        })
+        );
+    }
+
+{{/operation}}}
+{{/operations}}

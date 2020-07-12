@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import NpcsSchema, { NpcInterface } from '../models/npcs.model';
-import CitiesSchema from '../models/cities.model';
+import NpcsSchema, { NpcInterface } from '../schemas/npcs.model';
+import CitiesSchema from '../schemas/cities.model';
 
 class NpcsController {
 

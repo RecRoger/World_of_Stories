@@ -1,0 +1,51 @@
+{
+    "definitions": {
+        "ResponseData": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string"
+                }
+            }
+        },
+        "ErrorMsg": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "EC100"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Invalid parameter"
+                }
+            }
+        },
+        "User": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "rol": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "characters": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

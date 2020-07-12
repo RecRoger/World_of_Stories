@@ -27,6 +27,7 @@
     "express": "^4.17.1",
     "express-handlebars": "^3.1.0",
     "mongoose": "^5.5.14",
+    "multi-file-swagger": "^2.3.0",
     "swagger-ui-express": "^4.1.4",
     "typescript": "^3.5.1"
   },

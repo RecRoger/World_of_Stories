@@ -1,0 +1,178 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "World_of_Stories-Api",
+    "description": "Interactive stories application for NodeJs typescript server",
+    "license": {
+      "name": "RecRoger - World of Stories",
+      "url": "https://github.com/RecRoger/World_of_Stories"
+    }
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Users",
+      "description": "API for Users in the system"
+    },
+    {
+      "name": "Cities",
+      "description": "API for Cities control in the system"
+    },
+    {
+      "name": "Places",
+      "description": "API for Places control in the system"
+    },
+    {
+      "name": "NPCs",
+      "description": "API for NPCs control in the aplication"
+    },
+    {
+      "name": "Chapters",
+      "description": "API for Chapters control in the system"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get All Users",
+        "description": "Get all Users",
+        "operationId": "get_users",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "users": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/User"
+                  }
+                }
+              }
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "users": [
+                    {
+                      "rol": [
+                        "Writer"
+                      ],
+                      "characters": [],
+                      "_id": "5eba19ac6ebb474d647903b7",
+                      "username": "recroger",
+                      "password": "123",
+                      "__v": 0
+                    },
+                    {
+                      "rol": [],
+                      "characters": [],
+                      "_id": "5ebdd3b52483b802ccd3ff05",
+                      "username": "Eli",
+                      "password": "456",
+                      "__v": 0
+                    },
+                    {
+                      "rol": [],
+                      "characters": [],
+                      "_id": "5f0b6bf1b0e0995294ac116d",
+                      "username": "pedro",
+                      "password": "123123",
+                      "__v": 0
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ErrorMsg"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ResponseData": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string"
+        }
+      }
+    },
+    "ErrorMsg": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "example": "EC100"
+        },
+        "message": {
+          "type": "string",
+          "example": "Invalid parameter"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "rol": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "characters": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ResponseGetUsers": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        }
+      }
+    }
+  }
+}

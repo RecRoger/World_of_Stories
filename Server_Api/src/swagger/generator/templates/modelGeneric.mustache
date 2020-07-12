@@ -1,0 +1,64 @@
+export class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}}{ {{>modelGenericAdditionalProperties}}
+{{#vars}}
+    {{#description}}
+    /**
+     * {{{description}}}
+     */
+    {{/description}}
+    {{#isReadOnly}}readonly {{/isReadOnly}}{{name}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{datatype}}} = new {{{datatype}}}(){{/isEnum}};
+{{/vars}}
+
+    toString(): string {
+        const listPropertiesTypes = [];
+        const o: any = {};
+        
+        {{#vars}}
+        const {{name}} = {
+            name: '{{name}}',
+            type: '{{{datatype}}}',
+        };
+        listPropertiesTypes.push({{name}});
+        {{/vars}}
+        
+        {{#vars}}
+        if (listPropertiesTypes.find(obj => obj.name === '{{name}}').type === 'String') {
+            {{#vendorExtensions.x-valueToLog}}
+            o.{{name}}= '{{vendorExtensions.x-valueToLog}}';
+            {{/vendorExtensions.x-valueToLog}}
+            {{^vendorExtensions.x-valueToLog}}
+            o.{{name}}= this.{{name}};
+            {{/vendorExtensions.x-valueToLog}}
+        } else if (listPropertiesTypes.find(obj => obj.name === '{{name}}').type.includes('Array')) {
+            {{#vendorExtensions.x-arrayToLog}}
+            let ref: any = [];
+            for (let i = 0; i < this.{{name}}.length; i++) {
+                let arr = new {{vendorExtensions.x-arrayToLog}}();
+                arr = Object.assign(
+                    new {{vendorExtensions.x-arrayToLog}}(),
+                     this.{{name}}[i]
+                );
+                ref.push(arr.toString());
+            }
+            {{/vendorExtensions.x-arrayToLog}}
+            {{^vendorExtensions.x-arrayToLog}}
+            let ref = new {{{datatype}}}();
+            ref = Object.assign(
+                new {{{datatype}}}(),
+                this.{{name}}
+            );
+            {{/vendorExtensions.x-arrayToLog}}
+            o.{{name}} = ref;
+        } else {
+            let ref = new {{{datatype}}}();
+            ref = Object.assign(
+                new {{{datatype}}}(),
+                this.{{name}}
+            );
+            o.{{name}} = ref.toString();
+        }
+        {{/vars}}
+
+        return o;
+    }
+}
+{{>modelGenericEnums}} 

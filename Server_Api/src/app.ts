@@ -8,7 +8,7 @@ import PlacesRouter from './routes/places.routes';
 import ChaptersRouter from './routes/chapters.routes';
 
 import swaggerUi from 'swagger-ui-express';
-import * as swaggerDocument from './swagger.json'
+import * as swaggerDocument from './swagger/swagger.json'
 
 class App {
     private express: any
