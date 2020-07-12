@@ -1,15 +1,23 @@
-import { Request, Response, Router } from 'express';
+import * as express from 'express'
 import { npcsController } from './../controllers/npcs.controller'
+// import cors from 'cors'
 
-const npcsRouter: Router = Router();
+class npcsRouter {
+    constructor(server: express.Express){
+        const router = express.Router();
 
-npcsRouter.post('/npcs', npcsController.getAllNPCs);
-npcsRouter.post('/npc', npcsController.getOneNPC);
-npcsRouter.post('/add', npcsController.saveNPC);
-npcsRouter.post('/delete', npcsController.deleteNPCs);
-npcsRouter.post('/publish', npcsController.publishNPC);
-npcsRouter.post('/update', npcsController.updateNPC);
+        router.post('/npcs', npcsController.getAllNPCs);
+        router.post('/npc', npcsController.getOneNPC);
+        router.post('/add', npcsController.saveNPC);
+        router.post('/delete', npcsController.deleteNPCs);
+        router.post('/publish', npcsController.publishNPC);
+        router.post('/update', npcsController.updateNPC);
+        
 
+        // router.options('*', cors());
 
+        server.use('/npcs', router)
+    }
+}
 
 export default npcsRouter;

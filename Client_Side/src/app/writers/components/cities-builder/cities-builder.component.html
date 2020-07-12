@@ -147,7 +147,7 @@
   </ng-container>
 
   <!-- Carta de Nueva Ciudad -->
-  <div class="col-6 mb-5">
+  <div class="col-6 mb-5" [ngClass]="{'col-6': !newCityTab.newCity, 'col-12': newCityTab.newCity}">
     <div class="card city-card">
       <div class="card-header d-flex" (click)="toggleNewCity()">
         <h4 class="card-title">
@@ -177,7 +177,8 @@
           <ng-container *ngIf="newCityTab.tab == 'desc'">
             {{cityForm.get('name').value}} es ...
             <form [formGroup]="cityForm">
-              <textarea class="form-control edition-area" formControlName="description" rows="3"></textarea>
+              <app-write-fragments></app-write-fragments>
+              <!-- <textarea class="form-control edition-area" formControlName="description" rows="3"></textarea> -->
             </form>
           </ng-container>
           <!-- Viajes -->

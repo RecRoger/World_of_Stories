@@ -9,7 +9,7 @@ class UsersController {
             console.log('***********************************************');
             console.log('*************** getAllUsers *******************');
 
-            const users: UserInterface[] = await UsersSchema.find();
+            const users: UserInterface[] = await UsersSchema.find({}, { _v: 0});
             console.log('Users ======>', users);
             console.log('===============================================');
             res.json({
@@ -31,7 +31,7 @@ class UsersController {
             console.log('*************** getUserByID *******************', req.body);
 
             const user: UserInterface | null = await UsersSchema.findById(
-                {_id: req.body.id},
+                { _id: req.body.id },
                 {
                     _v: 0
                 }
@@ -61,9 +61,9 @@ class UsersController {
                 {
                     username: username,
                     password: password
-                },{
-                    _v: 0
-                }
+                }, {
+                _v: 0
+            }
             );
             console.log('User ======>', user);
             console.log('===============================================');

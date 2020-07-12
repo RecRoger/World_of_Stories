@@ -1,21 +1,30 @@
-import { Request, Response, Router } from 'express';
+import * as express from 'express';
 import { citiesController } from './../controllers/cities.controller'
 
-const citiesRouter: Router = Router();
+class CitiesRouter {
+    constructor(server: express.Express) {
+        const router = express.Router();
+        
+        router.post('/', citiesController.getAllCities);
+        router.post('/city', citiesController.getOneCity);
+        
+        
+        router.post('/add', citiesController.saveCity);
+        router.post('/delete', citiesController.deleteCity);
+        router.post('/publish', citiesController.publishCity);
+        
+        router.post('/add_desc', citiesController.addCityDescription);
+        router.post('/remove_desc', citiesController.removeCityDescription);
+        router.post('/update_desc', citiesController.updateCityDescription);
+        
+        router.post('/add_travel', citiesController.addCityTravel);
+        router.post('/remove_travel', citiesController.removeCityTravel);
+        router.post('/update_travel', citiesController.updateCityTravel);
+        
+        server.use('/cities', router)
+    }
+}
 
-citiesRouter.post('/cities', citiesController.getAllCities);
-citiesRouter.post('/city', citiesController.getOneCity);
-citiesRouter.post('/add', citiesController.saveCity);
-citiesRouter.post('/delete', citiesController.deleteCity);
-citiesRouter.post('/publish', citiesController.publishCity);
-
-citiesRouter.post('/add_desc', citiesController.addCityDescription);
-citiesRouter.post('/remove_desc', citiesController.removeCityDescription);
-citiesRouter.post('/update_desc', citiesController.updateCityDescription);
-
-citiesRouter.post('/add_travel', citiesController.addCityTravel);
-citiesRouter.post('/remove_travel', citiesController.removeCityTravel);
-citiesRouter.post('/update_travel', citiesController.updateCityTravel);
 
 
-export default citiesRouter;
+export default CitiesRouter;

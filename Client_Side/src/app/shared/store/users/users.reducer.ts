@@ -16,7 +16,7 @@ export interface UserStateModel {
 @State<UserStateModel>({
   name: 'user',
   defaults: {
-    activedUser: null
+    activedUser: (localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))) || null
   }
 })
 @Injectable()

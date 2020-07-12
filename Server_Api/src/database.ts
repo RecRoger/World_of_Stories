@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import { mongodb } from './keys';
+import { mongoKeys } from './keys';
 
-mongoose.connect(mongodb.URI, {
+mongoose.connect(mongoKeys.URI, {
     useNewUrlParser: true
 })
 .then((db: any) => {

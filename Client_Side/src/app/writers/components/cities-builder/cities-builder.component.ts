@@ -24,6 +24,7 @@ import { UserModel } from 'src/app/shared/models/client_models/user.model';
 import { AddCityURL, AddCityRequest } from '../../../shared/models/api_models/addCity.model';
 import { Store } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
+import { TaleFragment } from 'src/app/shared/models/client_models/commons.model';
 
 @Component({
   selector: 'app-cities-builder',
@@ -48,7 +49,7 @@ export class CitiesBuilderComponent implements OnInit {
     tab?: string;
   } = { newCity: false, tab: 'desc' };
 
-  cityForm: FormGroup;
+  cityForm: FormGroupTyped<NewCityFormData>;
 
   @Output() citySelect: EventEmitter<CityModel> = new EventEmitter<CityModel>();
 
@@ -174,7 +175,7 @@ export class CitiesBuilderComponent implements OnInit {
       data.tale = this.cityForm.get('tale').value;
       data.published = this.cityForm.get('published').value;
 
-      const req: UpdateCityDescriptionRequest|UpdateCityTravelRequest = (this.citiesTabs[index].tab === 'desc') ?
+      const req: UpdateCityDescriptionRequest | UpdateCityTravelRequest = (this.citiesTabs[index].tab === 'desc') ?
         { description: data } :
         { travel: data };
 
@@ -293,12 +294,21 @@ export class CitiesBuilderComponent implements OnInit {
     }
   }
 
-
-
   selectCity(i) {
     this.citySelect.emit(this.cities[i]);
   }
 
+}
 
+class NewCityFormData {
+  // para nuevos relatos de ciudades existentes
+  id?: string;
+  tale?: TaleFragment[];
+  published?: boolean;
 
+  // para las nuevas ciudades
+  userid?: string;
+  name?: string;
+  description?: TaleFragment[];
+  travel?: TaleFragment[];
 }

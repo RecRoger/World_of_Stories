@@ -1,15 +1,23 @@
-import { Request, Response, Router } from 'express';
+import * as express from 'express'
 import { chaptersController } from './../controllers/chapters.controller'
+// import cors from 'cors'
 
-const chaptersRouter: Router = Router();
+class ChaptersRouter {
+    constructor(server: express.Express){
+        const router = express.Router();
 
-chaptersRouter.post('/chapters', chaptersController.getAllChapters);
-chaptersRouter.post('/update', chaptersController.updateChapter);
-chaptersRouter.post('/delete', chaptersController.deleteChapter);
-chaptersRouter.post('/publish', chaptersController.publishChapter);
-// chaptersRouter.post('/npc', chaptersController.getOneNPC);
-// chaptersRouter.post('/add', chaptersController.saveNPC);
+        router.post('/chapters', chaptersController.getAllChapters);
+        router.post('/update', chaptersController.updateChapter);
+        router.post('/delete', chaptersController.deleteChapter);
+        router.post('/publish', chaptersController.publishChapter);
+        // router.post('/npc', chaptersController.getOneNPC);
+        // router.post('/add', chaptersController.saveNPC);
+        
 
+        // router.options('*', cors());
 
+        server.use('/chapters', router)
+    }
+}
 
-export default chaptersRouter;
+export default ChaptersRouter;

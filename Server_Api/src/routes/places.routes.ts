@@ -1,21 +1,27 @@
-import { Request, Response, Router } from 'express';
+import * as express from 'express';
 import { placesController } from '../controllers/places.controller';
 
-const placesRouter: Router = Router();
 
-placesRouter.post('/places', placesController.getCityPlaces);
-placesRouter.post('/place', placesController.getOnePlace);
-placesRouter.post('/add', placesController.savePlace);
-placesRouter.post('/delete', placesController.deletePlace);
-placesRouter.post('/publish', placesController.publishPlace);
+class PlacesRouter {
+    constructor(server: express.Express) {
+        const router = express.Router();
 
-placesRouter.post('/add_desc', placesController.addPlaceDescription);
-placesRouter.post('/remove_desc', placesController.removePlaceDescription);
-placesRouter.post('/update_desc', placesController.updatePlaceDescription);
+        router.post('/', placesController.getCityPlaces);
+        router.post('/place', placesController.getOnePlace);
+        router.post('/add', placesController.savePlace);
+        router.post('/delete', placesController.deletePlace);
+        router.post('/publish', placesController.publishPlace);
+        
+        router.post('/add_desc', placesController.addPlaceDescription);
+        router.post('/remove_desc', placesController.removePlaceDescription);
+        router.post('/update_desc', placesController.updatePlaceDescription);
+        
+        router.post('/add_entry', placesController.addPlaceEntry);
+        router.post('/remove_entry', placesController.removePlaceEntry);
+        router.post('/update_entry', placesController.updatePlaceEntry);
 
-placesRouter.post('/add_entry', placesController.addPlaceEntry);
-placesRouter.post('/remove_entry', placesController.removePlaceEntry);
-placesRouter.post('/update_entry', placesController.updatePlaceEntry);
+        server.use('/places', router)
+    }
+}
 
-
-export default placesRouter;
+export default PlacesRouter;

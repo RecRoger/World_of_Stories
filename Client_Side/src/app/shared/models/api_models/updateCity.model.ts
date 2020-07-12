@@ -1,4 +1,5 @@
 import { environment } from 'src/environments/environment';
+import { TaleFragment } from '../client_models/commons.model';
 
 
 export const publishCityURL = environment.url + '/cities/publish';
@@ -21,7 +22,7 @@ export const addCityDescriptionURL = environment.url + '/cities/add_desc';
 export const addCityTravelURL = environment.url + '/cities/add_travel';
 export class AddCityTaleRequest {
     id: string;
-    tale: string;
+    tale: TaleFragment[];
     author: string;
 }
 
@@ -44,7 +45,7 @@ export class UpdateResponse {
 
 export class TaleUpdate {
     id?: string;
-    tale?: string;
+    tale?: TaleFragment[];
     author?: string;
     published?: boolean;
 }
