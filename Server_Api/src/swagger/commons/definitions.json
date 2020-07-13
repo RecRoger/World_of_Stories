@@ -8,8 +8,22 @@
     "User": {
         "$ref": "../commons/models.json#/definitions/User"
     },
+    "UserData": {
+        "$ref": "../commons/models.json#/definitions/UserData"
+    },
+    
     "ResponseGetUsers":{
         "$ref": "../services/users/get_users.json#/definitions/ResponseGetUsers"
+    },
+    "ListUsers":{
+        "$ref": "../services/users/get_users.json#/definitions/ListUsers"
+    },
+    "RequestLogin":{
+        "$ref": "../services/users/login.json#/definitions/RequestLogin"
+    },
+    "ResponseLogin":{
+        "$ref": "../services/users/login.json#/definitions/ResponseLogin"
     }
+
     
 }

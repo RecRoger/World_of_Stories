@@ -1,0 +1,6 @@
+{  
+    "npmName": "wos-api",  
+    "ngVersion": "8.0.0",
+    "useHttpClient" : true,
+    "providedInRoot": true
+ }  

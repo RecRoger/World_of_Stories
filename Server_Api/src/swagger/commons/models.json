@@ -46,6 +46,15 @@
                     }
                 }
             }
+        },
+        "UserData": {
+            "type": "object",
+            "properties":{
+                "user": {
+                    "type": "object",
+                    "$ref": "#/definitions/User"
+                }
+            }
         }
     }
 }

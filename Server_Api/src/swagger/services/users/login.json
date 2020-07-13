@@ -1,23 +1,34 @@
 {
     "path": {
-        "get": {
+        "post": {
             "tags": [
                 "Users"
             ],
-            "summary": "Get All Users",
-            "description": "Get all Users",
-            "operationId": "get_users",
+            "summary": "Login User",
+            "description": "login user",
+            "operationId": "login",
             "consumes": [
                 "application/json"
             ],
             "produces": [
                 "application/json"
             ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "Transaction details",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/RequestLogin"
+                    }
+                }
+            ],
             "responses": {
                 "200": {
                     "description": "Success Operation",
                     "schema": {
-                        "$ref": "#/definitions/ResponseGetUsers"
+                        "$ref": "#/definitions/ResponseLogin"
                     },
                     "examples": {
                         "application/json": {
@@ -69,23 +80,23 @@
         }
     },
     "definitions": {
-        "ResponseGetUsers": {
+        "RequestLogin": {
+            "type": "object",
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "ResponseLogin": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "object",
-                    "$ref": "#/definitions/ListUsers"
-                }
-            }
-        },
-        "ListUsers": {
-            "type": "object",
-            "properties": {
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/User"
-                    }
+                    "$ref": "#/definitions/UserData"
                 }
             }
         }

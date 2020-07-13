@@ -20,6 +20,7 @@
   "author": "Roger Arzola",
   "license": "ISC",
   "dependencies": {
+    "@types/angular": "^1.7.2",
     "@types/node": "^14.0.22",
     "@types/swagger-ui-express": "^4.1.2",
     "body-parser": "^1.19.0",
@@ -27,7 +28,7 @@
     "express": "^4.17.1",
     "express-handlebars": "^3.1.0",
     "mongoose": "^5.5.14",
-    "multi-file-swagger": "^2.3.0",
+    "multi-file-swagger": "2.2.0",
     "swagger-ui-express": "^4.1.4",
     "typescript": "^3.5.1"
   },
