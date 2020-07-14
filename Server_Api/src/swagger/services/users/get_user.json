@@ -1,0 +1,83 @@
+{
+    "path": {
+        "post": {
+            "tags": [
+                "Users"
+            ],
+            "summary": "Get an User",
+            "description": "Get an user",
+            "operationId": "get_user",
+            "consumes": [
+                "application/json"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "Transaction details",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/RequestGetUser"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Success Operation",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseGetUser"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {
+                                "user": {
+                                    "rol": [
+                                        "Writer"
+                                    ],
+                                    "characters": [],
+                                    "_id": "5eba19ac6ebb474d647903b7",
+                                    "username": "recroger",
+                                    "password": "123",
+                                    "__v": 0
+                                }
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Error response.",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseData"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "RequestGetUser": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "ResponseGetUser": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/UserData"
+                }
+            }
+        }
+    }
+}

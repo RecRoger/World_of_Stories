@@ -4,5 +4,20 @@
     },
     "/users/login": {
         "$ref": "../services/users/login.json#/path"
+    },
+    "/users/user": {
+        "$ref": "../services/users/get_user.json#/path"
+    },
+    "/users/signin": {
+        "$ref": "../services/users/signin.json#/path"
+    },
+    "/users/delete": {
+        "$ref": "../services/users/delete_user.json#/path"
+    },
+    "/users/set_rol": {
+        "$ref": "../services/users/set_rol.json#/path"
+    },
+    "/users/remove_rol": {
+        "$ref": "../services/users/remove_rol.json#/path"
     }
 }

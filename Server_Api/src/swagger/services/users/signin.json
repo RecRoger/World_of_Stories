@@ -1,0 +1,84 @@
+{
+    "path": {
+        "post": {
+            "tags": [
+                "Users"
+            ],
+            "summary": "Sign in new User",
+            "description": "Sign in new user",
+            "operationId": "signin",
+            "consumes": [
+                "application/json"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "Transaction details",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/RequestSignin"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Success Operation",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseSignin"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {
+                                "users": {
+                                    "rol": [
+                                        "Writer"
+                                    ],
+                                    "characters": [],
+                                    "_id": "5eba19ac6ebb474d647903b7",
+                                    "username": "recroger",
+                                    "password": "123",
+                                    "__v": 0
+                                }
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Error response.",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseData"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "RequestSignin": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "object",
+                    "$ref": "#/definitions/User"
+                }
+            }
+        },
+        "ResponseSignin": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/UserData"
+                }
+            }
+        }
+    }
+}

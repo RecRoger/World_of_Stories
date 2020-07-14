@@ -6,6 +6,8 @@ import * as bodyParser from 'body-parser';
 import CitiesRouter from './routes/cities.routes';
 import PlacesRouter from './routes/places.routes';
 import ChaptersRouter from './routes/chapters.routes';
+import cors from 'cors';
+
 
 import swaggerUi from 'swagger-ui-express';
 import * as swaggerDocument from './swagger/swagger.json'
@@ -19,6 +21,7 @@ class App {
 
         this.express.use(bodyParser.urlencoded({ extended: true }));
         this.express.use(bodyParser.json());
+        this.express.use(cors());
 
         new UserRouter(this.express);
         new CitiesRouter(this.express);

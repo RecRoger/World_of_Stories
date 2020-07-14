@@ -23,6 +23,36 @@
     },
     "ResponseLogin":{
         "$ref": "../services/users/login.json#/definitions/ResponseLogin"
+    },
+    "RequestGetUser":{
+        "$ref": "../services/users/get_user.json#/definitions/RequestGetUser"
+    },
+    "ResponseGetUser":{
+        "$ref": "../services/users/get_user.json#/definitions/ResponseGetUser"
+    },
+    "RequestSignin":{
+        "$ref": "../services/users/signin.json#/definitions/RequestSignin"
+    },
+    "ResponseSignin":{
+        "$ref": "../services/users/signin.json#/definitions/ResponseSignin"
+    },
+    "RequestDeleteUser":{
+        "$ref": "../services/users/delete_user.json#/definitions/RequestDeleteUser"
+    },
+    "ResponseDeleteUser":{
+        "$ref": "../services/users/delete_user.json#/definitions/ResponseDeleteUser"
+    },
+    "RequestSetRol":{
+        "$ref": "../services/users/set_rol.json#/definitions/RequestSetRol"
+    },
+    "ResponseSetRol":{
+        "$ref": "../services/users/set_rol.json#/definitions/ResponseSetRol"
+    },
+    "RequestRemoveRol":{
+        "$ref": "../services/users/remove_rol.json#/definitions/RequestRemoveRol"
+    },
+    "ResponseRemoveRol":{
+        "$ref": "../services/users/remove_rol.json#/definitions/ResponseRemoveRol"
     }
 
     

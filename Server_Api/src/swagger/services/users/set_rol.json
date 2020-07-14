@@ -1,0 +1,86 @@
+{
+    "path": {
+        "post": {
+            "tags": [
+                "Users"
+            ],
+            "summary": "Set User Rol",
+            "description": "Set new rol to an User",
+            "operationId": "set_rol",
+            "consumes": [
+                "application/json"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "Transaction details",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/RequestSetRol"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Success Operation",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseSetRol"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {
+                                "user": {
+                                    "rol": [
+                                        "Writer"
+                                    ],
+                                    "characters": [],
+                                    "_id": "5eba19ac6ebb474d647903b7",
+                                    "username": "recroger",
+                                    "password": "123",
+                                    "__v": 0
+                                }
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Error response.",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseData"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "RequestSetRol": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "rol": {
+                    "type": "string"
+                }
+            }
+        },
+        "ResponseSetRol": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/UserData"
+                }
+            }
+        }
+    }
+}

@@ -15,22 +15,6 @@
     {
       "name": "Users",
       "description": "API for Users in the system"
-    },
-    {
-      "name": "Cities",
-      "description": "API for Cities control in the system"
-    },
-    {
-      "name": "Places",
-      "description": "API for Places control in the system"
-    },
-    {
-      "name": "NPCs",
-      "description": "API for NPCs control in the aplication"
-    },
-    {
-      "name": "Chapters",
-      "description": "API for Chapters control in the system"
     }
   ],
   "schemes": [
@@ -185,6 +169,305 @@
           }
         }
       }
+    },
+    "/users/user": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get an User",
+        "description": "Get an user",
+        "operationId": "get_user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestGetUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseGetUser"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "user": {
+                    "rol": [
+                      "Writer"
+                    ],
+                    "characters": [],
+                    "_id": "5eba19ac6ebb474d647903b7",
+                    "username": "recroger",
+                    "password": "123",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/signin": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Sign in new User",
+        "description": "Sign in new user",
+        "operationId": "signin",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestSignin"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseSignin"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "users": {
+                    "rol": [
+                      "Writer"
+                    ],
+                    "characters": [],
+                    "_id": "5eba19ac6ebb474d647903b7",
+                    "username": "recroger",
+                    "password": "123",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/delete": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete an User",
+        "description": "Delete an user",
+        "operationId": "delete_user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestDeleteUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseDeleteUser"
+            },
+            "examples": {
+              "application/json": {
+                "data": "OK"
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/set_rol": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Set User Rol",
+        "description": "Set new rol to an User",
+        "operationId": "set_rol",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestSetRol"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseSetRol"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "user": {
+                    "rol": [
+                      "Writer"
+                    ],
+                    "characters": [],
+                    "_id": "5eba19ac6ebb474d647903b7",
+                    "username": "recroger",
+                    "password": "123",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/remove_rol": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Remove User Rol",
+        "description": "Remove new rol to an User",
+        "operationId": "remove_rol",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestRemoveRol"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseRemoveRol"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "user": {
+                    "rol": [
+                      "Writer"
+                    ],
+                    "characters": [],
+                    "_id": "5eba19ac6ebb474d647903b7",
+                    "username": "recroger",
+                    "password": "123",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -276,6 +559,98 @@
       }
     },
     "ResponseLogin": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/UserData"
+        }
+      }
+    },
+    "RequestGetUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseGetUser": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/UserData"
+        }
+      }
+    },
+    "RequestSignin": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "type": "object",
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "ResponseSignin": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/UserData"
+        }
+      }
+    },
+    "RequestDeleteUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseDeleteUser": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/ResponseData"
+        }
+      }
+    },
+    "RequestSetRol": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "rol": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseSetRol": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/UserData"
+        }
+      }
+    },
+    "RequestRemoveRol": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "rol": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseRemoveRol": {
       "type": "object",
       "properties": {
         "data": {

@@ -15,22 +15,6 @@
         {
             "name": "Users",
             "description": "API for Users in the system"
-        },
-        {
-            "name": "Cities",
-            "description": "API for Cities control in the system"
-        },
-        {
-            "name": "Places",
-            "description": "API for Places control in the system"
-        },
-        {
-            "name": "NPCs",
-            "description": "API for NPCs control in the aplication"
-        },
-        {
-            "name": "Chapters",
-            "description": "API for Chapters control in the system"
         }
     ],
     "schemes": [

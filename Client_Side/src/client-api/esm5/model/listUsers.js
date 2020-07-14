@@ -1,0 +1,14 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/listUsers.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+export function ListUsers() { }
+if (false) {
+    /** @type {?|undefined} */
+    ListUsers.prototype.users;
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibGlzdFVzZXJzLmpzIiwic291cmNlUm9vdCI6Im5nOi8vd29zLWFwaS8iLCJzb3VyY2VzIjpbIm1vZGVsL2xpc3RVc2Vycy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7OztBQWNBLCtCQUVDOzs7SUFERywwQkFBb0IiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIFdvcmxkX29mX1N0b3JpZXMtQXBpXG4gKiBJbnRlcmFjdGl2ZSBzdG9yaWVzIGFwcGxpY2F0aW9uIGZvciBOb2RlSnMgdHlwZXNjcmlwdCBzZXJ2ZXJcbiAqXG4gKiBPcGVuQVBJIHNwZWMgdmVyc2lvbjogMS4wLjBcbiAqIFxuICpcbiAqIE5PVEU6IFRoaXMgY2xhc3MgaXMgYXV0byBnZW5lcmF0ZWQgYnkgdGhlIHN3YWdnZXIgY29kZSBnZW5lcmF0b3IgcHJvZ3JhbS5cbiAqIGh0dHBzOi8vZ2l0aHViLmNvbS9zd2FnZ2VyLWFwaS9zd2FnZ2VyLWNvZGVnZW4uZ2l0XG4gKiBEbyBub3QgZWRpdCB0aGUgY2xhc3MgbWFudWFsbHkuXG4gKi9cbmltcG9ydCB7IFVzZXIgfSBmcm9tICcuL3VzZXInO1xuXG5cbmV4cG9ydCBpbnRlcmZhY2UgTGlzdFVzZXJzIHsgXG4gICAgdXNlcnM/OiBBcnJheTxVc2VyPjtcbn1cbiJdfQ==

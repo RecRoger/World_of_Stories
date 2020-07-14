@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { AddUserResponse, AddUsersURL } from '../../models/api_models/addUser.model';
 import { AddUserRolURL, AddUserRolResponse } from '../../models/api_models/addUserRol.model';
 import { SetLoader, SetError } from '../general/general.actions';
+import { UsersService } from 'src/client-api';
 
 export interface UserStateModel {
   activedUser: UserModel;
@@ -22,7 +23,7 @@ export interface UserStateModel {
 @Injectable()
 export class UserState {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private userService: UsersService) {
 
   }
 
@@ -43,7 +44,8 @@ export class UserState {
 
     // ctx.dispatch(new SetLoader(true));
     try {
-      const resp: ResponseModel<GetUserResponse> = await this.http.post(GetUserURL, action.payload).toPromise();
+
+      const resp = await this.userService.login(action.payload).toPromise();
       if (resp && resp.data && resp.data.user) {
         const user: UserModel = resp.data.user;
 

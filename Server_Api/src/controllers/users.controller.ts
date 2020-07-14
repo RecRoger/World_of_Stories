@@ -83,7 +83,7 @@ class UsersController {
         console.log('***********************************************');
         console.log('****************** savwUser *******************', req.body);
         try {
-            const { username, password } = req.body;
+            const { username, password } = req.body.user;
             const user: UserInterface = new UsersSchema({
                 username,
                 password,
@@ -114,7 +114,7 @@ class UsersController {
             console.log('Edition ======>', user);
             console.log('===============================================');
             res.json({
-                "data": user
+                "data": user.ok? 'OK' : 'error'
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -125,12 +125,12 @@ class UsersController {
         }
     }
 
-    public async updateUserRol(req: Request, res: Response): Promise<void> {
+    public async setUserRol(req: Request, res: Response): Promise<void> {
         try {
             console.log('***********************************************');
             console.log('************** updateUserRol ******************', req.body);
             const { id, rol } = req.body;
-            const user = await UsersSchema.updateOne(
+            const edition = await UsersSchema.updateOne(
                 { _id: id },
                 {
                     $push: {
@@ -138,10 +138,14 @@ class UsersController {
                     }
                 }
             );
+            const user: UserInterface | null = await UsersSchema.findById(
+                { _id: id },
+                { _v: 0 }
+            );
             console.log('Edition ======>', user);
             console.log('===============================================');
             res.json({
-                "data": user
+                "data": edition.ok ? user : null
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -156,7 +160,7 @@ class UsersController {
         console.log('*************** removeUserRol *****************', req.body);
         try {
             const { id, rol } = req.body;
-            const user = await UsersSchema.updateOne(
+            const edition = await UsersSchema.updateOne(
                 { _id: id },
                 {
                     $pull: {
@@ -164,10 +168,14 @@ class UsersController {
                     }
                 }
             );
+            const user: UserInterface | null = await UsersSchema.findById(
+                { _id: id },
+                { _v: 0 }
+            );
             console.log('Edition ======>', user);
             console.log('===============================================');
             res.json({
-                "data": user
+                "data": edition.ok ? user : null
             });
         } catch (err) {
             console.log('Error ---->', err);

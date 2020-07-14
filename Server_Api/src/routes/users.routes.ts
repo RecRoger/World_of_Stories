@@ -1,26 +1,24 @@
 import * as express from 'express'
 import { usersController } from './../controllers/users.controller'
-// import cors from 'cors'
+import cors from 'cors'
 
 class UserRouter {
     constructor(server: express.Express){
         const router = express.Router();
 
-        router.get('/', usersController.getAllUsers);
+        router.get('/', cors(), usersController.getAllUsers);
 
-        router.post('/login', usersController.getOneUser);
-
-        router.post('/user', usersController.getOneUser);
+        router.post('/login', cors(), usersController.getOneUser);
         
-        router.post('/user_by_id', usersController.getUserById);
+        router.post('/user', cors(), usersController.getUserById);
         
-        router.post('/signin', usersController.saveUser);
+        router.post('/signin', cors(), usersController.saveUser);
         
-        router.post('/delete', usersController.deleteUser);
+        router.post('/delete', cors(), usersController.deleteUser);
         
-        router.post('/update_rol', usersController.updateUserRol);
+        router.post('/set_rol', cors(), usersController.setUserRol);
         
-        router.post('/remove_rol', usersController.removeUserRol);
+        router.post('/remove_rol', cors(), usersController.removeUserRol);
 
         // router.options('*', cors());
 
