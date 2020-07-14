@@ -24,6 +24,7 @@ class App {
         this.express.use(cors());
 
         new UserRouter(this.express);
+
         new CitiesRouter(this.express);
         new PlacesRouter(this.express);
         new PlacesRouter(this.express);

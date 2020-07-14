@@ -1,0 +1,92 @@
+{
+    "path": {
+        "post": {
+            "tags": [
+                "Locations"
+            ],
+            "summary": "Update City description",
+            "description": "Update City description",
+            "operationId": "update_city_description",
+            "consumes": [
+                "application/json"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "Transaction details",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/RequestUpdateCityDescription"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Success Operation",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseUpdateCityDescription"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {
+                                "city": {}
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Error response.",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseData"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "RequestUpdateCityDescription": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "object",
+                    "$ref": "#/definitions/CityDescriptionEdition"
+                }
+            }
+        },
+        "CityDescriptionEdition": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "tale": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ReadFragment"
+                    }
+                },
+                "published": {
+                    "type": "string"
+                }
+            }
+        },
+        "ResponseUpdateCityDescription": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/PublicTale"
+                }
+            }
+        }
+    }
+}

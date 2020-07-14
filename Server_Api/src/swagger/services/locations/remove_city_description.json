@@ -1,0 +1,74 @@
+{
+    "path": {
+        "post": {
+            "tags": [
+                "Locations"
+            ],
+            "summary": "Remove description from City",
+            "description": "Remove new description from existing City",
+            "operationId": "remove_city_description",
+            "consumes": [
+                "application/json"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "Transaction details",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/RequestRemoveCityDescription"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Success Operation",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseRemoveCityDescription"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {
+                                "city": {}
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Error response.",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseData"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "RequestRemoveCityDescription": {
+            "type": "object",
+            "properties": {
+                "descriptionId": {
+                    "type": "string"
+                }
+            }
+        },
+        "ResponseRemoveCityDescription": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/ResponseData"
+                }
+            }
+        }
+    }
+}

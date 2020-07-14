@@ -49,10 +49,137 @@
         },
         "UserData": {
             "type": "object",
-            "properties":{
+            "properties": {
                 "user": {
                     "type": "object",
                     "$ref": "#/definitions/User"
+                }
+            }
+        },
+
+        
+        "ReadFragment": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string"
+                },
+                "animation": {
+                    "type": "string"
+                }
+            }
+        },
+        "PublicTale": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "tale": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ReadFragment"
+                    }
+                },
+                "author": {
+                    "type": "string"
+                },
+                "published": {
+                    "type": "boolean"
+                },
+                "write_date": {
+                    "type": "string"
+                },
+                "publish_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "City": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PublicTale"
+                    }
+                },
+                "travel": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PublicTale"
+                    }
+                },
+                "places": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PublicTale"
+                    }
+                },
+                "published": {
+                    "type": "boolean"
+                },
+                "publish_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "CityData": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "object",
+                    "$ref": "#/definitions/City"
+                }
+            }
+        },
+        "Place": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PublicTale"
+                    }
+                },
+                "entry": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PublicTale"
+                    }
+                },
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "published": {
+                    "type": "boolean"
+                },
+                "publish_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "PlaceData": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "object",
+                    "$ref": "#/definitions/Place"
                 }
             }
         }

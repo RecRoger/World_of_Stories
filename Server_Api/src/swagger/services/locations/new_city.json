@@ -1,0 +1,89 @@
+{
+    "path": {
+        "post": {
+            "tags": [
+                "Locations"
+            ],
+            "summary": "Add new City",
+            "description": "Add new City",
+            "operationId": "new_city",
+            "consumes": [
+                "application/json"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "Transaction details",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/RequestNewCity"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Success Operation",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseNewCity"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {
+                                "city": {}
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Error response.",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseData"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "RequestNewCity": {
+            "type": "object",
+            "properties": {
+                "userName": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ReadFragment"
+                    }
+                },
+                "travel": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ReadFragment"
+                    }
+                }
+            }
+        },
+        "ResponseNewCity": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/CityData"
+                }
+            }
+        }
+    }
+}

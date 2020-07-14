@@ -11,6 +11,28 @@
     "UserData": {
         "$ref": "../commons/models.json#/definitions/UserData"
     },
+
+
+    "ReadFragment": {
+        "$ref": "../commons/models.json#/definitions/ReadFragment"
+    },
+    "PublicTale": {
+        "$ref": "../commons/models.json#/definitions/PublicTale"
+    },
+    "City": {
+        "$ref": "../commons/models.json#/definitions/City"
+    },
+    "CityData":{
+        "$ref": "../commons/models.json#/definitions/CityData"
+    },
+    "Place": {
+        "$ref": "../commons/models.json#/definitions/Place"
+    },
+    "PlaceData": {
+        "$ref": "../commons/models.json#/definitions/PlaceData"
+    },
+
+
     
     "ResponseGetUsers":{
         "$ref": "../services/users/get_users.json#/definitions/ResponseGetUsers"
@@ -53,7 +75,128 @@
     },
     "ResponseRemoveRol":{
         "$ref": "../services/users/remove_rol.json#/definitions/ResponseRemoveRol"
+    },
+
+
+
+    "RequestGetCities":{
+        "$ref": "../services/locations/get_cities.json#/definitions/RequestGetCities"
+    },
+    "ResponseGetCities":{
+        "$ref": "../services/locations/get_cities.json#/definitions/ResponseGetCities"
+    },
+    "ListCities":{
+        "$ref": "../services/locations/get_cities.json#/definitions/ListCities"
+    },
+    "RequestGetCity":{
+        "$ref": "../services/locations/get_city.json#/definitions/RequestGetCity"
+    },
+    "ResponseGetCity":{
+        "$ref": "../services/locations/get_city.json#/definitions/ResponseGetCity"
+    },
+    "RequestNewCity":{
+        "$ref": "../services/locations/new_city.json#/definitions/RequestNewCity"
+    },
+    "ResponseNewCity":{
+        "$ref": "../services/locations/new_city.json#/definitions/ResponseNewCity"
+    },
+    "RequestDeleteCity":{
+        "$ref": "../services/locations/delete_city.json#/definitions/RequestDeleteCity"
+    },
+    "ResponseDeleteCity":{
+        "$ref": "../services/locations/delete_city.json#/definitions/ResponseDeleteCity"
+    },
+    "RequestPublishCity":{
+        "$ref": "../services/locations/publish_city.json#/definitions/RequestPublishCity"
+    },
+    "ResponsePublishCity":{
+        "$ref": "../services/locations/publish_city.json#/definitions/ResponsePublishCity"
+    },
+
+    "RequestNewCityDescription":{
+        "$ref": "../services/locations/new_city_description.json#/definitions/RequestNewCityDescription"
+    },
+    "ResponseNewCityDescription":{
+        "$ref": "../services/locations/new_city_description.json#/definitions/ResponseNewCityDescription"
+    },
+
+    "RequestRemoveCityDescription":{
+        "$ref": "../services/locations/remove_city_description.json#/definitions/RequestRemoveCityDescription"
+    },
+    "ResponseRemoveCityDescription":{
+        "$ref": "../services/locations/remove_city_description.json#/definitions/ResponseRemoveCityDescription"
+    },
+    "RequestUpdateCityDescription":{
+        "$ref": "../services/locations/update_city_description.json#/definitions/RequestUpdateCityDescription"
+    },
+    "CityDescriptionEdition":{
+        "$ref": "../services/locations/update_city_description.json#/definitions/CityDescriptionEdition"
+    },
+    "ResponseUpdateCityDescription":{
+        "$ref": "../services/locations/update_city_description.json#/definitions/ResponseUpdateCityDescription"
+    },
+
+    "RequestNewCityTravel":{
+        "$ref": "../services/locations/new_city_travel.json#/definitions/RequestNewCityTravel"
+    },
+    "ResponseNewCityTravel":{
+        "$ref": "../services/locations/new_city_travel.json#/definitions/ResponseNewCityTravel"
+    },
+    "RequestRemoveCityTravel":{
+        "$ref": "../services/locations/remove_city_travel.json#/definitions/RequestRemoveCityTravel"
+    },
+    "ResponseRemoveCityTravel":{
+        "$ref": "../services/locations/remove_city_travel.json#/definitions/ResponseRemoveCityTravel"
+    },
+    "RequestUpdateCityTravel":{
+        "$ref": "../services/locations/update_city_travel.json#/definitions/RequestUpdateCityTravel"
+    },
+    "CityTravelEdition":{
+        "$ref": "../services/locations/update_city_travel.json#/definitions/CityTravelEdition"
+    },
+    "ResponseUpdateCityTravel":{
+        "$ref": "../services/locations/update_city_travel.json#/definitions/ResponseUpdateCityTravel"
+    },
+
+
+
+
+
+    "RequestGetPlaces":{
+        "$ref": "../services/locations/get_places.json#/definitions/RequestGetPlaces"
+    },
+    "ResponseGetPlaces":{
+        "$ref": "../services/locations/get_places.json#/definitions/ResponseGetPlaces"
+    },
+    "ListPlaces":{
+        "$ref": "../services/locations/get_places.json#/definitions/ListPlaces"
+    },
+    "RequestGetPlace":{
+        "$ref": "../services/locations/get_place.json#/definitions/RequestGetPlace"
+    },
+    "ResponseGetPlace":{
+        "$ref": "../services/locations/get_place.json#/definitions/ResponseGetPlace"
+    },
+
+    "RequestNewPlace":{
+        "$ref": "../services/locations/new_place.json#/definitions/RequestNewPlace"
+    },
+    "ResponseNewPlace":{
+        "$ref": "../services/locations/new_place.json#/definitions/ResponseNewPlace"
+    },
+    "RequestDeletePlace":{
+        "$ref": "../services/locations/delete_place.json#/definitions/RequestDeletePlace"
+    },
+    "ResponseDeletePlace":{
+        "$ref": "../services/locations/delete_place.json#/definitions/ResponseDeletePlace"
+    },
+    "RequestPublishPlace":{
+        "$ref": "../services/locations/publish_place.json#/definitions/RequestPublishPlace"
+    },
+    "ResponsePublishPlace":{
+        "$ref": "../services/locations/publish_place.json#/definitions/ResponsePublishPlace"
     }
+    
 
     
 }

@@ -2,7 +2,7 @@ import * as express from 'express'
 import { npcsController } from './../controllers/npcs.controller'
 import cors from 'cors'
 
-class npcsRouter {
+class NpcsRouter {
     constructor(server: express.Express){
         const router = express.Router();
 
@@ -20,4 +20,4 @@ class npcsRouter {
     }
 }
 
-export default npcsRouter;
+export default NpcsRouter;

@@ -8,7 +8,7 @@ class PlacesRouter {
 
         router.post('/', cors(), placesController.getCityPlaces);
         router.post('/place', cors(), placesController.getOnePlace);
-        router.post('/add', cors(), placesController.savePlace);
+        router.post('/new', cors(), placesController.savePlace);
         router.post('/delete', cors(), placesController.deletePlace);
         router.post('/publish', cors(), placesController.publishPlace);
         

@@ -6,6 +6,10 @@ export interface publicTale {
     write_date:Date;     // Fecha de creacion
     publish_date:Date;   // Fecha de publicacion
 }
+export interface readFragment{
+    text: string;
+    animation?: string;
+}
 
 export interface decisionOption{
     _id?:string
@@ -15,7 +19,3 @@ export interface decisionOption{
     published?:boolean          // si el capitulo siguiente esta publicado o no
 }
 
-export interface readFragment{
-    text: string;
-    animation?: string;
-}

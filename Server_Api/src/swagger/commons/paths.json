@@ -19,5 +19,53 @@
     },
     "/users/remove_rol": {
         "$ref": "../services/users/remove_rol.json#/path"
+    },
+    "/cities": {
+        "$ref": "../services/locations/get_cities.json#/path"
+    },
+    "/cities/city": {
+        "$ref": "../services/locations/get_city.json#/path"
+    },
+    "/cities/new": {
+        "$ref": "../services/locations/new_city.json#/path"
+    },
+    "/cities/delete": {
+        "$ref": "../services/locations/delete_city.json#/path"
+    },
+    "/cities/publish": {
+        "$ref": "../services/locations/publish_city.json#/path"
+    },
+    "/cities/description/new": {
+        "$ref": "../services/locations/new_city_description.json#/path"
+    },
+    "/cities/description/remove": {
+        "$ref": "../services/locations/remove_city_description.json#/path"
+    },
+    "/cities/description/update": {
+        "$ref": "../services/locations/update_city_description.json#/path"
+    },
+    "/cities/travel/new": {
+        "$ref": "../services/locations/new_city_travel.json#/path"
+    },
+    "/cities/travel/remove": {
+        "$ref": "../services/locations/remove_city_travel.json#/path"
+    },
+    "/cities/travel/update": {
+        "$ref": "../services/locations/update_city_travel.json#/path"
+    },
+    "/places": {
+        "$ref": "../services/locations/get_places.json#/path"
+    },
+    "/places/place": {
+        "$ref": "../services/locations/get_place.json#/path"
+    },
+    "/places/new": {
+        "$ref": "../services/locations/new_place.json#/path"
+    },
+    "/places/delete": {
+        "$ref": "../services/locations/delete_place.json#/path"
+    },
+    "/places/publish": {
+        "$ref": "../services/locations/publish_place.json#/path"
     }
 }

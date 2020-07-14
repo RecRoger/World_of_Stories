@@ -468,6 +468,801 @@
           }
         }
       }
+    },
+    "/cities": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Get all Cities",
+        "description": "Get all Cities, filtering by publish status",
+        "operationId": "get_cities",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestGetCities"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseGetCities"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "cities": []
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cities/city": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Get City",
+        "description": "Get complete info of one City",
+        "operationId": "get_city",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestGetCity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseGetCity"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "city": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cities/new": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Add new City",
+        "description": "Add new City",
+        "operationId": "new_city",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestNewCity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseNewCity"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "city": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cities/delete": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Delete a City",
+        "description": "Delete a City",
+        "operationId": "delete_city",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestDeleteCity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseDeleteCity"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "city": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cities/publish": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Publish a City",
+        "description": "Publish the City content to readers",
+        "operationId": "publish_city",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestPublishCity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponsePublishCity"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "city": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cities/description/new": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Add description to City",
+        "description": "Add new description to existing City",
+        "operationId": "new_city_description",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestNewCityDescription"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseNewCityDescription"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "city": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cities/description/remove": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Remove description from City",
+        "description": "Remove new description from existing City",
+        "operationId": "remove_city_description",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestRemoveCityDescription"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseRemoveCityDescription"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "city": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cities/description/update": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Update City description",
+        "description": "Update City description",
+        "operationId": "update_city_description",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestUpdateCityDescription"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseUpdateCityDescription"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "city": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cities/travel/new": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Add travel to City",
+        "description": "Add new travel to existing City",
+        "operationId": "new_city_travel",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestNewCityTravel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseNewCityTravel"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "city": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cities/travel/remove": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Remove travel from City",
+        "description": "Remove new travel from existing City",
+        "operationId": "remove_city_travel",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestRemoveCityTravel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseRemoveCityTravel"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "city": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cities/travel/update": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Update City travel",
+        "description": "Update City travel",
+        "operationId": "update_city_travel",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestUpdateCityTravel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseUpdateCityTravel"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "city": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/places": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Get all Places of a City",
+        "description": "Get all Places of a City filtering by publish status",
+        "operationId": "get_places",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestGetPlaces"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseGetPlaces"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "cities": []
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/places/place": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Get Place",
+        "description": "Get complete info of one Place",
+        "operationId": "get_place",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestGetPlace"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseGetPlace"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "place": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/places/new": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Add new Place",
+        "description": "Add new Place in existing City",
+        "operationId": "new_place",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestNewPlace"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseNewPlace"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "place": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/places/delete": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Delete a Place",
+        "description": "Delete a Place",
+        "operationId": "delete_place",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestDeletePlace"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseDeletePlace"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "place": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -524,6 +1319,131 @@
         "user": {
           "type": "object",
           "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "ReadFragment": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "animation": {
+          "type": "string"
+        }
+      }
+    },
+    "PublicTale": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "tale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReadFragment"
+          }
+        },
+        "author": {
+          "type": "string"
+        },
+        "published": {
+          "type": "boolean"
+        },
+        "write_date": {
+          "type": "string"
+        },
+        "publish_date": {
+          "type": "string"
+        }
+      }
+    },
+    "City": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PublicTale"
+          }
+        },
+        "travel": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PublicTale"
+          }
+        },
+        "places": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PublicTale"
+          }
+        },
+        "published": {
+          "type": "boolean"
+        },
+        "publish_date": {
+          "type": "string"
+        }
+      }
+    },
+    "CityData": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "object",
+          "$ref": "#/definitions/City"
+        }
+      }
+    },
+    "Place": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PublicTale"
+          }
+        },
+        "entry": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PublicTale"
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "published": {
+          "type": "boolean"
+        },
+        "publish_date": {
+          "type": "string"
+        }
+      }
+    },
+    "PlaceData": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "object",
+          "$ref": "#/definitions/Place"
         }
       }
     },
@@ -656,6 +1576,376 @@
         "data": {
           "type": "object",
           "$ref": "#/definitions/UserData"
+        }
+      }
+    },
+    "RequestGetCities": {
+      "type": "object",
+      "properties": {
+        "published": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ResponseGetCities": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/ListCities"
+        }
+      }
+    },
+    "ListCities": {
+      "type": "object",
+      "properties": {
+        "cities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/City"
+          }
+        }
+      }
+    },
+    "RequestGetCity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseGetCity": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/CityData"
+        }
+      }
+    },
+    "RequestNewCity": {
+      "type": "object",
+      "properties": {
+        "userName": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReadFragment"
+          }
+        },
+        "travel": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReadFragment"
+          }
+        }
+      }
+    },
+    "ResponseNewCity": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/CityData"
+        }
+      }
+    },
+    "RequestDeleteCity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseDeleteCity": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/ResponseData"
+        }
+      }
+    },
+    "RequestPublishCity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "published": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ResponsePublishCity": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/ResponseData"
+        }
+      }
+    },
+    "RequestNewCityDescription": {
+      "type": "object",
+      "properties": {
+        "cityId": {
+          "type": "string"
+        },
+        "tale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReadFragment"
+          }
+        },
+        "author": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseNewCityDescription": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/PublicTale"
+        }
+      }
+    },
+    "RequestRemoveCityDescription": {
+      "type": "object",
+      "properties": {
+        "descriptionId": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseRemoveCityDescription": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/ResponseData"
+        }
+      }
+    },
+    "RequestUpdateCityDescription": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "object",
+          "$ref": "#/definitions/CityDescriptionEdition"
+        }
+      }
+    },
+    "CityDescriptionEdition": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "tale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReadFragment"
+          }
+        },
+        "published": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseUpdateCityDescription": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/PublicTale"
+        }
+      }
+    },
+    "RequestNewCityTravel": {
+      "type": "object",
+      "properties": {
+        "cityId": {
+          "type": "string"
+        },
+        "tale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReadFragment"
+          }
+        },
+        "author": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseNewCityTravel": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/PublicTale"
+        }
+      }
+    },
+    "RequestRemoveCityTravel": {
+      "type": "object",
+      "properties": {
+        "travelId": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseRemoveCityTravel": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/ResponseData"
+        }
+      }
+    },
+    "RequestUpdateCityTravel": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "object",
+          "$ref": "#/definitions/CityTravelEdition"
+        }
+      }
+    },
+    "CityTravelEdition": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "tale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReadFragment"
+          }
+        },
+        "published": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseUpdateCityTravel": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/PublicTale"
+        }
+      }
+    },
+    "RequestGetPlaces": {
+      "type": "object",
+      "properties": {
+        "cityId": {
+          "type": "string"
+        },
+        "published": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ResponseGetPlaces": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/ListPlaces"
+        }
+      }
+    },
+    "ListPlaces": {
+      "type": "object",
+      "properties": {
+        "places": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Place"
+          }
+        }
+      }
+    },
+    "RequestGetPlace": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseGetPlace": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/PlaceData"
+        }
+      }
+    },
+    "RequestNewPlace": {
+      "type": "object",
+      "properties": {
+        "cityId": {
+          "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReadFragment"
+          }
+        },
+        "entry": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReadFragment"
+          }
+        }
+      }
+    },
+    "ResponseNewPlace": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/PlaceData"
+        }
+      }
+    },
+    "RequestDeletePlace": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseDeletePlace": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/ResponseData"
         }
       }
     }
