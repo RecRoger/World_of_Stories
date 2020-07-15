@@ -195,6 +195,49 @@
     },
     "ResponsePublishPlace":{
         "$ref": "../services/locations/publish_place.json#/definitions/ResponsePublishPlace"
+    },
+
+    "RequestNewPlaceDescription":{
+        "$ref": "../services/locations/new_place_description.json#/definitions/RequestNewPlaceDescription"
+    },
+    "ResponseNewPlaceDescription":{
+        "$ref": "../services/locations/new_place_description.json#/definitions/ResponseNewPlaceDescription"
+    },
+    "RequestRemovePlaceDescription":{
+        "$ref": "../services/locations/remove_place_description.json#/definitions/RequestRemovePlaceDescription"
+    },
+    "ResponseRemovePlaceDescription":{
+        "$ref": "../services/locations/remove_place_description.json#/definitions/ResponseRemovePlaceDescription"
+    },
+    "RequestUpdatePlaceDescription":{
+        "$ref": "../services/locations/update_place_description.json#/definitions/RequestUpdatePlaceDescription"
+    },
+    "PlaceDescriptionEdition":{
+        "$ref": "../services/locations/update_place_description.json#/definitions/PlaceDescriptionEdition"
+    },
+    "ResponseUpdatePlaceDescription":{
+        "$ref": "../services/locations/update_place_description.json#/definitions/ResponseUpdatePlaceDescription"
+    },
+    "RequestNewPlaceEntry":{
+        "$ref": "../services/locations/new_place_entry.json#/definitions/RequestNewPlaceEntry"
+    },
+    "ResponseNewPlaceEntry":{
+        "$ref": "../services/locations/new_place_entry.json#/definitions/ResponseNewPlaceEntry"
+    },
+    "RequestRemovePlaceEntry":{
+        "$ref": "../services/locations/remove_place_entry.json#/definitions/RequestRemovePlaceEntry"
+    },
+    "ResponseRemovePlaceEntry":{
+        "$ref": "../services/locations/remove_place_entry.json#/definitions/ResponseRemovePlaceEntry"
+    },
+    "RequestUpdatePlaceEntry":{
+        "$ref": "../services/locations/update_place_entry.json#/definitions/RequestUpdatePlaceEntry"
+    },
+    "PlaceEntryEdition":{
+        "$ref": "../services/locations/update_place_entry.json#/definitions/PlaceEntryEdition"
+    },
+    "ResponseUpdatePlaceEntry":{
+        "$ref": "../services/locations/update_place_entry.json#/definitions/ResponseUpdatePlaceEntry"
     }
     
 

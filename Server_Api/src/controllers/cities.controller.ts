@@ -137,10 +137,10 @@ class CitiesController {
                     publish_date: (published) ? new Date() : null
                 }
             );
-            console.log('===================== ' + ((edition.ok) ? 'OK' : 'not Found') + ' ======================');
+            console.log('===================== ' + ((edition.nModified) ? 'OK' : 'not Found') + ' ======================');
             console.log('_____________________________________________________');
             res.json({
-                "data": (edition.ok) ? 'OK' : 'error'
+                "data": (edition.nModified) ? 'OK' : 'error'
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -206,7 +206,7 @@ class CitiesController {
             const { descriptionId } = req.body;
             console.log('**************** ' + descriptionId + ' *******************');
 
-            const city = await CitiesSchema.updateOne(
+            const edition = await CitiesSchema.updateOne(
                 { "description._id": descriptionId },
                 {
                     $pull: {
@@ -216,9 +216,9 @@ class CitiesController {
                     }
                 }
             );
-            console.log('===================== ' + ((city.ok) ? 'OK' : 'not Found') + ' ======================');
+            console.log('===================== ' + ((edition.nModified) ? 'OK' : 'not Found') + ' ======================');
             res.json({
-                "data": (city.ok) ? 'OK' : 'error'
+                "data": (edition.nModified) ? 'OK' : 'error'
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -234,7 +234,6 @@ class CitiesController {
             console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
             console.log('**************** updateCityDescription *******************');
             let { description } = req.body;
-            const id = description._id;
             console.log('**************** ' + description._id + ' *******************');
 
             const edition = await CitiesSchema.updateOne(
@@ -331,7 +330,7 @@ class CitiesController {
 
             console.log('**************** ' + travelId + ' *******************');
 
-            const city = await CitiesSchema.updateOne(
+            const edition = await CitiesSchema.updateOne(
                 { "travel._id": travelId },
                 {
                     $pull: {
@@ -341,9 +340,9 @@ class CitiesController {
                     }
                 }
             );
-            console.log('===================== ' + ((city.ok) ? 'OK' : 'not Found') + ' ======================');
+            console.log('===================== ' + ((edition.nModified) ? 'OK' : 'not Found') + ' ======================');
             res.json({
-                "data": (city.ok) ? 'OK' : 'error'
+                "data": (edition.nModified) ? 'OK' : 'error'
             });
         } catch (err) {
             console.log('Error ---->', err);

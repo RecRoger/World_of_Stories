@@ -67,5 +67,23 @@
     },
     "/places/publish": {
         "$ref": "../services/locations/publish_place.json#/path"
+    },
+    "/places/description/new": {
+        "$ref": "../services/locations/new_place_description.json#/path"
+    },
+    "/places/description/remove": {
+        "$ref": "../services/locations/remove_place_description.json#/path"
+    },
+    "/places/description/update": {
+        "$ref": "../services/locations/update_place_description.json#/path"
+    },
+    "/places/entry/new": {
+        "$ref": "../services/locations/new_place_entry.json#/path"
+    },
+    "/places/entry/remove": {
+        "$ref": "../services/locations/remove_place_entry.json#/path"
+    },
+    "/places/entry/update": {
+        "$ref": "../services/locations/update_place_entry.json#/path"
     }
 }

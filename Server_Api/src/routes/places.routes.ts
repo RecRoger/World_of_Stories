@@ -12,13 +12,13 @@ class PlacesRouter {
         router.post('/delete', cors(), placesController.deletePlace);
         router.post('/publish', cors(), placesController.publishPlace);
         
-        router.post('/add_desc', cors(), placesController.addPlaceDescription);
-        router.post('/remove_desc', cors(), placesController.removePlaceDescription);
-        router.post('/update_desc', cors(), placesController.updatePlaceDescription);
+        router.post('/description/new', cors(), placesController.addPlaceDescription);
+        router.post('/description/remove', cors(), placesController.removePlaceDescription);
+        router.post('/description/update', cors(), placesController.updatePlaceDescription);
         
-        router.post('/add_entry', cors(), placesController.addPlaceEntry);
-        router.post('/remove_entry', cors(), placesController.removePlaceEntry);
-        router.post('/update_entry', cors(), placesController.updatePlaceEntry);
+        router.post('/entry/new', cors(), placesController.addPlaceEntry);
+        router.post('/entry/remove', cors(), placesController.removePlaceEntry);
+        router.post('/entry/update', cors(), placesController.updatePlaceEntry);
 
         server.use('/places', router)
     }

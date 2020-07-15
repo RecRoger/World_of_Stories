@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/common/http'), require('@angular/core')) :
-    typeof define === 'function' && define.amd ? define('wos-api', ['exports', '@angular/common/http', '@angular/core'], factory) :
-    (factory((global['wos-api'] = {}),global.ng.common.http,global.ng.core));
-}(this, (function (exports,i1,i0) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common/http')) :
+    typeof define === 'function' && define.amd ? define('wos-api', ['exports', '@angular/core', '@angular/common/http'], factory) :
+    (factory((global['wos-api'] = {}),global.ng.core,global.ng.common.http));
+}(this, (function (exports,i0,i1) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -166,6 +166,1205 @@
                 return mime != null && (jsonMime.test(mime) || mime.toLowerCase() === 'application/json-patch+json');
             };
         return Configuration;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: api/locations.service.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var LocationsService = /** @class */ (function () {
+        function LocationsService(httpClient, basePath, configuration) {
+            this.httpClient = httpClient;
+            this.basePath = 'http://localhost:3000';
+            this.defaultHeaders = new i1.HttpHeaders();
+            this.configuration = new Configuration();
+            if (basePath) {
+                this.basePath = basePath;
+            }
+            if (configuration) {
+                this.configuration = configuration;
+                this.basePath = basePath || configuration.basePath || this.basePath;
+            }
+        }
+        /**
+         * @param consumes string[] mime-types
+         * @return true: consumes contains 'multipart/form-data', false: otherwise
+         */
+        /**
+         * @private
+         * @param {?} consumes string[] mime-types
+         * @return {?} true: consumes contains 'multipart/form-data', false: otherwise
+         */
+        LocationsService.prototype.canConsumeForm = /**
+         * @private
+         * @param {?} consumes string[] mime-types
+         * @return {?} true: consumes contains 'multipart/form-data', false: otherwise
+         */
+            function (consumes) {
+                var e_1, _a;
+                /** @type {?} */
+                var form = 'multipart/form-data';
+                try {
+                    for (var consumes_1 = __values(consumes), consumes_1_1 = consumes_1.next(); !consumes_1_1.done; consumes_1_1 = consumes_1.next()) {
+                        var consume = consumes_1_1.value;
+                        if (form === consume) {
+                            return true;
+                        }
+                    }
+                }
+                catch (e_1_1) {
+                    e_1 = { error: e_1_1 };
+                }
+                finally {
+                    try {
+                        if (consumes_1_1 && !consumes_1_1.done && (_a = consumes_1.return))
+                            _a.call(consumes_1);
+                    }
+                    finally {
+                        if (e_1)
+                            throw e_1.error;
+                    }
+                }
+                return false;
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.deleteCity = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling deleteCity.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/cities/delete", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.deletePlace = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling deletePlace.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/places/delete", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.getCities = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling getCities.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/cities", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.getCity = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling getCity.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/cities/city", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.getPlace = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling getPlace.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/places/place", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.getPlaces = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling getPlaces.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/places", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.newCity = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling newCity.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/cities/new", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.newCityDescription = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling newCityDescription.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/cities/description/new", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.newCityTravel = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling newCityTravel.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/cities/travel/new", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.newPlace = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling newPlace.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/places/new", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.newPlaceDescription = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling newPlaceDescription.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/places/description/new", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.newPlaceEntry = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling newPlaceEntry.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/places/entry/new", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.publishCity = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling publishCity.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/cities/publish", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.publishPlace = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling publishPlace.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/places/publish", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.removeCityDescription = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling removeCityDescription.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/cities/description/remove", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.removeCityTravel = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling removeCityTravel.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/cities/travel/remove", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.removePlaceDescription = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling removePlaceDescription.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/places/description/remove", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.removePlaceEntry = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling removePlaceEntry.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/places/entry/remove", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.updateCityDescription = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling updateCityDescription.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/cities/description/update", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.updateCityTravel = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling updateCityTravel.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/cities/travel/update", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.updatePlaceDescription = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling updatePlaceDescription.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/places/description/update", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        LocationsService.prototype.updatePlaceEntry = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling updatePlaceEntry.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/places/entry/update", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        LocationsService.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
+        ];
+        /** @nocollapse */
+        LocationsService.ctorParameters = function () {
+            return [
+                { type: i1.HttpClient },
+                { type: String, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [BASE_PATH,] }] },
+                { type: Configuration, decorators: [{ type: i0.Optional }] }
+            ];
+        };
+        /** @nocollapse */ LocationsService.ngInjectableDef = i0.defineInjectable({ factory: function LocationsService_Factory() { return new LocationsService(i0.inject(i1.HttpClient), i0.inject(BASE_PATH, 8), i0.inject(Configuration, 8)); }, token: LocationsService, providedIn: "root" });
+        return LocationsService;
     }());
 
     /**
@@ -605,6 +1804,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
 
+    exports.LocationsService = LocationsService;
     exports.UsersService = UsersService;
     exports.Configuration = Configuration;
     exports.ɵa = BASE_PATH;

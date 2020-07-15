@@ -17,7 +17,7 @@ class PlacesController {
                     travel: 0,
                 }
             );
-
+            
             let places: PlaceInterface[] = (cities) ? cities.places : []
 
             console.log('_____________________________________________________');
@@ -67,7 +67,7 @@ class PlacesController {
     public async savePlace(req: Request, res: Response): Promise<void> {
         try {
             console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
-            console.log('*************** newCity **************************');
+            console.log('*************** savePlace **************************');
 
             const { cityId, userName, name, description, entry } = req.body;
 
@@ -105,7 +105,7 @@ class PlacesController {
                 }
             );
 
-            const place = (city) ? city.places.slice(1)[0]: null;
+            const place = (city) ? city.places.slice(1)[0] : null;
 
             console.log('====================== ' + ((place) ? (<PlaceInterface>place).name : 'Not Found') + ' =========================');
             console.log('_____________________________________________________');
@@ -139,10 +139,10 @@ class PlacesController {
                     }
                 }
             );
-            console.log('===================== ' + ((edition.ok) ? 'OK' : 'not Found') + ' ======================');
+            console.log('===================== ' + ((edition.nModified) ? 'OK' : 'not Found') + ' ======================');
             console.log('_____________________________________________________');
             res.json({
-                "data": (edition.ok) ? 'OK' : 'error'
+                "data": (edition.nModified) ? 'OK' : 'error'
             });
         } catch (err) {
             res.json({
@@ -172,10 +172,10 @@ class PlacesController {
                 { arrayFilters: [{ "elem._id": id }] }
             );
 
-            console.log('===================== ' + ((edition.ok) ? 'OK' : 'not Found') + ' ======================');
+            console.log('===================== ' + ((edition.nModified) ? 'OK' : 'not Found') + ' ======================');
             console.log('_____________________________________________________');
             res.json({
-                "data": (edition.ok) ? 'OK' : 'error'
+                "data": (edition.nModified) ? 'OK' : 'error'
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -191,12 +191,12 @@ class PlacesController {
     public async addPlaceDescription(req: Request, res: Response): Promise<void> {
         try {
             console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
-            console.log('**************** addCityDescription *******************');
+            console.log('**************** addPlaceDescription *******************');
 
             const { placeId, tale, author } = req.body;
             console.log('**************** ' + placeId + ' *******************');
 
-            const city = await CitiesSchema.updateOne(
+            const edition = await CitiesSchema.updateOne(
                 { "places._id": placeId },
                 {
                     $push: {
@@ -209,10 +209,28 @@ class PlacesController {
                     }
                 }
             );
+
+            const city: CityInterface | null = await CitiesSchema.findOne(
+                { "places._id": placeId },
+                {
+                    "places.$[elem]": 1
+                },
+                { arrayFilters: [{ "elem._id": placeId }] }
+            );
+
+            const place: PlaceInterface | null = (city) ? city.places[0] : null;
+
+            const newDescription = (place) ? place.description.slice(1)[0] : null;
+
+            console.log('====================== ' + ((newDescription) ? 'OK' : 'Not Found') + ' =========================');
+            console.log('_____________________________________________________');
+
             res.json({
-                "data": city
+                "data": newDescription
             });
         } catch (err) {
+            console.log('Error ---->', err);
+            console.log('_____________________________________________________');
             res.json({
                 "error": err
             })
@@ -221,21 +239,29 @@ class PlacesController {
     // remove Place Description
     public async removePlaceDescription(req: Request, res: Response): Promise<void> {
         try {
-            const { id } = req.body;
-            const city = await CitiesSchema.updateOne(
-                { "places.description._id": id },
+            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('**************** removePlaceDescription *******************');
+
+            const { descriptionId } = req.body;
+            console.log('**************** ' + descriptionId + ' *******************');
+
+            const edition = await CitiesSchema.updateOne(
+                { "places.description._id": descriptionId },
                 {
                     $pull: {
                         "places.$.description": {
-                            _id: id
+                            _id: descriptionId
                         }
                     }
                 }
             );
+            console.log('===================== ' + ((edition.nModified) ? 'OK' : 'not Found') + ' ======================');
             res.json({
-                "data": city
+                "data": (edition.nModified) ? 'OK' : 'error'
             });
         } catch (err) {
+            console.log('Error ---->', err);
+            console.log('_____________________________________________________');
             res.json({
                 "error": err
             })
@@ -244,9 +270,13 @@ class PlacesController {
     // updates/publish Place Description
     public async updatePlaceDescription(req: Request, res: Response): Promise<void> {
         try {
-            const { description } = req.body;
-            const city = await CitiesSchema.updateOne(
-                { "places.description._id": description.id },
+            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('**************** updatePlaceDescription *******************');
+            let { description } = req.body;
+            console.log('**************** ' + description._id + ' *******************');
+
+            const edition = await CitiesSchema.updateOne(
+                { "places.description._id": description._id },
                 {
                     $set: {
                         "places.$.description.$[elem].tale": description.tale,
@@ -254,10 +284,26 @@ class PlacesController {
                         "places.$.description.$[elem].publish_date": (description.published) ? new Date() : null
                     }
                 },
-                { arrayFilters: [{ "elem._id": description.id }] }
+                { arrayFilters: [{ "elem._id": description._id }] }
             );
+
+            const city: CityInterface | null = await CitiesSchema.findOne(
+                { "places.description._id": description._id },
+                {
+                    "places.$:": 1
+                }
+            );
+
+            const place = (city) ? (city as CityInterface).places[0] : null;
+            let updatedDescription;
+
+            updatedDescription = (place) ? (place as PlaceInterface).description : null;
+
+            console.log('====================== ' + ((edition.nModified && updatedDescription) ? 'OK' : 'Not Found') + ' =========================');
+            console.log('_____________________________________________________');
+
             res.json({
-                "data": city
+                "data": updatedDescription
             });
         } catch (err) {
             res.json({
@@ -270,9 +316,14 @@ class PlacesController {
     // add Place Entry
     public async addPlaceEntry(req: Request, res: Response): Promise<void> {
         try {
-            const { id, tale, author } = req.body;
-            const city = await CitiesSchema.updateOne(
-                { "places._id": id },
+            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('**************** addPlaceEntry *******************');
+
+            const { placeId, tale, author } = req.body;
+            console.log('**************** ' + placeId + ' *******************');
+
+            const edition = await CitiesSchema.updateOne(
+                { "places._id": placeId },
                 {
                     $push: {
                         "places.$.entry": [{
@@ -284,44 +335,77 @@ class PlacesController {
                     }
                 }
             );
+
+            const city: CityInterface | null = await CitiesSchema.findOne(
+                { "places._id": placeId },
+                {
+                    "places.$[elem]": 1
+                },
+                { arrayFilters: [{ "elem._id": placeId }] }
+            );
+
+            const place: PlaceInterface | null = (city) ? city.places[0] : null;
+
+            const newEntry = (place) ? place.entry.slice(1)[0] : null;
+
+            console.log('====================== ' + ((edition.nModified && newEntry) ? 'OK' : 'Not Found') + ' =========================');
+            console.log('_____________________________________________________');
+
             res.json({
-                "data": city
+                "data": newEntry
             });
         } catch (err) {
+            console.log('Error ---->', err);
+            console.log('_____________________________________________________');
             res.json({
                 "error": err
             })
         }
+
     }
     // remove Place Entry
     public async removePlaceEntry(req: Request, res: Response): Promise<void> {
         try {
-            const { id } = req.body;
-            const city = await CitiesSchema.updateOne(
-                { "places.entry._id": id },
+            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('**************** removePlaceEntry *******************');
+
+            const { entryId } = req.body;
+            console.log('**************** ' + entryId + ' *******************');
+
+            const edition = await CitiesSchema.updateOne(
+                { "places.entry._id": entryId },
                 {
                     $pull: {
                         "places.$.entry": {
-                            _id: id
+                            _id: entryId
                         }
                     }
                 }
             );
+            console.log('===================== ' + ((edition.nModified) ? 'OK' : 'not Found') + ' ======================');
             res.json({
-                "data": city
+                "data": (edition.nModified) ? 'OK' : 'error'
             });
         } catch (err) {
+            console.log('Error ---->', err);
+            console.log('_____________________________________________________');
             res.json({
                 "error": err
             })
         }
+
     }
     // updates/publish Place Description
     public async updatePlaceEntry(req: Request, res: Response): Promise<void> {
+
         try {
+            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('**************** updatePlaceEntry *******************');
             const { entry } = req.body;
-            const city = await CitiesSchema.updateOne(
-                { "places.entry._id": entry.id },
+            console.log('**************** ' + entry._id + ' *******************');
+
+            const edition = await CitiesSchema.updateOne(
+                { "places.entry._id": entry._id },
                 {
                     $set: {
                         "places.$.entry.$[elem].tale": entry.tale,
@@ -329,16 +413,33 @@ class PlacesController {
                         "places.$.entry.$[elem].publish_date": (entry.published) ? new Date() : null
                     }
                 },
-                { arrayFilters: [{ "elem._id": entry.id }] }
+                { arrayFilters: [{ "elem._id": entry._id }] }
             );
+
+            const city: CityInterface | null = await CitiesSchema.findOne(
+                { "places.entry._id": entry._id },
+                {
+                    "places.$:": 1
+                }
+            );
+
+            const place = (city) ? (city as CityInterface).places[0] : null;
+            let updateEntry;
+
+            updateEntry = (place) ? (place as PlaceInterface).entry : null;
+
+            console.log('====================== ' + ((edition.nModified && updateEntry) ? 'OK' : 'Not Found') + ' =========================');
+            console.log('_____________________________________________________');
+
             res.json({
-                "data": city
+                "data": updateEntry
             });
         } catch (err) {
             res.json({
                 "error": err
             })
         }
+
     }
 
 }
