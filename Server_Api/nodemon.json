@@ -4,7 +4,8 @@
     ],
     "ext": "ts",
     "ignore": [
-        "src/**/*.spect.ts"
+        "src/**/*.spect.ts",
+        "src/swagger"
     ],
     "exec": "ts-node ./src/index.ts"
 }

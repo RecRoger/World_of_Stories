@@ -13,11 +13,19 @@ class CitiesController {
             const filter = (published) ? { published: true } : {};
             const cities: CityInterface[] = await CitiesSchema.find(filter, {
                 places: 0
-            });
+            }).lean();
+
+            const castCities = cities.map(city => {
+                city.id = city._id;
+                city.description = city.description.map(t => ({ ...t, id: t._id }))
+                city.travel = city.travel.map(t => ({ ...t, id: t._id }))
+                return city
+            })
             console.log('_____________________________________________________');
             res.json({
-                "data": { "cities": cities }
+                "data": { "cities": castCities }
             })
+
         } catch (err) {
             console.log('Error ---->', err);
             console.log('_____________________________________________________');
@@ -40,11 +48,20 @@ class CitiesController {
                     "places.entry": 0,
                     "places.events": 0
                 }
-            );
+            ).lean();
+
+            const castCity = city ? {
+                ...city,
+                id: city._id,
+                description: city.description.map(t => ({ ...t, id: t._id })),
+                travel: city.travel.map(t => ({ ...t, id: t._id })),
+                places: city.places.map(t => ({ ...t, id: t._id })),
+            } : null;
+
             console.log('====================== ' + ((city) ? (<CityInterface>city).name : city) + ' =========================');
             console.log('_____________________________________________________');
             res.json({
-                "data": { "city": city }
+                "data": { "city": castCity }
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -64,7 +81,7 @@ class CitiesController {
 
             const { userName, name, description, travel } = req.body;
 
-            const city: CityInterface = new CitiesSchema({
+            const newCity: CityInterface = new CitiesSchema({
                 name: name,   // nombre de la ciudad
                 description: [{
                     tale: description,
@@ -81,12 +98,21 @@ class CitiesController {
                 places: [],  // ide de los lugares (Places) de esa ciudad
                 published: false
             });
-            await city.save();
+            await newCity.save();
+
+            const city: CityInterface | null = await CitiesSchema.findOne({ _id: newCity._id }).lean();
+
+            const castCity = city ? {
+                ...city,
+                id: city._id,
+                description: city.description.map(t => ({ ...t, id: t._id })),
+                travel: city.travel.map(t => ({ ...t, id: t._id })),
+            } : null;
 
             console.log('====================== ' + ((city) ? (<CityInterface>city).name : city) + ' =========================');
             console.log('_____________________________________________________');
             res.json({
-                "data": { "city": city }
+                "data": { "city": castCity }
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -179,7 +205,7 @@ class CitiesController {
                 {
                     "description": 1
                 }
-            );
+            ).lean();
             const descriptions = (city) ? (<CityInterface>city).description : null;
 
             const description = (descriptions) ? descriptions.slice(-1)[0] : null;
@@ -187,7 +213,7 @@ class CitiesController {
             console.log('====================== ' + ((description) ? 'OK' : 'Not Found') + ' =========================');
             console.log('_____________________________________________________');
             res.json({
-                "data": description
+                "data": description && { ...description, id: description._id }
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -254,7 +280,7 @@ class CitiesController {
                     "description.$[elem]": 1
                 },
                 { arrayFilters: [{ "elem._id": description._id }] }
-            );
+            ).lean();
 
             const updatedDescription = (city) ? (city as CityInterface).description[0] : null;
 
@@ -262,7 +288,7 @@ class CitiesController {
             console.log('_____________________________________________________');
 
             res.json({
-                "data": updatedDescription
+                "data": updatedDescription && { ...updatedDescription, id: updatedDescription._id }
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -301,16 +327,16 @@ class CitiesController {
                 {
                     "travel": 1
                 }
-            );
+            ).lean();
 
-            
+
             const travels = (city) ? (<CityInterface>city).travel : null;
             const travel = (travels) ? travels.slice(-1)[0] : null;
 
             console.log('====================== ' + ((travel) ? 'OK' : 'Not Found') + ' =========================');
             console.log('_____________________________________________________');
             res.json({
-                "data": city
+                "data": travel && { ...travel, id: travel._id }
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -380,7 +406,7 @@ class CitiesController {
                     "travel.$[elem]": 1
                 },
                 { arrayFilters: [{ "elem._id": travel._id }] }
-            );
+            ).lean();
 
             const updatedTravel = (city) ? (city as CityInterface).travel[0] : null;
 
@@ -388,7 +414,7 @@ class CitiesController {
             console.log('_____________________________________________________');
 
             res.json({
-                "data": updatedTravel
+                "data": updatedTravel && { ...updatedTravel, id: updatedTravel._id }
             });
         } catch (err) {
             console.log('Error ---->', err);

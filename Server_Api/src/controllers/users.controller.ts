@@ -9,11 +9,12 @@ class UsersController {
             console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
             console.log('*************** getAllUsers *******************');
 
-            const users: UserInterface[] = await UsersSchema.find({}, { _v: 0 });
+            const users: UserInterface[] = await UsersSchema.find({}, { _v: 0 }).lean();
             // console.log('Users ======>', users);
+            // users.map(user => ({ ...user, id: user._id }))
             console.log('_____________________________________________________');
             res.json({
-                "data": { "users": users }
+                "data": { "users": users.map(user => ({ ...user, id: user._id })) }
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -36,12 +37,12 @@ class UsersController {
                 {
                     _v: 0
                 }
-            );
+            ).lean();
             // console.log('User ======>', user);
             console.log('===================== ' + ((user) ? (user as UserInterface).username : 'not Found') + ' ======================');
             console.log('_____________________________________________________');
             res.json({
-                "data": { "user": user }
+                "data": { "user": (user) ? { ...user, id: user._id } : null }
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -66,12 +67,12 @@ class UsersController {
                 }, {
                 _v: 0
             }
-            );
+            ).lean();
             // console.log('User ======>', user);
             console.log('===================== ' + ((user) ? (user as UserInterface).username : 'not Found') + ' ======================');
             console.log('_____________________________________________________');
             res.json({
-                "data": { "user": user }
+                "data": { "user": user && { ...user, id: user._id } }
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -84,19 +85,22 @@ class UsersController {
     // Save new User
     public async saveUser(req: Request, res: Response): Promise<void> {
         console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
-        console.log('****************** savwUser *******************', req.body);
+        console.log('****************** savwUser *******************');
         try {
             const { username, password } = req.body.user;
-            const user: UserInterface = new UsersSchema({
+            const newUser: UserInterface = new UsersSchema({
                 username,
                 password,
                 rol: []
             });
-            await user.save();
+            await newUser.save();
+
+            const user = await UsersSchema.findOne({ "_id": newUser._id }).lean();
+
             console.log('===================== ' + ((user) ? (user as UserInterface).username : 'not Found') + ' ======================');
             console.log('_____________________________________________________');
             res.json({
-                "data": { "user": user }
+                "data": { "user": { ...user, id: user._id } }
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -150,12 +154,13 @@ class UsersController {
             const user: UserInterface | null = await UsersSchema.findById(
                 { _id: id },
                 { _v: 0 }
-            );
+            ).lean();
 
             console.log('===================== ' + ((edition.ok) ? 'OK' : 'not Found') + ' ======================');
             console.log('_____________________________________________________');
             res.json({
-                "data": edition.ok ? user : null
+                "data": edition.ok ? { user: user && { ...user, id: user._id } } : null
+
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -185,11 +190,11 @@ class UsersController {
             const user: UserInterface | null = await UsersSchema.findById(
                 { _id: id },
                 { _v: 0 }
-            );
+            ).lean();
             console.log('===================== ' + ((edition.ok) ? 'OK' : 'not Found') + ' ======================');
             console.log('_____________________________________________________');
             res.json({
-                "data": edition.ok ? user : null
+                "data": edition.ok ? { user: user && { ...user, id: user._id } } : null
             });
         } catch (err) {
             console.log('Error ---->', err);

@@ -100,7 +100,7 @@ class LocationsService {
      */
     constructor(httpClient, basePath, configuration) {
         this.httpClient = httpClient;
-        this.basePath = 'http://localhost';
+        this.basePath = 'http://localhost:3000';
         this.defaultHeaders = new HttpHeaders();
         this.configuration = new Configuration();
         if (basePath) {
@@ -1011,7 +1011,7 @@ class UsersService {
      */
     constructor(httpClient, basePath, configuration) {
         this.httpClient = httpClient;
-        this.basePath = 'http://localhost';
+        this.basePath = 'http://localhost:3000';
         this.defaultHeaders = new HttpHeaders();
         this.configuration = new Configuration();
         if (basePath) {

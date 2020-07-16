@@ -12,6 +12,7 @@ import { UserModel } from '../../../shared/models/client_models/user.model';
 import { Store } from '@ngxs/store';
 import { LoginUser, SigninUser } from 'src/app/shared/store/users/users.actions';
 import { isValid } from 'src/app/shared/utils/commons';
+import { RequestSignin } from 'src/client-api';
 
 @Component({
   selector: 'app-user-login',
@@ -96,9 +97,11 @@ export class UserLoginComponent implements OnInit {
 
       this.loading = true;
 
-      const signReq: AddUserRequest = {
-        username: this.loginForm.get('username').value,
-        password: this.loginForm.get('password').value
+      const signReq: RequestSignin = {
+        user: {
+          username: this.loginForm.get('username').value,
+          password: this.loginForm.get('password').value
+        }
       };
       await this.store.dispatch(new SigninUser(signReq)).toPromise();
 

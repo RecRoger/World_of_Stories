@@ -73,11 +73,12 @@ export class UserState {
   async SigninUser(ctx: StateContext<UserStateModel>, action: SigninUser) {
 
     try {
-      const resp: ResponseModel<AddUserResponse> = await this.http.post(AddUsersURL, action.payload).toPromise();
+      const resp = await this.userService.signin(action.payload).toPromise();
+      // const resp: ResponseModel<AddUserResponse> = await this.http.post(AddUsersURL, action.payload).toPromise();
       // if (resp) {
       if (resp && resp.data && resp.data.user) {
         const user: UserModel = new UserModel();
-        user._id = resp.data.user._id;
+        user._id = resp.data.user.id;
         user.username = resp.data.user.username;
         user.password = resp.data.user.password;
         user.characters = resp.data.user.characters;

@@ -39,7 +39,7 @@
                                             "Writer"
                                         ],
                                         "characters": [],
-                                        "_id": "5eba19ac6ebb474d647903b7",
+                                        "id": "5eba19ac6ebb474d647903b7",
                                         "username": "recroger",
                                         "password": "123",
                                         "__v": 0
@@ -47,7 +47,7 @@
                                     {
                                         "rol": [],
                                         "characters": [],
-                                        "_id": "5ebdd3b52483b802ccd3ff05",
+                                        "id": "5ebdd3b52483b802ccd3ff05",
                                         "username": "Eli",
                                         "password": "456",
                                         "__v": 0
@@ -55,7 +55,7 @@
                                     {
                                         "rol": [],
                                         "characters": [],
-                                        "_id": "5f0b6bf1b0e0995294ac116d",
+                                        "id": "5f0b6bf1b0e0995294ac116d",
                                         "username": "pedro",
                                         "password": "123123",
                                         "__v": 0

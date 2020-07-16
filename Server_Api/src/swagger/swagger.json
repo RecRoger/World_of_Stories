@@ -50,7 +50,7 @@
                         "Writer"
                       ],
                       "characters": [],
-                      "_id": "5eba19ac6ebb474d647903b7",
+                      "id": "5eba19ac6ebb474d647903b7",
                       "username": "recroger",
                       "password": "123",
                       "__v": 0
@@ -58,7 +58,7 @@
                     {
                       "rol": [],
                       "characters": [],
-                      "_id": "5ebdd3b52483b802ccd3ff05",
+                      "id": "5ebdd3b52483b802ccd3ff05",
                       "username": "Eli",
                       "password": "456",
                       "__v": 0
@@ -66,7 +66,7 @@
                     {
                       "rol": [],
                       "characters": [],
-                      "_id": "5f0b6bf1b0e0995294ac116d",
+                      "id": "5f0b6bf1b0e0995294ac116d",
                       "username": "pedro",
                       "password": "123123",
                       "__v": 0
@@ -130,7 +130,7 @@
                         "Writer"
                       ],
                       "characters": [],
-                      "_id": "5eba19ac6ebb474d647903b7",
+                      "id": "5eba19ac6ebb474d647903b7",
                       "username": "recroger",
                       "password": "123",
                       "__v": 0
@@ -138,7 +138,7 @@
                     {
                       "rol": [],
                       "characters": [],
-                      "_id": "5ebdd3b52483b802ccd3ff05",
+                      "id": "5ebdd3b52483b802ccd3ff05",
                       "username": "Eli",
                       "password": "456",
                       "__v": 0
@@ -146,7 +146,7 @@
                     {
                       "rol": [],
                       "characters": [],
-                      "_id": "5f0b6bf1b0e0995294ac116d",
+                      "id": "5f0b6bf1b0e0995294ac116d",
                       "username": "pedro",
                       "password": "123123",
                       "__v": 0
@@ -209,7 +209,7 @@
                       "Writer"
                     ],
                     "characters": [],
-                    "_id": "5eba19ac6ebb474d647903b7",
+                    "id": "5eba19ac6ebb474d647903b7",
                     "username": "recroger",
                     "password": "123",
                     "__v": 0
@@ -271,7 +271,7 @@
                       "Writer"
                     ],
                     "characters": [],
-                    "_id": "5eba19ac6ebb474d647903b7",
+                    "id": "5eba19ac6ebb474d647903b7",
                     "username": "recroger",
                     "password": "123",
                     "__v": 0
@@ -384,7 +384,7 @@
                       "Writer"
                     ],
                     "characters": [],
-                    "_id": "5eba19ac6ebb474d647903b7",
+                    "id": "5eba19ac6ebb474d647903b7",
                     "username": "recroger",
                     "password": "123",
                     "__v": 0
@@ -446,7 +446,7 @@
                       "Writer"
                     ],
                     "characters": [],
-                    "_id": "5eba19ac6ebb474d647903b7",
+                    "id": "5eba19ac6ebb474d647903b7",
                     "username": "recroger",
                     "password": "123",
                     "__v": 0
@@ -1659,7 +1659,7 @@
     "User": {
       "type": "object",
       "properties": {
-        "_id": {
+        "id": {
           "type": "string"
         },
         "username": {
@@ -1705,7 +1705,7 @@
     "PublicTale": {
       "type": "object",
       "properties": {
-        "_id": {
+        "id": {
           "type": "string"
         },
         "tale": {
@@ -1731,7 +1731,7 @@
     "City": {
       "type": "object",
       "properties": {
-        "_id": {
+        "id": {
           "type": "string"
         },
         "name": {
@@ -1775,7 +1775,7 @@
     "Place": {
       "type": "object",
       "properties": {
-        "_id": {
+        "id": {
           "type": "string"
         },
         "name": {
@@ -2117,7 +2117,7 @@
     "CityDescriptionEdition": {
       "type": "object",
       "properties": {
-        "_id": {
+        "id": {
           "type": "string"
         },
         "tale": {
@@ -2195,7 +2195,7 @@
     "CityTravelEdition": {
       "type": "object",
       "properties": {
-        "_id": {
+        "id": {
           "type": "string"
         },
         "tale": {
@@ -2393,7 +2393,7 @@
     "PlaceDescriptionEdition": {
       "type": "object",
       "properties": {
-        "_id": {
+        "id": {
           "type": "string"
         },
         "tale": {
@@ -2411,10 +2411,8 @@
       "type": "object",
       "properties": {
         "data": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/PublicTale"
-          }
+          "type": "object",
+          "$ref": "#/definitions/PublicTale"
         }
       }
     },
@@ -2473,7 +2471,7 @@
     "PlaceEntryEdition": {
       "type": "object",
       "properties": {
-        "_id": {
+        "id": {
           "type": "string"
         },
         "tale": {
@@ -2491,10 +2489,8 @@
       "type": "object",
       "properties": {
         "data": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/PublicTale"
-          }
+          "type": "object",
+          "$ref": "#/definitions/PublicTale"
         }
       }
     }

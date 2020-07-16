@@ -65,7 +65,7 @@
         "CityDescriptionEdition": {
             "type": "object",
             "properties": {
-                "_id": {
+                "id": {
                     "type": "string"
                 },
                 "tale": {

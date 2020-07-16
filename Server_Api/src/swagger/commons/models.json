@@ -24,7 +24,7 @@
         "User": {
             "type": "object",
             "properties": {
-                "_id": {
+                "id": {
                     "type": "string"
                 },
                 "username": {
@@ -72,7 +72,7 @@
         "PublicTale": {
             "type": "object",
             "properties": {
-                "_id": {
+                "id": {
                     "type": "string"
                 },
                 "tale": {
@@ -98,7 +98,7 @@
         "City": {
             "type": "object",
             "properties": {
-                "_id": {
+                "id": {
                     "type": "string"
                 },
                 "name": {
@@ -142,7 +142,7 @@
         "Place": {
             "type": "object",
             "properties": {
-                "_id": {
+                "id": {
                     "type": "string"
                 },
                 "name": {

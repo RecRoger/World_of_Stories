@@ -176,7 +176,7 @@
     var LocationsService = /** @class */ (function () {
         function LocationsService(httpClient, basePath, configuration) {
             this.httpClient = httpClient;
-            this.basePath = 'http://localhost';
+            this.basePath = 'http://localhost:3000';
             this.defaultHeaders = new i1.HttpHeaders();
             this.configuration = new Configuration();
             if (basePath) {
@@ -1375,7 +1375,7 @@
     var UsersService = /** @class */ (function () {
         function UsersService(httpClient, basePath, configuration) {
             this.httpClient = httpClient;
-            this.basePath = 'http://localhost';
+            this.basePath = 'http://localhost:3000';
             this.defaultHeaders = new i1.HttpHeaders();
             this.configuration = new Configuration();
             if (basePath) {

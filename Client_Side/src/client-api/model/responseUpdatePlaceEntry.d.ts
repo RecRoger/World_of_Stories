@@ -11,5 +11,5 @@
  */
 import { PublicTale } from './publicTale';
 export interface ResponseUpdatePlaceEntry {
-    data?: Array<PublicTale>;
+    data?: PublicTale;
 }

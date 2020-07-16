@@ -65,7 +65,7 @@
         "PlaceDescriptionEdition": {
             "type": "object",
             "properties": {
-                "_id": {
+                "id": {
                     "type": "string"
                 },
                 "tale": {
@@ -83,10 +83,8 @@
             "type": "object",
             "properties": {
                 "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/PublicTale"
-                    }
+                    "type": "object",
+                    "$ref": "#/definitions/PublicTale"
                 }
             }
         }
