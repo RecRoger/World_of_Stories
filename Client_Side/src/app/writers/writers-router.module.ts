@@ -6,10 +6,6 @@ import { WritersHomeComponent } from './components/writers-home/writers-home.com
 import { WorldStoriesComponent } from 'src/app/writers/containers/world-stories/world-stories.component';
 
 const routes: Routes = [
-    // {
-    //     path: '',
-    //     redirectTo: ''
-    // },
     {
         path: '',
         component: WritersComponent,

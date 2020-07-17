@@ -14,7 +14,7 @@
                 </h4>
                 <small class="text-muted ml-auto">
                   <span *ngIf="!npc.published">Sin Publicar</span>
-                  <span *ngIf="npc.published">Publicado el {{ npc.publish_date | date }}</span>
+                  <span *ngIf="npc.published">Publicado el {{ npc.publishDate | date }}</span>
                 </small>
               </div>
       
@@ -55,7 +55,7 @@
                     </div>
                     <small class="text-muted ml-auto">
                       <span *ngIf="!npc.description.published">Sin Publicar</span>
-                      <span *ngIf="npc.description.published">Publicado el {{ npc.description.publish_date | date}}</span>
+                      <span *ngIf="npc.description.published">Publicado el {{ npc.description.publishDate | date}}</span>
                     </small>
                 </ng-container>
                 <!-- Encuentro -->
@@ -66,7 +66,7 @@
                     </div>
                     <small class="text-muted ml-auto">
                       <span *ngIf="!npc.meeting.published">Sin Publicar</span>
-                      <span *ngIf="npc.meeting.published">Publicado el {{ npc.meeting.publish_date | date}}</span>
+                      <span *ngIf="npc.meeting.published">Publicado el {{ npc.meeting.publishDate | date}}</span>
                     </small>
                   </ng-container>
                   <!-- Decisiones -->
@@ -77,7 +77,7 @@
                     </div>
                     <small class="text-muted ml-auto">
                       <span *ngIf="!npc.entry.published">Sin Publicar</span>
-                      <span *ngIf="npc.entry.published">Publicado el {{ npc.rejected.publish_date | date}}</span>
+                      <span *ngIf="npc.entry.published">Publicado el {{ npc.rejected.publishDate | date}}</span>
                     </small>
                   </ng-container>
       

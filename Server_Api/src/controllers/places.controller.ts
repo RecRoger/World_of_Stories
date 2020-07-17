@@ -96,13 +96,13 @@ class PlacesController {
                                 tale: description,
                                 author: userName,
                                 published: false,
-                                write_date: new Date()
+                                writeDate: new Date()
                             }],		// descripcion del lugar, presentacion general
                             entry: [{
                                 tale: entry,
                                 author: userName,
                                 published: false,
-                                write_date: new Date()
+                                writeDate: new Date()
                             }],	// cuento de entrada al lugar.
                             events: [],	//    los id's de los NPC's de ese lugar
                             publlished: false
@@ -186,7 +186,7 @@ class PlacesController {
                 {
                     $set: {
                         "places.$[elem].published": published,
-                        "places.$[elem].publish_date": (published) ? new Date() : null
+                        "places.$[elem].publishDate": (published) ? new Date() : null
                     }
                 },
                 { arrayFilters: [{ "elem._id": id }] }
@@ -224,7 +224,7 @@ class PlacesController {
                             tale: tale,
                             author: author,
                             published: false,
-                            write_date: new Date()
+                            writeDate: new Date()
                         }]
                     }
                 }
@@ -301,7 +301,7 @@ class PlacesController {
                     $set: {
                         "places.$.description.$[elem].tale": description.tale,
                         "places.$.description.$[elem].published": description.published,
-                        "places.$.description.$[elem].publish_date": (description.published) ? new Date() : null
+                        "places.$.description.$[elem].publishDate": (description.published) ? new Date() : null
                     }
                 },
                 { arrayFilters: [{ "elem._id": description.id }] }
@@ -350,7 +350,7 @@ class PlacesController {
                             tale: tale,
                             author: author,
                             published: false,
-                            write_date: new Date()
+                            writeDate: new Date()
                         }]
                     }
                 }
@@ -430,7 +430,7 @@ class PlacesController {
                     $set: {
                         "places.$.entry.$[elem].tale": entry.tale,
                         "places.$.entry.$[elem].published": entry.published,
-                        "places.$.entry.$[elem].publish_date": (entry.published) ? new Date() : null
+                        "places.$.entry.$[elem].publishDate": (entry.published) ? new Date() : null
                     }
                 },
                 { arrayFilters: [{ "elem._id": entry.id }] }

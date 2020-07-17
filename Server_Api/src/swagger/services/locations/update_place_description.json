@@ -58,24 +58,7 @@
             "properties": {
                 "description": {
                     "type": "object",
-                    "$ref": "#/definitions/PlaceDescriptionEdition"
-                }
-            }
-        },
-        "PlaceDescriptionEdition": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "tale": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/ReadFragment"
-                    }
-                },
-                "published": {
-                    "type": "boolean"
+                    "$ref": "#/definitions/TaleEdition"
                 }
             }
         },

@@ -55,20 +55,7 @@
     "definitions": {
         "RequestNewCityDescription": {
             "type": "object",
-            "properties": {
-                "cityId": {
-                    "type": "string"
-                },
-                "tale": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/ReadFragment"
-                    }
-                },
-                "author": {
-                    "type": "string"
-                }
-            }
+            "$ref": "#/definitions/NewCityTale"
         },
         "ResponseNewCityDescription": {
             "type": "object",

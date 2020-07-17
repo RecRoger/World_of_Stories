@@ -1,13 +1,11 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { UserModel } from 'src/app/shared/models/client_models/user.model';
 import { Router } from '@angular/router';
 import { UsersRoles } from 'src/app/shared/constants';
-import { AddUserRolRequest, AddUserRolURL, AddUserRolResponse } from '../../../shared/models/api_models/addUserRol.model';
-import { ResponseModel } from 'src/app/shared/models/client_models/response.model';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { AddUserRoll } from 'src/app/shared/store/users/users.actions';
+import { User, RequestSetRol } from 'src/client-api';
 
 @Component({
   selector: 'app-write-or-read',
@@ -23,7 +21,7 @@ export class WriteOrReadComponent implements OnInit {
     private http: HttpClient,
   ) { }
 
-  user: UserModel;
+  user: User;
   rolConfirmation = '';
 
   loading = false;
@@ -60,8 +58,8 @@ export class WriteOrReadComponent implements OnInit {
     this.rolConfirmation = '';
     this.loading = true;
     this.cd.markForCheck();
-    const data: AddUserRolRequest = {
-      id: this.user._id,
+    const data: RequestSetRol = {
+      id: this.user.id,
       rol: (rol === 'W') ? UsersRoles.W : UsersRoles.R
     };
     await this.store.dispatch(new AddUserRoll(data)).toPromise();

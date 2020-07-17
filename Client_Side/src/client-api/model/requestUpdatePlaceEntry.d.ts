@@ -9,7 +9,7 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { PlaceEntryEdition } from './placeEntryEdition';
+import { TaleEdition } from './taleEdition';
 export interface RequestUpdatePlaceEntry {
-    entry?: PlaceEntryEdition;
+    entry?: TaleEdition;
 }

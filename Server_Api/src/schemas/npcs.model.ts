@@ -14,8 +14,8 @@ export interface NpcInterface extends mongoose.Document {
     chapters?: ChapterInterface[]
     author?:string,
     published?: boolean,
-    write_date?:Date;     // Fecha de creacion
-    publish_date?: Date
+    writeDate?:Date;     // Fecha de creacion
+    publishDate?: Date
 }
 
 export interface ChapterInterface {
@@ -35,8 +35,8 @@ export interface ChapterInterface {
     item?: string[]		                // Item en caso de victoria
     published?: boolean,
     author?:string,
-    write_date?:Date;     // Fecha de creacion
-    publish_date?:Date;   // Fecha de publicacion
+    writeDate?:Date;     // Fecha de creacion
+    publishDate?:Date;   // Fecha de publicacion
     
 }
 
@@ -51,8 +51,8 @@ const NpcsSchema = new Schema({
         }],
         author: String,
         published: Boolean,
-        write_date: Date,
-        publish_date: Date,
+        writeDate: Date,
+        publishDate: Date,
     },
     meeting: {
         tale: [{
@@ -61,8 +61,8 @@ const NpcsSchema = new Schema({
         }],
         author: String,
         published: Boolean,
-        write_date: Date,
-        publish_date: Date,
+        writeDate: Date,
+        publishDate: Date,
     },
     decision: [{
         name: String,
@@ -76,8 +76,8 @@ const NpcsSchema = new Schema({
         }],
         author: String,
         published: Boolean,
-        write_date: Date,
-        publish_date: Date,
+        writeDate: Date,
+        publishDate: Date,
     },
     items: [String],
     title: String,
@@ -105,13 +105,13 @@ const NpcsSchema = new Schema({
         item: [String],		                // Item en caso de victoria
         published: Boolean,
         author:String,
-        write_date:Date,    // Fecha de creacion
-        publish_date: Date
+        writeDate:Date,    // Fecha de creacion
+        publishDate: Date
     }],
     published: Boolean,
     author:String,
-    write_date:Date,    // Fecha de creacion
-    publish_date:Date,   // Fecha de publicacion
+    writeDate:Date,    // Fecha de creacion
+    publishDate:Date,   // Fecha de publicacion
 })
 
 export default model<NpcInterface>('npcs', NpcsSchema);

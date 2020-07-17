@@ -56,26 +56,9 @@
         "RequestUpdateCityTravel": {
             "type": "object",
             "properties": {
-                "description": {
+                "travel": {
                     "type": "object",
-                    "$ref": "#/definitions/CityTravelEdition"
-                }
-            }
-        },
-        "CityTravelEdition": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "tale": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/ReadFragment"
-                    }
-                },
-                "published": {
-                    "type": "string"
+                    "$ref": "#/definitions/TaleEdition"
                 }
             }
         },

@@ -1,61 +1,48 @@
-import { Component, OnInit, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ResponseModel } from 'src/app/shared/models/client_models/response.model';
-import { getAllCitiesURL, GetAllCitiesResponse, GetAllCitiesRequest } from 'src/app/shared/models/api_models/getAllCities.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { CityModel } from 'src/app/shared/models/client_models/city.model';
-import {
-  PublishCityRequest,
-  UpdateResponse,
-  publishCityURL,
-  TaleUpdate,
-  updateCityDescriptionURL,
-  updateCityTravelURL,
-  AddCityTaleRequest,
-  addCityDescriptionURL,
-  addCityTravelURL,
-  RemoveCityTaleRequest,
-  removeCityDescriptionURL,
-  removeCityTravelURL,
-  UpdateCityDescriptionRequest,
-  UpdateCityTravelRequest
-} from '../../../shared/models/api_models/updateCity.model';
-import { UserModel } from 'src/app/shared/models/client_models/user.model';
-import { AddCityURL, AddCityRequest } from '../../../shared/models/api_models/addCity.model';
-import { Store } from '@ngxs/store';
+import { Store, Select } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
-import { TaleFragment } from 'src/app/shared/models/client_models/commons.model';
+import { User, City, ReadFragment, RequestNewCity, RequestPublishCity, NewCityTale } from 'src/client-api';
+import { GetAllCities, NewCity, PublishCity, EditCityStory, AddCityStory, DeleteCityStory } from 'src/app/shared/store/locations/locations.actions';
+import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
+import { Subscription } from 'rxjs';
+import { isValid } from 'src/app/shared/utils/commons';
+import { CityTabs } from 'src/app/shared/constants';
+import { TaleEdition } from 'src/client-api';
 
 @Component({
   selector: 'app-cities-builder',
   templateUrl: './cities-builder.component.html',
   styleUrls: ['./cities-builder.component.scss']
 })
-export class CitiesBuilderComponent implements OnInit {
+export class CitiesBuilderComponent implements OnInit, OnDestroy {
 
-  user: UserModel;
+  user: User;
 
   citiesloading = false;
-  cities: CityModel[] = [];
+
+  @Select(LocationState.getCities) cities$: Observable<City[]>;
+  @Output() citySelect: EventEmitter<City> = new EventEmitter<City>();
+
   citiesTabs: {
     city?: string;
-    tab: string;
+    loading?: boolean;
+    tab: CityTabs;
     page: number;
     editing?: boolean;
     newTale?: boolean;
-  }[] = [];
+  };
+
   newCityTab: {
+    loading?: boolean;
     newCity?: boolean;
     tab?: string;
   } = { newCity: false, tab: 'desc' };
 
   cityForm: FormGroupTyped<NewCityFormData>;
 
-  @Output() citySelect: EventEmitter<CityModel> = new EventEmitter<CityModel>();
-
-
   constructor(
-    private http: HttpClient,
     private cd: ChangeDetectorRef,
     private fb: FormBuilder,
     private store: Store
@@ -68,175 +55,174 @@ export class CitiesBuilderComponent implements OnInit {
   ngOnInit() {
     this.getAllCities();
   }
+  ngOnDestroy() {
+    // this.subscription.forEach(subs => subs.unsubscribe());
+  }
 
   // Consultar todas las ciudades
   async getAllCities() {
     this.citiesloading = true;
     this.cd.markForCheck();
-    try {
-      const req: GetAllCitiesRequest = new GetAllCitiesRequest();
-      req.published = null;
-      const resp: ResponseModel<GetAllCitiesResponse> = await this.http.post(getAllCitiesURL, req).toPromise();
-      if (resp.data.cities) {
-        this.cities = resp.data.cities;
-        this.citiesTabs = [];
-        this.cities.forEach(element => {
-          this.citiesTabs.push({ tab: 'desc', page: 0 });
-        });
-      }
 
-    } catch (err) {
-      console.log('*** ERROR ***', err);
-    }
+    const resp = await this.store.dispatch(new GetAllCities(false)).toPromise();
+
     this.citiesloading = false;
     this.cd.markForCheck();
 
   }
 
   // desplegar tarjeta de ciudad
-  toggleCityInfo(i) {
-    this.citiesTabs.forEach((tab, index) => {
-      tab.city = (index !== i || tab.city === this.cities[i]._id) ? null : this.cities[i]._id;
-    });
+  toggleCityInfo(id) {
+
+    if (this.citiesTabs && id === this.citiesTabs.city) {
+      this.citiesTabs = null;
+    } else {
+      this.citiesTabs = {
+        city: id,
+        tab: CityTabs.descripcion,
+        page: 0,
+      };
+    }
     this.newCityTab.newCity = false;
     this.cd.markForCheck();
   }
   // Cambiar la pagina de las descripciones o viajes
   changePage(index, mode) {
-    (mode) ? this.citiesTabs[index].page++ : this.citiesTabs[index].page--;
+    (mode) ? this.citiesTabs.page++ : this.citiesTabs.page--;
     this.cd.markForCheck();
   }
 
   // habilitar la redaccion de nueva descripcion o viaje
-  newTale(index: number) {
+  newTale() {
     this.cityForm = this.fb.group({
-      tale: [null, [Validators.required]]
+      tale: [[], [Validators.required]]
     });
-    this.citiesTabs[index].editing = true;
-    this.citiesTabs[index].newTale = true;
+    this.citiesTabs.editing = true;
+    this.citiesTabs.newTale = true;
     this.cd.markForCheck();
   }
+
   // habilitar edicion de descripcion o viaje existente
-  editTale(index: number) {
-    const tale = (this.citiesTabs[index].tab === 'desc') ?
-      this.cities[index].description[this.citiesTabs[index].page].tale :
-      this.cities[index].travel[this.citiesTabs[index].page].tale;
-    const taleId = (this.citiesTabs[index].tab === 'desc') ?
-      this.cities[index].description[this.citiesTabs[index].page]._id :
-      this.cities[index].travel[this.citiesTabs[index].page]._id;
-    const published = (this.citiesTabs[index].tab === 'desc') ?
-      this.cities[index].description[this.citiesTabs[index].page].published :
-      this.cities[index].travel[this.citiesTabs[index].page].published;
+  editTale(id: string) {
+    const cities = this.store.selectSnapshot(LocationState.getCities);
+    const city = cities.find(c => c.id === id);
+
+    const tale = (this.citiesTabs.tab === 'desc') ?
+      city.description[this.citiesTabs.page].tale :
+      city.travel[this.citiesTabs.page].tale;
+
+    const taleId = (this.citiesTabs.tab === 'desc') ?
+      city.description[this.citiesTabs.page].id :
+      city.travel[this.citiesTabs.page].id;
+
+    const published = (this.citiesTabs.tab === 'desc') ?
+      city.description[this.citiesTabs.page].published :
+      city.travel[this.citiesTabs.page].published;
 
     this.cityForm = this.fb.group({
       id: [taleId, [Validators.required]],
       tale: [tale, [Validators.required]],
       published: [published, [Validators.required]]
     });
-    this.citiesTabs[index].editing = true;
-    this.citiesTabs[index].newTale = false;
+
+    this.citiesTabs.editing = true;
+    this.citiesTabs.newTale = false;
     this.cd.markForCheck();
 
   }
   // guardar edicion - nueva historia
-  saveCityEdition(index: number, cancel?) {
+  saveCityEdition(id: string, cancel?) {
     if (cancel) {
-      this.citiesTabs[index].editing = false;
+      this.citiesTabs.editing = false;
       this.cd.markForCheck();
       return true;
     }
 
-    if (this.cityForm.valid) {
-      if (!this.citiesTabs[index].newTale) {
+    if (isValid(this.cityForm)) {
+      if (!this.citiesTabs.newTale) {
         // edicion de ...
-        this.updateTale(index);
+        this.updateTale(id);
       } else {
         // nuevo ...
-        this.addNewTale(index);
+        this.addNewTale(id);
       }
-      this.citiesTabs[index].editing = false;
+      this.citiesTabs.editing = false;
       this.cd.markForCheck();
-    } else {
-      this.cityForm.get('tale').markAsTouched();
     }
   }
+
   // habilitar publicacion
-  publishTale(index) {
+  publishTale(cityId) {
     this.cityForm.get('published').setValue(!this.cityForm.get('published').value);
-    this.updateTale(index);
+    this.updateTale(cityId);
   }
+
   // actualizar descripcion o viaje
-  async updateTale(index) {
-    this.citiesloading = true;
+  async updateTale(cityid) {
+    // this.citiesloading = true
+    this.citiesTabs.loading = true;
     this.cd.markForCheck();
-    try {
-      const data: TaleUpdate = new TaleUpdate();
-      data.id = this.cityForm.get('id').value;
-      data.tale = this.cityForm.get('tale').value;
-      data.published = this.cityForm.get('published').value;
 
-      const req: UpdateCityDescriptionRequest | UpdateCityTravelRequest = (this.citiesTabs[index].tab === 'desc') ?
-        { description: data } :
-        { travel: data };
+    const data: TaleEdition = {
+      id: this.cityForm.get('id').value,
+      tale: this.cityForm.get('tale').value,
+      published: this.cityForm.get('published').value,
+    };
 
-      const url = (this.citiesTabs[index].tab === 'desc') ? updateCityDescriptionURL : updateCityTravelURL;
-      const resp: ResponseModel<any> = await this.http.post(url, req).toPromise();
-      this.getAllCities();
+    await this.store.dispatch(new EditCityStory({
+      type: this.citiesTabs.tab,
+      cityId: cityid,
+      tale: data
+    })).toPromise();
 
-    } catch (err) {
-      console.log('*** ERROR ***', err);
-      this.citiesloading = false;
-      this.cd.markForCheck();
-    }
+    this.citiesTabs.loading = true;
+    this.citiesTabs.editing = false;
   }
   // guardar nueva descripcion o viaje
-  async addNewTale(index) {
-    this.citiesloading = true;
-    this.cd.markForCheck();
-    try {
-      const req: AddCityTaleRequest = new AddCityTaleRequest();
-      req.id = this.cities[index]._id;
-      req.tale = this.cityForm.get('tale').value;
-      req.author = this.user.username;
+  async addNewTale(id) {
 
-      const url = (this.citiesTabs[index].tab === 'desc') ? addCityDescriptionURL : addCityTravelURL;
-      const resp: ResponseModel<any> = await this.http.post(url, req).toPromise();
-      this.getAllCities();
+    const req: NewCityTale = {
+      cityId: id,
+      tale: this.cityForm.get('tale').value,
+      author: this.user.username
+    };
 
-    } catch (err) {
-      console.log('*** ERROR ***', err);
-      this.citiesloading = false;
-      this.cd.markForCheck();
-    }
+    await this.store.dispatch(new AddCityStory({ cityId: id, type: this.citiesTabs.tab, tale: req })).toPromise();
+
+    const cities = this.store.selectSnapshot(LocationState.getCities);
+    const city: City = cities.find(c => c.id === id);
+
+    this.citiesTabs.editing = false;
+    this.citiesTabs.page = (this.citiesTabs.tab === CityTabs.descripcion) ? city.description.length - 1 : city.travel.length - 1;
+
+
   }
   // eliminar descripcion o viaje
-  async deleteTale(index) {
-    this.citiesloading = true;
+  async deleteTale(id) {
+    // this.citiesloading = true;
     this.cd.markForCheck();
-    try {
-      const req: RemoveCityTaleRequest = new RemoveCityTaleRequest();
-      req.id = this.cityForm.get('id').value;
 
-      const url = (this.citiesTabs[index].tab === 'desc') ? removeCityDescriptionURL : removeCityTravelURL;
-      const resp: ResponseModel<any> = await this.http.post(url, req).toPromise();
-      this.getAllCities();
+    await this.store.dispatch(new DeleteCityStory({
+      cityId: id,
+      taleId: this.cityForm.get('id').value,
+      type: this.citiesTabs.tab
+    })).toPromise();
 
-    } catch (err) {
-      console.log('*** ERROR ***', err);
-      this.citiesloading = false;
-      this.cd.markForCheck();
-    }
+    this.citiesTabs.editing = false;
+    this.citiesTabs.page = 0;
+
   }
+
 
 
   toggleNewCity() {
-    this.citiesTabs.forEach(city => city.city = null);
+    this.citiesTabs = null;
 
     this.cityForm = this.fb.group({
-      userid: [this.user.username, [Validators.required]],
+      userName: [this.user.username, [Validators.required]],
       name: ['', [Validators.required]],
-      description: ['', [Validators.required]],
-      travel: ['', [Validators.required]]
+      description: [[], [Validators.required]],
+      travel: [[], [Validators.required]]
     });
 
     this.newCityTab.newCity = !this.newCityTab.newCity;
@@ -251,51 +237,40 @@ export class CitiesBuilderComponent implements OnInit {
       return null;
     }
 
-    if (this.cityForm.valid) {
-      this.citiesloading = true;
+    if (isValid(this.cityForm)) {
+      // this.citiesloading = true;
       this.newCityTab.newCity = false;
-      this.cd.markForCheck();
-      try {
-        let req: AddCityRequest = new AddCityRequest();
-        req = { ... this.cityForm.value };
+      this.newCityTab.loading = true;
 
-        const resp: ResponseModel<any> = await this.http.post(AddCityURL, req).toPromise();
-        this.getAllCities();
-
-      } catch (err) {
-        console.log('*** ERROR ***', err);
-        this.citiesloading = false;
-        this.cd.markForCheck();
-      }
-    } else {
-      this.cityForm.get('userid').markAsTouched();
-      this.cityForm.get('name').markAsTouched();
-      this.cityForm.get('description').markAsTouched();
-      this.cityForm.get('travel').markAsTouched();
       this.cd.markForCheck();
+      let req: RequestNewCity = {};
+      req = {
+        ... this.cityForm.value,
+      };
+      await this.store.dispatch(new NewCity(req)).toPromise();
+      this.newCityTab.loading = false;
+
     }
   }
+
+
   // publicar ciudad
-  async publishCity(index: number) {
-    this.citiesloading = true;
+  async publishCity(id: string, published: boolean) {
+    // this.citiesloading = true;
     this.cd.markForCheck();
-    try {
-      const req: PublishCityRequest = new PublishCityRequest();
-      req.published = !this.cities[index].published;
-      req.id = this.cities[index]._id;
+    const req: RequestPublishCity = {
+      id,
+      published,
+    };
 
-      const resp: ResponseModel<UpdateResponse> = await this.http.post(publishCityURL, req).toPromise();
-      this.getAllCities();
-
-    } catch (err) {
-      console.log('*** ERROR ***', err);
-      this.citiesloading = false;
-      this.cd.markForCheck();
-    }
+    await this.store.dispatch(new PublishCity(req)).toPromise();
   }
 
-  selectCity(i) {
-    this.citySelect.emit(this.cities[i]);
+  selectCity(id) {
+    const cities = this.store.selectSnapshot(LocationState.getCities);
+    const city: City = cities.find(c => c.id === id);
+
+    this.citySelect.emit(city);
   }
 
 }
@@ -303,12 +278,13 @@ export class CitiesBuilderComponent implements OnInit {
 class NewCityFormData {
   // para nuevos relatos de ciudades existentes
   id?: string;
-  tale?: TaleFragment[];
+  tale?: ReadFragment[];
   published?: boolean;
 
   // para las nuevas ciudades
-  userid?: string;
+  userName?: string;
   name?: string;
-  description?: TaleFragment[];
-  travel?: TaleFragment[];
+  description?: ReadFragment[];
+  travel?: ReadFragment[];
 }
+

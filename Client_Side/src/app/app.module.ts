@@ -15,6 +15,7 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { UserState } from './shared/store/users/users.reducer';
 import { GeneralState } from './shared/store/general/general.reducer';
 import { environment } from 'src/environments/environment';
+import { LocationState } from './shared/store/locations/locations.reducer';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,7 +27,7 @@ import { environment } from 'src/environments/environment';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgxsModule.forRoot([UserState, GeneralState], {
+    NgxsModule.forRoot([UserState, GeneralState, LocationState], {
       developmentMode: !environment.production
     }),
     NgxsReduxDevtoolsPluginModule.forRoot(),

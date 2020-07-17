@@ -9,7 +9,7 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { CityDescriptionEdition } from './cityDescriptionEdition';
+import { TaleEdition } from './taleEdition';
 export interface RequestUpdateCityDescription {
-    description?: CityDescriptionEdition;
+    description?: TaleEdition;
 }

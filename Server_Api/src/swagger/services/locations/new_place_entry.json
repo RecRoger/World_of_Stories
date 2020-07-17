@@ -55,20 +55,7 @@
     "definitions": {
         "RequestNewPlaceEntry": {
             "type": "object",
-            "properties": {
-                "placeId": {
-                    "type": "string"
-                },
-                "tale": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/ReadFragment"
-                    }
-                },
-                "author": {
-                    "type": "string"
-                }
-            }
+            "$ref": "#/definitions/NewPlaceStory"
         },
         "ResponseNewPlaceEntry": {
             "type": "object",

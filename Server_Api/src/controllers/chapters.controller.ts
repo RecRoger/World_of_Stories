@@ -55,7 +55,7 @@ class ChaptersController {
                 setUpdates['chapters.$.story'] = chapter.story;
                 if (chapter.author) {
                     setUpdates['chapters.$.author'] = chapter.author;
-                    setUpdates['chapters.$.write_date'] = new Date();
+                    setUpdates['chapters.$.writeDate'] = new Date();
                 }
 
             }
@@ -88,7 +88,7 @@ class ChaptersController {
                                             name: '',
                                             story: '',	                // narracion previa a batalla o decision.
                                             published: false,
-                                            write_date: new Date()     // Fecha de creacion
+                                            writeDate: new Date()     // Fecha de creacion
                                         }]
                                     }
                                 }
@@ -172,7 +172,7 @@ class ChaptersController {
                 {
                     $set: {
                         "chapters.$.published": published,
-                        "chapters.$.publish_date": (published) ? new Date() : null
+                        "chapters.$.publishDate": (published) ? new Date() : null
                     }
                 }
             );
@@ -268,11 +268,11 @@ class ChaptersController {
                         name: '',
                         story: '',	                // narracion previa a batalla o decision.
                         published: false,
-                        write_date: new Date()     // Fecha de creacion
+                        writeDate: new Date()     // Fecha de creacion
                     }],
                     author: npc.author,
                     published: false,
-                    write_date: new Date()     // Fecha de creacion
+                    writeDate: new Date()     // Fecha de creacion
                 });
                 await newNpc.save();
                 const city = await CitiesSchema.updateOne(
@@ -302,7 +302,7 @@ class ChaptersController {
                     { _id: id },
                     {
                         published: published,
-                        publish_date: (published) ? new Date() : null
+                        publishDate: (published) ? new Date() : null
                     }
                 );
                 res.json({
@@ -327,7 +327,7 @@ class ChaptersController {
                                 tale: tale,
                                 author: author,
                                 published: false,
-                                write_date: new Date()
+                                writeDate: new Date()
                             }]
                         }
                     }

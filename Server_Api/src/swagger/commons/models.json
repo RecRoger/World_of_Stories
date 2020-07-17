@@ -69,6 +69,23 @@
                 }
             }
         },
+        "TaleEdition": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "tale": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ReadFragment"
+                    }
+                },
+                "published": {
+                    "type": "boolean"
+                }
+            }
+        },
         "PublicTale": {
             "type": "object",
             "properties": {
@@ -87,10 +104,10 @@
                 "published": {
                     "type": "boolean"
                 },
-                "write_date": {
+                "writeDate": {
                     "type": "string"
                 },
-                "publish_date": {
+                "publishDate": {
                     "type": "string"
                 }
             }
@@ -125,7 +142,7 @@
                 "published": {
                     "type": "boolean"
                 },
-                "publish_date": {
+                "publishDate": {
                     "type": "string"
                 }
             }
@@ -136,6 +153,23 @@
                 "city": {
                     "type": "object",
                     "$ref": "#/definitions/City"
+                }
+            }
+        },
+        "NewCityTale": {
+            "type": "object",
+            "properties": {
+                "cityId": {
+                    "type": "string"
+                },
+                "tale": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ReadFragment"
+                    }
+                },
+                "author": {
+                    "type": "string"
                 }
             }
         },
@@ -169,7 +203,7 @@
                 "published": {
                     "type": "boolean"
                 },
-                "publish_date": {
+                "publishDate": {
                     "type": "string"
                 }
             }
@@ -180,6 +214,23 @@
                 "city": {
                     "type": "object",
                     "$ref": "#/definitions/Place"
+                }
+            }
+        },
+        "NewPlaceStory": {
+            "type": "object",
+            "properties": {
+                "placeId": {
+                    "type": "string"
+                },
+                "tale": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ReadFragment"
+                    }
+                },
+                "author": {
+                    "type": "string"
                 }
             }
         }

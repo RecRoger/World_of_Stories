@@ -2,107 +2,131 @@
   <app-loader class="mx-auto" size="lg"></app-loader>
 </div>
 
-<div class="row" *ngIf="!citiesloading">
+<div class="row" *ngIf="!citiesloading && (cities$ | async) as cities">
   <ng-container *ngFor="let city of cities; let i = index">
-    <div class="col-6 mb-5">
+    <div class="col-6 mb-5" [ngClass]="{'col-6': (!citiesTabs || !citiesTabs.editing || citiesTabs.city !== city.id), 'col-12': (citiesTabs && citiesTabs.city === city.id && citiesTabs.editing)}">
 
-      <!-- Carta de ciudad -->
+      <!-- card de la ciudad -->
       <div class="card city-card">
-        <div class="card-header d-flex" (click)="toggleCityInfo(i)">
+        <div class="card-header d-flex" (click)="toggleCityInfo(city.id)">
           <h4 class="card-title">
             {{city.name}}
           </h4>
           <small class="text-muted ml-auto">
             <span *ngIf="!city.published">Sin Publicar</span>
-            <span *ngIf="city.published">Publicado el {{ city.publish_date | date}}</span>
+            <span *ngIf="city.published">Publicado el {{ city.publishDate | date}}</span>
           </small>
         </div>
 
-        <ng-container *ngIf="citiesTabs[i].city === city._id">
+
+        <!-- card expandida -->
+        <ng-container *ngIf="citiesTabs?.city === city.id">
+          
+          <!-- Tabs de descripcion y viaje -->
           <ul class="nav nav-tabs mt-3">
             <li class="nav-item ml-2">
-              <a class="nav-link" (click)="citiesTabs[i].page = 0; citiesTabs[i].tab = 'desc'" [ngClass]="{'active': citiesTabs[i].tab == 'desc', 'disabled': citiesTabs[i].editing }">
+              <a class="nav-link" (click)="citiesTabs.page = 0; citiesTabs.tab = 'desc'"
+                [ngClass]="{'active': citiesTabs.tab == 'desc', 'disabled': citiesTabs.editing }">
                 Descripciones
-                <span class="badge badge-pill" [ngClass]="{'badge-primary': !citiesTabs[i].editing, 'badge-secondary': citiesTabs[i].editing }">
+                <span class="badge badge-pill"
+                  [ngClass]="{'badge-primary': !citiesTabs.editing, 'badge-secondary': citiesTabs.editing }">
                   {{city.description.length}}
                 </span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" (click)="citiesTabs[i].page = 0; citiesTabs[i].tab = 'travel'" [ngClass]="{'active': citiesTabs[i].tab == 'travel', 'disabled': citiesTabs[i].editing }">
+              <a class="nav-link" (click)="citiesTabs.page = 0; citiesTabs.tab = 'travel'"
+                [ngClass]="{'active': citiesTabs.tab == 'travel', 'disabled': citiesTabs.editing }">
                 Viajes y entradas
-                <span class="badge badge-pill" [ngClass]="{'badge-primary': !citiesTabs[i].editing, 'badge-secondary': citiesTabs[i].editing }">
+                <span class="badge badge-pill"
+                  [ngClass]="{'badge-primary': !citiesTabs.editing, 'badge-secondary': citiesTabs.editing }">
                   {{city.travel.length}}
                 </span>
               </a>
             </li>
-            <div class="ml-auto" *ngIf="!citiesTabs[i].editing">
+
+            <!-- Botones -->
+            <div class="ml-auto" *ngIf="!citiesTabs.editing">
               <!-- boton de editar descripcion o viaje -->
-              <button class="btn mr-2" (click)="editTale(i)">
+              <button class="btn mr-2" (click)="editTale(city.id)">
                 <i class="fas fa-pen"></i>
               </button>
               <!-- boton de nueva descripcion o viaje -->
-              <button class="btn mr-2" (click)="newTale(i)">
+              <button class="btn mr-2" (click)="newTale()">
                 <i class="fas fa-plus"></i>
               </button>
             </div>
+
           </ul>
           <div class="card-body city-info d-flex flex-column">
             <!-- Descripciones -->
-            <ng-container *ngIf="!citiesTabs[i].editing && citiesTabs[i].tab == 'desc'">
+            <ng-container *ngIf="!citiesTabs.editing && citiesTabs.tab == 'desc'">
+
               <div>
-                <p class="card-text">{{ city.description[citiesTabs[i].page].tale }}</p>
-                <p class="text-muted text-right"> - {{city.description[citiesTabs[i].page].author}}</p>
+                <ng-container *ngFor="let tale of city.description[citiesTabs.page].tale">
+                  <p class="card-text">{{ tale.text }}</p>
+                </ng-container>
+                <p class="text-muted text-right"> - {{city.description[citiesTabs.page].author}}</p>
               </div>
+
+
               <small class="text-muted ml-auto">
-                <span *ngIf="!city.description[citiesTabs[i].page].published">Sin Publicar</span>
-                <span *ngIf="city.description[citiesTabs[i].page].published">Publicado el {{ city.description[citiesTabs[i].page].publish_date | date}}</span>
+                <span *ngIf="!city.description[citiesTabs.page].published">Sin Publicar</span>
+                <span *ngIf="city.description[citiesTabs.page].published">Publicado el
+                  {{ city.description[citiesTabs.page].publishDate | date}}</span>
               </small>
+
+              
               <div class="text-muted mt-auto text-center">
-                <button class="btn btn-link" *ngIf="citiesTabs[i].page!== 0" (click)="changePage(i,false)">
+                <button class="btn btn-link" *ngIf="citiesTabs.page!== 0" (click)="changePage(i,false)">
                   <i class="fas fa-angle-left"></i>
                 </button>
-                {{citiesTabs[i].page + 1}}/{{city.description.length}}
-                <button class="btn btn-link" *ngIf="citiesTabs[i].page + 1 !== city.description.length" (click)="changePage(i,true)">
+                {{citiesTabs.page + 1}}/{{city.description.length}}
+                <button class="btn btn-link" *ngIf="citiesTabs.page + 1 !== city.description.length"
+                  (click)="changePage(i,true)">
                   <i class="fas fa-angle-right"></i>
                 </button>
               </div>
             </ng-container>
             <!-- Viajes -->
-            <ng-container *ngIf="!citiesTabs[i].editing && citiesTabs[i].tab == 'travel'">
+            <ng-container *ngIf="!citiesTabs.editing && citiesTabs.tab == 'travel'">
               <div>
-                <p class="card-text">{{ city.travel[citiesTabs[i].page].tale }}</p>
-                <p class="text-muted text-right"> - {{city.travel[citiesTabs[i].page].author}}</p>
+                <ng-container *ngFor="let tale of city.travel[citiesTabs.page].tale">
+                  <p class="card-text">{{ tale.text }}</p>
+                </ng-container>
+                <p class="text-muted text-right"> - {{city.travel[citiesTabs.page].author}}</p>
               </div>
               <small class="text-muted ml-auto">
-                <span *ngIf="!city.travel[citiesTabs[i].page].published">Sin Publicar</span>
-                <span *ngIf="city.travel[citiesTabs[i].page].published">Publicado el {{ city.description[citiesTabs[i].page].publish_date | date}}</span>
+                <span *ngIf="!city.travel[citiesTabs.page].published">Sin Publicar</span>
+                <span *ngIf="city.travel[citiesTabs.page].published">Publicado el
+                  {{ city.travel[citiesTabs.page].publishDate | date}}</span>
               </small>
               <div class="text-muted mt-auto text-center">
-                <button class="btn btn-link" *ngIf="citiesTabs[i].page!== 0" (click)="changePage(i,false)">
+                <button class="btn btn-link" *ngIf="citiesTabs.page!== 0" (click)="changePage(i,false)">
                   <i class="fas fa-angle-left"></i>
                 </button>
-                {{citiesTabs[i].page + 1}}/{{city.travel.length}}
-                <button class="btn btn-link" *ngIf="citiesTabs[i].page + 1 !== city.travel.length" (click)="changePage(i,true)">
+                {{citiesTabs.page + 1}}/{{city.travel.length}}
+                <button class="btn btn-link" *ngIf="citiesTabs.page + 1 !== city.travel.length"
+                  (click)="changePage(i,true)">
                   <i class="fas fa-angle-right"></i>
                 </button>
               </div>
             </ng-container>
 
             <!-- formulario de edicion y creacion -->
-            <ng-container *ngIf="citiesTabs[i].editing">
+            <ng-container *ngIf="citiesTabs.editing">
               <div class="d-flex">
                 <div>
-                  <span *ngIf="citiesTabs[i].tab == 'desc'">
+                  <span *ngIf="citiesTabs.tab == 'desc'">
                     {{city.name}} es ...
                   </span>
-                  <span *ngIf="citiesTabs[i].tab == 'travel'">
+                  <span *ngIf="citiesTabs.tab == 'travel'">
                     Viajando a {{city.name}} ...
                   </span>
                 </div>
-                <div class="ml-auto" *ngIf="!citiesTabs[i].newTale">
+                <div class="ml-auto" *ngIf="!citiesTabs.newTale">
                   <!-- boton de publicar descripcion o viaje -->
-                  <button class="btn mr-2" (click)="publishTale(i)">
+                  <button class="btn mr-2" (click)="publishTale(city.id)">
                     <span *ngIf="!cityForm.get('published').value">
                       <i class="fas fa-cloud-upload-alt"></i>
                     </span>
@@ -111,20 +135,23 @@
                     </span>
                   </button>
                   <!-- boton de eliminar descripcion o viaje -->
-                  <button class="btn mr-2" (click)="deleteTale(i)">
+                  <button class="btn mr-2" (click)="deleteTale(city.id)">
                     <i class="fas fa-times"></i>
                   </button>
                 </div>
               </div>
               <form [formGroup]="cityForm">
-                <textarea class="form-control edition-area" formControlName="tale" rows="3"></textarea>
+                <app-write-fragments [tale]="cityForm.get('tale')"></app-write-fragments>
               </form>
 
             </ng-container>
+
           </div>
           <div class="card-footer d-flex">
-            <ng-container *ngIf="!citiesTabs[i].editing">
-              <button class="btn btn-secondary mr-auto" (click)="publishCity(i)">
+
+            <!-- Acciones de ciudad sin edicion -->
+            <ng-container *ngIf="!citiesTabs.editing">
+              <button class="btn btn-secondary mr-auto" (click)="publishCity(city.id, !city.published)">
                 <span *ngIf="!city.published">
                   <i class="fas fa-cloud-upload-alt"></i> Publicar
                 </span>
@@ -132,20 +159,36 @@
                   <i class="fas fa-cloud-download-alt"></i> Quitar publicacion
                 </span>
               </button>
-              <button class="btn btn-primary ml-auto" (click)="selectCity(i)">Lugares</button>
+              <button class="btn btn-primary ml-auto" (click)="selectCity(city.id)">Lugares</button>
             </ng-container>
 
-            <ng-container *ngIf="citiesTabs[i].editing">
-              <button class="btn btn-secondary ml-auto" (click)="saveCityEdition(i, true)">Cancelar</button>
-              <button class="btn btn-primary ml-4" (click)="saveCityEdition(i)">Guardar</button>
+            <!-- acciones de la edicion -->
+            <ng-container *ngIf="citiesTabs.editing">
+              <button class="btn btn-secondary ml-auto" (click)="saveCityEdition(city.id, true)">Cancelar</button>
+              <button class="btn btn-primary ml-4" (click)="saveCityEdition(city.id)">Guardar</button>
             </ng-container>
 
           </div>
         </ng-container>
+
+
+
+
       </div>
+
     </div>
   </ng-container>
 
+  <!-- Loading de la Nueva Ciudad -->
+  <div class="col-6 mb-5" *ngIf="newCityTab.loading">
+    <div class="card city-card">
+      <div class="card-header d-flex">
+        <h4 class="card-title">
+          <app-loader class="loader" size="md"></app-loader>
+        </h4>
+      </div>
+    </div>
+  </div>
   <!-- Carta de Nueva Ciudad -->
   <div class="col-6 mb-5" [ngClass]="{'col-6': !newCityTab.newCity, 'col-12': newCityTab.newCity}">
     <div class="card city-card">
@@ -162,12 +205,14 @@
             </form>
           </li>
           <li class="nav-item ml-auto mr-2">
-            <a class="nav-link" (click)="newCityTab.tab = 'desc'" [ngClass]="{'active': newCityTab.tab == 'desc', 'errorTab': cityForm?.get('description')?.invalid && cityForm?.get('description')?.touched }">
+            <a class="nav-link" (click)="newCityTab.tab = 'desc'"
+              [ngClass]="{'active': newCityTab.tab == 'desc', 'errorTab': cityForm?.get('description')?.invalid && cityForm?.get('description')?.touched }">
               Descripciones
             </a>
           </li>
           <li class="nav-item mr-2">
-            <a class="nav-link" (click)="newCityTab.tab = 'travel'" [ngClass]="{'active': newCityTab.tab == 'travel', 'errorTab': cityForm?.get('travel')?.invalid && cityForm?.get('travel')?.touched}">
+            <a class="nav-link" (click)="newCityTab.tab = 'travel'"
+              [ngClass]="{'active': newCityTab.tab == 'travel', 'errorTab': cityForm?.get('travel')?.invalid && cityForm?.get('travel')?.touched}">
               Viajes y entradas
             </a>
           </li>
@@ -177,15 +222,14 @@
           <ng-container *ngIf="newCityTab.tab == 'desc'">
             {{cityForm.get('name').value}} es ...
             <form [formGroup]="cityForm">
-              <app-write-fragments></app-write-fragments>
-              <!-- <textarea class="form-control edition-area" formControlName="description" rows="3"></textarea> -->
+              <app-write-fragments [tale]="cityForm.get('description')"></app-write-fragments>
             </form>
           </ng-container>
           <!-- Viajes -->
           <ng-container *ngIf="newCityTab.tab == 'travel'">
             Viajando a {{cityForm.get('name').value}} ...
             <form [formGroup]="cityForm">
-              <textarea class="form-control edition-area" formControlName="travel" rows="3"></textarea>
+              <app-write-fragments [tale]="cityForm.get('travel')"></app-write-fragments>
             </form>
           </ng-container>
 
@@ -199,4 +243,5 @@
       </ng-container>
     </div>
   </div>
+
 </div>

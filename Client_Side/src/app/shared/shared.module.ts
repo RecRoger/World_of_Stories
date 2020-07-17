@@ -5,11 +5,14 @@ import { HeaderComponent } from './components/header/header.component';
 import { AngularMaterialModule } from 'src/app/shared/material.module';
 import { MessagesComponent } from './components/messages/messages.component';
 import { WriteFragmentsComponent } from './components/write-fragments/write-fragments.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     CommonModule,
     AngularMaterialModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   declarations: [LoaderComponent, HeaderComponent, MessagesComponent, WriteFragmentsComponent],
   exports: [LoaderComponent, HeaderComponent, AngularMaterialModule, MessagesComponent, WriteFragmentsComponent]

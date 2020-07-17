@@ -2,17 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
-import { RequestService } from '../../../shared/services/request.service';
-import { GetUserURL, GetUserRequest, GetUserResponse } from '../../../shared/models/api_models/getUsers.model';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef } from '@angular/core';
-import { AddUserResponse, AddUsersURL } from 'src/app/shared/models/api_models/addUser.model';
-import { AddUserRequest } from '../../../shared/models/api_models/addUser.model';
-import { UserModel } from '../../../shared/models/client_models/user.model';
 import { Store } from '@ngxs/store';
 import { LoginUser, SigninUser } from 'src/app/shared/store/users/users.actions';
 import { isValid } from 'src/app/shared/utils/commons';
-import { RequestSignin } from 'src/client-api';
+import { RequestSignin, RequestLogin } from 'src/client-api';
 
 @Component({
   selector: 'app-user-login',
@@ -74,7 +69,7 @@ export class UserLoginComponent implements OnInit {
     if (isValid(this.loginForm)) {
 
       this.loading = true;
-      const loginReq: GetUserRequest = {
+      const loginReq: RequestLogin = {
         password: this.loginForm.value.password,
         username: this.loginForm.value.username
       };

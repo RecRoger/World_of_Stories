@@ -3,8 +3,8 @@ export interface publicTale {
     tale: readFragment[];        // Narrativa
     author:string;       // nombre del autor
     published:boolean;   // Estado de publicacion
-    write_date:Date;     // Fecha de creacion
-    publish_date:Date;   // Fecha de publicacion
+    writeDate:Date;     // Fecha de creacion
+    publishDate:Date;   // Fecha de publicacion
 }
 export interface readFragment{
     text: string;

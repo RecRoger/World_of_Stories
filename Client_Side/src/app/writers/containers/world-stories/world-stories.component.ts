@@ -1,7 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CityModel } from 'src/app/shared/models/client_models/city.model';
-import { PlaceModel } from 'src/app/shared/models/client_models/place.model';
-import { NpcModel } from 'src/app/shared/models/client_models/npc.model';
+import { City, Place } from 'src/client-api';
 
 @Component({
   selector: 'app-world-stories',
@@ -12,22 +10,22 @@ export class WorldStoriesComponent implements OnInit {
 
   constructor(private cd: ChangeDetectorRef) { }
 
-  selectedCity: CityModel;
-  selectedPlace: PlaceModel;
-  selectedNPC: NpcModel;
+  selectedCity: City;
+  selectedPlace: Place;
+  selectedNPC;
 
   ngOnInit() {
   }
 
-  getSelectedCity(city: CityModel) {
+  getSelectedCity(city: City) {
     this.selectedCity = city;
     this.cd.markForCheck();
   }
-  getSelectedPlace(place: PlaceModel) {
+  getSelectedPlace(place: Place) {
     this.selectedPlace = place;
     this.cd.markForCheck();
   }
-  getSelectedNPC(npc: NpcModel) {
+  getSelectedNPC(npc) {
     this.selectedNPC = npc;
     this.cd.markForCheck();
   }

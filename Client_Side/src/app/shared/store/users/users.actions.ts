@@ -1,5 +1,4 @@
-import { UserModel } from '../../models/client_models/user.model';
-import { RequestLogin, RequestSignin, RequestSetRol } from 'src/client-api/model/models';
+import { RequestLogin, RequestSignin, RequestSetRol, User } from 'src/client-api/model/models';
 // import { RequestSignin, RequestLogin, RequestSetRol } from 'src/client-api';
 
 export class LogonUser {
@@ -24,7 +23,7 @@ export class AddUserRoll {
 
 export class UpdateUserData {
     static readonly type = '[User] Update User Data';
-    constructor() { }
+    constructor(public payload?: User) { }
 }
 
 

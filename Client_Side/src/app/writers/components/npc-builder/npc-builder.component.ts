@@ -1,13 +1,10 @@
 import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, Input } from '@angular/core';
-import { UserModel } from 'src/app/shared/models/client_models/user.model';
-import { NpcModel } from 'src/app/shared/models/client_models/npc.model';
+
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { PlaceModel } from 'src/app/shared/models/client_models/place.model';
-import { GetPlaceNpcsRequest, GetPlaceNpcsResponse, getPlaceNPCsURL } from 'src/app/shared/models/api_models/getNpcs.model';
-import { ResponseModel } from 'src/app/shared/models/client_models/response.model';
 import { Store } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
+import { User, Place } from 'src/client-api';
 
 @Component({
   selector: 'app-npc-builder',
@@ -16,8 +13,8 @@ import { UserState } from 'src/app/shared/store/users/users.reducer';
 })
 export class NpcBuilderComponent implements OnInit {
 
-  user: UserModel;
-  npcs: NpcModel[] = [];
+  user: User;
+  npcs: any[] = [];
 
   npcsloading = false;
   npcsTabs: {
@@ -33,8 +30,8 @@ export class NpcBuilderComponent implements OnInit {
 
   placeForm: FormGroup;
 
-  @Input() place: PlaceModel;
-  @Output() placeSelect: EventEmitter<PlaceModel> = new EventEmitter<PlaceModel>();
+  @Input() place: Place;
+  @Output() placeSelect: EventEmitter<Place> = new EventEmitter<Place>();
 
   constructor(
     private http: HttpClient,
@@ -56,10 +53,10 @@ export class NpcBuilderComponent implements OnInit {
     this.npcsloading = true;
     this.cd.markForCheck();
     try {
-      const req: GetPlaceNpcsRequest = new GetPlaceNpcsRequest();
+      const req = null;
       req.ids = this.place.events;
       req.published = null;
-      const resp: ResponseModel<GetPlaceNpcsResponse> = await this.http.post(getPlaceNPCsURL, req).toPromise();
+      const resp = null; // TODO - Api de Stories
       if (resp.data.npcs) {
         this.npcs = resp.data.npcs;
         this.npcsTabs = [];

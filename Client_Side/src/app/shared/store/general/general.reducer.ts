@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
-import { UserModel } from '../../models/client_models/user.model';
-import { SetLoader, SetError } from './general.actions';
+import { SetLoader, SetError, SetInfo } from './general.actions';
 import { patch, append, removeItem, insertItem, updateItem } from '@ngxs/store/operators';
 
 export interface MessageModel {
@@ -11,13 +10,13 @@ export interface MessageModel {
 }
 export interface GeneralMessageStateModel {
     loadingStatus: number;
-    errorMesage: MessageModel[];
+    alertMessages: MessageModel;
 }
 
 @State<GeneralMessageStateModel>({
     name: 'general',
     defaults: {
-        errorMesage: [],
+        alertMessages: null ,
         loadingStatus: 0
     }
 })
@@ -34,9 +33,8 @@ export class GeneralState {
     }
 
     @Selector()
-    static errorAlerts(state: GeneralMessageStateModel): MessageModel {
-        const errors = state.errorMesage.filter(msg => msg.type === 'error');
-        return errors && errors.length > 0 && errors.splice(-1)[0];
+    static getAlerts(state: GeneralMessageStateModel): MessageModel {
+        return state.alertMessages;
     }
 
     @Action(SetLoader)
@@ -65,10 +63,26 @@ export class GeneralState {
             time: new Date(),
             text: action.payload,
             type: 'error'
-        }
+        };
         ctx.setState(
             patch({
-                errorMesage: append([message]),
+                alertMessages: message,
+            })
+        );
+
+    }
+
+    @Action(SetInfo)
+    async SetInfo(ctx: StateContext<GeneralMessageStateModel>, action: SetInfo) {
+
+        const message: MessageModel = {
+            time: new Date(),
+            text: action.payload,
+            type: 'info'
+        };
+        ctx.setState(
+            patch({
+                alertMessages: message,
             })
         );
 

@@ -95,11 +95,11 @@ class NpcsController {
                     name: '',
                     story: '',	                // narracion previa a batalla o decision.
                     published: false,
-                    write_date: new Date()     // Fecha de creacion
+                    writeDate: new Date()     // Fecha de creacion
                 }],
                 author: npc.author,
                 published: false,
-                write_date: new Date()     // Fecha de creacion
+                writeDate: new Date()     // Fecha de creacion
             });
             await newNpc.save();
             const city = await CitiesSchema.updateOne(
@@ -153,7 +153,7 @@ class NpcsController {
                 { _id: id },
                 {
                     published: published,
-                    publish_date: (published) ? new Date() : null
+                    publishDate: (published) ? new Date() : null
                 }
             );
             res.json({
@@ -208,7 +208,7 @@ class NpcsController {
                                 tale: tale,
                                 author: author,
                                 published: false,
-                                write_date: new Date()
+                                writeDate: new Date()
                             }]
                         }
                     }

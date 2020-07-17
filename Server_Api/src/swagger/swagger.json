@@ -1702,6 +1702,23 @@
         }
       }
     },
+    "TaleEdition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "tale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReadFragment"
+          }
+        },
+        "published": {
+          "type": "boolean"
+        }
+      }
+    },
     "PublicTale": {
       "type": "object",
       "properties": {
@@ -1720,10 +1737,10 @@
         "published": {
           "type": "boolean"
         },
-        "write_date": {
+        "writeDate": {
           "type": "string"
         },
-        "publish_date": {
+        "publishDate": {
           "type": "string"
         }
       }
@@ -1758,7 +1775,7 @@
         "published": {
           "type": "boolean"
         },
-        "publish_date": {
+        "publishDate": {
           "type": "string"
         }
       }
@@ -1769,6 +1786,23 @@
         "city": {
           "type": "object",
           "$ref": "#/definitions/City"
+        }
+      }
+    },
+    "NewCityTale": {
+      "type": "object",
+      "properties": {
+        "cityId": {
+          "type": "string"
+        },
+        "tale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReadFragment"
+          }
+        },
+        "author": {
+          "type": "string"
         }
       }
     },
@@ -1802,7 +1836,7 @@
         "published": {
           "type": "boolean"
         },
-        "publish_date": {
+        "publishDate": {
           "type": "string"
         }
       }
@@ -1813,6 +1847,23 @@
         "city": {
           "type": "object",
           "$ref": "#/definitions/Place"
+        }
+      }
+    },
+    "NewPlaceStory": {
+      "type": "object",
+      "properties": {
+        "placeId": {
+          "type": "string"
+        },
+        "tale": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReadFragment"
+          }
+        },
+        "author": {
+          "type": "string"
         }
       }
     },
@@ -2064,20 +2115,7 @@
     },
     "RequestNewCityDescription": {
       "type": "object",
-      "properties": {
-        "cityId": {
-          "type": "string"
-        },
-        "tale": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ReadFragment"
-          }
-        },
-        "author": {
-          "type": "string"
-        }
-      }
+      "$ref": "#/definitions/NewCityTale"
     },
     "ResponseNewCityDescription": {
       "type": "object",
@@ -2110,24 +2148,7 @@
       "properties": {
         "description": {
           "type": "object",
-          "$ref": "#/definitions/CityDescriptionEdition"
-        }
-      }
-    },
-    "CityDescriptionEdition": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "tale": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ReadFragment"
-          }
-        },
-        "published": {
-          "type": "string"
+          "$ref": "#/definitions/TaleEdition"
         }
       }
     },
@@ -2142,20 +2163,7 @@
     },
     "RequestNewCityTravel": {
       "type": "object",
-      "properties": {
-        "cityId": {
-          "type": "string"
-        },
-        "tale": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ReadFragment"
-          }
-        },
-        "author": {
-          "type": "string"
-        }
-      }
+      "$ref": "#/definitions/NewCityTale"
     },
     "ResponseNewCityTravel": {
       "type": "object",
@@ -2186,26 +2194,9 @@
     "RequestUpdateCityTravel": {
       "type": "object",
       "properties": {
-        "description": {
+        "travel": {
           "type": "object",
-          "$ref": "#/definitions/CityTravelEdition"
-        }
-      }
-    },
-    "CityTravelEdition": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "tale": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ReadFragment"
-          }
-        },
-        "published": {
-          "type": "string"
+          "$ref": "#/definitions/TaleEdition"
         }
       }
     },
@@ -2340,20 +2331,7 @@
     },
     "RequestNewPlaceDescription": {
       "type": "object",
-      "properties": {
-        "placeId": {
-          "type": "string"
-        },
-        "tale": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ReadFragment"
-          }
-        },
-        "author": {
-          "type": "string"
-        }
-      }
+      "$ref": "#/definitions/NewPlaceStory"
     },
     "ResponseNewPlaceDescription": {
       "type": "object",
@@ -2386,24 +2364,7 @@
       "properties": {
         "description": {
           "type": "object",
-          "$ref": "#/definitions/PlaceDescriptionEdition"
-        }
-      }
-    },
-    "PlaceDescriptionEdition": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "tale": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ReadFragment"
-          }
-        },
-        "published": {
-          "type": "boolean"
+          "$ref": "#/definitions/TaleEdition"
         }
       }
     },
@@ -2418,20 +2379,7 @@
     },
     "RequestNewPlaceEntry": {
       "type": "object",
-      "properties": {
-        "placeId": {
-          "type": "string"
-        },
-        "tale": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ReadFragment"
-          }
-        },
-        "author": {
-          "type": "string"
-        }
-      }
+      "$ref": "#/definitions/NewPlaceStory"
     },
     "ResponseNewPlaceEntry": {
       "type": "object",
@@ -2464,24 +2412,7 @@
       "properties": {
         "entry": {
           "type": "object",
-          "$ref": "#/definitions/PlaceEntryEdition"
-        }
-      }
-    },
-    "PlaceEntryEdition": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "tale": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ReadFragment"
-          }
-        },
-        "published": {
-          "type": "boolean"
+          "$ref": "#/definitions/TaleEdition"
         }
       }
     },

@@ -16,6 +16,9 @@
     "ReadFragment": {
         "$ref": "../commons/models.json#/definitions/ReadFragment"
     },
+    "TaleEdition": {
+        "$ref": "../commons/models.json#/definitions/TaleEdition"
+    },
     "PublicTale": {
         "$ref": "../commons/models.json#/definitions/PublicTale"
     },
@@ -25,11 +28,17 @@
     "CityData":{
         "$ref": "../commons/models.json#/definitions/CityData"
     },
+    "NewCityTale":{
+        "$ref": "../commons/models.json#/definitions/NewCityTale"
+    },
     "Place": {
         "$ref": "../commons/models.json#/definitions/Place"
     },
     "PlaceData": {
         "$ref": "../commons/models.json#/definitions/PlaceData"
+    },
+    "NewPlaceStory": {
+        "$ref": "../commons/models.json#/definitions/NewPlaceStory"
     },
 
 
@@ -129,9 +138,6 @@
     "RequestUpdateCityDescription":{
         "$ref": "../services/locations/update_city_description.json#/definitions/RequestUpdateCityDescription"
     },
-    "CityDescriptionEdition":{
-        "$ref": "../services/locations/update_city_description.json#/definitions/CityDescriptionEdition"
-    },
     "ResponseUpdateCityDescription":{
         "$ref": "../services/locations/update_city_description.json#/definitions/ResponseUpdateCityDescription"
     },
@@ -150,9 +156,6 @@
     },
     "RequestUpdateCityTravel":{
         "$ref": "../services/locations/update_city_travel.json#/definitions/RequestUpdateCityTravel"
-    },
-    "CityTravelEdition":{
-        "$ref": "../services/locations/update_city_travel.json#/definitions/CityTravelEdition"
     },
     "ResponseUpdateCityTravel":{
         "$ref": "../services/locations/update_city_travel.json#/definitions/ResponseUpdateCityTravel"
@@ -212,9 +215,6 @@
     "RequestUpdatePlaceDescription":{
         "$ref": "../services/locations/update_place_description.json#/definitions/RequestUpdatePlaceDescription"
     },
-    "PlaceDescriptionEdition":{
-        "$ref": "../services/locations/update_place_description.json#/definitions/PlaceDescriptionEdition"
-    },
     "ResponseUpdatePlaceDescription":{
         "$ref": "../services/locations/update_place_description.json#/definitions/ResponseUpdatePlaceDescription"
     },
@@ -232,9 +232,6 @@
     },
     "RequestUpdatePlaceEntry":{
         "$ref": "../services/locations/update_place_entry.json#/definitions/RequestUpdatePlaceEntry"
-    },
-    "PlaceEntryEdition":{
-        "$ref": "../services/locations/update_place_entry.json#/definitions/PlaceEntryEdition"
     },
     "ResponseUpdatePlaceEntry":{
         "$ref": "../services/locations/update_place_entry.json#/definitions/ResponseUpdatePlaceEntry"

@@ -86,13 +86,13 @@ class CitiesController {
                 description: [{
                     tale: description,
                     author: userName,
-                    write_date: new Date(),
+                    writeDate: new Date(),
                     published: false
                 }], // descripciones de la ciudad
                 travel: [{
                     tale: travel,
                     author: userName,
-                    write_date: new Date(),
+                    writeDate: new Date(),
                     published: false
                 }], // narraciones de diferentes viajes hacia la ciudad
                 places: [],  // ide de los lugares (Places) de esa ciudad
@@ -160,7 +160,7 @@ class CitiesController {
                 { _id: id },
                 {
                     published: published,
-                    publish_date: (published) ? new Date() : null
+                    publishDate: (published) ? new Date() : null
                 }
             );
             console.log('===================== ' + ((edition.nModified) ? 'OK' : 'not Found') + ' ======================');
@@ -194,7 +194,7 @@ class CitiesController {
                             tale: tale,
                             author: author,
                             published: false,
-                            write_date: new Date()
+                            writeDate: new Date()
                         }]
                     }
                 }
@@ -260,26 +260,26 @@ class CitiesController {
             console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
             console.log('**************** updateCityDescription *******************');
             let { description } = req.body;
-            console.log('**************** ' + description._id + ' *******************');
+            console.log('**************** ' + description.id + ' *******************');
 
             const edition = await CitiesSchema.updateOne(
-                { "description._id": description._id },
+                { "description._id": description.id },
                 {
                     $set: {
                         "description.$[elem].tale": description.tale,
                         "description.$[elem].published": description.published,
-                        "description.$[elem].publish_date": (description.published) ? new Date() : null
+                        "description.$[elem].publishDate": (description.published) ? new Date() : null
                     }
                 },
-                { arrayFilters: [{ "elem._id": description._id }] }
+                { arrayFilters: [{ "elem._id": description.id }] }
             );
 
             const city: CityInterface | null = await CitiesSchema.findOne(
-                { "description._id": description._id },
+                { "description._id": description.id },
                 {
                     "description.$[elem]": 1
                 },
-                { arrayFilters: [{ "elem._id": description._id }] }
+                { arrayFilters: [{ "elem._id": description.id }] }
             ).lean();
 
             const updatedDescription = (city) ? (city as CityInterface).description[0] : null;
@@ -316,7 +316,7 @@ class CitiesController {
                             tale: tale,
                             author: author,
                             published: false,
-                            write_date: new Date()
+                            writeDate: new Date()
                         }]
                     }
                 }
@@ -385,27 +385,27 @@ class CitiesController {
             console.log('**************** updateCityTravel *******************');
             const { travel } = req.body;
 
-            const id = travel._id;
-            console.log('**************** ' + travel._id + ' *******************');
+            const id = travel.id;
+            console.log('**************** ' + travel.id + ' *******************');
 
             const edition = await CitiesSchema.updateOne(
-                { "travel._id": travel._id },
+                { "travel._id": travel.id },
                 {
                     $set: {
                         "travel.$[elem].tale": travel.tale,
                         "travel.$[elem].published": travel.published,
-                        "travel.$[elem].publish_date": (travel.published) ? new Date() : null
+                        "travel.$[elem].publishDate": (travel.published) ? new Date() : null
                     }
                 },
                 { arrayFilters: [{ "elem._id": travel.id }] }
             );
 
             const city: CityInterface | null = await CitiesSchema.findOne(
-                { "description._id": travel._id },
+                { "travel._id": travel.id },
                 {
                     "travel.$[elem]": 1
                 },
-                { arrayFilters: [{ "elem._id": travel._id }] }
+                { arrayFilters: [{ "elem._id": travel.id }] }
             ).lean();
 
             const updatedTravel = (city) ? (city as CityInterface).travel[0] : null;

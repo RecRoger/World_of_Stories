@@ -12,11 +12,11 @@ export class MessagesComponent implements OnInit {
 
   constructor(private store: Store, private cd: ChangeDetectorRef) { }
 
-  @Select(GeneralState.errorAlerts) errors$: Observable<MessageModel>;
+  @Select(GeneralState.getAlerts) alerts$: Observable<MessageModel>;
   error: MessageModel;
 
   ngOnInit() {
-    this.errors$.subscribe(error => {
+    this.alerts$.subscribe(error => {
       this.error = error;
       this.cd.markForCheck();
 
