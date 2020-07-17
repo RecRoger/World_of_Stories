@@ -211,13 +211,13 @@
         "PlaceData": {
             "type": "object",
             "properties": {
-                "city": {
+                "place": {
                     "type": "object",
                     "$ref": "#/definitions/Place"
                 }
             }
         },
-        "NewPlaceStory": {
+        "NewPlaceTale": {
             "type": "object",
             "properties": {
                 "placeId": {

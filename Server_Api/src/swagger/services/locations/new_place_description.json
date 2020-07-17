@@ -55,7 +55,12 @@
     "definitions": {
         "RequestNewPlaceDescription": {
             "type": "object",
-            "$ref": "#/definitions/NewPlaceStory"
+            "properties": {
+                "description":{
+                    "type": "object",
+                    "$ref": "#/definitions/NewPlaceTale"
+                }
+            }
         },
         "ResponseNewPlaceDescription": {
             "type": "object",

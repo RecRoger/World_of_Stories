@@ -56,7 +56,7 @@
         "RequestRemovePlaceEntry": {
             "type": "object",
             "properties": {
-                "descriptionId": {
+                "entryId": {
                     "type": "string"
                 }
             }

@@ -11,5 +11,5 @@
  */
 import { Place } from './place';
 export interface PlaceData {
-    city?: Place;
+    place?: Place;
 }

@@ -55,7 +55,12 @@
     "definitions": {
         "RequestNewCityDescription": {
             "type": "object",
-            "$ref": "#/definitions/NewCityTale"
+            "properties": {
+                "description":{
+                    "type": "object",
+                    "$ref": "#/definitions/NewCityTale"
+                }
+            }
         },
         "ResponseNewCityDescription": {
             "type": "object",

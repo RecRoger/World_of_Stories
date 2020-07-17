@@ -37,8 +37,8 @@
     "PlaceData": {
         "$ref": "../commons/models.json#/definitions/PlaceData"
     },
-    "NewPlaceStory": {
-        "$ref": "../commons/models.json#/definitions/NewPlaceStory"
+    "NewPlaceTale": {
+        "$ref": "../commons/models.json#/definitions/NewPlaceTale"
     },
 
 

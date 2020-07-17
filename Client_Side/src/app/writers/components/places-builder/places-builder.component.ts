@@ -3,11 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store, Select } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
-import { User, Place, City, RequestGetPlaces, ReadFragment } from 'src/client-api';
+import { User, Place, City, RequestGetPlaces, ReadFragment, RequestNewPlace, RequestPublishPlace, NewPlaceTale, TaleEdition } from 'src/client-api';
 import { PlaceTabs } from 'src/app/shared/constants';
-import { GetAllPlaces } from 'src/app/shared/store/locations/locations.actions';
+import { GetAllPlaces, NewPlace, PublishPlace, AddPlaceStory, EditPlaceStory, DeletePlaceStory } from 'src/app/shared/store/locations/locations.actions';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
+import { isValid } from 'src/app/shared/utils/commons';
 
 @Component({
   selector: 'app-places-builder',
@@ -28,6 +29,7 @@ export class PlacesBuilderComponent implements OnInit {
 
   placesloading = false;
   placesTabs: {
+    loading?: boolean;
     place?: string;
     tab: PlaceTabs;
     page: number;
@@ -43,7 +45,7 @@ export class PlacesBuilderComponent implements OnInit {
   placeForm: FormGroupTyped<NewPlaceFormData>;
 
   @Input() city: City;
-  @Output() placeSelect: EventEmitter<City> = new EventEmitter<City>();
+  @Output() placeSelect: EventEmitter<Place> = new EventEmitter<Place>();
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -78,8 +80,6 @@ export class PlacesBuilderComponent implements OnInit {
 
 
 
-
-
   // desplegar tarjeta del lugar
   togglePlaceInfo(id) {
     if (this.placesTabs && id === this.placesTabs.place) {
@@ -94,135 +94,137 @@ export class PlacesBuilderComponent implements OnInit {
     this.newPlaceTab.newPlace = false;
     this.cd.markForCheck();
   }
-
-
   // Cambiar la pagina de las descripciones o entrada
   changePage(index, mode) {
     (mode) ? this.placesTabs.page++ : this.placesTabs.page--;
     this.cd.markForCheck();
   }
 
-  // // habilitar la redaccion de nueva descripcion o entrada
-  // newTale(index: number) {
-  //   this.placeForm = this.fb.group({
-  //     tale: [null, [Validators.required]]
-  //   });
-  //   this.placesTabs[index].editing = true;
-  //   this.placesTabs[index].newTale = true;
-  //   this.cd.markForCheck();
-  // }
-  // // habilitar edicion de descripcion o entrada existente
-  // editTale(index: number) {
-  //   const tale = (this.placesTabs[index].tab === 'desc') ?
-  //     this.places[index].description[this.placesTabs[index].page].tale :
-  //     this.places[index].entry[this.placesTabs[index].page].tale;
-  //   const taleId = (this.placesTabs[index].tab === 'desc') ?
-  //     this.places[index].description[this.placesTabs[index].page].id :
-  //     this.places[index].entry[this.placesTabs[index].page].id;
-  //   const published = (this.placesTabs[index].tab === 'desc') ?
-  //     this.places[index].description[this.placesTabs[index].page].published :
-  //     this.places[index].entry[this.placesTabs[index].page].published;
+  // habilitar la redaccion de nueva descripcion o entrada
+  newTale() {
+    this.placeForm = this.fb.group({
+      tale: [[], [Validators.required]]
+    });
+    this.placesTabs.editing = true;
+    this.placesTabs.newTale = true;
+    this.cd.markForCheck();
+  }
+  // habilitar edicion de descripcion o entrada existente
+  editTale(id: string) {
 
-  //   this.placeForm = this.fb.group({
-  //     id: [taleId, [Validators.required]],
-  //     tale: [tale, [Validators.required]],
-  //     published: [published, [Validators.required]]
-  //   });
-  //   this.placesTabs[index].editing = true;
-  //   this.placesTabs[index].newTale = false;
-  //   this.cd.markForCheck();
+    this.places$.pipe(take(1)).subscribe(places => {
+      const place = places.find(p => p.id === id);
 
-  // }
+      const tale = (this.placesTabs.tab === 'desc') ?
+        place.description[this.placesTabs.page].tale :
+        place.entry[this.placesTabs.page].tale;
+      const taleId = (this.placesTabs.tab === 'desc') ?
+        place.description[this.placesTabs.page].id :
+        place.entry[this.placesTabs.page].id;
+      const published = (this.placesTabs.tab === 'desc') ?
+        place.description[this.placesTabs.page].published :
+        place.entry[this.placesTabs.page].published;
 
-  // // guardar edicion - nueva historia
-  // savePlaceEdition(index: number, cancel?) {
-  //   if (cancel) {
-  //     this.placesTabs[index].editing = false;
-  //     this.cd.markForCheck();
-  //     return true;
-  //   }
-  //   if (this.placeForm.valid) {
-  //     if (!this.placesTabs[index].newTale) {
-  //       // edicion de ...
-  //       this.updateTale(index);
-  //     } else {
-  //       // nuevo ...
-  //       this.addNewTale(index);
-  //     }
-  //     this.placesTabs[index].editing = false;
-  //     this.cd.markForCheck();
-  //   } else {
-  //     this.placeForm.get('tale').markAsTouched();
-  //   }
-  // }
-  // // habilitar publicacion
-  // publishTale(index) {
-  //   this.placeForm.get('published').setValue(!this.placeForm.get('published').value);
-  //   this.updateTale(index);
-  // }
+      this.placeForm = this.fb.group({
+        id: [taleId, [Validators.required]],
+        tale: [tale, [Validators.required]],
+        published: [published, [Validators.required]]
+      });
+      this.placesTabs.editing = true;
+      this.placesTabs.newTale = false;
+      this.cd.markForCheck();
+    })
 
-  // // actualizar descripcion o viaje
-  // async updateTale(index) {
-  //   this.placesloading = true;
-  //   this.cd.markForCheck();
-  //   try {
-  //     // const data: TaleUpdate = new TaleUpdate();
-  //     // data.id = this.placeForm.get('id').value;
-  //     // data.tale = this.placeForm.get('tale').value;
-  //     // data.published = this.placeForm.get('published').value;
 
-  //     // const req: any = (this.placesTabs[index].tab === 'desc') ?
-  //     //   { description: data } :
-  //     //   { entry: data };
+  }
 
-  //     // const url = (this.placesTabs[index].tab === 'desc') ? UpdatePlaceDescriptionURL : UpdatePlaceEntryURL;
-  //     // const resp: ResponseModel<any> = await this.http.post(url, req).toPromise();
-  //     // this.getAllPlaces();
+  // guardar edicion - nueva historia
+  savePlaceEdition(id: string, cancel?) {
+    if (cancel) {
+      this.placesTabs.editing = false;
+      this.cd.markForCheck();
+      return true;
+    }
+    if (isValid(this.placeForm)) {
+      if (!this.placesTabs.newTale) {
+        // edicion de ...
+        this.updateTale(id);
+      } else {
+        // nuevo ...
+        this.addNewTale(id);
+      }
+      this.placesTabs.editing = false;
+      this.cd.markForCheck();
+    } else {
+      this.placeForm.get('tale').markAsTouched();
+    }
+  }
 
-  //   } catch (err) {
-  //     console.log('*** ERROR ***', err);
-  //     this.placesloading = false;
-  //     this.cd.markForCheck();
-  //   }
-  // }
-  // // guardar nueva descripcion o viaje
-  // async addNewTale(index) {
-  //   this.placesloading = true;
-  //   this.cd.markForCheck();
-  //   try {
-  //     // const req: AddPlaceTaleRequest = new AddPlaceTaleRequest();
-  //     // req.id = this.places[index].id;
-  //     // req.tale = this.placeForm.get('tale').value;
-  //     // req.author = this.user.username;
 
-  //     // const url = (this.placesTabs[index].tab === 'desc') ? addPlaceDescriptionURL : addPlaceEntryURL;
-  //     // const resp: ResponseModel<any> = await this.http.post(url, req).toPromise();
-  //     // this.getAllPlaces();
+  // habilitar publicacion
+  publishTale(placeId) {
+    this.placeForm.get('published').setValue(!this.placeForm.get('published').value);
+    this.updateTale(placeId);
+  }
 
-  //   } catch (err) {
-  //     console.log('*** ERROR ***', err);
-  //     this.placesloading = false;
-  //     this.cd.markForCheck();
-  //   }
-  // }
-  // // eliminar descripcion o viaje
-  // async deleteTale(index) {
-  //   this.placesloading = true;
-  //   this.cd.markForCheck();
-  //   try {
-  //     // const req: RemovePlaceTaleRequest = new RemovePlaceTaleRequest();
-  //     // req.id = this.placeForm.get('id').value;
+  // actualizar descripcion o viaje
+  async updateTale(placeId) {
+    // this.placesloading = true;
+    this.placesTabs.loading = true;
+    this.cd.markForCheck();
 
-  //     // const url = (this.placesTabs[index].tab === 'desc') ? removePlaceDescriptionURL : removePlaceEntryURL;
-  //     // const resp: ResponseModel<any> = await this.http.post(url, req).toPromise();
-  //     // this.getAllPlaces();
+    const data: TaleEdition = {
+      id: this.placeForm.get('id').value,
+      tale: this.placeForm.get('tale').value,
+      published: this.placeForm.get('published').value,
 
-  //   } catch (err) {
-  //     console.log('*** ERROR ***', err);
-  //     this.placesloading = false;
-  //     this.cd.markForCheck();
-  //   }
-  // }
+    };
+
+    await this.store.dispatch(new EditPlaceStory({
+      type: this.placesTabs.tab,
+      cityId: this.city.id,
+      placeId,
+      tale: data,
+    }));
+
+    this.placesTabs.loading = true;
+    this.placesTabs.editing = false;
+
+  }
+  // guardar nueva descripcion o viaje
+  async addNewTale(id) {
+
+    const req: NewPlaceTale = {
+      placeId: id,
+      tale: this.placeForm.get('tale').value,
+      author: this.user.username,
+    };
+
+    await this.store.dispatch(new AddPlaceStory({ cityId: this.city.id, type: this.placesTabs.tab, placeId: id, tale: req })).toPromise();
+
+    this.places$.pipe(take(1)).subscribe(places => {
+      const place = places.find(p => p.id === id);
+
+      this.placesTabs.editing = false;
+      this.placesTabs.page = (this.placesTabs.tab === PlaceTabs.descripcion) ? place.description.length - 1 : place.entry.length - 1;
+    });
+
+  }
+  // eliminar descripcion o viaje
+  async deleteTale(id) {
+    // this.placesloading = true;
+
+    await this.store.dispatch(new DeletePlaceStory({
+      cityId: this.city.id,
+      placeId: id,
+      taleId: this.placeForm.get('id').value,
+      type: this.placesTabs.tab
+    })).toPromise();
+
+    this.placesTabs.editing = false;
+    this.placesTabs.page = 0;
+
+  }
 
 
 
@@ -242,60 +244,42 @@ export class PlacesBuilderComponent implements OnInit {
     this.cd.markForCheck();
   }
 
-  // async addNewPlace(cancel) {
-  //   if (cancel) {
-  //     this.newPlaceTab.newPlace = false;
-  //     this.cd.markForCheck();
-  //     return null;
-  //   }
+  async addNewPlace(cancel) {
+    if (cancel) {
+      this.newPlaceTab.newPlace = false;
+      this.cd.markForCheck();
+      return null;
+    }
 
-  //   if (this.placeForm.valid) {
-  //     this.placesloading = true;
-  //     this.newPlaceTab.newPlace = false;
-  //     this.cd.markForCheck();
-  //     try {
-  //       // let req: AddPlaceRequest = new AddPlaceRequest();
-  //       // req = { ... this.placeForm.value };
+    if (isValid(this.placeForm)) {
+      // this.placesloading = true;
+      this.newPlaceTab.newPlace = false;
+      this.newPlaceTab.loading = true;
+      this.cd.markForCheck();
 
-  //       // const resp: ResponseModel<any> = await this.http.post(AddPlaceURL, req).toPromise();
-  //       // this.getAllPlaces();
+      const req: RequestNewPlace = {
+        ... this.placeForm.value
+      };
 
-  //     } catch (err) {
-  //       console.log('*** ERROR ***', err);
-  //       this.placesloading = false;
-  //       this.cd.markForCheck();
-  //     }
-  //   } else {
-  //     this.placeForm.get('userid').markAsTouched();
-  //     this.placeForm.get('name').markAsTouched();
-  //     this.placeForm.get('description').markAsTouched();
-  //     this.placeForm.get('entry').markAsTouched();
-  //     this.cd.markForCheck();
-  //   }
-  // }
-  
-  // // publicar ciudad
-  // async publishPlace(index: number) {
-  //   this.placesloading = true;
-  //   this.cd.markForCheck();
-  //   try {
-  //     // const req: PublishPlaceRequest = new PublishPlaceRequest();
-  //     // req.published = !this.places[index].published;
-  //     // req.id = this.places[index].id;
+      await this.store.dispatch(new NewPlace(req)).toPromise();
+      this.newPlaceTab.loading = false;
+    }
+  }
 
-  //     // const resp: ResponseModel<UpdateResponse> = await this.http.post(publishPlaceURL, req).toPromise();
-  //     // this.getAllPlaces();
+  // publicar ciudad
+  async publishPlace(id: string, published: boolean) {
 
-  //   } catch (err) {
-  //     console.log('*** ERROR ***', err);
-  //     this.placesloading = false;
-  //     this.cd.markForCheck();
-  //   }
-  // }
+    const req: RequestPublishPlace = {
+      id,
+      published
+    };
 
-  // selectPlace(i) {
-  //   this.placeSelect.emit(this.places[i]);
-  // }
+    await this.store.dispatch(new PublishPlace({ cityId: this.city.id, place: req }));
+  }
+
+  selectPlace(place: Place) {
+    this.placeSelect.emit(place);
+  }
 
 }
 

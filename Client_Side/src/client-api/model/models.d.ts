@@ -5,7 +5,7 @@ export * from './listCities';
 export * from './listPlaces';
 export * from './listUsers';
 export * from './newCityTale';
-export * from './newPlaceStory';
+export * from './newPlaceTale';
 export * from './place';
 export * from './placeData';
 export * from './publicTale';

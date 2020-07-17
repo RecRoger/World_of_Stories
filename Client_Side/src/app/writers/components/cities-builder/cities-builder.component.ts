@@ -92,6 +92,7 @@ export class CitiesBuilderComponent implements OnInit, OnDestroy {
     this.cd.markForCheck();
   }
 
+  
   // habilitar la redaccion de nueva descripcion o viaje
   newTale() {
     this.cityForm = this.fb.group({
@@ -194,8 +195,6 @@ export class CitiesBuilderComponent implements OnInit, OnDestroy {
 
     this.citiesTabs.editing = false;
     this.citiesTabs.page = (this.citiesTabs.tab === CityTabs.descripcion) ? city.description.length - 1 : city.travel.length - 1;
-
-
   }
   // eliminar descripcion o viaje
   async deleteTale(id) {
@@ -257,7 +256,6 @@ export class CitiesBuilderComponent implements OnInit, OnDestroy {
   // publicar ciudad
   async publishCity(id: string, published: boolean) {
     // this.citiesloading = true;
-    this.cd.markForCheck();
     const req: RequestPublishCity = {
       id,
       published,

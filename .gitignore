@@ -1,5 +1,5 @@
 Client_Side/dist
 Client_Side/node_modules
+Client_Side/src/client-api
 Server_Api/node_modules
 Server_Api/src/swagger/generator/workspace
-Client_Side/src/client-api

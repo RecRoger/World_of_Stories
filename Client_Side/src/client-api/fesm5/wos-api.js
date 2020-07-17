@@ -1673,7 +1673,7 @@ var UsersService = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: model/newPlaceStory.ts
+ * Generated from: model/newPlaceTale.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 

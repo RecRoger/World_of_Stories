@@ -23,7 +23,7 @@ class PlacesController {
             const castPlaecs = places.map(city => {
                 city.description = city.description.map(t => ({ ...t, id: t._id }))
                 city.entry = city.entry.map(t => ({ ...t, id: t._id }))
-                return {...city, id: city._id}
+                return { ...city, id: city._id }
             })
 
             console.log('_____________________________________________________');
@@ -213,7 +213,7 @@ class PlacesController {
             console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
             console.log('**************** addPlaceDescription *******************');
 
-            const { placeId, tale, author } = req.body;
+            const { placeId, tale, author } = req.body.description;
             console.log('**************** ' + placeId + ' *******************');
 
             const edition = await CitiesSchema.updateOne(
@@ -317,7 +317,7 @@ class PlacesController {
             const place = (city) ? (city as CityInterface).places[0] : null;
             let updatedDescription;
 
-            updatedDescription = (place) ? (place as PlaceInterface).description.find(desc => desc._id === description.id) : null;
+            updatedDescription = place && place.description.find(desc => desc._id == description.id);
 
             console.log('====================== ' + ((edition.nModified && updatedDescription) ? 'OK' : 'Not Found') + ' =========================');
             console.log('_____________________________________________________');
@@ -339,7 +339,7 @@ class PlacesController {
             console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
             console.log('**************** addPlaceEntry *******************');
 
-            const { placeId, tale, author } = req.body;
+            const { placeId, tale, author } = req.body.entry;
             console.log('**************** ' + placeId + ' *******************');
 
             const edition = await CitiesSchema.updateOne(
@@ -446,13 +446,13 @@ class PlacesController {
             const place = (city) ? (city as CityInterface).places[0] : null;
             let updateEntry;
 
-            updateEntry = (place) ? (place as PlaceInterface).entry.find(enter=> enter._id === entry.id) : null;
+            updateEntry = (place) ? (place as PlaceInterface).entry.find(enter => enter._id == entry.id) : null;
 
             console.log('====================== ' + ((edition.nModified && updateEntry) ? 'OK' : 'Not Found') + ' =========================');
             console.log('_____________________________________________________');
 
             res.json({
-                "data": updateEntry && {...updateEntry, id: updateEntry._id}
+                "data": updateEntry && { ...updateEntry, id: updateEntry._id }
             });
         } catch (err) {
             res.json({

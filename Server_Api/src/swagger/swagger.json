@@ -1844,13 +1844,13 @@
     "PlaceData": {
       "type": "object",
       "properties": {
-        "city": {
+        "place": {
           "type": "object",
           "$ref": "#/definitions/Place"
         }
       }
     },
-    "NewPlaceStory": {
+    "NewPlaceTale": {
       "type": "object",
       "properties": {
         "placeId": {
@@ -2115,7 +2115,12 @@
     },
     "RequestNewCityDescription": {
       "type": "object",
-      "$ref": "#/definitions/NewCityTale"
+      "properties": {
+        "description": {
+          "type": "object",
+          "$ref": "#/definitions/NewCityTale"
+        }
+      }
     },
     "ResponseNewCityDescription": {
       "type": "object",
@@ -2163,7 +2168,12 @@
     },
     "RequestNewCityTravel": {
       "type": "object",
-      "$ref": "#/definitions/NewCityTale"
+      "properties": {
+        "travel": {
+          "type": "object",
+          "$ref": "#/definitions/NewCityTale"
+        }
+      }
     },
     "ResponseNewCityTravel": {
       "type": "object",
@@ -2331,7 +2341,12 @@
     },
     "RequestNewPlaceDescription": {
       "type": "object",
-      "$ref": "#/definitions/NewPlaceStory"
+      "properties": {
+        "description": {
+          "type": "object",
+          "$ref": "#/definitions/NewPlaceTale"
+        }
+      }
     },
     "ResponseNewPlaceDescription": {
       "type": "object",
@@ -2379,7 +2394,12 @@
     },
     "RequestNewPlaceEntry": {
       "type": "object",
-      "$ref": "#/definitions/NewPlaceStory"
+      "properties": {
+        "entry": {
+          "type": "object",
+          "$ref": "#/definitions/NewPlaceTale"
+        }
+      }
     },
     "ResponseNewPlaceEntry": {
       "type": "object",
@@ -2393,7 +2413,7 @@
     "RequestRemovePlaceEntry": {
       "type": "object",
       "properties": {
-        "descriptionId": {
+        "entryId": {
           "type": "string"
         }
       }

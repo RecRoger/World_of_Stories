@@ -183,7 +183,7 @@ class CitiesController {
         try {
             console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
             console.log('**************** addCityDescription *******************');
-            const { cityId, tale, author } = req.body;
+            const { cityId, tale, author } = req.body.description;
             console.log('**************** ' + cityId + ' *******************');
 
             const edition = await CitiesSchema.updateOne(
@@ -305,7 +305,7 @@ class CitiesController {
         try {
             console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
             console.log('**************** addCityTravel *******************');
-            const { cityId, tale, author } = req.body;
+            const { cityId, tale, author } = req.body.travel;
             console.log('**************** ' + cityId + ' *******************');
 
             const edition = await CitiesSchema.updateOne(

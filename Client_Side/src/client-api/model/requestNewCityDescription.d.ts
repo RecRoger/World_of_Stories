@@ -9,5 +9,7 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
+import { NewCityTale } from './newCityTale';
 export interface RequestNewCityDescription {
+    description?: NewCityTale;
 }
