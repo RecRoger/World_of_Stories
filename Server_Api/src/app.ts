@@ -11,6 +11,7 @@ import cors from 'cors';
 
 import swaggerUi from 'swagger-ui-express';
 import * as swaggerDocument from './swagger/swagger.json'
+import NpcsRouter from './routes/npcs.routes';
 
 class App {
     private express: any
@@ -28,6 +29,7 @@ class App {
         new CitiesRouter(this.express);
         new PlacesRouter(this.express);
         new PlacesRouter(this.express);
+        new NpcsRouter(this.express);
         new ChaptersRouter(this.express);
 
     }

@@ -1,20 +1,20 @@
 import mongoose, { Schema, model } from 'mongoose';
-import { publicTale, decisionOption, readFragment } from './common.model';
+import { publicTale, decisionOption, readFragment, decisionObject, chapterLocation } from './common.model';
 
 export interface NpcInterface extends mongoose.Document {
     _id: string,
     name?: string,		       // nombre aislado del personaje
-    npc_type?: string, 		   // lugar de 'historias', 'tienda', 'posta de caballos' etc.
+    npcType?: string, 		   // lugar de 'historias', 'tienda', 'posta de caballos' etc.
     description?: publicTale, // descripciones del personaje, presentacion general, corta.
     meeting?: publicTale,       // presentacion del personaje y su polemica, cierra en pregunta
-    decision?: decisionOption[],
+    decision?: decisionObject,
     rejected?: publicTale,      // narracion de rechazo
     items?: string[]	       // items del npc (tienda);
     title?: string		       // Titulo de la historia
     chapters?: ChapterInterface[]
-    author?:string,
+    author?: string,
     published?: boolean,
-    writeDate?:Date;     // Fecha de creacion
+    writeDate?: Date;     // Fecha de creacion
     publishDate?: Date
 }
 
@@ -22,28 +22,20 @@ export interface ChapterInterface {
     _id: string,
     name?: string
     story?: readFragment[],	                // narracion previa a batalla o decision.
-    usersDecisions?: decisionOption[],
-    end_location?: {
-        location_Type?: string,    // place or city
-        location_id?: string       // id del lugar de retorno del capiulo
-    }
-    // itemsDecisions?: decisionOption[],
-    // considerar
-    // tipo de batalla?: string		    // orda, medium, boss (algoritmo de creacion)
-    // enemigo?: Enemy_Character         // enemigo de la batalla
-    // defeat?: string		            // narracion de derrota en batalla.
-    item?: string[]		                // Item en caso de victoria
+    usersDecisions?: decisionObject,
+    endLocation?: chapterLocation
+    items?: string[]		                // Item en caso de victoria
     published?: boolean,
-    author?:string,
-    writeDate?:Date;     // Fecha de creacion
-    publishDate?:Date;   // Fecha de publicacion
-    
+    author?: string,
+    writeDate?: Date;     // Fecha de creacion
+    publishDate?: Date;   // Fecha de publicacion
+
 }
 
 
 const NpcsSchema = new Schema({
     name: String,
-    npc_type: String,
+    npcType: String,
     description: {
         tale: [{
             text: String,
@@ -64,11 +56,18 @@ const NpcsSchema = new Schema({
         writeDate: Date,
         publishDate: Date,
     },
-    decision: [{
-        name: String,
-        description: String,
-        value: String
-    }],
+    decision: {
+        type: String,
+        amount: Number,
+        item: String,
+        options: [{
+            name: String,
+            description: String,
+            value: String,
+            published: Boolean,
+            removeItem: Boolean
+        }]
+    },
     rejected: {
         tale: [{
             text: String,
@@ -88,30 +87,31 @@ const NpcsSchema = new Schema({
             animation: String
         }],	                // narracion previa a batalla o decision.
         usersDecisions: [{
-            name: String,
-            description: String,
-            value: String,
-            published: Boolean
+            type: String,
+            amount: Number,
+            item: String,
+            options: [{
+                name: String,
+                description: String,
+                value: String,
+                published: Boolean,
+                removeItem: Boolean
+            }]
         }],
-        end_location: {
-            location_Type: String,    // place or city
-            location_id: String       // id del lugar de retorno del capiulo
+        endLocation: {
+            locationType: String,    // place or city
+            locationId: String       // id del lugar de retorno del capiulo
         },
-        // itemsDecisions: decisionOption[],
-        // considerar
-        // tipo de batalla: String		    // orda, medium, boss (algoritmo de creacion)
-        // enemigo: Enemy_Character         // enemigo de la batalla
-        // defeat: String		            // narracion de derrota en batalla.
-        item: [String],		                // Item en caso de victoria
+        items: [String],		                // Item en caso de victoria
         published: Boolean,
-        author:String,
-        writeDate:Date,    // Fecha de creacion
+        author: String,
+        writeDate: Date,    // Fecha de creacion
         publishDate: Date
     }],
     published: Boolean,
-    author:String,
-    writeDate:Date,    // Fecha de creacion
-    publishDate:Date,   // Fecha de publicacion
+    author: String,
+    writeDate: Date,    // Fecha de creacion
+    publishDate: Date,   // Fecha de publicacion
 })
 
 export default model<NpcInterface>('npcs', NpcsSchema);

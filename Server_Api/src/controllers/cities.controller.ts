@@ -6,7 +6,8 @@ class CitiesController {
     // get all cities without places
     public async getAllCities(req: Request, res: Response) {
         try {
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('*************** getAllCities *******************');
 
             const { published } = req.body;
@@ -37,9 +38,10 @@ class CitiesController {
     // get get complete city
     public async getOneCity(req: Request, res: Response) {
         try {
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('*************** getCity **************************');
-            console.log('*************** ' + req.body.id + ' *******************');
+            console.log('> cityId: ' + req.body.id);
 
             const city: CityInterface | null = await CitiesSchema.findById(
                 { _id: req.body.id },
@@ -58,7 +60,7 @@ class CitiesController {
                 places: city.places.map(t => ({ ...t, id: t._id })),
             } : null;
 
-            console.log('====================== ' + ((city) ? (<CityInterface>city).name : city) + ' =========================');
+            console.log('> response:' + ((city) ? (<CityInterface>city).name : city));
             console.log('_____________________________________________________');
             res.json({
                 "data": { "city": castCity }
@@ -76,7 +78,8 @@ class CitiesController {
     // save new City
     public async saveCity(req: Request, res: Response): Promise<void> {
         try {
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('*************** newCity **************************');
 
             const { userName, name, description, travel } = req.body;
@@ -109,7 +112,7 @@ class CitiesController {
                 travel: city.travel.map(t => ({ ...t, id: t._id })),
             } : null;
 
-            console.log('====================== ' + ((city) ? (<CityInterface>city).name : city) + ' =========================');
+            console.log('> response: ' + ((city) ? (<CityInterface>city).name : city));
             console.log('_____________________________________________________');
             res.json({
                 "data": { "city": castCity }
@@ -127,15 +130,16 @@ class CitiesController {
     // delete City
     public async deleteCity(req: Request, res: Response): Promise<void> {
         try {
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('**************** deleteCity *******************');
-            console.log('**************** ' + req.body.id + ' *******************');
+            console.log('> cityId: ' + req.body.id);
 
             const edition = await CitiesSchema.deleteOne({
                 _id: req.body.id
             });
 
-            console.log('===================== ' + ((edition.ok) ? 'OK' : 'not Found') + ' ======================');
+            console.log('> response: ' + ((edition.ok) ? 'OK' : 'not Found'));
             console.log('_____________________________________________________');
             res.json({
                 "data": (edition.ok) ? 'OK' : 'error'
@@ -151,11 +155,12 @@ class CitiesController {
     // publicar City
     public async publishCity(req: Request, res: Response): Promise<void> {
         try {
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('**************** publishCity *******************');
             const { id, published } = req.body;
-            console.log('**************** ' + id + ' *******************');
-            console.log('**************** Publish Status: ' + published + ' *******************');
+            console.log('> cityId: ' + id);
+            console.log('> Publish Status: ' + published);
             const edition = await CitiesSchema.updateOne(
                 { _id: id },
                 {
@@ -163,7 +168,7 @@ class CitiesController {
                     publishDate: (published) ? new Date() : null
                 }
             );
-            console.log('===================== ' + ((edition.nModified) ? 'OK' : 'not Found') + ' ======================');
+            console.log('> repsonse:' + ((edition.nModified) ? 'OK' : 'not Found'));
             console.log('_____________________________________________________');
             res.json({
                 "data": (edition.nModified) ? 'OK' : 'error'
@@ -181,10 +186,11 @@ class CitiesController {
     // add City Description
     public async addCityDescription(req: Request, res: Response): Promise<void> {
         try {
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('**************** addCityDescription *******************');
             const { cityId, tale, author } = req.body.description;
-            console.log('**************** ' + cityId + ' *******************');
+            console.log('> cityId ' + cityId);
 
             const edition = await CitiesSchema.updateOne(
                 { _id: cityId },
@@ -210,7 +216,7 @@ class CitiesController {
 
             const description = (descriptions) ? descriptions.slice(-1)[0] : null;
 
-            console.log('====================== ' + ((description) ? 'OK' : 'Not Found') + ' =========================');
+            console.log('> response: ' + ((description) ? 'OK' : 'Not Found'));
             console.log('_____________________________________________________');
             res.json({
                 "data": description && { ...description, id: description._id }
@@ -226,11 +232,12 @@ class CitiesController {
     // remove City Description
     public async removeCityDescription(req: Request, res: Response): Promise<void> {
         try {
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('**************** removeCityDescription *******************');
 
             const { descriptionId } = req.body;
-            console.log('**************** ' + descriptionId + ' *******************');
+            console.log('> descriptionId ' + descriptionId);
 
             const edition = await CitiesSchema.updateOne(
                 { "description._id": descriptionId },
@@ -242,7 +249,7 @@ class CitiesController {
                     }
                 }
             );
-            console.log('===================== ' + ((edition.nModified) ? 'OK' : 'not Found') + ' ======================');
+            console.log('> response: ' + ((edition.nModified) ? 'OK' : 'not Found'));
             res.json({
                 "data": (edition.nModified) ? 'OK' : 'error'
             });
@@ -257,10 +264,11 @@ class CitiesController {
     // updates/publish City Description
     public async updateCityDescription(req: Request, res: Response): Promise<void> {
         try {
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('**************** updateCityDescription *******************');
             let { description } = req.body;
-            console.log('**************** ' + description.id + ' *******************');
+            console.log('> descriptionId: ' + description.id);
 
             const edition = await CitiesSchema.updateOne(
                 { "description._id": description.id },
@@ -284,7 +292,7 @@ class CitiesController {
 
             const updatedDescription = (city) ? (city as CityInterface).description[0] : null;
 
-            console.log('====================== ' + ((updatedDescription) ? 'OK' : 'Not Found') + ' =========================');
+            console.log('> response:' + ((updatedDescription) ? 'OK' : 'Not Found'));
             console.log('_____________________________________________________');
 
             res.json({
@@ -303,10 +311,11 @@ class CitiesController {
     // add City Travel
     public async addCityTravel(req: Request, res: Response): Promise<void> {
         try {
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('**************** addCityTravel *******************');
             const { cityId, tale, author } = req.body.travel;
-            console.log('**************** ' + cityId + ' *******************');
+            console.log('> cityId ' + cityId);
 
             const edition = await CitiesSchema.updateOne(
                 { _id: cityId },
@@ -333,7 +342,7 @@ class CitiesController {
             const travels = (city) ? (<CityInterface>city).travel : null;
             const travel = (travels) ? travels.slice(-1)[0] : null;
 
-            console.log('====================== ' + ((travel) ? 'OK' : 'Not Found') + ' =========================');
+            console.log('> response: ' + ((travel) ? 'OK' : 'Not Found'));
             console.log('_____________________________________________________');
             res.json({
                 "data": travel && { ...travel, id: travel._id }
@@ -350,11 +359,12 @@ class CitiesController {
     // remove City Travel
     public async removeCityTravel(req: Request, res: Response): Promise<void> {
         try {
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('**************** removeCityTravel *******************');
             const { travelId } = req.body;
 
-            console.log('**************** ' + travelId + ' *******************');
+            console.log('> travelId: ' + travelId);
 
             const edition = await CitiesSchema.updateOne(
                 { "travel._id": travelId },
@@ -366,7 +376,7 @@ class CitiesController {
                     }
                 }
             );
-            console.log('===================== ' + ((edition.nModified) ? 'OK' : 'not Found') + ' ======================');
+            console.log('> response: ' + ((edition.nModified) ? 'OK' : 'not Found'));
             res.json({
                 "data": (edition.nModified) ? 'OK' : 'error'
             });
@@ -381,12 +391,13 @@ class CitiesController {
     // updates/publish City Travel
     public async updateCityTravel(req: Request, res: Response): Promise<void> {
         try {
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('**************** updateCityTravel *******************');
             const { travel } = req.body;
 
             const id = travel.id;
-            console.log('**************** ' + travel.id + ' *******************');
+            console.log('> travelId: ' + travel.id);
 
             const edition = await CitiesSchema.updateOne(
                 { "travel._id": travel.id },
@@ -410,7 +421,7 @@ class CitiesController {
 
             const updatedTravel = (city) ? (city as CityInterface).travel[0] : null;
 
-            console.log('====================== ' + ((updatedTravel) ? 'OK' : 'Not Found') + ' =========================');
+            console.log('> response: ' + ((updatedTravel) ? 'OK' : 'Not Found'));
             console.log('_____________________________________________________');
 
             res.json({

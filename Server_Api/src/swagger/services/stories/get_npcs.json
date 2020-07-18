@@ -1,0 +1,91 @@
+{
+    "path": {
+        "post": {
+            "tags": [
+                "Stories"
+            ],
+            "summary": "Get NPCs",
+            "description": "Get all NPC in array of IDs, filtering by publish status",
+            "operationId": "get_npcs",
+            "consumes": [
+                "application/json"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "Transaction details",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/RequestGetNpcs"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Success Operation",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseGetNpcs"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {
+                                "cities": []
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Error response.",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseData"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "RequestGetNpcs": {
+            "type": "object",
+            "properties": {
+                "ids":{
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "published": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "ResponseGetNpcs": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/ListNpcs"
+                }
+            }
+        },
+        "ListNpcs": {
+            "type": "object",
+            "properties": {
+                "npcs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Npc"
+                    }
+                }
+            }
+        }
+    }
+}

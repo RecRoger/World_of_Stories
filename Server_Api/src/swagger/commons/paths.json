@@ -85,5 +85,9 @@
     },
     "/places/entry/update": {
         "$ref": "../services/locations/update_place_entry.json#/path"
+    },
+
+    "/npcs": {
+        "$ref": "../services/stories/get_npcs.json#/path"
     }
 }

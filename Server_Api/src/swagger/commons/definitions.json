@@ -11,8 +11,6 @@
     "UserData": {
         "$ref": "../commons/models.json#/definitions/UserData"
     },
-
-
     "ReadFragment": {
         "$ref": "../commons/models.json#/definitions/ReadFragment"
     },
@@ -25,10 +23,10 @@
     "City": {
         "$ref": "../commons/models.json#/definitions/City"
     },
-    "CityData":{
+    "CityData": {
         "$ref": "../commons/models.json#/definitions/CityData"
     },
-    "NewCityTale":{
+    "NewCityTale": {
         "$ref": "../commons/models.json#/definitions/NewCityTale"
     },
     "Place": {
@@ -40,203 +38,210 @@
     "NewPlaceTale": {
         "$ref": "../commons/models.json#/definitions/NewPlaceTale"
     },
-
-
-    
-    "ResponseGetUsers":{
+    "Npc": {
+        "$ref": "../commons/models.json#/definitions/Npc"
+    },
+    "Chapter": {
+        "$ref": "../commons/models.json#/definitions/Chapter"
+    },
+    "ChapterLocation": {
+        "$ref": "../commons/models.json#/definitions/ChapterLocation"
+    },
+    "Decision": {
+        "$ref": "../commons/models.json#/definitions/Decision"
+    },
+    "DeciosionOption": {
+        "$ref": "../commons/models.json#/definitions/DeciosionOption"
+    },
+    "ResponseGetUsers": {
         "$ref": "../services/users/get_users.json#/definitions/ResponseGetUsers"
     },
-    "ListUsers":{
+    "ListUsers": {
         "$ref": "../services/users/get_users.json#/definitions/ListUsers"
     },
-    "RequestLogin":{
+    "RequestLogin": {
         "$ref": "../services/users/login.json#/definitions/RequestLogin"
     },
-    "ResponseLogin":{
+    "ResponseLogin": {
         "$ref": "../services/users/login.json#/definitions/ResponseLogin"
     },
-    "RequestGetUser":{
+    "RequestGetUser": {
         "$ref": "../services/users/get_user.json#/definitions/RequestGetUser"
     },
-    "ResponseGetUser":{
+    "ResponseGetUser": {
         "$ref": "../services/users/get_user.json#/definitions/ResponseGetUser"
     },
-    "RequestSignin":{
+    "RequestSignin": {
         "$ref": "../services/users/signin.json#/definitions/RequestSignin"
     },
-    "ResponseSignin":{
+    "ResponseSignin": {
         "$ref": "../services/users/signin.json#/definitions/ResponseSignin"
     },
-    "RequestDeleteUser":{
+    "RequestDeleteUser": {
         "$ref": "../services/users/delete_user.json#/definitions/RequestDeleteUser"
     },
-    "ResponseDeleteUser":{
+    "ResponseDeleteUser": {
         "$ref": "../services/users/delete_user.json#/definitions/ResponseDeleteUser"
     },
-    "RequestSetRol":{
+    "RequestSetRol": {
         "$ref": "../services/users/set_rol.json#/definitions/RequestSetRol"
     },
-    "ResponseSetRol":{
+    "ResponseSetRol": {
         "$ref": "../services/users/set_rol.json#/definitions/ResponseSetRol"
     },
-    "RequestRemoveRol":{
+    "RequestRemoveRol": {
         "$ref": "../services/users/remove_rol.json#/definitions/RequestRemoveRol"
     },
-    "ResponseRemoveRol":{
+    "ResponseRemoveRol": {
         "$ref": "../services/users/remove_rol.json#/definitions/ResponseRemoveRol"
     },
-
-
-
-    "RequestGetCities":{
+    "RequestGetCities": {
         "$ref": "../services/locations/get_cities.json#/definitions/RequestGetCities"
     },
-    "ResponseGetCities":{
+    "ResponseGetCities": {
         "$ref": "../services/locations/get_cities.json#/definitions/ResponseGetCities"
     },
-    "ListCities":{
+    "ListCities": {
         "$ref": "../services/locations/get_cities.json#/definitions/ListCities"
     },
-    "RequestGetCity":{
+    "RequestGetCity": {
         "$ref": "../services/locations/get_city.json#/definitions/RequestGetCity"
     },
-    "ResponseGetCity":{
+    "ResponseGetCity": {
         "$ref": "../services/locations/get_city.json#/definitions/ResponseGetCity"
     },
-    "RequestNewCity":{
+    "RequestNewCity": {
         "$ref": "../services/locations/new_city.json#/definitions/RequestNewCity"
     },
-    "ResponseNewCity":{
+    "ResponseNewCity": {
         "$ref": "../services/locations/new_city.json#/definitions/ResponseNewCity"
     },
-    "RequestDeleteCity":{
+    "RequestDeleteCity": {
         "$ref": "../services/locations/delete_city.json#/definitions/RequestDeleteCity"
     },
-    "ResponseDeleteCity":{
+    "ResponseDeleteCity": {
         "$ref": "../services/locations/delete_city.json#/definitions/ResponseDeleteCity"
     },
-    "RequestPublishCity":{
+    "RequestPublishCity": {
         "$ref": "../services/locations/publish_city.json#/definitions/RequestPublishCity"
     },
-    "ResponsePublishCity":{
+    "ResponsePublishCity": {
         "$ref": "../services/locations/publish_city.json#/definitions/ResponsePublishCity"
     },
-
-    "RequestNewCityDescription":{
+    "RequestNewCityDescription": {
         "$ref": "../services/locations/new_city_description.json#/definitions/RequestNewCityDescription"
     },
-    "ResponseNewCityDescription":{
+    "ResponseNewCityDescription": {
         "$ref": "../services/locations/new_city_description.json#/definitions/ResponseNewCityDescription"
     },
-
-    "RequestRemoveCityDescription":{
+    "RequestRemoveCityDescription": {
         "$ref": "../services/locations/remove_city_description.json#/definitions/RequestRemoveCityDescription"
     },
-    "ResponseRemoveCityDescription":{
+    "ResponseRemoveCityDescription": {
         "$ref": "../services/locations/remove_city_description.json#/definitions/ResponseRemoveCityDescription"
     },
-    "RequestUpdateCityDescription":{
+    "RequestUpdateCityDescription": {
         "$ref": "../services/locations/update_city_description.json#/definitions/RequestUpdateCityDescription"
     },
-    "ResponseUpdateCityDescription":{
+    "ResponseUpdateCityDescription": {
         "$ref": "../services/locations/update_city_description.json#/definitions/ResponseUpdateCityDescription"
     },
-
-    "RequestNewCityTravel":{
+    "RequestNewCityTravel": {
         "$ref": "../services/locations/new_city_travel.json#/definitions/RequestNewCityTravel"
     },
-    "ResponseNewCityTravel":{
+    "ResponseNewCityTravel": {
         "$ref": "../services/locations/new_city_travel.json#/definitions/ResponseNewCityTravel"
     },
-    "RequestRemoveCityTravel":{
+    "RequestRemoveCityTravel": {
         "$ref": "../services/locations/remove_city_travel.json#/definitions/RequestRemoveCityTravel"
     },
-    "ResponseRemoveCityTravel":{
+    "ResponseRemoveCityTravel": {
         "$ref": "../services/locations/remove_city_travel.json#/definitions/ResponseRemoveCityTravel"
     },
-    "RequestUpdateCityTravel":{
+    "RequestUpdateCityTravel": {
         "$ref": "../services/locations/update_city_travel.json#/definitions/RequestUpdateCityTravel"
     },
-    "ResponseUpdateCityTravel":{
+    "ResponseUpdateCityTravel": {
         "$ref": "../services/locations/update_city_travel.json#/definitions/ResponseUpdateCityTravel"
     },
-
-
-
-
-
-    "RequestGetPlaces":{
+    "RequestGetPlaces": {
         "$ref": "../services/locations/get_places.json#/definitions/RequestGetPlaces"
     },
-    "ResponseGetPlaces":{
+    "ResponseGetPlaces": {
         "$ref": "../services/locations/get_places.json#/definitions/ResponseGetPlaces"
     },
-    "ListPlaces":{
+    "ListPlaces": {
         "$ref": "../services/locations/get_places.json#/definitions/ListPlaces"
     },
-    "RequestGetPlace":{
+    "RequestGetPlace": {
         "$ref": "../services/locations/get_place.json#/definitions/RequestGetPlace"
     },
-    "ResponseGetPlace":{
+    "ResponseGetPlace": {
         "$ref": "../services/locations/get_place.json#/definitions/ResponseGetPlace"
     },
-
-    "RequestNewPlace":{
+    "RequestNewPlace": {
         "$ref": "../services/locations/new_place.json#/definitions/RequestNewPlace"
     },
-    "ResponseNewPlace":{
+    "ResponseNewPlace": {
         "$ref": "../services/locations/new_place.json#/definitions/ResponseNewPlace"
     },
-    "RequestDeletePlace":{
+    "RequestDeletePlace": {
         "$ref": "../services/locations/delete_place.json#/definitions/RequestDeletePlace"
     },
-    "ResponseDeletePlace":{
+    "ResponseDeletePlace": {
         "$ref": "../services/locations/delete_place.json#/definitions/ResponseDeletePlace"
     },
-    "RequestPublishPlace":{
+    "RequestPublishPlace": {
         "$ref": "../services/locations/publish_place.json#/definitions/RequestPublishPlace"
     },
-    "ResponsePublishPlace":{
+    "ResponsePublishPlace": {
         "$ref": "../services/locations/publish_place.json#/definitions/ResponsePublishPlace"
     },
-
-    "RequestNewPlaceDescription":{
+    "RequestNewPlaceDescription": {
         "$ref": "../services/locations/new_place_description.json#/definitions/RequestNewPlaceDescription"
     },
-    "ResponseNewPlaceDescription":{
+    "ResponseNewPlaceDescription": {
         "$ref": "../services/locations/new_place_description.json#/definitions/ResponseNewPlaceDescription"
     },
-    "RequestRemovePlaceDescription":{
+    "RequestRemovePlaceDescription": {
         "$ref": "../services/locations/remove_place_description.json#/definitions/RequestRemovePlaceDescription"
     },
-    "ResponseRemovePlaceDescription":{
+    "ResponseRemovePlaceDescription": {
         "$ref": "../services/locations/remove_place_description.json#/definitions/ResponseRemovePlaceDescription"
     },
-    "RequestUpdatePlaceDescription":{
+    "RequestUpdatePlaceDescription": {
         "$ref": "../services/locations/update_place_description.json#/definitions/RequestUpdatePlaceDescription"
     },
-    "ResponseUpdatePlaceDescription":{
+    "ResponseUpdatePlaceDescription": {
         "$ref": "../services/locations/update_place_description.json#/definitions/ResponseUpdatePlaceDescription"
     },
-    "RequestNewPlaceEntry":{
+    "RequestNewPlaceEntry": {
         "$ref": "../services/locations/new_place_entry.json#/definitions/RequestNewPlaceEntry"
     },
-    "ResponseNewPlaceEntry":{
+    "ResponseNewPlaceEntry": {
         "$ref": "../services/locations/new_place_entry.json#/definitions/ResponseNewPlaceEntry"
     },
-    "RequestRemovePlaceEntry":{
+    "RequestRemovePlaceEntry": {
         "$ref": "../services/locations/remove_place_entry.json#/definitions/RequestRemovePlaceEntry"
     },
-    "ResponseRemovePlaceEntry":{
+    "ResponseRemovePlaceEntry": {
         "$ref": "../services/locations/remove_place_entry.json#/definitions/ResponseRemovePlaceEntry"
     },
-    "RequestUpdatePlaceEntry":{
+    "RequestUpdatePlaceEntry": {
         "$ref": "../services/locations/update_place_entry.json#/definitions/RequestUpdatePlaceEntry"
     },
-    "ResponseUpdatePlaceEntry":{
+    "ResponseUpdatePlaceEntry": {
         "$ref": "../services/locations/update_place_entry.json#/definitions/ResponseUpdatePlaceEntry"
-    }
-    
+    },
 
     
+    "RequestGetNpcs": {
+        "$ref": "../services/stories/get_npcs.json#/definitions/RequestGetNpcs"
+    },
+    "ResponseGetNpcs": {
+        "$ref": "../services/stories/get_npcs.json#/definitions/ResponseGetNpcs"
+    },
+    "ListNpcs": {
+        "$ref": "../services/stories/get_npcs.json#/definitions/ListNpcs"
+    }
 }

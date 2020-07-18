@@ -1,0 +1,77 @@
+{
+    "path": {
+        "post": {
+            "tags": [
+                "Locations"
+            ],
+            "summary": "Publish a City",
+            "description": "Publish the City content to readers",
+            "operationId": "publish_city",
+            "consumes": [
+                "application/json"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "Transaction details",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/RequestPublishCity"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Success Operation",
+                    "schema": {
+                        "$ref": "#/definitions/ResponsePublishCity"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {
+                                "city": {}
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Error response.",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseData"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "RequestPublishCity": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "published": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "ResponsePublishCity": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/ResponseData"
+                }
+            }
+        }
+    }
+}

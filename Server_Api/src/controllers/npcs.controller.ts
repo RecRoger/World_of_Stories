@@ -6,8 +6,13 @@ class NpcsController {
 
     // get all npcs of a places
     public async getAllNPCs(req: Request, res: Response) {
-        const { ids, published } = req.body;
         try {
+            console.log('.');
+            console.log('________________________________________________');
+            console.log('*************** getAllNPCs *******************');
+
+            const { ids, published } = req.body;
+            console.log('> ids: ' + ids);
             const npcs: NpcInterface[] = await NpcsSchema.find(
                 {
                     _id: { $in: ids },
@@ -19,20 +24,25 @@ class NpcsController {
                     title: 0,
                     chapters: 0,
                 }
-            );
+            ).lean();
             let filterNpcs = npcs
-            if(published){
-                filterNpcs = npcs.filter(npc=> npc.published == true);
+            console.log('_____________________________________________________');
+            if (published) {
+                filterNpcs = npcs.filter(npc => npc.published == true);
             }
             res.json({
                 "data": { "npcs": filterNpcs }
             })
         } catch (err) {
+            console.log('Error ---->', err);
+            console.log('_____________________________________________________');
             res.json({
                 "error": err
             })
         }
     }
+
+    
     // get get complete NPC y ID
     public async getOneNPC(req: Request, res: Response) {
         const { id, published } = req.body;
@@ -59,6 +69,8 @@ class NpcsController {
                 "data": npc
             });
         } catch (err) {
+            console.log('Error ---->', err);
+            console.log('_____________________________________________________');
             res.json({
                 "error": err
             })
@@ -115,6 +127,8 @@ class NpcsController {
                 "data": { "npc": newNpc }
             });
         } catch (err) {
+            console.log('Error ---->', err);
+            console.log('_____________________________________________________');
             res.json({
                 "error": err
             })
@@ -140,6 +154,8 @@ class NpcsController {
                 "data": npcs
             });
         } catch (err) {
+            console.log('Error ---->', err);
+            console.log('_____________________________________________________');
             res.json({
                 "error": err
             })
@@ -160,6 +176,8 @@ class NpcsController {
                 "data": npcs
             });
         } catch (err) {
+            console.log('Error ---->', err);
+            console.log('_____________________________________________________');
             res.json({
                 "error": err
             })
@@ -182,70 +200,21 @@ class NpcsController {
                 { _id: id },
                 {
                     $set: updates
-                    
+
                 }
             );
             res.json({
                 "data": npcs
             });
         } catch (err) {
+            console.log('Error ---->', err);
+            console.log('_____________________________________________________');
             res.json({
                 "error": err
             })
         }
     }
 
-    /**
-        // add City Description
-        public async addCityDescription(req: Request, res: Response): Promise<void> {
-            try {
-                const { id, tale, author } = req.body;
-                const city = await NpcsSchema.updateOne(
-                    { _id: id },
-                    {
-                        $push: {
-                            description: [{
-                                tale: tale,
-                                author: author,
-                                published: false,
-                                writeDate: new Date()
-                            }]
-                        }
-                    }
-                );
-                res.json({
-                    "data": city
-                });
-            } catch (err) {
-                res.json({
-                    "error": err
-                })
-            }
-        }
-        // remove City Description
-        public async removeCityDescription(req: Request, res: Response): Promise<void> {
-            try {
-                const { id } = req.body;
-                const city = await NpcsSchema.updateOne(
-                    { "description._id": id },
-                    {
-                        $pull: {
-                            description: {
-                                _id: id
-                            }
-                        }
-                    }
-                );
-                res.json({
-                    "data": city
-                });
-            } catch (err) {
-                res.json({
-                    "error": err
-                })
-            }
-        }
-    */
 
 }
 

@@ -56,8 +56,6 @@
                 }
             }
         },
-
-        
         "ReadFragment": {
             "type": "object",
             "properties": {
@@ -231,6 +229,160 @@
                 },
                 "author": {
                     "type": "string"
+                }
+            }
+        },
+        "Npc": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "npc_type": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "object",
+                    "$ref": "#/definitions/PublicTale"
+                },
+                "meeting": {
+                    "type": "object",
+                    "$ref": "#/definitions/PublicTale"
+                },
+                "decision": {
+                    "type": "object",
+                    "$ref": "#/definitions/Decision"
+                },
+                "rejected": {
+                    "type": "object",
+                    "$ref": "#/definitions/PublicTale"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "chapters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Chapter"
+                    }
+                },
+                "author": {
+                    "type": "string"
+                },
+                "published": {
+                    "type": "boolean"
+                },
+                "writeDate": {
+                    "type": "string"
+                },
+                "publishDate": {
+                    "type": "string"
+                }
+            }
+        },
+        "Chapter": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "story": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ReadFragment"
+                    }
+                },
+                "usersDecisions": {
+                    "type": "object",
+                    "$ref": "#/definitions/Decision"
+                },
+                "endLocation": {
+                    "type": "object",
+                    "$ref": "#/definitions/ChapterLocation"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "published": {
+                    "type": "string"
+                },
+                "author": {
+                    "type": "string"
+                },
+                "writeDate": {
+                    "type": "string"
+                },
+                "publishDate": {
+                    "type": "string"
+                }
+            }
+        },
+        "ChapterLocation": {
+            "type": "object",
+            "properties": {
+                "locationType": {
+                    "type": "string"
+                },
+                "locationId": {
+                    "type": "string"
+                }
+            }
+        },
+        "Decision": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "item": {
+                    "type": "string"
+                },
+                "options": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DeciosionOption"
+                    }
+                }
+            }
+        },
+        "DeciosionOption": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                },
+                "published": {
+                    "type": "boolean"
+                },
+                "removeItem": {
+                    "type": "boolean"
                 }
             }
         }

@@ -6,7 +6,8 @@ class UsersController {
     // Get All Users
     public async getAllUsers(req: Request, res: Response): Promise<void> {
         try {
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('*************** getAllUsers *******************');
 
             const users: UserInterface[] = await UsersSchema.find({}, { _v: 0 }).lean();
@@ -28,9 +29,10 @@ class UsersController {
     // Get User by ID
     public async getUserById(req: Request, res: Response): Promise<void> {
         try {
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('*************** getUserByID *******************');
-            console.log('*************** ' + req.body.id + ' *******************');
+            console.log('> UserId: ' + req.body.id);
 
             const user: UserInterface | null = await UsersSchema.findById(
                 { _id: req.body.id },
@@ -39,7 +41,7 @@ class UsersController {
                 }
             ).lean();
             // console.log('User ======>', user);
-            console.log('===================== ' + ((user) ? (user as UserInterface).username : 'not Found') + ' ======================');
+            console.log('> Response: ' + ((user) ? (user as UserInterface).username : 'not Found'));
             console.log('_____________________________________________________');
             res.json({
                 "data": { "user": (user) ? { ...user, id: user._id } : null }
@@ -56,7 +58,8 @@ class UsersController {
     public async getOneUser(req: Request, res: Response): Promise<void> {
         try {
 
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('**************** getOneUser *******************', req.body);
 
             const { username, password } = req.body;
@@ -69,7 +72,7 @@ class UsersController {
             }
             ).lean();
             // console.log('User ======>', user);
-            console.log('===================== ' + ((user) ? (user as UserInterface).username : 'not Found') + ' ======================');
+            console.log('> user response: ' + ((user) ? (user as UserInterface).username : 'not Found'));
             console.log('_____________________________________________________');
             res.json({
                 "data": { "user": user && { ...user, id: user._id } }
@@ -84,7 +87,8 @@ class UsersController {
     }
     // Save new User
     public async saveUser(req: Request, res: Response): Promise<void> {
-        console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+        console.log('.');
+        console.log('________________________________________________');
         console.log('****************** savwUser *******************');
         try {
             const { username, password } = req.body.user;
@@ -97,7 +101,7 @@ class UsersController {
 
             const user = await UsersSchema.findOne({ "_id": newUser._id }).lean();
 
-            console.log('===================== ' + ((user) ? (user as UserInterface).username : 'not Found') + ' ======================');
+            console.log('> user response:' + ((user) ? (user as UserInterface).username : 'not Found'));
             console.log('_____________________________________________________');
             res.json({
                 "data": { "user": { ...user, id: user._id } }
@@ -113,14 +117,15 @@ class UsersController {
     // delete User
     public async deleteUser(req: Request, res: Response): Promise<void> {
         try {
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('**************** deleteUser *******************');
-            console.log('**************** ' + req.body.id + ' *******************');
+            console.log('> userId: ' + req.body.id);
             const user = await UsersSchema.deleteOne({
                 _id: req.body.id
             });
             // console.log('Edition ======>', user);
-            console.log('===================== ' + ((user.ok) ? 'OK' : 'not Found') + ' ======================');
+            console.log('> response: ' + ((user.ok) ? 'OK' : 'not Found') + ' ======================');
             console.log('_____________________________________________________');
             res.json({
                 "data": user.ok ? 'OK' : 'error'
@@ -136,12 +141,13 @@ class UsersController {
 
     public async setUserRol(req: Request, res: Response): Promise<void> {
         try {
-            console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+            console.log('.');
+            console.log('________________________________________________');
             console.log('************** updateUserRol ******************');
 
             const { id, rol } = req.body;
-            console.log('************** ' + id + ' ******************');
-            console.log('************** Rol: ' + rol + ' ******************');
+            console.log('> userID ' + id);
+            console.log('> rol: ' + rol);
 
             const edition = await UsersSchema.updateOne(
                 { _id: id },
@@ -156,7 +162,7 @@ class UsersController {
                 { _v: 0 }
             ).lean();
 
-            console.log('===================== ' + ((edition.ok) ? 'OK' : 'not Found') + ' ======================');
+            console.log('> response:' + ((edition.ok) ? 'OK' : 'not Found'));
             console.log('_____________________________________________________');
             res.json({
                 "data": edition.ok ? { user: user && { ...user, id: user._id } } : null
@@ -171,13 +177,14 @@ class UsersController {
         }
     }
     public async removeUserRol(req: Request, res: Response): Promise<void> {
-        console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+        console.log('.');
+        console.log('________________________________________________');
         console.log('*************** removeUserRol *****************');
         try {
             const { id, rol } = req.body;
 
-            console.log('************** ' + id + ' ******************');
-            console.log('************** Rol: ' + rol + ' ******************');
+            console.log('> userId: ' + id);
+            console.log('> rol: ' + rol);
 
             const edition = await UsersSchema.updateOne(
                 { _id: id },
@@ -191,7 +198,7 @@ class UsersController {
                 { _id: id },
                 { _v: 0 }
             ).lean();
-            console.log('===================== ' + ((edition.ok) ? 'OK' : 'not Found') + ' ======================');
+            console.log('> response: ' + ((edition.ok) ? 'OK' : 'not Found'));
             console.log('_____________________________________________________');
             res.json({
                 "data": edition.ok ? { user: user && { ...user, id: user._id } } : null

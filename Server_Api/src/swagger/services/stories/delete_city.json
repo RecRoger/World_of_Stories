@@ -1,0 +1,74 @@
+{
+    "path": {
+        "post": {
+            "tags": [
+                "Locations"
+            ],
+            "summary": "Delete a City",
+            "description": "Delete a City",
+            "operationId": "delete_city",
+            "consumes": [
+                "application/json"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "Transaction details",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/RequestDeleteCity"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Success Operation",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseDeleteCity"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {
+                                "city": {}
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Error response.",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseData"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "RequestDeleteCity": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "ResponseDeleteCity": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/ResponseData"
+                }
+            }
+        }
+    }
+}
