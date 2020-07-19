@@ -2,11 +2,11 @@
     "path": {
         "post": {
             "tags": [
-                "Locations"
+                "Stories"
             ],
-            "summary": "Delete a City",
-            "description": "Delete a City",
-            "operationId": "delete_city",
+            "summary": "Delete a NPC",
+            "description": "Delete a NPC",
+            "operationId": "delete_npc",
             "consumes": [
                 "application/json"
             ],
@@ -20,7 +20,7 @@
                     "description": "Transaction details",
                     "required": true,
                     "schema": {
-                        "$ref": "#/definitions/RequestDeleteCity"
+                        "$ref": "#/definitions/RequestDeleteNpc"
                     }
                 }
             ],
@@ -28,12 +28,12 @@
                 "200": {
                     "description": "Success Operation",
                     "schema": {
-                        "$ref": "#/definitions/ResponseDeleteCity"
+                        "$ref": "#/definitions/ResponseDeleteNpc"
                     },
                     "examples": {
                         "application/json": {
                             "data": {
-                                "city": {}
+                                "npc": {}
                             }
                         }
                     }
@@ -53,15 +53,18 @@
         }
     },
     "definitions": {
-        "RequestDeleteCity": {
+        "RequestDeleteNpc": {
             "type": "object",
             "properties": {
-                "id": {
+                "placeId": {
+                    "type": "string"
+                },
+                "npcId": {
                     "type": "string"
                 }
             }
         },
-        "ResponseDeleteCity": {
+        "ResponseDeleteNpc": {
             "type": "object",
             "properties": {
                 "data": {

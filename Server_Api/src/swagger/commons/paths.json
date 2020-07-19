@@ -89,5 +89,20 @@
 
     "/npcs": {
         "$ref": "../services/stories/get_npcs.json#/path"
+    },
+    "/npcs/npc": {
+        "$ref": "../services/stories/get_npc.json#/path"
+    },
+    "/npcs/new": {
+        "$ref": "../services/stories/new_npc.json#/path"
+    },
+    "/npcs/delete": {
+        "$ref": "../services/stories/delete_npc.json#/path"
+    },
+    "/npcs/publish": {
+        "$ref": "../services/stories/publish_npc.json#/path"
+    },
+    "/npcs/update": {
+        "$ref": "../services/stories/update_npc.json#/path"
     }
 }

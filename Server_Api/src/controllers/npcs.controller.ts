@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import NpcsSchema, { NpcInterface } from '../schemas/npcs.model';
 import CitiesSchema from '../schemas/cities.model';
+import { chaptersController } from './chapters.controller';
 
 class NpcsController {
 
@@ -12,14 +13,15 @@ class NpcsController {
             console.log('*************** getAllNPCs *******************');
 
             const { ids, published } = req.body;
-            console.log('> ids: ' + ids);
+            console.log('> ids: ', ids);
+
             const npcs: NpcInterface[] = await NpcsSchema.find(
                 {
                     _id: { $in: ids },
                 },
                 {
-                    decision: 0,
-                    rejected: 0,
+                    // decision: 0,
+                    // rejected: 0,
                     //items:0,
                     title: 0,
                     chapters: 0,
@@ -31,7 +33,7 @@ class NpcsController {
                 filterNpcs = npcs.filter(npc => npc.published == true);
             }
             res.json({
-                "data": { "npcs": filterNpcs }
+                "data": { "npcs": filterNpcs.map(npc => ({ ...npc, id: npc._id })) }
             })
         } catch (err) {
             console.log('Error ---->', err);
@@ -41,17 +43,20 @@ class NpcsController {
             })
         }
     }
-
-    
     // get get complete NPC y ID
     public async getOneNPC(req: Request, res: Response) {
-        const { id, published } = req.body;
         try {
+
+            console.log('.');
+            console.log('________________________________________________');
+            console.log('*************** getOneNPC **************************');
+            console.log('> npcId: ' + req.body.id);
+
+            const { id, published } = req.body;
+
+            const filters = (published) ? { _id: id, published: true } : { _id: id };
             const npc: NpcInterface | null = await NpcsSchema.findById(
-                {
-                    _id: id,
-                    published: (published) ? true : null
-                },
+                filters,
                 {
                     "chapters": 0
                     // "chapters.description": 0,
@@ -64,9 +69,27 @@ class NpcsController {
                     // "chapters.defeat": 0,
                     // "chapters.item": 0,
                 }
-            );
+            ).lean();
+
+            const castNpc = npc ? {
+                ...npc,
+                id: npc._id,
+                description: npc.description ? {
+                    ...npc.description,
+                    id: npc.description._id
+                } : {},
+                meeting: npc.meeting ? {
+                    ...npc.meeting,
+                    id: npc.meeting._id
+                } : {}
+
+            } : null;
+
+            console.log('> response:' + ((npc) ? (<NpcInterface>npc).name : npc));
+            console.log('_____________________________________________________');
+
             res.json({
-                "data": npc
+                "data": { "npc": castNpc }
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -76,15 +99,22 @@ class NpcsController {
             })
         }
     }
+
+
     // save new NPC
     public async saveNPC(req: Request, res: Response): Promise<void> {
         try {
-            const { id, npc } = req.body;
+            console.log('.');
+            console.log('________________________________________________');
+            console.log('*************** saveNPC **************************');
+
+            const { placeId, npc } = req.body;
+            console.log('> placeId: ', placeId)
 
             const newNpc: NpcInterface = new NpcsSchema({
 
                 name: npc.name,		       // nombre aislado del personaje
-                npc_type: npc.npc_type, 		   // lugar de 'historias', 'tienda', 'posta de caballos' etc.
+                npcType: npc.npcType, 		   // lugar de 'historias', 'tienda', 'posta de caballos' etc.
                 description: {
                     tale: npc.description,
                     author: npc.author,
@@ -95,7 +125,25 @@ class NpcsController {
                     author: npc.author,
                     published: false
                 },
-                decision: npc.decision,
+                decision: {
+                    decisionType: npc.decision.decisionType,
+                    amount: npc.decision.amount,
+                    item: npc.decision.item,
+                    options: [{
+                        name: npc.decision.options[0].name,
+                        description: npc.decision.options[0].description,
+                        value: npc.decision.options[0].value,
+                        published: npc.decision.options[0].published,
+                        removeItem: npc.decision.options[0].removeItem
+                    }, {
+                        name: npc.decision.options[1].name,
+                        description: npc.decision.options[1].description,
+                        value: npc.decision.options[1].value,
+                        published: npc.decision.options[1].published,
+                        removeItem: npc.decision.options[1].removeItem
+                    }]
+
+                },
                 rejected: {
                     tale: npc.rejected,
                     author: npc.author,
@@ -105,7 +153,7 @@ class NpcsController {
                 title: npc.title,		       // Titulo de la historia
                 chapters: [{
                     name: '',
-                    story: '',	                // narracion previa a batalla o decision.
+                    story: [],	                // narracion previa a batalla o decision.
                     published: false,
                     writeDate: new Date()     // Fecha de creacion
                 }],
@@ -114,17 +162,38 @@ class NpcsController {
                 writeDate: new Date()     // Fecha de creacion
             });
             await newNpc.save();
-            const city = await CitiesSchema.updateOne(
-                { "places._id": id },
+            console.log('> newNpcId: ', newNpc._id);
+            const placeEdition = await CitiesSchema.updateOne(
+                { "places._id": placeId },
                 {
                     $push: {
-                        "places.$.events": [newNpc.id]
+                        "places.$.events": [newNpc._id]
                     }
                 }
-            );
+            ).lean();
+            console.log('> placeEdition: ', placeEdition);
+
+            const npcSearch: NpcInterface | null = await NpcsSchema.findOne({ _id: newNpc._id }).lean();
+            const castNpc = npcSearch ? {
+                ...npcSearch,
+                id: npcSearch._id,
+                description: npcSearch.description ? {
+                    ...npcSearch.description,
+                    id: npcSearch.description._id
+                } : {},
+                meeting: npcSearch.meeting ? {
+                    ...npcSearch.meeting,
+                    id: npcSearch.meeting._id
+                } : {},
+                chapters: npcSearch && npcSearch.chapters ? [{ ...npcSearch.chapters[0], id: npcSearch.chapters[0]._id }] : []
+
+            } : null;
+
+            console.log('> response:' + ((castNpc) ? (castNpc).name : npc));
+            console.log('_____________________________________________________');
 
             res.json({
-                "data": { "npc": newNpc }
+                "data": { "npc": castNpc }
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -135,23 +204,35 @@ class NpcsController {
         }
 
     }
+
     // delete NPCs
     public async deleteNPCs(req: Request, res: Response): Promise<void> {
-        const { id, place_id } = req.body;
         try {
-            const npcs = await NpcsSchema.deleteOne({
-                _id: id
+
+            console.log('.');
+            console.log('________________________________________________');
+            console.log('**************** deleteNPCs *******************');
+            const { npcId, placeId } = req.body;
+            console.log('> placeId: ', placeId);
+            console.log('> npcId: ', npcId);
+
+
+            const edition = await NpcsSchema.deleteOne({
+                _id: npcId
             });
+
             const city = await CitiesSchema.updateOne(
-                { "places._id": place_id },
+                { "places._id": placeId },
                 {
                     $pull: {
-                        "places.$.events": id
+                        "places.$.events": npcId
                     }
                 }
             );
+            console.log('> response: ' + ((edition.ok) ? 'OK' : 'not Found'));
+            console.log('_____________________________________________________');
             res.json({
-                "data": npcs
+                "data": (edition.ok) ? 'OK' : 'error'
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -161,19 +242,29 @@ class NpcsController {
             })
         }
     }
+
     // publicar NPC
     public async publishNPC(req: Request, res: Response): Promise<void> {
         try {
+            console.log('.');
+            console.log('________________________________________________');
+            console.log('**************** publishNPC *******************');
+
             const { id, published } = req.body;
-            const npcs = await NpcsSchema.updateOne(
+            console.log('> npcId: ' + id);
+            console.log('> Publish Status: ' + published);
+
+            const edition = await NpcsSchema.updateOne(
                 { _id: id },
                 {
                     published: published,
                     publishDate: (published) ? new Date() : null
                 }
             );
+            console.log('> repsonse:' + ((edition.nModified) ? 'OK' : 'not Found'));
+            console.log('_____________________________________________________');
             res.json({
-                "data": npcs
+                "data": (edition.nModified) ? 'OK' : 'error'
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -186,26 +277,84 @@ class NpcsController {
     // updates NPC
     public async updateNPC(req: Request, res: Response): Promise<void> {
         try {
+            console.log('.');
+            console.log('________________________________________________');
+            console.log('**************** updateNPC *******************');
             const { id, npc } = req.body;
+            console.log('> npcId: ' + id);
+
             let updates: any = {};
             if (npc.name) updates.name = npc.name;
-            if (npc.description) updates.description = npc.description;
-            if (npc.meeting) updates.meeting = npc.meeting;
-            if (npc.decision) updates.decision = npc.decision;
+            if (npc.description) {
+                updates['description.tale'] = npc.description;
+                updates['description.author'] = npc.author;
+            }
+            if (npc.meeting) {
+                updates['meeting.tale'] = npc.meeting;
+                updates['meeting.author'] = npc.author;
+            }
+            if (npc.decision) {
+                updates['decision.decisionType'] = npc.decision.decisionType;
+                updates['decision.amount'] = npc.decision.amount;
+                updates['decision.item'] = npc.decision.item;
+                updates['decision.options'] = [{
+                    name: npc.decision.options[0].name,
+                    description: npc.decision.options[0].description,
+                    value: npc.decision.options[0].value,
+                    published: npc.decision.options[0].published,
+                    removeItem: npc.decision.options[0].removeItem
+                }, {
+                    name: npc.decision.options[1].name,
+                    description: npc.decision.options[1].description,
+                    value: npc.decision.options[1].value,
+                    published: npc.decision.options[1].published,
+                    removeItem: npc.decision.options[1].removeItem
+                }];
+            };
             if (npc.items) updates.items = npc.items;
-            if (npc.rejected) updates.rejected = npc.rejected;
+            if (npc.rejected) {
+                updates['rejected.tale'] = npc.rejected;
+                updates['rejected.author'] = npc.author;
+            }
             if (npc.title) updates.title = npc.title;
+            updates.writeDate = new Date();
 
-            const npcs = await NpcsSchema.updateOne(
+            const edition = await NpcsSchema.updateOne(
                 { _id: id },
                 {
                     $set: updates
-
                 }
-            );
+            ).lean();
+            console.log('> npc edition: ', edition);
+
+            const editedNpc: NpcInterface | null = await NpcsSchema.findById(
+                { _id: id },
+                {
+                    "chapters": 0
+                }
+            ).lean();
+
+            const castNpc = editedNpc ? {
+                ...editedNpc,
+                id: editedNpc._id,
+                description: editedNpc.description ? {
+                    ...editedNpc.description,
+                    id: editedNpc.description._id
+                } : {},
+                meeting: editedNpc.meeting ? {
+                    ...editedNpc.meeting,
+                    id: editedNpc.meeting._id
+                } : {}
+
+            } : null;
+
+            console.log('> response:' + ((editedNpc) ? (<NpcInterface>editedNpc).name : editedNpc));
+            console.log('_____________________________________________________');
+
             res.json({
-                "data": npcs
+                "data": { "npc": castNpc }
             });
+
         } catch (err) {
             console.log('Error ---->', err);
             console.log('_____________________________________________________');

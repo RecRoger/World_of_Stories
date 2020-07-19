@@ -57,7 +57,7 @@ const NpcsSchema = new Schema({
         publishDate: Date,
     },
     decision: {
-        type: String,
+        decisionType: String,
         amount: Number,
         item: String,
         options: [{
@@ -86,8 +86,8 @@ const NpcsSchema = new Schema({
             text: String,
             animation: String
         }],	                // narracion previa a batalla o decision.
-        usersDecisions: [{
-            type: String,
+        usersDecisions: {
+            decisionType: String,
             amount: Number,
             item: String,
             options: [{
@@ -97,7 +97,7 @@ const NpcsSchema = new Schema({
                 published: Boolean,
                 removeItem: Boolean
             }]
-        }],
+        },
         endLocation: {
             locationType: String,    // place or city
             locationId: String       // id del lugar de retorno del capiulo

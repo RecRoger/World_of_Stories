@@ -8,7 +8,7 @@
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "name": "nodemon",
-            "program": "${workspaceFolder}/src/index.ts",
+            "program": "${workspaceFolder}",
             "request": "launch",
             "restart": true,
             "runtimeExecutable": "nodemon",

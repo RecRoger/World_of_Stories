@@ -241,7 +241,7 @@
                 "name": {
                     "type": "string"
                 },
-                "npc_type": {
+                "npcType": {
                     "type": "string"
                 },
                 "description": {
@@ -286,6 +286,15 @@
                 },
                 "publishDate": {
                     "type": "string"
+                }
+            }
+        },
+        "NpcData": {
+            "type": "object",
+            "properties": {
+                "npc": {
+                    "type": "object",
+                    "$ref": "#/definitions/Npc"
                 }
             }
         },
@@ -346,7 +355,7 @@
         "Decision": {
             "type": "object",
             "properties": {
-                "type": {
+                "decisionType": {
                     "type": "string"
                 },
                 "amount": {

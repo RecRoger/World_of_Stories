@@ -41,6 +41,9 @@
     "Npc": {
         "$ref": "../commons/models.json#/definitions/Npc"
     },
+    "NpcData": {
+        "$ref": "../commons/models.json#/definitions/NpcData"
+    },
     "Chapter": {
         "$ref": "../commons/models.json#/definitions/Chapter"
     },
@@ -243,5 +246,44 @@
     },
     "ListNpcs": {
         "$ref": "../services/stories/get_npcs.json#/definitions/ListNpcs"
+    },
+
+    "RequestGetNPC": {
+        "$ref": "../services/stories/get_npc.json#/definitions/RequestGetNPC"
+    },
+    "ResponseGetNPC": {
+        "$ref": "../services/stories/get_npc.json#/definitions/ResponseGetNPC"
+    },
+    "RequestNewNpc": {
+        "$ref": "../services/stories/new_npc.json#/definitions/RequestNewNpc"
+    },
+    "NewNpc": {
+        "$ref": "../services/stories/new_npc.json#/definitions/NewNpc"
+    },
+    "ResponseNewNpc": {
+        "$ref": "../services/stories/new_npc.json#/definitions/ResponseNewNpc"
+    },
+    "RequestDeleteNpc": {
+        "$ref": "../services/stories/delete_npc.json#/definitions/RequestDeleteNpc"
+    },
+    "ResponseDeleteNpc": {
+        "$ref": "../services/stories/delete_npc.json#/definitions/ResponseDeleteNpc"
+    },
+    "RequestPublishNpc": {
+        "$ref": "../services/stories/publish_npc.json#/definitions/RequestPublishNpc"
+    },
+    "ResponsePublishNpc": {
+        "$ref": "../services/stories/publish_npc.json#/definitions/ResponsePublishNpc"
+    },
+    "RequestUpdateNpc": {
+        "$ref": "../services/stories/update_npc.json#/definitions/RequestUpdateNpc"
+    },
+    "UpdateNpcStructure": {
+        "$ref": "../services/stories/update_npc.json#/definitions/UpdateNpcStructure"
+    },
+    "ResponseUpdateNpc": {
+        "$ref": "../services/stories/update_npc.json#/definitions/ResponseUpdateNpc"
     }
+
+
 }

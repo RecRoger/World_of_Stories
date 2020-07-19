@@ -16,7 +16,7 @@ export interface chapterLocation {
 
 }
 export interface decisionObject {
-    type: string;               // tipo de la decision: 'choose', 'item', 'money'
+    decisionType: string;               // tipo de la decision: 'choose', 'item', 'money'
     amount?: number;            // money amount para el cuento   
     item?: string;              // item necesario para el cuento
     options: decisionOption;    // desisiones 

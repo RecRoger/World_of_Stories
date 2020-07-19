@@ -1,0 +1,120 @@
+{
+    "path": {
+        "post": {
+            "tags": [
+                "Stories"
+            ],
+            "summary": "Update NPC",
+            "description": "Update NPC",
+            "operationId": "update_npc",
+            "consumes": [
+                "application/json"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "Transaction details",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/RequestUpdateNpc"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Success Operation",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseUpdateNpc"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {
+                                "npc": {}
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Error response.",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseData"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "RequestUpdateNpc": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "npc": {
+                    "type": "object",
+                    "$ref": "#/definitions/UpdateNpcStructure"
+                }
+            }
+        },
+        "UpdateNpcStructure": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ReadFragment"
+                    }
+                },
+                "meeting": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ReadFragment"
+                    }
+                },
+                "decision": {
+                    "type": "object",
+                    "$ref": "#/definitions/Decision"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "rejected": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ReadFragment"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "author": {
+                    "type": "string"
+                }
+            }
+        },
+        "ResponseUpdateNpc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/NpcData"
+                }
+            }
+        }
+    }
+}

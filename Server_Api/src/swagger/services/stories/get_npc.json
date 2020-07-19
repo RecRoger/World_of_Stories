@@ -2,11 +2,11 @@
     "path": {
         "post": {
             "tags": [
-                "Locations"
+                "Stories"
             ],
-            "summary": "Publish a City",
-            "description": "Publish the City content to readers",
-            "operationId": "publish_city",
+            "summary": "Get NPC",
+            "description": "Get complete info of one NPC",
+            "operationId": "get_city",
             "consumes": [
                 "application/json"
             ],
@@ -20,7 +20,7 @@
                     "description": "Transaction details",
                     "required": true,
                     "schema": {
-                        "$ref": "#/definitions/RequestPublishCity"
+                        "$ref": "#/definitions/RequestGetNPC"
                     }
                 }
             ],
@@ -28,12 +28,12 @@
                 "200": {
                     "description": "Success Operation",
                     "schema": {
-                        "$ref": "#/definitions/ResponsePublishCity"
+                        "$ref": "#/definitions/ResponseGetNPC"
                     },
                     "examples": {
                         "application/json": {
                             "data": {
-                                "city": {}
+                                "npc": {}
                             }
                         }
                     }
@@ -53,23 +53,23 @@
         }
     },
     "definitions": {
-        "RequestPublishCity": {
+        "RequestGetNPC": {
             "type": "object",
             "properties": {
                 "id": {
                     "type": "string"
                 },
                 "published": {
-                    "type": "boolean"
+                    "type": "string"
                 }
             }
         },
-        "ResponsePublishCity": {
+        "ResponseGetNPC": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "object",
-                    "$ref": "#/definitions/ResponseData"
+                    "$ref": "#/definitions/NpcData"
                 }
             }
         }
