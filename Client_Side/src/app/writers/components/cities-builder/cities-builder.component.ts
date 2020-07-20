@@ -20,8 +20,6 @@ export class CitiesBuilderComponent implements OnInit, OnDestroy {
 
   user: User;
 
-  citiesloading = false;
-
   @Select(LocationState.getCities) cities$: Observable<City[]>;
   @Output() citySelect: EventEmitter<City> = new EventEmitter<City>();
 
@@ -53,22 +51,10 @@ export class CitiesBuilderComponent implements OnInit, OnDestroy {
 
   // al iniciar el componente, consulta todas las ciudades
   ngOnInit() {
-    this.getAllCities();
+
   }
   ngOnDestroy() {
     // this.subscription.forEach(subs => subs.unsubscribe());
-  }
-
-  // Consultar todas las ciudades
-  async getAllCities() {
-    this.citiesloading = true;
-    this.cd.markForCheck();
-
-    const resp = await this.store.dispatch(new GetAllCities(false)).toPromise();
-
-    this.citiesloading = false;
-    this.cd.markForCheck();
-
   }
 
   // desplegar tarjeta de ciudad

@@ -1,8 +1,4 @@
-<div class="row text center" *ngIf="citiesloading">
-  <app-loader class="mx-auto" size="lg"></app-loader>
-</div>
-
-<div class="row" *ngIf="!citiesloading && (cities$ | async) as cities">
+<div class="row" *ngIf="(cities$ | async) as cities">
   <ng-container *ngFor="let city of cities; let i = index">
     <div class="col-6 mb-5" [ngClass]="{'col-6': (!citiesTabs || !citiesTabs.editing || citiesTabs.city !== city.id), 'col-12': (citiesTabs && citiesTabs.city === city.id && citiesTabs.editing)}">
 

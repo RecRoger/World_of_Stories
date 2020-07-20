@@ -4,9 +4,9 @@
             "tags": [
                 "Stories"
             ],
-            "summary": "Get NPCs",
-            "description": "Get all NPC in array of IDs, filtering by publish status",
-            "operationId": "get_npcs",
+            "summary": "Delete a Chapter",
+            "description": "Delete a Chapter, it will delete de option pointer to this chapter too",
+            "operationId": "delete_chapter",
             "consumes": [
                 "application/json"
             ],
@@ -20,7 +20,7 @@
                     "description": "Transaction details",
                     "required": true,
                     "schema": {
-                        "$ref": "#/definitions/RequestGetNpcs"
+                        "$ref": "#/definitions/RequestDeleteChapter"
                     }
                 }
             ],
@@ -28,13 +28,11 @@
                 "200": {
                     "description": "Success Operation",
                     "schema": {
-                        "$ref": "#/definitions/ResponseGetNpcs"
+                        "$ref": "#/definitions/ResponseDeleteChapter"
                     },
                     "examples": {
                         "application/json": {
-                            "data": {
-                                "cities": []
-                            }
+                            "data": "OK"
                         }
                     }
                 },
@@ -53,34 +51,20 @@
         }
     },
     "definitions": {
-        "RequestGetNpcs": {
+        "RequestDeleteChapter": {
             "type": "object",
             "properties": {
-                "placeId":{
+                "id": {
                     "type": "string"
-                },
-                "published": {
-                    "type": "boolean"
                 }
             }
         },
-        "ResponseGetNpcs": {
+        "ResponseDeleteChapter": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "object",
-                    "$ref": "#/definitions/ListNpcs"
-                }
-            }
-        },
-        "ListNpcs": {
-            "type": "object",
-            "properties": {
-                "npcs": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Npc"
-                    }
+                    "$ref": "#/definitions/ResponseData"
                 }
             }
         }

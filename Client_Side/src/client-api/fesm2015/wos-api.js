@@ -1000,6 +1000,449 @@ LocationsService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: api/stories.service.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class StoriesService {
+    /**
+     * @param {?} httpClient
+     * @param {?} basePath
+     * @param {?} configuration
+     */
+    constructor(httpClient, basePath, configuration) {
+        this.httpClient = httpClient;
+        this.basePath = 'http://localhost:3000';
+        this.defaultHeaders = new HttpHeaders();
+        this.configuration = new Configuration();
+        if (basePath) {
+            this.basePath = basePath;
+        }
+        if (configuration) {
+            this.configuration = configuration;
+            this.basePath = basePath || configuration.basePath || this.basePath;
+        }
+    }
+    /**
+     * @private
+     * @param {?} consumes string[] mime-types
+     * @return {?} true: consumes contains 'multipart/form-data', false: otherwise
+     */
+    canConsumeForm(consumes) {
+        /** @type {?} */
+        const form = 'multipart/form-data';
+        for (const consume of consumes) {
+            if (form === consume) {
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
+    deleteChapter(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling deleteChapter.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/chapters/delete`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
+    deleteNpc(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling deleteNpc.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/npcs/delete`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
+    getChapters(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling getChapters.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/chapters`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
+    getCity(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling getCity.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/npcs/npc`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
+    getNpcs(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling getNpcs.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/npcs`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
+    newNpc(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling newNpc.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/npcs/new`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
+    publishChapter(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling publishChapter.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/chapters/publish`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
+    publishNpc(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling publishNpc.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/npcs/publish`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
+    updateChapter(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling updateChapter.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/chapters/update`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
+    updateNpc(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling updateNpc.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/npcs/update`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
+}
+StoriesService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+StoriesService.ctorParameters = () => [
+    { type: HttpClient },
+    { type: String, decorators: [{ type: Optional }, { type: Inject, args: [BASE_PATH,] }] },
+    { type: Configuration, decorators: [{ type: Optional }] }
+];
+/** @nocollapse */ StoriesService.ngInjectableDef = defineInjectable({ factory: function StoriesService_Factory() { return new StoriesService(inject(HttpClient), inject(BASE_PATH, 8), inject(Configuration, 8)); }, token: StoriesService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: api/users.service.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1318,6 +1761,30 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/chapter.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/chapterData.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/chapterLocation.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/chapterUpdate.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/city.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1330,13 +1797,37 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/deciosionOption.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/decision.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/errorMsg.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/listChapters.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/listCities.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/listNpcs.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -1360,7 +1851,25 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/newNpc.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/newPlaceTale.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/npc.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/npcData.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -1390,7 +1899,19 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/requestDeleteChapter.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/requestDeleteCity.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/requestDeleteNpc.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -1408,6 +1929,12 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/requestGetChapters.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/requestGetCities.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1415,6 +1942,18 @@ UsersService.ctorParameters = () => [
 /**
  * @fileoverview added by tsickle
  * Generated from: model/requestGetCity.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/requestGetNPC.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/requestGetNpcs.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -1462,6 +2001,12 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/requestNewNpc.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/requestNewPlace.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1480,7 +2025,19 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/requestPublishChapter.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/requestPublishCity.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/requestPublishNpc.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -1534,6 +2091,12 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/requestUpdateChapter.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/requestUpdateCityDescription.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1541,6 +2104,12 @@ UsersService.ctorParameters = () => [
 /**
  * @fileoverview added by tsickle
  * Generated from: model/requestUpdateCityTravel.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/requestUpdateNpc.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -1564,7 +2133,19 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/responseDeleteChapter.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/responseDeleteCity.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/responseDeleteNpc.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -1582,6 +2163,12 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/responseGetChapters.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/responseGetCities.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1589,6 +2176,18 @@ UsersService.ctorParameters = () => [
 /**
  * @fileoverview added by tsickle
  * Generated from: model/responseGetCity.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/responseGetNPC.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/responseGetNpcs.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -1642,6 +2241,12 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/responseNewNpc.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/responseNewPlace.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1660,7 +2265,19 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/responsePublishChapter.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/responsePublishCity.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/responsePublishNpc.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -1714,6 +2331,12 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/responseUpdateChapter.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/responseUpdateCityDescription.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1721,6 +2344,12 @@ UsersService.ctorParameters = () => [
 /**
  * @fileoverview added by tsickle
  * Generated from: model/responseUpdateCityTravel.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/responseUpdateNpc.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -1739,6 +2368,12 @@ UsersService.ctorParameters = () => [
 /**
  * @fileoverview added by tsickle
  * Generated from: model/taleEdition.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/updateNpcStructure.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -1772,6 +2407,6 @@ UsersService.ctorParameters = () => [
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { LocationsService, UsersService, Configuration, BASE_PATH as ɵa };
+export { LocationsService, StoriesService, UsersService, Configuration, BASE_PATH as ɵa };
 
 //# sourceMappingURL=wos-api.js.map

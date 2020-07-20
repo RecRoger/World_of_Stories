@@ -8,12 +8,14 @@ import { CityTabs, PlaceTabs } from '../../constants';
 
 export interface LocationsStateModel {
   cities: City[];
+  places: Place[];
 }
 
 @State<LocationsStateModel>({
   name: 'locations',
   defaults: {
-    cities: []
+    cities: [],
+    places: []
   }
 })
 @Injectable()
@@ -33,6 +35,10 @@ export class LocationState {
       return state.cities.find(city => city.id === cityId).places;
     };
   }
+  @Selector()
+  static getCityPlaces(state: LocationsStateModel) {
+    return state.places || [];
+  }
 
 
 
@@ -41,19 +47,23 @@ export class LocationState {
 
     try {
 
-      const req: RequestGetCities = { published: action.payload };
+      if (!ctx.getState().cities || ctx.getState().cities.length === 0 || action.payload.force) {
+        const req: RequestGetCities = { published: action.payload.published };
 
-      const resp = await this.locationsService.getCities(req).toPromise();
+        const resp = await this.locationsService.getCities(req).toPromise();
 
-      if (resp && resp.data && resp.data.cities) {
-        ctx.patchState({
-          cities: resp.data.cities
-        });
+        if (resp && resp.data && resp.data.cities) {
+          ctx.patchState({
+            cities: resp.data.cities
+          });
 
-      } else {
-        this.store.dispatch(new SetError('No hay ciudades en el sistema'));
-        return false;
+        } else {
+          this.store.dispatch(new SetError('No hay ciudades en el sistema'));
+          return false;
+        }
+
       }
+
     } catch (err) {
       console.log('*** ERROR ***', err);
 
@@ -308,21 +318,34 @@ export class LocationState {
     try {
 
       const req: RequestGetPlaces = {
-        ...action.payload
+        ...action.payload.request
       };
+      const city = ctx.getState().cities.find(c => c.id === req.cityId);
+      let places = city.places;
 
-      const resp = await this.locationsService.getPlaces(req).toPromise();
+      if (!places || places.length === 0 || action.payload.force) {
 
-      if (resp && resp.data && resp.data.places) {
-        ctx.setState(patch({
-          cities: updateItem<City>(c => c.id === req.cityId, patch({
-            places: resp.data.places
-          }))
-        }));
-      } else {
-        this.store.dispatch(new SetError('No hay lugares en esta ciudad'));
-        return false;
+        const resp = await this.locationsService.getPlaces(req).toPromise();
+
+        if (resp && resp.data && resp.data.places) {
+          ctx.setState(patch({
+            cities: updateItem<City>(c => c.id === req.cityId, patch({
+              places: resp.data.places
+            }))
+          }));
+          places = resp.data.places;
+        } else {
+          this.store.dispatch(new SetError('No hay lugares en esta ciudad'));
+          return false;
+        }
+
       }
+
+      ctx.setState(patch({
+        places
+      }));
+
+
     } catch (err) {
       console.log('*** ERROR ***', err);
 

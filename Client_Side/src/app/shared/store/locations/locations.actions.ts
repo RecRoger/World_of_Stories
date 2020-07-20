@@ -3,7 +3,7 @@ import { CityTabs, PlaceTabs } from '../../constants';
 
 export class GetAllCities {
     static readonly type = '[Locations] Get All Cities';
-    constructor(public payload?: boolean) { }
+    constructor(public payload: {published: boolean, force?: boolean}) { }
 }
 export class NewCity {
     static readonly type = '[Locations] New City';
@@ -28,7 +28,7 @@ export class DeleteCityStory {
 
 export class GetAllPlaces {
     static readonly type = '[Locations] Get All Places';
-    constructor(public payload: RequestGetPlaces) { }
+    constructor(public payload: {request: RequestGetPlaces, force?: boolean}) { }
 }
 export class NewPlace {
     static readonly type = '[Locations] New Place';

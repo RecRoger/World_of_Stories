@@ -47,6 +47,9 @@
     "Chapter": {
         "$ref": "../commons/models.json#/definitions/Chapter"
     },
+    "ChapterData": {
+        "$ref": "../commons/models.json#/definitions/ChapterData"
+    },
     "ChapterLocation": {
         "$ref": "../commons/models.json#/definitions/ChapterLocation"
     },
@@ -283,6 +286,39 @@
     },
     "ResponseUpdateNpc": {
         "$ref": "../services/stories/update_npc.json#/definitions/ResponseUpdateNpc"
+    },
+
+
+    "RequestGetChapters": {
+        "$ref": "../services/stories/get_chapters.json#/definitions/RequestGetChapters"
+    },
+    "ResponseGetChapters": {
+        "$ref": "../services/stories/get_chapters.json#/definitions/ResponseGetChapters"
+    },
+    "ListChapters": {
+        "$ref": "../services/stories/get_chapters.json#/definitions/ListChapters"
+    },
+
+    "RequestUpdateChapter": {
+        "$ref": "../services/stories/update_chapter.json#/definitions/RequestUpdateChapter"
+    },
+    "ChapterUpdate": {
+        "$ref": "../services/stories/update_chapter.json#/definitions/ChapterUpdate"
+    },
+    "ResponseUpdateChapter": {
+        "$ref": "../services/stories/update_chapter.json#/definitions/ResponseUpdateChapter"
+    },
+    "RequestDeleteChapter": {
+        "$ref": "../services/stories/delete_chapter.json#/definitions/RequestDeleteChapter"
+    },
+    "ResponseDeleteChapter": {
+        "$ref": "../services/stories/delete_chapter.json#/definitions/ResponseDeleteChapter"
+    },
+    "RequestPublishChapter": {
+        "$ref": "../services/stories/publish_chapter.json#/definitions/RequestPublishChapter"
+    },
+    "ResponsePublishChapter": {
+        "$ref": "../services/stories/publish_chapter.json#/definitions/ResponsePublishChapter"
     }
 
 

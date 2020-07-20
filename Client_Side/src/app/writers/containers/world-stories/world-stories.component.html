@@ -1,9 +1,14 @@
 <div class="app-main_writers">
-    
+
     <!-- seccion de ciudades -->
     <ng-container *ngIf="!selectedCity">
         <h2 class="mb-4">Ciudades</h2>
-        <app-cities-builder (citySelect)="getSelectedCity($event)"></app-cities-builder>
+        <div class="row text center" *ngIf="citiesloading">
+            <app-loader class="mx-auto" size="lg"></app-loader>
+        </div>
+        <ng-container *ngIf="!citiesloading">
+            <app-cities-builder (citySelect)="getSelectedCity($event)"></app-cities-builder>
+        </ng-container>
     </ng-container>
 
 
@@ -15,7 +20,13 @@
             </button>
             Lugares de {{selectedCity.name}}
         </h2>
-        <app-places-builder [city]="selectedCity" (placeSelect)="getSelectedPlace($event)"></app-places-builder>
+
+        <div class="row text center" *ngIf="placesloading">
+            <app-loader class="mx-auto" size="lg"></app-loader>
+        </div>
+        <ng-container *ngIf="!placesloading">
+            <app-places-builder [city]="selectedCity" (placeSelect)="getSelectedPlace($event)"></app-places-builder>
+        </ng-container>
     </ng-container>
 
     <!-- seccion de lugares -->
@@ -29,7 +40,12 @@
             </button>
             Personas y eventos de {{selectedPlace.name}} en {{selectedCity.name}}
         </h2>
-        <!-- <app-npc-builder [place]="selectedPlace" (placeSelect)="getSelectedNPC($event)"></app-npc-builder> -->
+        <div class="row text center" *ngIf="npcsloading">
+            <app-loader class="mx-auto" size="lg"></app-loader>
+        </div>
+        <ng-container *ngIf="!npcsloading">
+            <app-npc-builder [place]="selectedPlace" (placeSelect)="getSelectedNPC($event)"></app-npc-builder>
+        </ng-container>
 
     </ng-container>
 </div>

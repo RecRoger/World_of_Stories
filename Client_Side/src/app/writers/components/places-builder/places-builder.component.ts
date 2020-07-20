@@ -58,24 +58,6 @@ export class PlacesBuilderComponent implements OnInit {
 
   // al iniciar el componente, consulta todas las ciudades
   ngOnInit() {
-    if (this.city) {
-      this.getAllPlaces();
-    }
-  }
-
-  // Consultar todas los lugres
-  async getAllPlaces() {
-    this.placesloading = true;
-    this.cd.markForCheck();
-
-    this.store.dispatch(new GetAllPlaces({
-      cityId: this.city.id,
-      published: false
-    }));
-
-    this.placesloading = false;
-    this.cd.markForCheck();
-
   }
 
 
@@ -133,7 +115,7 @@ export class PlacesBuilderComponent implements OnInit {
       this.placesTabs.editing = true;
       this.placesTabs.newTale = false;
       this.cd.markForCheck();
-    })
+    });
 
 
   }

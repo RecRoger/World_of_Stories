@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import NpcsSchema, { NpcInterface } from '../schemas/npcs.model';
-import CitiesSchema from '../schemas/cities.model';
+import CitiesSchema, { CityInterface } from '../schemas/cities.model';
 import { chaptersController } from './chapters.controller';
 
 class NpcsController {
@@ -12,28 +12,45 @@ class NpcsController {
             console.log('________________________________________________');
             console.log('*************** getAllNPCs *******************');
 
-            const { ids, published } = req.body;
-            console.log('> ids: ', ids);
-
-            const npcs: NpcInterface[] = await NpcsSchema.find(
+            const { placeId, published } = req.body;
+            console.log('> placeId: ', placeId);
+            const city: CityInterface = await CitiesSchema.findOne(
                 {
-                    _id: { $in: ids },
+                    "places._id": placeId
                 },
                 {
-                    // decision: 0,
-                    // rejected: 0,
-                    //items:0,
-                    title: 0,
-                    chapters: 0,
+                    places: 1
                 }
             ).lean();
-            let filterNpcs = npcs
-            console.log('_____________________________________________________');
-            if (published) {
-                filterNpcs = npcs.filter(npc => npc.published == true);
+
+            const place = city.places.find((p) => p._id == placeId);
+            let filterNpcs: NpcInterface[] = []
+            if (city && place) {
+
+                const ids = place.events;
+                console.log('> places ids: ', ids);
+
+                const npcs: NpcInterface[] = await NpcsSchema.find(
+                    {
+                        _id: { $in: ids },
+                    },
+                    {
+                        // decision: 0,
+                        // rejected: 0,
+                        //items:0,
+                        title: 0,
+                        chapters: 0,
+                    }
+                ).lean();
+                filterNpcs = npcs || [];
+                if (published) {
+                    filterNpcs = npcs.filter(npc => npc.published == true);
+                }
             }
+
+            console.log('_____________________________________________________');
             res.json({
-                "data": { "npcs": filterNpcs.map(npc => ({ ...npc, id: npc._id })) }
+                "data": { "npcs": filterNpcs.map((npc) => ({ ...npc, id: npc._id })) }
             })
         } catch (err) {
             console.log('Error ---->', err);

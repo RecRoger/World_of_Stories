@@ -16,6 +16,7 @@ import { UserState } from './shared/store/users/users.reducer';
 import { GeneralState } from './shared/store/general/general.reducer';
 import { environment } from 'src/environments/environment';
 import { LocationState } from './shared/store/locations/locations.reducer';
+import { StoriesState } from './shared/store/stories/stories.reducer';
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,7 +28,7 @@ import { LocationState } from './shared/store/locations/locations.reducer';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgxsModule.forRoot([UserState, GeneralState, LocationState], {
+    NgxsModule.forRoot([UserState, GeneralState, LocationState, StoriesState], {
       developmentMode: !environment.production
     }),
     NgxsReduxDevtoolsPluginModule.forRoot(),

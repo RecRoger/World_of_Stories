@@ -1369,6 +1369,593 @@
 
     /**
      * @fileoverview added by tsickle
+     * Generated from: api/stories.service.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var StoriesService = /** @class */ (function () {
+        function StoriesService(httpClient, basePath, configuration) {
+            this.httpClient = httpClient;
+            this.basePath = 'http://localhost:3000';
+            this.defaultHeaders = new i1.HttpHeaders();
+            this.configuration = new Configuration();
+            if (basePath) {
+                this.basePath = basePath;
+            }
+            if (configuration) {
+                this.configuration = configuration;
+                this.basePath = basePath || configuration.basePath || this.basePath;
+            }
+        }
+        /**
+         * @param consumes string[] mime-types
+         * @return true: consumes contains 'multipart/form-data', false: otherwise
+         */
+        /**
+         * @private
+         * @param {?} consumes string[] mime-types
+         * @return {?} true: consumes contains 'multipart/form-data', false: otherwise
+         */
+        StoriesService.prototype.canConsumeForm = /**
+         * @private
+         * @param {?} consumes string[] mime-types
+         * @return {?} true: consumes contains 'multipart/form-data', false: otherwise
+         */
+            function (consumes) {
+                var e_1, _a;
+                /** @type {?} */
+                var form = 'multipart/form-data';
+                try {
+                    for (var consumes_1 = __values(consumes), consumes_1_1 = consumes_1.next(); !consumes_1_1.done; consumes_1_1 = consumes_1.next()) {
+                        var consume = consumes_1_1.value;
+                        if (form === consume) {
+                            return true;
+                        }
+                    }
+                }
+                catch (e_1_1) {
+                    e_1 = { error: e_1_1 };
+                }
+                finally {
+                    try {
+                        if (consumes_1_1 && !consumes_1_1.done && (_a = consumes_1.return))
+                            _a.call(consumes_1);
+                    }
+                    finally {
+                        if (e_1)
+                            throw e_1.error;
+                    }
+                }
+                return false;
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        StoriesService.prototype.deleteChapter = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling deleteChapter.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/chapters/delete", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        StoriesService.prototype.deleteNpc = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling deleteNpc.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/npcs/delete", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        StoriesService.prototype.getChapters = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling getChapters.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/chapters", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        StoriesService.prototype.getCity = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling getCity.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/npcs/npc", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        StoriesService.prototype.getNpcs = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling getNpcs.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/npcs", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        StoriesService.prototype.newNpc = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling newNpc.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/npcs/new", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        StoriesService.prototype.publishChapter = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling publishChapter.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/chapters/publish", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        StoriesService.prototype.publishNpc = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling publishNpc.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/npcs/publish", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        StoriesService.prototype.updateChapter = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling updateChapter.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/chapters/update", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        StoriesService.prototype.updateNpc = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling updateNpc.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/npcs/update", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        StoriesService.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
+        ];
+        /** @nocollapse */
+        StoriesService.ctorParameters = function () {
+            return [
+                { type: i1.HttpClient },
+                { type: String, decorators: [{ type: i0.Optional }, { type: i0.Inject, args: [BASE_PATH,] }] },
+                { type: Configuration, decorators: [{ type: i0.Optional }] }
+            ];
+        };
+        /** @nocollapse */ StoriesService.ngInjectableDef = i0.defineInjectable({ factory: function StoriesService_Factory() { return new StoriesService(i0.inject(i1.HttpClient), i0.inject(BASE_PATH, 8), i0.inject(Configuration, 8)); }, token: StoriesService, providedIn: "root" });
+        return StoriesService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
      * Generated from: api/users.service.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
@@ -1805,6 +2392,7 @@
      */
 
     exports.LocationsService = LocationsService;
+    exports.StoriesService = StoriesService;
     exports.UsersService = UsersService;
     exports.Configuration = Configuration;
     exports.ɵa = BASE_PATH;

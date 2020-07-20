@@ -341,6 +341,14 @@
                 }
             }
         },
+        "ChapterData": {
+            "type": "object",
+            "properties": {
+                "chapter": {
+                    "$ref": "#/definitions/Chapter"
+                }
+            }
+        },
         "ChapterLocation": {
             "type": "object",
             "properties": {

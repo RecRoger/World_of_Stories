@@ -14,3 +14,9 @@ export enum PlaceTabs {
     descripcion = 'desc',
     entry = 'entry',
 }
+export enum NpcTabs {
+    descripcion = 'desc',
+    meeting = 'meet',
+    decision = 'decision',
+    reject = 'reject',
+}
