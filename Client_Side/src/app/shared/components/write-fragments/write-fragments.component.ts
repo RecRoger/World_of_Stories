@@ -13,19 +13,12 @@ export class WriteFragmentsComponent implements OnInit, OnDestroy {
   constructor(private fb: FormBuilder, private cd: ChangeDetectorRef) { }
 
   @Input() tale: AbstractControl;
-  @Output() updateTale: EventEmitter<ReadFragment[]> = new EventEmitter<ReadFragment[]>();
 
   talesForm: FormArray;
 
   subscription: Subscription;
 
   ngOnInit() {
-
-    //   document.getElementById(id).addEventListener('keyup', function() {
-    //     this.style.overflow = 'hidden';
-    //     this.style.height = 0;
-    //     this.style.height = this.scrollHeight + 'px';
-    // }, false);
 
     this.talesForm = this.fb.array([]);
 

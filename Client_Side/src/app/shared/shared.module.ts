@@ -6,6 +6,7 @@ import { AngularMaterialModule } from 'src/app/shared/material.module';
 import { MessagesComponent } from './components/messages/messages.component';
 import { WriteFragmentsComponent } from './components/write-fragments/write-fragments.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { WriteDecisionComponent } from './components/write-decision/write-decision.component';
 
 @NgModule({
   imports: [
@@ -14,7 +15,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     ReactiveFormsModule
   ],
-  declarations: [LoaderComponent, HeaderComponent, MessagesComponent, WriteFragmentsComponent],
-  exports: [LoaderComponent, HeaderComponent, AngularMaterialModule, MessagesComponent, WriteFragmentsComponent]
+  declarations: [LoaderComponent, HeaderComponent, MessagesComponent, WriteFragmentsComponent, WriteDecisionComponent],
+  exports: [LoaderComponent, HeaderComponent, AngularMaterialModule, MessagesComponent, WriteFragmentsComponent, WriteDecisionComponent]
 })
 export class SharedModule { }

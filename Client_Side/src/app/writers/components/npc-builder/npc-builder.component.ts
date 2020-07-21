@@ -4,11 +4,12 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Store, Select } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
-import { User, Place, Npc, RequestNewNpc, ReadFragment, Decision } from 'src/client-api';
+import { User, Place, Npc, RequestNewNpc, ReadFragment, Decision, RequestPublishNpc } from 'src/client-api';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
 import { map } from 'rxjs/operators';
 import { NpcTabs } from 'src/app/shared/constants';
 import { isValid } from 'src/app/shared/utils/commons';
+import { NewNpc, PublishNpc, UpdateNpc } from 'src/app/shared/store/stories/stories.actions';
 
 @Component({
   selector: 'app-npc-builder',
@@ -40,8 +41,7 @@ export class NpcBuilderComponent implements OnInit {
   npcForm: FormGroupTyped<NewNpcFormData>;
 
   @Input() place: Place;
-
-  // @Output() placeSelect: EventEmitter<Place> = new EventEmitter<Place>();
+  @Output() npcSelect: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -73,128 +73,56 @@ export class NpcBuilderComponent implements OnInit {
 
   }
 
-
-  //  // habilitar la redaccion de nueva descripcion o entrada
-  //  newTale(index: number) {
-  //    this.placeForm = this.fb.group({
-  //      tale: [null, [Validators.required]]
-  //    });
-  //    this.npcsTabs[index].editing = true;
-  //    this.npcsTabs[index].newTale = true;
-  //    this.cd.markForCheck();
-  //  }
   //  // habilitar edicion de descripcion o entrada existente
-  //  editTale(index: number) {
-  //    const tale = (this.npcsTabs[index].tab === 'desc') ?
-  //      this.npcs[index].description[this.npcsTabs[index].page].tale :
-  //      this.npcs[index].entry[this.npcsTabs[index].page].tale;
-  //    const taleId = (this.npcsTabs[index].tab === 'desc') ?
-  //      this.npcs[index].description[this.npcsTabs[index].page]._id :
-  //      this.npcs[index].entry[this.npcsTabs[index].page]._id;
-  //    const published = (this.npcsTabs[index].tab === 'desc') ?
-  //      this.npcs[index].description[this.npcsTabs[index].page].published :
-  //      this.npcs[index].entry[this.npcsTabs[index].page].published;
+  editTale(npc: Npc) {
 
-  //    this.placeForm = this.fb.group({
-  //      id: [taleId, [Validators.required]],
-  //      tale: [tale, [Validators.required]],
-  //      published: [published, [Validators.required]]
-  //    });
-  //    this.npcsTabs[index].editing = true;
-  //    this.npcsTabs[index].newTale = false;
-  //    this.cd.markForCheck();
+    this.npcForm = this.fb.group({
+      id: [npc.id],
+      name: [npc.name, [Validators.required]], // string;
+      description: [npc.description.tale, [Validators.required]], // Array<ReadFragment>;
+      meeting: [npc.meeting.tale, [Validators.required]], // Array<ReadFragment>;
+      decision: [npc.decision, [Validators.required]], // Decision;
+      rejected: [npc.rejected.tale, [Validators.required]], // Array<ReadFragment>;
+      author: [this.user.username, [Validators.required]] // string;
+    });
 
-  //  }
+    this.npcsTabs.editing = true;
+    this.cd.markForCheck();
+  }
 
-  //  // guardar edicion - nueva historia
-  //  saveNpcEdition(index: number, cancel?) {
-  //    if (cancel) {
-  //      this.npcsTabs[index].editing = false;
-  //      this.cd.markForCheck();
-  //      return true;
-  //    }
-  //    if (this.placeForm.valid) {
-  //      if (!this.npcsTabs[index].newTale) {
-  //        // edicion de ...
-  //        this.updateTale(index);
-  //      } else {
-  //        // nuevo ...
-  //        this.addNewTale(index);
-  //      }
-  //      this.npcsTabs[index].editing = false;
-  //      this.cd.markForCheck();
-  //    } else {
-  //      this.placeForm.get('tale').markAsTouched();
-  //    }
-  //  }
-  //  // habilitar publicacion
-  //  publishTale(index) {
-  //    this.placeForm.get('published').setValue(!this.placeForm.get('published').value);
-  //    this.updateTale(index);
-  //  }
+  // guardar edicion - nueva historia
+  saveNpcEdition(index: number, cancel?) {
+    if (cancel) {
+      this.npcsTabs.editing = false;
+      this.cd.markForCheck();
+      return true;
+    }
+    if (isValid(this.npcForm)) {
 
-  //  // actualizar descripcion o viaje
-  //  async updateTale(index) {
-  //    this.npcsloading = true;
-  //    this.cd.markForCheck();
-  //    try {
-  //      const data: TaleUpdate = new TaleUpdate();
-  //      data.id = this.placeForm.get('id').value;
-  //      data.tale = this.placeForm.get('tale').value;
-  //      data.published = this.placeForm.get('published').value;
+      const changes = {
+        author: this.npcForm.value.author
+      };
 
-  //      const req: any = (this.npcsTabs[index].tab === 'desc') ?
-  //        { description: data } :
-  //        { entry: data };
+      switch (this.npcsTabs.tab) {
+        case NpcTabs.descripcion:
+          changes['description'] = this.npcForm.value.description;
+          break;
+        case NpcTabs.meeting:
+          changes['meeting'] = this.npcForm.value.meeting;
+          break;
+        case NpcTabs.reject:
+          changes['rejected'] = this.npcForm.value.rejected;
+          break;
+        case NpcTabs.decision:
+          changes['decision'] = this.npcForm.value.decision;
+          break;
+      }
 
-  //      const url = (this.npcsTabs[index].tab === 'desc') ? UpdateNpcDescriptionURL : UpdateNpcEntryURL;
-  //      const resp: ResponseModel<any> = await this.http.post(url, req).toPromise();
-  //      this.getAllNpcs();
-
-  //    } catch (err) {
-  //      console.log('*** ERROR ***', err);
-  //      this.npcsloading = false;
-  //      this.cd.markForCheck();
-  //    }
-  //  }
-  //  // guardar nueva descripcion o viaje
-  //  async addNewTale(index) {
-  //    this.npcsloading = true;
-  //    this.cd.markForCheck();
-  //    try {
-  //      const req: AddNpcTaleRequest = new AddNpcTaleRequest();
-  //      req.id = this.npcs[index]._id;
-  //      req.tale = this.placeForm.get('tale').value;
-  //      req.author = this.user.username;
-
-  //      const url = (this.npcsTabs[index].tab === 'desc') ? addNpcDescriptionURL : addNpcEntryURL;
-  //      const resp: ResponseModel<any> = await this.http.post(url, req).toPromise();
-  //      this.getAllNpcs();
-
-  //    } catch (err) {
-  //      console.log('*** ERROR ***', err);
-  //      this.npcsloading = false;
-  //      this.cd.markForCheck();
-  //    }
-  //  }
-  //  // eliminar descripcion o viaje
-  //  async deleteTale(index) {
-  //    this.npcsloading = true;
-  //    this.cd.markForCheck();
-  //    try {
-  //      const req: RemoveNpcTaleRequest = new RemoveNpcTaleRequest();
-  //      req.id = this.placeForm.get('id').value;
-
-  //      const url = (this.npcsTabs[index].tab === 'desc') ? removeNpcDescriptionURL : removeNpcEntryURL;
-  //      const resp: ResponseModel<any> = await this.http.post(url, req).toPromise();
-  //      this.getAllNpcs();
-
-  //    } catch (err) {
-  //      console.log('*** ERROR ***', err);
-  //      this.npcsloading = false;
-  //      this.cd.markForCheck();
-  //    }
-  //  }
+      this.store.dispatch(new UpdateNpc({ placeId: this.place.id, npcId: this.npcForm.value.id, npc: changes }));
+      this.npcsTabs.editing = false;
+      this.cd.markForCheck();
+    }
+  }
 
   toggleNewNpc() {
     this.npcsTabs = null;
@@ -206,7 +134,7 @@ export class NpcBuilderComponent implements OnInit {
       meeting: [[], [Validators.required]],
       decision: [null, [Validators.required]],
       rejected: [[], [Validators.required]],
-      title: ['', [Validators.required]],
+      // title: ['', [Validators.required]],
       author: [this.user.username, [Validators.required]]
     });
 
@@ -235,38 +163,32 @@ export class NpcBuilderComponent implements OnInit {
         }
       };
 
-      // await this.store.dispatch(new NewPlace(req)).toPromise();
+      console.log('se supone esto es el request', req);
+
+      await this.store.dispatch(new NewNpc(req)).toPromise();
       this.newNpcTab.loading = false;
     }
   }
 
-  //  // publicar ciudad
-  //  async publishNpc(index: number) {
-  //    this.npcsloading = true;
-  //    this.cd.markForCheck();
-  //    try {
-  //      const req: PublishNpcRequest = new PublishNpcRequest();
-  //      req.published = !this.npcs[index].published;
-  //      req.id = this.npcs[index]._id;
+  // publicar Npc
+  async publishNpc(id: string, published: boolean) {
+    const req: RequestPublishNpc = {
+      id,
+      published
+    };
 
-  //      const resp: ResponseModel<UpdateResponse> = await this.http.post(publishNpcURL, req).toPromise();
-  //      this.getAllNpcs();
+    await this.store.dispatch(new PublishNpc({ placeId: this.place.id, req }));
+  }
 
-  //    } catch (err) {
-  //      console.log('*** ERROR ***', err);
-  //      this.npcsloading = false;
-  //      this.cd.markForCheck();
-  //    }
-  //  }
-
-  //  selectNpc(i) {
-  //    this.placeSelect.emit(this.npcs[i]);
-  //  }
+   selectNpc(id) {
+     this.npcSelect.emit(id);
+   }
 
 
 }
 
 class NewNpcFormData {
+  id?: string;
   name?: string;
   npcType?: string;
   description?: Array<ReadFragment>;
@@ -275,5 +197,7 @@ class NewNpcFormData {
   rejected?: Array<ReadFragment>;
   title?: string;
   author?: string;
+
+  items?: Array<string>;
 
 }

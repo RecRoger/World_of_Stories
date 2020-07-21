@@ -46,12 +46,8 @@
 
             <div class="ml-auto" *ngIf="!npcsTabs.editing">
               <!-- boton de editar descripcion o viaje -->
-              <button class="btn mr-2" (click)="editTale(npc.id)">
+              <button class="btn mr-2" (click)="editTale(npc)">
                 <i class="fas fa-pen"></i>
-              </button>
-              <!-- boton de nueva descripcion o viaje -->
-              <button class="btn mr-2" (click)="newTale(i)">
-                <i class="fas fa-plus"></i>
               </button>
             </div>
           </ul>
@@ -64,10 +60,6 @@
                 </ng-container>
                 <p class="text-muted text-right"> - {{npc.description.author}}</p>
               </div>
-              <!-- <small class="text-muted ml-auto">
-                <span *ngIf="!npc.description.published">Sin Publicar</span>
-                <span *ngIf="npc.description.published">Publicado el {{ npc.description.publishDate | date}}</span>
-              </small> -->
             </ng-container>
             <!-- Encuentro -->
             <ng-container *ngIf="!npcsTabs.editing && npcsTabs.tab == 'meet'">
@@ -77,10 +69,6 @@
                 </ng-container>
                 <p class="text-muted text-right"> - {{npc.meeting.author}}</p>
               </div>
-              <!-- <small class="text-muted ml-auto">
-                <span *ngIf="!npc.meeting.published">Sin Publicar</span>
-                <span *ngIf="npc.meeting.published">Publicado el {{ npc.meeting.publishDate | date}}</span>
-              </small> -->
             </ng-container>
             <!-- Rechazo -->
             <ng-container *ngIf="!npcsTabs.editing && npcsTabs.tab == 'reject'">
@@ -90,10 +78,6 @@
                 </ng-container>
                 <p class="text-muted text-right"> - {{npc.rejected.author}}</p>
               </div>
-              <!-- <small class="text-muted ml-auto">
-                <span *ngIf="!npc.rejected.published">Sin Publicar</span>
-                <span *ngIf="npc.rejected.published">Publicado el {{ npc.rejected.publishDate | date}}</span>
-              </small> -->
             </ng-container>
             <!-- Decision -->
             <ng-container *ngIf="!npcsTabs.editing && npcsTabs.tab == 'decision'">
@@ -112,40 +96,40 @@
 
             <!-- formulario de edicion y creacion -->
             <ng-container *ngIf="npcsTabs.editing">
-              <div class="d-flex">
-                <div>
-                  <span *ngIf="npcsTabs.tab == 'desc'">
-                    {{npc.name}} es ...
-                  </span>
-                  <span *ngIf="npcsTabs.tab == 'meet'">
-                    Acercandote a {{npc.name}} ...
-                  </span>
-                </div>
-                <div class="ml-auto" *ngIf="!npcsTabs.newTale">
-                  <!-- boton de publicar descripcion o viaje -->
-                  <button class="btn mr-2" (click)="publishTale(i)">
-                    <span *ngIf="!npcForm.get('published').value">
-                      <i class="fas fa-cloud-upload-alt"></i>
-                    </span>
-                    <span *ngIf="npcForm.get('published').value">
-                      <i class="fas fa-cloud-download-alt"></i>
-                    </span>
-                  </button>
-                  <!-- boton de eliminar descripcion o viaje -->
-                  <button class="btn mr-2" (click)="deleteTale(i)">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-              </div>
-              <form [formGroup]="npcForm">
-                <textarea class="form-control edition-area" formControlName="tale" rows="3"></textarea>
-              </form>
+              <!-- Descripciones -->
+              <ng-container *ngIf="npcsTabs.tab == 'desc'">
+                {{npcForm.get('name').value}} es ...
+                <form [formGroup]="npcForm">
+                  <app-write-fragments [tale]="npcForm.get('description')"></app-write-fragments>
+                </form>
+              </ng-container>
+              <!-- Encuentro -->
+              <ng-container *ngIf="npcsTabs.tab == 'meet'">
+                Al acercarte...
+                <form [formGroup]="npcForm">
+                  <app-write-fragments [tale]="npcForm.get('meeting')"></app-write-fragments>
+                </form>
+              </ng-container>
+              <!-- Rechazo -->
+              <ng-container *ngIf="npcsTabs.tab == 'reject'">
+                Entrando a {{npcForm.get('name').value}}...
+                <form [formGroup]="npcForm">
+                  <app-write-fragments [tale]="npcForm.get('rejected')"></app-write-fragments>
+                </form>
+              </ng-container>
+              <!-- Decision -->
+              <ng-container *ngIf="npcsTabs.tab == 'decision'">
+                <form [formGroup]="npcForm">
+                  <app-write-decision [decision]="npcForm.get('decision')"></app-write-decision>
+                </form>
+              </ng-container>
+
 
             </ng-container>
           </div>
           <div class="card-footer d-flex">
             <ng-container *ngIf="!npcsTabs.editing">
-              <button class="btn btn-secondary mr-auto" (click)="publishPlace(i)">
+              <button class="btn btn-secondary mr-auto" (click)="publishNpc(npc.id, !npc.published)">
                 <span *ngIf="!npc.published">
                   <i class="fas fa-cloud-upload-alt"></i> Publicar
                 </span>
@@ -153,14 +137,14 @@
                   <i class="fas fa-cloud-download-alt"></i> Quitar publicacion
                 </span>
               </button>
-              <button class="btn btn-primary ml-auto" (click)="selectPlace(i)">
+              <button class="btn btn-primary ml-auto" (click)="selectNpc(npc.id)">
                 Historia
               </button>
             </ng-container>
 
             <ng-container *ngIf="npcsTabs.editing">
-              <button class="btn btn-secondary ml-auto" (click)="savePlaceEdition(i, true)">Cancelar</button>
-              <button class="btn btn-primary ml-4" (click)="savePlaceEdition(i)">Guardar</button>
+              <button class="btn btn-secondary ml-auto" (click)="saveNpcEdition(npc.id, true)">Cancelar</button>
+              <button class="btn btn-primary ml-4" (click)="saveNpcEdition(npc.id)">Guardar</button>
             </ng-container>
 
           </div>
@@ -192,7 +176,7 @@
         <ul class="nav nav-tabs mt-3">
           <li class="nav-item ml-2 mt-n1">
             <form [formGroup]="npcForm">
-              <input type="text" class="form-control" formControlName="name" npcholder="Nombre del evento">
+              <input type="text" class="form-control" formControlName="name" placeholder="Nombre del evento">
             </form>
           </li>
           <li class="nav-item ml-2 mt-n1">
@@ -204,6 +188,11 @@
               </select>
             </form>
           </li>
+          <!-- <li class="nav-item ml-2 mt-n1">
+            <form [formGroup]="npcForm">
+              <input class="form-control" type="text" formControlName="title" placeholder="Titulo de la historia">
+            </form>
+          </li> -->
           <li class="nav-item ml-auto mr-2">
             <a class="nav-link" (click)="newNpcTab.tab = 'desc'"
               [ngClass]="{'active': newNpcTab.tab == 'desc', 'errorTab': npcForm?.get('description')?.invalid && npcForm?.get('description')?.touched }">
@@ -253,11 +242,9 @@
           </ng-container>
           <!-- Decision -->
           <ng-container *ngIf="newNpcTab.tab == 'decision'">
-            componente de decision
-            <!-- Entrando a {{npcForm.get('name').value}}...
             <form [formGroup]="npcForm">
-              <textarea class="form-control edition-area" formControlName="entry" rows="3"></textarea>
-            </form> -->
+              <app-write-decision [decision]="npcForm.get('decision')"></app-write-decision>
+            </form>
           </ng-container>
 
         </div>

@@ -3,19 +3,17 @@ import { State, Action, StateContext, Selector, Store } from '@ngxs/store';
 import { SetLoader, SetError, SetInfo } from '../general/general.actions';
 
 import { patch, append, updateItem, removeItem } from '@ngxs/store/operators';
-import { Npc, RequestGetNpcs, StoriesService } from 'src/client-api';
-import { GetAllNpcs } from './stories.actions';
+import { Npc, RequestGetNpcs, StoriesService, RequestNewCity, RequestNewNpc, RequestPublishNpc, RequestUpdateNpc } from 'src/client-api';
+import { GetAllNpcs, NewNpc, PublishNpc, UpdateNpc } from './stories.actions';
 
 export interface StoriesStateModel {
-    places: {
-        [placeId: string]: Npc[];
-    };
+    [placeId: string]: Npc[];
 }
 
 @State<StoriesStateModel>({
     name: 'stories',
     defaults: {
-        places: {}
+
     }
 })
 @Injectable()
@@ -28,7 +26,7 @@ export class StoriesState {
     @Selector()
     static getNpcs(state: StoriesStateModel) {
         return (placeId: string): Npc[] => {
-            return state.places[placeId];
+            return state[placeId];
         };
     }
 
@@ -41,7 +39,7 @@ export class StoriesState {
 
             const { placeId, published, force } = action.payload;
 
-            if (!ctx.getState().places[placeId] || ctx.getState().places[placeId].length === 0 || action.payload.force) {
+            if (!ctx.getState()[placeId] || ctx.getState()[placeId].length === 0 || action.payload.force) {
 
 
                 const req: RequestGetNpcs = {
@@ -53,9 +51,7 @@ export class StoriesState {
 
                 if (resp && resp.data && resp.data.npcs) {
                     ctx.setState(patch({
-                        places: patch({
-                            [placeId]: resp.data.npcs
-                        })
+                        [placeId]: resp.data.npcs
                     }));
 
                 } else {
@@ -72,6 +68,103 @@ export class StoriesState {
             return false;
         }
     }
+
+    @Action(NewNpc)
+    async NewNpc(ctx: StateContext<StoriesStateModel>, action: NewNpc) {
+
+        try {
+
+            const { placeId, npc } = action.payload;
+
+            const req: RequestNewNpc = action.payload;
+
+            const resp = await this.storiesService.newNpc(req).toPromise();
+
+            if (resp && resp.data && resp.data.npc) {
+                ctx.setState(patch({
+                    [placeId]: append([resp.data.npc])
+                }));
+
+            } else {
+                this.store.dispatch(new SetError('No hay eventos en el sistema'));
+                return false;
+            }
+
+
+        } catch (err) {
+            console.log('*** ERROR ***', err);
+
+            this.store.dispatch(new SetError('Ha ocurrido un problema creando el eventos. Intente mas tarde'));
+            return false;
+        }
+    }
+
+    @Action(PublishNpc)
+    async PublishNpc(ctx: StateContext<StoriesStateModel>, action: PublishNpc) {
+
+        try {
+
+            const { placeId, req } = action.payload;
+
+            const resp = await this.storiesService.publishNpc(req).toPromise();
+
+            if (resp && resp.data && resp.data === 'OK') {
+                ctx.setState(
+                    patch({
+                        [placeId]: updateItem<Npc>(n => n.id === req.id, patch<Npc>({
+                            published: req.published,
+                            publishDate: req.published ? new Date().toDateString() : null,
+                        })
+                        )
+                    })
+                );
+
+            } else {
+                this.store.dispatch(new SetError('No se ha guardado la nueva ciudad'));
+                return false;
+            }
+        } catch (err) {
+            console.log('*** ERROR ***', err);
+
+            this.store.dispatch(new SetError('Ha ocurrido un problema Creando la ciudad. Intente mas tarde'));
+            return false;
+        }
+    }
+
+
+    @Action(UpdateNpc)
+    async UpdateNpc(ctx: StateContext<StoriesStateModel>, action: UpdateNpc) {
+
+        try {
+
+            const { placeId, npcId , npc } = action.payload;
+            const req: RequestUpdateNpc = {
+                id: npcId,
+                npc
+            };
+
+            const resp = await this.storiesService.updateNpc(req).toPromise();
+
+            if (resp && resp.data && resp.data.npc) {
+                ctx.setState(
+                    patch({
+                        [placeId]: updateItem<Npc>(n => n.id === req.id, resp.data.npc)
+                    })
+                );
+
+            } else {
+                this.store.dispatch(new SetError('No se ha guardado el cambio'));
+                return false;
+            }
+        } catch (err) {
+            console.log('*** ERROR ***', err);
+
+            this.store.dispatch(new SetError('Ha ocurrido un problema actualizando el evento. Intente mas tarde'));
+            return false;
+        }
+    }
+
+
 
 
 

@@ -1,29 +1,85 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { City, Place } from 'src/client-api';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { City, Place, Npc } from 'src/client-api';
 import { Store } from '@ngxs/store';
 import { GetAllCities, GetAllPlaces } from 'src/app/shared/store/locations/locations.actions';
 import { GetAllNpcs } from 'src/app/shared/store/stories/stories.actions';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
+import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-world-stories',
   templateUrl: './world-stories.component.html',
   styleUrls: ['./world-stories.component.scss']
 })
-export class WorldStoriesComponent implements OnInit {
+export class WorldStoriesComponent implements OnInit, OnDestroy {
 
-  constructor(private cd: ChangeDetectorRef, private store: Store) { }
+  constructor(
+    private cd: ChangeDetectorRef,
+    private store: Store,
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
 
   citiesloading: boolean;
   placesloading: boolean;
   npcsloading: boolean;
+  chaptersloading: boolean;
 
   selectedCity: City;
   selectedPlace: Place;
-  selectedNPC;
+  selectedNpc: Npc;
 
-  ngOnInit() {
-    this.getAllCities();
+  subscription: Subscription[] = [];
+
+  async ngOnInit() {
+    await this.getAllCities();
+    this.subscription.push(
+      this.route.queryParams.subscribe(async (queryParam: any) => {
+
+        if (queryParam['city']) {
+          const cities = this.store.selectSnapshot(LocationState.getCities);
+          this.selectedCity = cities.find(c => c.id === queryParam['city']);
+          await this.getAllPlaces();
+        } else {
+          this.selectedCity = null;
+          this.selectedPlace = null;
+        }
+
+        if (queryParam['place']) {
+          const places = this.store.selectSnapshot(LocationState.getCityPlaces);
+          this.selectedPlace = places.find(c => c.id === queryParam['place']);
+          await this.getAllNpcs();
+        } else {
+          this.selectedPlace = null;
+          this.selectedNpc = null;
+        }
+
+        if (queryParam['event']) {
+          const places = this.store.select(StoriesState.getNpcs).pipe(map(filterFn => filterFn(this.selectedPlace.id)))
+            .subscribe(npcs => {
+              console.log(npcs);
+              this.selectedNpc = npcs.find(c => c.id === queryParam['event']);
+            }
+            );
+          await this.getAllNpcs();
+        } else {
+          this.selectedNpc = null;
+        }
+
+
+        this.cd.markForCheck();
+      })
+    );
+
+
   }
+  ngOnDestroy() {
+    this.subscription.forEach(subs => subs.unsubscribe());
+  }
+
   // Consultar todas las ciudades
   async getAllCities() {
     this.citiesloading = true;
@@ -40,7 +96,7 @@ export class WorldStoriesComponent implements OnInit {
     this.placesloading = true;
     this.cd.markForCheck();
 
-    this.store.dispatch(new GetAllPlaces(
+    await this.store.dispatch(new GetAllPlaces(
       {
         request: {
           cityId: this.selectedCity.id,
@@ -48,7 +104,7 @@ export class WorldStoriesComponent implements OnInit {
         },
         force: false
       }
-    ));
+    )).toPromise();
 
     this.placesloading = false;
     this.cd.markForCheck();
@@ -59,35 +115,27 @@ export class WorldStoriesComponent implements OnInit {
     this.npcsloading = true;
     this.cd.markForCheck();
 
-    this.store.dispatch(new GetAllNpcs(
+    await this.store.dispatch(new GetAllNpcs(
       {
         placeId: this.selectedPlace.id,
         published: false,
         force: false
       }
-    ));
+    )).toPromise();
 
     this.npcsloading = false;
     this.cd.markForCheck();
   }
 
 
-  getSelectedCity(city: City) {
-    this.selectedCity = city;
-    if (city) {
-      this.getAllPlaces();
-    }
-    this.cd.markForCheck();
+  getSelectedCity(cityId: string) {
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { city: cityId }, queryParamsHandling: '' });
   }
-  getSelectedPlace(place: Place) {
-    this.selectedPlace = place;
-    if (place) {
-      this.getAllNpcs();
-    }
-    this.cd.markForCheck();
+  getSelectedPlace(placeId: string) {
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { place: placeId, event: null }, queryParamsHandling: 'merge' });
   }
-  getSelectedNPC(npc) {
-    this.selectedNPC = npc;
+  getSelectedNPC(npcId) {
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { event: npcId }, queryParamsHandling: 'merge' });
     this.cd.markForCheck();
   }
 

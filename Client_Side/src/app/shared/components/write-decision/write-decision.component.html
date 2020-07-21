@@ -1,0 +1,39 @@
+<div class="row" [formGroup]="decisionForm">
+    <div class="col-4">
+        <label for="">Tipo de decision</label>
+        <select class="form-control" formControlName="decisionType">
+            <option value="choose">Elección</option>
+            <option value="money">Dinero</option>
+            <option value="item">Objeto</option>
+        </select>
+    </div>
+    <div class="col-4" *ngIf="decisionForm.value.decisionType === 'money'">
+        <label for="">Monto necesario</label>
+        <input class="form-control" type="number" formControlName="amount">
+    </div>
+    <div class="col-4" *ngIf="decisionForm.value.decisionType === 'item'">
+        <label for="">Objeto necesario</label>
+        <select class="form-control" formControlName="item">
+            <option value="">items</option>
+        </select>
+    </div>
+
+    <div class="col-12 mt-3">
+        <ng-container *ngFor="let opForm of optionsForm.controls; let i = index">
+            <div class="row" [formGroup]="opForm">
+                <div class="col-4">
+                    <label for="">Opcion {{i+1}}</label>
+                    <input class="form-control mb-1" type="text" formControlName="name">
+                    <div class="form-group form-check" *ngIf="decisionForm.value.decisionType !== 'choose'">
+                        <input type="checkbox" class="form-check-input" id="removeItem" formControlName="removeItem">
+                        <label class="form-check-label" for="removeItem">Consumir objeto</label>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <label for="">Detalle</label>
+                    <textarea class="form-control" formControlName="description" rows="2"></textarea>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>

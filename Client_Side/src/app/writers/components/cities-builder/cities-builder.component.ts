@@ -21,7 +21,7 @@ export class CitiesBuilderComponent implements OnInit, OnDestroy {
   user: User;
 
   @Select(LocationState.getCities) cities$: Observable<City[]>;
-  @Output() citySelect: EventEmitter<City> = new EventEmitter<City>();
+  @Output() citySelect: EventEmitter<string> = new EventEmitter<string>();
 
   citiesTabs: {
     city?: string;
@@ -251,10 +251,7 @@ export class CitiesBuilderComponent implements OnInit, OnDestroy {
   }
 
   selectCity(id) {
-    const cities = this.store.selectSnapshot(LocationState.getCities);
-    const city: City = cities.find(c => c.id === id);
-
-    this.citySelect.emit(city);
+    this.citySelect.emit(id);
   }
 
 }

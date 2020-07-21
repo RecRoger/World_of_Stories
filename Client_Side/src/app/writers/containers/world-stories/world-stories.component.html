@@ -30,7 +30,7 @@
     </ng-container>
 
     <!-- seccion de lugares -->
-    <ng-container *ngIf="selectedCity && selectedPlace">
+    <ng-container *ngIf="selectedCity && selectedPlace && !selectedNpc">
         <h2 class="mb-4">
             <button class="btn btn-link" (click)="getSelectedCity(null)">
                 <i class="fas fa-angle-left fa-2x"></i>
@@ -44,8 +44,34 @@
             <app-loader class="mx-auto" size="lg"></app-loader>
         </div>
         <ng-container *ngIf="!npcsloading">
-            <app-npc-builder [place]="selectedPlace" (placeSelect)="getSelectedNPC($event)"></app-npc-builder>
+            <app-npc-builder [place]="selectedPlace" (npcSelect)="getSelectedNPC($event)"></app-npc-builder>
         </ng-container>
-
     </ng-container>
+    <!-- seccion de capitulos -->
+    <ng-container *ngIf="selectedCity && selectedPlace && selectedNpc">
+        <h2 class="mb-4">
+            <button class="btn btn-link" (click)="getSelectedCity(null)">
+                <i class="fas fa-angle-left fa-2x"></i>
+            </button>
+            <button class="btn btn-link" (click)="getSelectedPlace(null)">
+                <i class="fas fa-angle-left fa-2x"></i>
+            </button>
+            <button class="btn btn-link" (click)="getSelectedNPC(null)">
+                <i class="fas fa-angle-left fa-2x"></i>
+            </button>
+            Personas y eventos de {{selectedPlace.name}} en {{selectedCity.name}}
+        </h2>
+        <h3> Primera imagen{{npcSelect.name}}
+        </h3>
+        <div class="row text center" *ngIf="chaptersloading">
+            <app-loader class="mx-auto" size="lg"></app-loader>
+        </div>
+        <ng-container *ngIf="!npcsloading">
+            hay capitulos? 
+            <pre>{{selectedNpc | json }}</pre>
+            <!-- <app-npc-builder [place]="selectedPlace" (npcSelect)="getSelectedNPC($event)"></app-npc-builder> -->
+        </ng-container>
+    </ng-container>
+
+
 </div>

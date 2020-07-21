@@ -45,7 +45,7 @@ export class PlacesBuilderComponent implements OnInit {
   placeForm: FormGroupTyped<NewPlaceFormData>;
 
   @Input() city: City;
-  @Output() placeSelect: EventEmitter<Place> = new EventEmitter<Place>();
+  @Output() placeSelect: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -260,7 +260,7 @@ export class PlacesBuilderComponent implements OnInit {
   }
 
   selectPlace(place: Place) {
-    this.placeSelect.emit(place);
+    this.placeSelect.emit(place.id);
   }
 
 }
