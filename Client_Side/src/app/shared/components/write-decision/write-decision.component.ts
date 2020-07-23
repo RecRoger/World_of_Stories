@@ -31,21 +31,44 @@ export class WriteDecisionComponent implements OnInit, OnDestroy {
     }) as FormGroupTyped<Decision>;
 
 
-    if (this.decision.value && this.decision.value.options) {
-      this.decision.value.options.forEach(option => {
+    if (this.decision.value) {
 
+      if (this.decision.value.options && this.decision.value.options.length > 0) {
+        this.decision.value.options.forEach(option => {
+
+          this.optionsForm.push(
+            this.fb.group({
+              id: [option.id, []],
+              name: [option.name, [Validators.required]],
+              description: [option.description, [Validators.required]],
+              value: [option.value, []],
+              published: [option.published, []],
+              removeItem: [option.removeItem, []]
+            })
+          );
+        });
+      } else {
         this.optionsForm.push(
           this.fb.group({
-            id: [option.id, []],
-            name: [option.name, [Validators.required]],
-            description: [option.description, [Validators.required]],
-            value: [option.value, []],
-            published: [option.published, []],
-            removeItem: [option.removeItem, []]
+            id: ['', []],
+            name: ['Aceptar', [Validators.required]],
+            description: ['', [Validators.required]],
+            value: ['', []],
+            published: [false, []],
+            removeItem: [false, []]
           })
-        );
-
-      });
+        ),
+          this.optionsForm.push(
+            this.fb.group({
+              id: ['', []],
+              name: ['Cancelar', [Validators.required]],
+              description: ['', [Validators.required]],
+              value: ['', []],
+              published: [false, []],
+              removeItem: [false, []]
+            })
+          );
+      }
     } else {
       this.optionsForm.push(
         this.fb.group({

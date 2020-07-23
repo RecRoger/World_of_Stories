@@ -11,6 +11,7 @@ export interface readFragment {
     animation?: string;
 }
 export interface chapterLocation {
+    endChapter?: boolean,
     locationType?: string,    // place or city
     locationId?: string       // id del lugar de retorno del capiulo
 
@@ -19,7 +20,7 @@ export interface decisionObject {
     decisionType: string;               // tipo de la decision: 'choose', 'item', 'money'
     amount?: number;            // money amount para el cuento   
     item?: string;              // item necesario para el cuento
-    options: decisionOption;    // desisiones 
+    options: decisionOption[];    // desisiones 
 }
 export interface decisionOption {
     _id?: string

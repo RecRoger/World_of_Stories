@@ -1,0 +1,139 @@
+<div class="row" *ngIf="(chapters$ | async) as chapters">
+    <div class="col-12 mb-3 ml-3">
+        <h3>{{npc.title}}</h3>
+    </div>
+    <ng-container *ngFor="let chapter of chapters; let i = index">
+        <div class="col-12 mb-2">
+
+            <!-- card del capitulo -->
+            <div class="card chapter-card">
+                <div class="card-header d-flex" (click)="toggleChapterInfo(chapter.id)">
+                    <ng-container
+                        *ngIf="chaptersTab?.editing && chaptersTab?.chapters.includes(chapter.id); else chapterTitle">
+                        <div [formGroup]="chapterForm">
+                            <input class="form-control" type="text" formControlName="name"
+                                placeholder="Nombre del Capítulo">
+                        </div>
+                    </ng-container>
+                    <ng-template #chapterTitle>
+                        <h4 class="card-title">{{chapter.name || 'Nuevo Capitulo'}}</h4>
+                    </ng-template>
+                    <button *ngIf="chaptersTab?.chapters.includes(chapter.id)" class="btn ml-auto"
+                        (click)="editChapter(chapter); $event.stopPropagation()">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                </div>
+
+                <ng-container *ngIf="chaptersTab?.chapters.includes(chapter.id)">
+                    <div class="card-body place-info d-flex flex-column">
+
+                        <ng-container *ngIf="!chaptersTab?.editing">
+                            <!-- seccion de historia -->
+                            <div class="mb-3"
+                                *ngIf="chapter.story && chapter.story[0] && chapter.story[0].text ; else noStory">
+                                <ng-container *ngFor="let tale of chapter.story">
+                                    <p class="card-text">{{ tale.text }}</p>
+                                </ng-container>
+                                <!-- <p class="text-muted text-right"> - {{chapter.story.author}}</p> -->
+                            </div>
+                            <ng-template #noStory>
+                                <div class="h6">
+                                    Sin historia
+                                </div>
+                            </ng-template>
+                            <!-- seccion para items -->
+                            <div *ngIf="chapter.items && chapter.items.length>0; else noItems">
+                                <ng-container *ngFor="let item of chapter.items">
+                                    <p class="card-text">{{ item.name }}</p>
+                                </ng-container>
+                            </div>
+                            <ng-template #noItems>
+                                <div class="h6">
+                                    Sin objetos de premio
+                                </div>
+                            </ng-template>
+                            <!-- seccion de decision -->
+                            <div class="row" *ngIf="chapter.story && chapter.usersDecisions">
+                                <h6 class="col-12">
+                                    Tipo de decision: {{chapter.usersDecisions.decisionType || 'Sin definir'}}
+                                </h6>
+                                <ng-container *ngFor="let option of chapter.usersDecisions.options">
+                                    <button class="btn col-6 text-center" (click)="toggleChapterInfo(option.value)">
+                                        <h6>{{option.name}}</h6>
+                                        <p class="pl-3">{{option.description}}</p>
+                                    </button>
+                                </ng-container>
+                            </div>
+                            <div *ngIf="chapter.endLocation && chapter.endLocation.locationType">
+                                {{chapter.endLocation | json}}
+                            </div>
+
+                        </ng-container>
+
+                        <!-- seccion de edicion del capitulo -->
+                        <ng-container *ngIf="chaptersTab?.editing">
+                            <!-- seccion de historia -->
+                            <div [formGroup]="chapterForm">
+
+                                <!-- edicion de historia -->
+                                <div class="mb-3">
+                                    <app-write-fragments [tale]="chapterForm.get('story')"></app-write-fragments>
+                                </div>
+
+                                <!-- edicion de los items entregados -->
+
+                                <div class="mb-3" [formGroup]="chapterForm.get('endLocation')">
+                                    <div class="form-group form-check">
+                                        <input type="checkbox" class="form-check-input" id="endChapter"
+                                            formControlName="endChapter">
+                                        <label class="form-check-label" for="endChapter">Capitulo final</label>
+                                    </div>
+                                </div>
+                                <div class="row mb-3" *ngIf="chapterForm.get('endLocation').value.endChapter"
+                                    [formGroup]="chapterForm.get('endLocation')">
+                                    <div class="col-4">
+                                        <label for="">Tipo de destino</label>
+                                        <select class="form-control" formControlName="locationType">
+                                            <option value="city">Ciudad</option>
+                                            <option value="place" disabled>Lugar</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="">Destino</label>
+                                        <select class="form-control" formControlName="locationId">
+                                            <ng-container *ngFor="let city of cities">
+                                                <option value="{{city.value}}">{{city.name}}</option>
+                                            </ng-container>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- edicion de la decision -->
+                                <div class="mb-3" *ngIf="!chapterForm.get('endLocation').value.endChapter">
+                                    <app-write-decision [decision]="chapterForm.get('usersDecisions')">
+                                    </app-write-decision>
+                                </div>
+
+
+                            </div>
+
+                        </ng-container>
+
+
+                        <!-- <pre>{{chapter | json}}</pre> -->
+
+
+
+
+                    </div>
+                    <div class="card-footer d-flex" *ngIf="chaptersTab?.editing">
+                        <button class="btn btn-secondary ml-auto" (click)="saveChapterEdition(true)">Cancelar</button>
+                        <button class="btn btn-primary ml-4" (click)="saveChapterEdition()">Guardar</button>
+                    </div>
+                </ng-container>
+
+            </div>
+
+        </div>
+    </ng-container>
+</div>

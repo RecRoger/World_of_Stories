@@ -2513,6 +2513,9 @@
     "ChapterLocation": {
       "type": "object",
       "properties": {
+        "endChapter": {
+          "type": "boolean"
+        },
         "locationType": {
           "type": "string"
         },

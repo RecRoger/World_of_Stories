@@ -3,8 +3,8 @@ import { State, Action, StateContext, Selector, Store } from '@ngxs/store';
 import { SetLoader, SetError, SetInfo } from '../general/general.actions';
 
 import { patch, append, updateItem, removeItem } from '@ngxs/store/operators';
-import { Npc, RequestGetNpcs, StoriesService, RequestNewCity, RequestNewNpc, RequestPublishNpc, RequestUpdateNpc } from 'src/client-api';
-import { GetAllNpcs, NewNpc, PublishNpc, UpdateNpc } from './stories.actions';
+import { Npc, RequestGetNpcs, StoriesService, RequestNewCity, RequestNewNpc, RequestPublishNpc, RequestUpdateNpc, RequestGetChapters, Chapter } from 'src/client-api';
+import { GetAllNpcs, NewNpc, PublishNpc, UpdateNpc, GetNpcStory, UpdateChapter } from './stories.actions';
 
 export interface StoriesStateModel {
     [placeId: string]: Npc[];
@@ -27,6 +27,12 @@ export class StoriesState {
     static getNpcs(state: StoriesStateModel) {
         return (placeId: string): Npc[] => {
             return state[placeId];
+        };
+    }
+    @Selector()
+    static getStory(state: StoriesStateModel) {
+        return (placeId: string, npcId: string): Chapter[] => {
+            return state[placeId].find(n => n.id === npcId).chapters;
         };
     }
 
@@ -137,7 +143,7 @@ export class StoriesState {
 
         try {
 
-            const { placeId, npcId , npc } = action.payload;
+            const { placeId, npcId, npc } = action.payload;
             const req: RequestUpdateNpc = {
                 id: npcId,
                 npc
@@ -160,6 +166,61 @@ export class StoriesState {
             console.log('*** ERROR ***', err);
 
             this.store.dispatch(new SetError('Ha ocurrido un problema actualizando el evento. Intente mas tarde'));
+            return false;
+        }
+    }
+
+
+    @Action(GetNpcStory)
+    async GetNpcStory(ctx: StateContext<StoriesStateModel>, action: GetNpcStory) {
+
+        try {
+            const { placeId, npcId, request } = action.payload;
+
+            const resp = await this.storiesService.getChapters(request).toPromise();
+
+            if (resp && resp.data && resp.data.chapters) {
+                ctx.setState(patch({
+                    [placeId]: updateItem<Npc>(n => n.id === npcId, patch<Npc>({
+                        chapters: resp.data.chapters
+                    }))
+                }));
+
+            } else {
+                this.store.dispatch(new SetError('No hay eventos en el sistema'));
+                return false;
+            }
+
+
+        } catch (err) {
+            console.log('*** ERROR ***', err);
+
+            this.store.dispatch(new SetError('Ha ocurrido un problema consultando los eventos. Intente mas tarde'));
+            return false;
+        }
+    }
+
+    @Action(UpdateChapter)
+    async UpdateChapter(ctx: StateContext<StoriesStateModel>, action: UpdateChapter) {
+
+        try {
+            const request = action.payload.npc;
+
+            const resp = await this.storiesService.updateChapter(request).toPromise();
+
+            if (resp && resp.data && resp.data.chapter) {
+                await ctx.dispatch(new GetNpcStory({...action.payload})).toPromise();
+
+            } else {
+                this.store.dispatch(new SetError('No hay eventos en el sistema'));
+                return false;
+            }
+
+
+        } catch (err) {
+            console.log('*** ERROR ***', err);
+
+            this.store.dispatch(new SetError('Ha ocurrido un problema consultando los eventos. Intente mas tarde'));
             return false;
         }
     }

@@ -3,8 +3,8 @@
         <label for="">Tipo de decision</label>
         <select class="form-control" formControlName="decisionType">
             <option value="choose">Elección</option>
-            <option value="money">Dinero</option>
-            <option value="item">Objeto</option>
+            <option value="money" disabled>Dinero</option>
+            <option value="item" disabled>Objeto</option>
         </select>
     </div>
     <div class="col-4" *ngIf="decisionForm.value.decisionType === 'money'">

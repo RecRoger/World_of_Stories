@@ -38,7 +38,7 @@ class NpcsController {
                         // decision: 0,
                         // rejected: 0,
                         //items:0,
-                        title: 0,
+                        // title: 0,
                         chapters: 0,
                     }
                 ).lean();

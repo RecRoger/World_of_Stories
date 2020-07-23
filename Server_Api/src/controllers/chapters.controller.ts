@@ -12,16 +12,18 @@ class ChaptersController {
             console.log('________________________________________________');
             console.log('*************** getAllChapters *******************');
             const { id, published } = req.body;
-            console.log('> npcId: , id');
+            console.log('> npcId:', id);
             const npcs: NpcInterface | null = await NpcsSchema.findOne(
                 {
                     _id: id,
                 },
                 {
-                    chapters: 1,
+                    title: 1,
+                    chapters: 1
                 }
             ).lean();
             let filterChapters = (npcs) ? npcs.chapters : [];
+            console.log('> story name:', npcs && npcs.title);
             if (published && npcs) {
                 filterChapters = (npcs.chapters) ? npcs.chapters.filter(npc => npc.published == true) : [];
             }
@@ -29,6 +31,10 @@ class ChaptersController {
             const castChapters = (filterChapters) ? filterChapters.map((c) => ({
                 ...c,
                 id: c._id,
+                usersDecisions: {
+                    ...c.usersDecisions,
+                    options: c.usersDecisions && c.usersDecisions.options.map(o=> ({...o, id: o._id}))
+                }
             })) : null;
 
             console.log('_____________________________________________________');
@@ -83,22 +89,26 @@ class ChaptersController {
                 setUpdates['chapters.$.usersDecisions.decisionType'] = chapter.usersDecisions.decisionType;
                 setUpdates['chapters.$.usersDecisions.amount'] = chapter.usersDecisions.amount;
                 setUpdates['chapters.$.usersDecisions.item'] = chapter.usersDecisions.item;
-
-
                 // las Decisiones generan otros capitulos 
                 for (const option of (chapter.usersDecisions.options)) {
                     // la edicione tiene id, significa que edito existente.
                     if (option["id"]) {
-                        setUpdates['chapters.$.usersDecisions.option.$[elem].description'] = option.description;
-                        setUpdates['chapters.$.usersDecisions.option.$[elem].name'] = option.name;
-                        setUpdates['chapters.$.usersDecisions.option.$[elem].value'] = option.value;
-                        arrayFilters = { arrayFilters: [{ "elem._id": option.id }] }
+                        const i = chapter.usersDecisions.options.indexOf(option);
+                        console.log('> option vieja', i);
+                        setUpdates['chapters.$.usersDecisions.options.$[elem'+i+'].description'] = option.description;
+                        setUpdates['chapters.$.usersDecisions.options.$[elem'+i+'].name'] = option.name;
+                        setUpdates['chapters.$.usersDecisions.options.$[elem'+i+'].value'] = option.value;
+                        if(!arrayFilters){
+                            arrayFilters = { arrayFilters: [{ ["elem"+i+"._id"]: option.id }] }                            
+                        } else {
+                            arrayFilters.arrayFilters.push({ ["elem"+i+"._id"]: option.id });
+                        }
                     } else {
 
                         console.log('> new option');
                         // la decision no tiene id, agrego nueva decision y capitulo.
                         if (!option.value) {
-                            const newChapter = await NpcsSchema.update(
+                            const newChapter = await NpcsSchema.updateOne(
                                 { "chapters._id": chapter.id },
                                 {
                                     $push: {
@@ -117,13 +127,16 @@ class ChaptersController {
                             }
                             console.log('> new chapterId: ', option.value);
                         }
-                        pullUpdates['chapters.$.usersDecisions.options'] = {
+                        if(!pullUpdates['chapters.$.usersDecisions.options']) {
+                            pullUpdates['chapters.$.usersDecisions.options'] = [];
+                        }
+                        pullUpdates['chapters.$.usersDecisions.options'].push({
                             "description": option.description,
                             "name": option.name,
                             "value": option.value,
                             "published": option.published,
                             "removeItem": option.removeItem
-                        }
+                        });
                     }
                 }
 
@@ -146,8 +159,10 @@ class ChaptersController {
                 }
             ).lean();
 
-            const castChapter = findChapter && findChapter.chapters ? findChapter.chapters.find(c => c._id === chapter.id) : null;
-
+            // console.log("> capitulos", findChapter)
+            const castChapter = (findChapter && findChapter.chapters) ? findChapter.chapters.find(c => c._id == chapter.id) : null;
+            console.log('> response: ', castChapter && castChapter.name);
+            console.log('_____________________________________________________');
             res.json({
                 "data": { chapter: castChapter ? { ...castChapter, id: castChapter._id } : null }
             });

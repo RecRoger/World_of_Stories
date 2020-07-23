@@ -99,6 +99,7 @@ const NpcsSchema = new Schema({
             }]
         },
         endLocation: {
+            endChapter: Boolean,    // place or city
             locationType: String,    // place or city
             locationId: String       // id del lugar de retorno del capiulo
         },

@@ -2,12 +2,12 @@ import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { City, Place, Npc } from 'src/client-api';
 import { Store } from '@ngxs/store';
 import { GetAllCities, GetAllPlaces } from 'src/app/shared/store/locations/locations.actions';
-import { GetAllNpcs } from 'src/app/shared/store/stories/stories.actions';
+import { GetAllNpcs, GetNpcStory } from 'src/app/shared/store/stories/stories.actions';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-world-stories',
@@ -58,13 +58,13 @@ export class WorldStoriesComponent implements OnInit, OnDestroy {
         }
 
         if (queryParam['event']) {
-          const places = this.store.select(StoriesState.getNpcs).pipe(map(filterFn => filterFn(this.selectedPlace.id)))
-            .subscribe(npcs => {
+          const places = this.store.select(StoriesState.getNpcs).pipe(map(filterFn => filterFn(this.selectedPlace.id))).pipe(take(1))
+            .subscribe(async (npcs) => {
               console.log(npcs);
               this.selectedNpc = npcs.find(c => c.id === queryParam['event']);
+              await this.getNpcStory();
             }
             );
-          await this.getAllNpcs();
         } else {
           this.selectedNpc = null;
         }
@@ -124,6 +124,25 @@ export class WorldStoriesComponent implements OnInit, OnDestroy {
     )).toPromise();
 
     this.npcsloading = false;
+    this.cd.markForCheck();
+  }
+
+  async getNpcStory() {
+    this.chaptersloading = true;
+    this.cd.markForCheck();
+
+    await this.store.dispatch(new GetNpcStory(
+      {
+        placeId: this.selectedPlace.id,
+        npcId: this.selectedNpc.id,
+        request: {
+          id: this.selectedNpc.id,
+          published: false
+        }
+      }
+    )).toPromise();
+
+    this.chaptersloading = false;
     this.cd.markForCheck();
   }
 

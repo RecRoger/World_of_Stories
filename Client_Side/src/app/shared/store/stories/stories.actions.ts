@@ -1,4 +1,4 @@
-import { RequestNewNpc, RequestPublishNpc, UpdateNpcStructure } from 'src/client-api';
+import { RequestNewNpc, RequestPublishNpc, UpdateNpcStructure, RequestGetChapters, RequestUpdateChapter } from 'src/client-api';
 
 export class GetAllNpcs {
     static readonly type = '[Stories] Get All Npcs';
@@ -18,23 +18,15 @@ export class UpdateNpc {
     constructor(public payload: { placeId: string, npcId: string, npc: UpdateNpcStructure }) { }
 }
 
-// export class EditNpcStory {
-//     static readonly type = '[Stories] Edit Npc Story';
-//     constructor(public payload: { type: NpcTabs, NpcId: string, tale: TaleEdition }) { }
-// }
-// export class DeleteNpcStory {
-//     static readonly type = '[Stories] Delete Npc Story';
-//     constructor(public payload: { type: NpcTabs, NpcId: string, taleId: string }) { }
-// }
+export class GetNpcStory {
+    static readonly type = '[Stories] Get Npc Story';
+    constructor(public payload: { placeId: string, npcId: string, request: RequestGetChapters }) { }
+}
 
-// export class GetAllPlaces {
-//     static readonly type = '[Stories] Get All Places';
-//     constructor(public payload: {request: RequestGetPlaces, force?: boolean}) { }
-// }
-// export class NewPlace {
-//     static readonly type = '[Stories] New Place';
-//     constructor(public payload: RequestNewPlace) { }
-// }
+export class UpdateChapter {
+    static readonly type = '[Stories] Update Chapter';
+    constructor(public payload: { placeId: string, npcId: string, request: RequestGetChapters, npc: RequestUpdateChapter }) { }
+}
 // export class PublishPlace {
 //     static readonly type = '[Stories] Publish Place';
 //     constructor(public payload: { NpcId: string, place: RequestPublishPlace }) { }
