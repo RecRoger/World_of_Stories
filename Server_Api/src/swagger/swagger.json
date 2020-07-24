@@ -2489,7 +2489,7 @@
           }
         },
         "published": {
-          "type": "string"
+          "type": "boolean"
         },
         "author": {
           "type": "string"

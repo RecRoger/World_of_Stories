@@ -1,4 +1,4 @@
-import { RequestNewNpc, RequestPublishNpc, UpdateNpcStructure, RequestGetChapters, RequestUpdateChapter } from 'src/client-api';
+import { RequestNewNpc, RequestPublishNpc, UpdateNpcStructure, RequestGetChapters, RequestUpdateChapter, RequestPublishChapter } from 'src/client-api';
 
 export class GetAllNpcs {
     static readonly type = '[Stories] Get All Npcs';
@@ -27,10 +27,10 @@ export class UpdateChapter {
     static readonly type = '[Stories] Update Chapter';
     constructor(public payload: { placeId: string, npcId: string, request: RequestGetChapters, npc: RequestUpdateChapter }) { }
 }
-// export class PublishPlace {
-//     static readonly type = '[Stories] Publish Place';
-//     constructor(public payload: { NpcId: string, place: RequestPublishPlace }) { }
-// }
+export class PublishChapter {
+    static readonly type = '[Stories] Publish Chapter';
+    constructor(public payload: { placeId: string, npcId: string, chapter: RequestPublishChapter }) { }
+}
 // export class AddPlaceStory {
 //     static readonly type = '[Stories] New Place Story';
 //     constructor(public payload: {type: PlaceTabs, NpcId: string, placeId: string, tale: NewPlaceTale}) { }

@@ -55,27 +55,21 @@
             <!-- Descripciones -->
             <ng-container *ngIf="!npcsTabs.editing && npcsTabs.tab == 'desc'">
               <div>
-                <ng-container *ngFor="let tale of npc.description.tale">
-                  <p class="card-text">{{ tale.text }}</p>
-                </ng-container>
+                <app-animated-fragment [tale]="npc.description.tale"></app-animated-fragment>
                 <p class="text-muted text-right"> - {{npc.description.author}}</p>
               </div>
             </ng-container>
             <!-- Encuentro -->
             <ng-container *ngIf="!npcsTabs.editing && npcsTabs.tab == 'meet'">
               <div>
-                <ng-container *ngFor="let tale of npc.meeting.tale">
-                  <p class="card-text">{{ tale.text }}</p>
-                </ng-container>
+                <app-animated-fragment [tale]="npc.meeting.tale"></app-animated-fragment>
                 <p class="text-muted text-right"> - {{npc.meeting.author}}</p>
               </div>
             </ng-container>
             <!-- Rechazo -->
             <ng-container *ngIf="!npcsTabs.editing && npcsTabs.tab == 'reject'">
               <div>
-                <ng-container *ngFor="let tale of npc.rejected.tale">
-                  <p class="card-text">{{ tale.text }}</p>
-                </ng-container>
+                <app-animated-fragment [tale]="npc.rejected.tale"></app-animated-fragment>
                 <p class="text-muted text-right"> - {{npc.rejected.author}}</p>
               </div>
             </ng-container>
@@ -100,7 +94,7 @@
               <ng-container *ngIf="npcsTabs.tab == 'desc'">
                 {{npcForm.get('name').value}} es ...
                 <form [formGroup]="npcForm">
-                  <app-write-fragments [tale]="npcForm.get('description')"></app-write-fragments>
+                  <app-write-fragments  [maxSize]="3" [tale]="npcForm.get('description')"></app-write-fragments>
                 </form>
               </ng-container>
               <!-- Encuentro -->
@@ -223,7 +217,7 @@
           <ng-container *ngIf="newNpcTab.tab == 'desc'">
             {{npcForm.get('name').value}} es ...
             <form [formGroup]="npcForm">
-              <app-write-fragments [tale]="npcForm.get('description')"></app-write-fragments>
+              <app-write-fragments [maxSize]="3" [tale]="npcForm.get('description')"></app-write-fragments>
             </form>
           </ng-container>
           <!-- Encuentro -->

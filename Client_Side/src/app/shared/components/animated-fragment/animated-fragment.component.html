@@ -1,0 +1,6 @@
+<div *ngIf="shownFragments.length > 0">
+    <ng-container *ngFor="let fragment of shownFragments; let i = index">
+        <!-- <p class="card-text">{{ fragment.text }}</p> -->
+        <teximate *ngIf="fragment" [text]="fragment.fragment.text" [enter]="fragment.options" (finish)="finishAnimation(i)"></teximate>
+    </ng-container>
+</div>

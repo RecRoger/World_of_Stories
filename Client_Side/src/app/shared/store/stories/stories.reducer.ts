@@ -4,7 +4,7 @@ import { SetLoader, SetError, SetInfo } from '../general/general.actions';
 
 import { patch, append, updateItem, removeItem } from '@ngxs/store/operators';
 import { Npc, RequestGetNpcs, StoriesService, RequestNewCity, RequestNewNpc, RequestPublishNpc, RequestUpdateNpc, RequestGetChapters, Chapter } from 'src/client-api';
-import { GetAllNpcs, NewNpc, PublishNpc, UpdateNpc, GetNpcStory, UpdateChapter } from './stories.actions';
+import { GetAllNpcs, NewNpc, PublishNpc, UpdateNpc, GetNpcStory, UpdateChapter, PublishChapter } from './stories.actions';
 
 export interface StoriesStateModel {
     [placeId: string]: Npc[];
@@ -213,6 +213,42 @@ export class StoriesState {
 
             } else {
                 this.store.dispatch(new SetError('No hay eventos en el sistema'));
+                return false;
+            }
+
+
+        } catch (err) {
+            console.log('*** ERROR ***', err);
+
+            this.store.dispatch(new SetError('Ha ocurrido un problema consultando los eventos. Intente mas tarde'));
+            return false;
+        }
+    }
+
+
+    @Action(PublishChapter)
+    async PublishChapter(ctx: StateContext<StoriesStateModel>, action: PublishChapter) {
+
+        try {
+            const {chapter, npcId, placeId} = action.payload;
+
+            const resp = await this.storiesService.publishChapter(chapter).toPromise();
+
+            if (resp && resp.data && resp.data === 'OK') {
+                ctx.setState(
+                    patch({
+                      [placeId]: updateItem<Npc>(c => c.id === npcId, patch<Npc>({
+                        chapters: updateItem<Chapter>(p => p.id === chapter.id, patch<Chapter>({
+                          published: chapter.published,
+                          publishDate: chapter.published ? new Date().toDateString() : null,
+                        }))
+                      })
+                      )
+                    })
+                  );
+
+            } else {
+                this.store.dispatch(new SetError('No se ha podido publicar'));
                 return false;
             }
 

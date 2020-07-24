@@ -13,6 +13,7 @@ export class WriteFragmentsComponent implements OnInit, OnDestroy {
   constructor(private fb: FormBuilder, private cd: ChangeDetectorRef) { }
 
   @Input() tale: AbstractControl;
+  @Input() maxSize: number;
 
   talesForm: FormArray;
 
@@ -76,12 +77,14 @@ export class WriteFragmentsComponent implements OnInit, OnDestroy {
   }
 
   addFragmentControl() {
-    this.talesForm.push(
-      this.fb.group({
-        text: ['', []],
-        animation: ['default', [Validators.required]]
-      })
-    );
+    if (!this.maxSize || this.talesForm.length < this.maxSize) {
+      this.talesForm.push(
+        this.fb.group({
+          text: ['', []],
+          animation: ['default', [Validators.required]]
+        })
+      );
+    }
   }
   removeFragmentControl(index) {
     this.talesForm.removeAt(index);

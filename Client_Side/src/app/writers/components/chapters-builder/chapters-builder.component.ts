@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
-import { User, Chapter, Place, Npc, ChapterUpdate, RequestUpdateChapter } from 'src/client-api';
+import { User, Chapter, Place, Npc, ChapterUpdate, RequestUpdateChapter, RequestPublishChapter } from 'src/client-api';
 import { Select, Store } from '@ngxs/store';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
 import { map } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { isValid } from 'src/app/shared/utils/commons';
-import { UpdateChapter } from 'src/app/shared/store/stories/stories.actions';
+import { UpdateChapter, PublishChapter } from 'src/app/shared/store/stories/stories.actions';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 
 @Component({
@@ -42,7 +42,7 @@ export class ChaptersBuilderComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.user = this.store.selectSnapshot(UserState.getUser);
-    this.cities = this.store.selectSnapshot(LocationState.getCities).map(l => ({name: l.name, value: l.id}));
+    this.cities = this.store.selectSnapshot(LocationState.getCities).map(l => ({ name: l.name, value: l.id }));
   }
 
   ngOnInit() {
@@ -113,6 +113,17 @@ export class ChaptersBuilderComponent implements OnInit {
       this.chaptersTab.editing = false;
       this.cd.markForCheck();
     }
+  }
+
+  async publishChapter(id: string, published: boolean) {
+
+    const req: RequestPublishChapter = {
+      id,
+      published
+    };
+
+    await this.store.dispatch(new PublishChapter({ placeId: this.place.id, npcId: this.npc.id, chapter: req })).toPromise();
+    
   }
 
 

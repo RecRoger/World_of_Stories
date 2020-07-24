@@ -7,15 +7,36 @@ import { MessagesComponent } from './components/messages/messages.component';
 import { WriteFragmentsComponent } from './components/write-fragments/write-fragments.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WriteDecisionComponent } from './components/write-decision/write-decision.component';
+import { AnimatedFragmentComponent } from './components/animated-fragment/animated-fragment.component';
+import {TeximateModule} from 'ngx-teximate';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
   imports: [
     CommonModule,
     AngularMaterialModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TeximateModule
   ],
-  declarations: [LoaderComponent, HeaderComponent, MessagesComponent, WriteFragmentsComponent, WriteDecisionComponent],
-  exports: [LoaderComponent, HeaderComponent, AngularMaterialModule, MessagesComponent, WriteFragmentsComponent, WriteDecisionComponent]
+  declarations: [
+    LoaderComponent,
+    HeaderComponent,
+    MessagesComponent,
+    WriteFragmentsComponent,
+    WriteDecisionComponent,
+    AnimatedFragmentComponent
+  ],
+  exports: [
+    LoaderComponent,
+    HeaderComponent,
+    AngularMaterialModule,
+    MessagesComponent,
+    WriteFragmentsComponent,
+    WriteDecisionComponent,
+    AnimatedFragmentComponent,
+    TeximateModule
+  ]
 })
 export class SharedModule { }

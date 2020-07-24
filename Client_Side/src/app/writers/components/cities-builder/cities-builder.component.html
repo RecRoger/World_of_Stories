@@ -59,9 +59,7 @@
             <ng-container *ngIf="!citiesTabs.editing && citiesTabs.tab == 'desc'">
 
               <div>
-                <ng-container *ngFor="let tale of city.description[citiesTabs.page].tale">
-                  <p class="card-text">{{ tale.text }}</p>
-                </ng-container>
+                <app-animated-fragment [tale]="city.description[citiesTabs.page].tale"></app-animated-fragment>
                 <p class="text-muted text-right"> - {{city.description[citiesTabs.page].author}}</p>
               </div>
 
@@ -87,9 +85,7 @@
             <!-- Viajes -->
             <ng-container *ngIf="!citiesTabs.editing && citiesTabs.tab == 'travel'">
               <div>
-                <ng-container *ngFor="let tale of city.travel[citiesTabs.page].tale">
-                  <p class="card-text">{{ tale.text }}</p>
-                </ng-container>
+                <app-animated-fragment [tale]="city.travel[citiesTabs.page].tale"></app-animated-fragment>
                 <p class="text-muted text-right"> - {{city.travel[citiesTabs.page].author}}</p>
               </div>
               <small class="text-muted ml-auto">
@@ -137,7 +133,7 @@
                 </div>
               </div>
               <form [formGroup]="cityForm">
-                <app-write-fragments [tale]="cityForm.get('tale')"></app-write-fragments>
+                <app-write-fragments [maxSize]="(citiesTabs.tab == 'desc') ? 3 : null" [tale]="cityForm.get('tale')"></app-write-fragments>
               </form>
 
             </ng-container>
@@ -218,14 +214,14 @@
           <ng-container *ngIf="newCityTab.tab == 'desc'">
             {{cityForm.get('name').value}} es ...
             <form [formGroup]="cityForm">
-              <app-write-fragments [tale]="cityForm.get('description')"></app-write-fragments>
+              <app-write-fragments  [maxSize]="3" [tale]="cityForm.get('description')"></app-write-fragments>
             </form>
           </ng-container>
           <!-- Viajes -->
           <ng-container *ngIf="newCityTab.tab == 'travel'">
             Viajando a {{cityForm.get('name').value}} ...
             <form [formGroup]="cityForm">
-              <app-write-fragments [tale]="cityForm.get('travel')"></app-write-fragments>
+              <app-write-fragments  [tale]="cityForm.get('travel')"></app-write-fragments>
             </form>
           </ng-container>
 

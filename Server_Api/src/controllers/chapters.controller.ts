@@ -239,11 +239,12 @@ class ChaptersController {
                 }
             ).lean();
             console.log('> chapterEdition: ', chapterEdition)
+
             const edition = await NpcsSchema.updateOne(
                 { "chapters._id": id },
                 {
                     $set: {
-                        "chapters.$[elem].usersDecisions.$[choice].published": published
+                        "chapters.$[elem].usersDecisions.options.$[choice].published": published
                     }
                 }, {
                 arrayFilters: [
@@ -256,10 +257,12 @@ class ChaptersController {
                 ]
             }
             );
-            console.log('> response: ' + ((edition.nModified) ? 'OK' : 'not Found'));
+
+            console.log('> option Edition', edition)
+            console.log('> response: ' + ((chapterEdition.nModified) ? 'OK' : 'not Found'));
             console.log('_____________________________________________________');
             res.json({
-                "data": (edition.nModified) ? 'OK' : 'error'
+                "data": (chapterEdition.nModified) ? 'OK' : 'error'
             });
         } catch (err) {
             console.log('Error ---->', err);

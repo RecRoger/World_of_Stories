@@ -54,9 +54,7 @@
             <ng-container *ngIf="!placesTabs.editing && placesTabs.tab == 'desc'">
 
               <div>
-                <ng-container *ngFor="let tale of place.description[placesTabs.page].tale">
-                  <p class="card-text">{{ tale.text }}</p>
-                </ng-container>
+                <app-animated-fragment [tale]="place.description[placesTabs.page].tale"></app-animated-fragment>
                 <p class="text-muted text-right"> - {{place.description[placesTabs.page].author}}</p>
               </div>
 
@@ -80,9 +78,7 @@
             <!-- Entradas -->
             <ng-container *ngIf="!placesTabs.editing && placesTabs.tab == 'entry'">
               <div>
-                <ng-container *ngFor="let tale of place.entry[placesTabs.page].tale">
-                  <p class="card-text">{{ tale.text }}</p>
-                </ng-container>
+                <app-animated-fragment [tale]="place.entry[placesTabs.page].tale"></app-animated-fragment>
                 <p class="text-muted text-right"> - {{place.entry[placesTabs.page].author}}</p>
               </div>
               <small class="text-muted ml-auto">
@@ -130,7 +126,7 @@
                 </div>
               </div>
               <form [formGroup]="placeForm">
-                <app-write-fragments [tale]="placeForm.get('tale')"></app-write-fragments>
+                <app-write-fragments  [maxSize]="(placesTabs.tab == 'desc') ? 3 : null" [tale]="placeForm.get('tale')"></app-write-fragments>
               </form>
 
             </ng-container>
@@ -208,7 +204,7 @@
           <ng-container *ngIf="newPlaceTab.tab == 'desc'">
             {{placeForm.get('name').value}} es ...
             <form [formGroup]="placeForm">
-              <app-write-fragments [tale]="placeForm.get('description')"></app-write-fragments>
+              <app-write-fragments  [maxSize]="3" [tale]="placeForm.get('description')"></app-write-fragments>
             </form>
           </ng-container>
           <!-- Entradas -->

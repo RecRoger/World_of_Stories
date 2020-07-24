@@ -17,46 +17,59 @@
                     </ng-container>
                     <ng-template #chapterTitle>
                         <h4 class="card-title">{{chapter.name || 'Nuevo Capitulo'}}</h4>
+                        <small class="text-muted ml-auto">
+                            <span *ngIf="!chapter.published">Sin Publicar</span>
+                            <span *ngIf="chapter.published">Publicado el {{ chapter.publishDate | date}}</span>
+                        </small>
                     </ng-template>
-                    <button *ngIf="chaptersTab?.chapters.includes(chapter.id)" class="btn ml-auto"
-                        (click)="editChapter(chapter); $event.stopPropagation()">
-                        <i class="fas fa-pen"></i>
-                    </button>
                 </div>
 
                 <ng-container *ngIf="chaptersTab?.chapters.includes(chapter.id)">
                     <div class="card-body place-info d-flex flex-column">
 
                         <ng-container *ngIf="!chaptersTab?.editing">
+
+
                             <!-- seccion de historia -->
-                            <div class="mb-3"
-                                *ngIf="chapter.story && chapter.story[0] && chapter.story[0].text ; else noStory">
-                                <ng-container *ngFor="let tale of chapter.story">
-                                    <p class="card-text">{{ tale.text }}</p>
-                                </ng-container>
-                                <!-- <p class="text-muted text-right"> - {{chapter.story.author}}</p> -->
-                            </div>
-                            <ng-template #noStory>
-                                <div class="h6">
-                                    Sin historia
+                            <div class="mb-3 row">
+                                <div class="col-8"
+                                    *ngIf="chapter.story && chapter.story[0] && chapter.story[0].text ; else noStory">
+                                    <app-animated-fragment [tale]="chapter.story"></app-animated-fragment>
                                 </div>
-                            </ng-template>
+                                <ng-template #noStory>
+                                    <div class="col-8 h6">
+                                        Sin historia
+                                    </div>
+                                </ng-template>
+                                <div class="col-4 d-flex">
+                                    <button class="btn ml-auto"
+                                        (click)="publishChapter(chapter.id, !chapter.published)">
+                                        <span *ngIf="!chapter.published">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                        </span>
+                                        <span *ngIf="chapter.published">
+                                            <i class="fas fa-cloud-download-alt"></i>
+                                        </span>
+                                    </button>
+                                    <button class="btn"
+                                        (click)="editChapter(chapter); $event.stopPropagation()">
+                                        <i class="fas fa-pen"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+
                             <!-- seccion para items -->
-                            <div *ngIf="chapter.items && chapter.items.length>0; else noItems">
+                            <div *ngIf="chapter.items && chapter.items.length>0">
                                 <ng-container *ngFor="let item of chapter.items">
                                     <p class="card-text">{{ item.name }}</p>
                                 </ng-container>
                             </div>
-                            <ng-template #noItems>
-                                <div class="h6">
-                                    Sin objetos de premio
-                                </div>
-                            </ng-template>
+
+
                             <!-- seccion de decision -->
-                            <div class="row" *ngIf="chapter.story && chapter.usersDecisions">
-                                <h6 class="col-12">
-                                    Tipo de decision: {{chapter.usersDecisions.decisionType || 'Sin definir'}}
-                                </h6>
+                            <div class="row"
+                                *ngIf="chapter.story && chapter.usersDecisions?.options?.length>0 && !chapter.endLocation?.endChapter ">
                                 <ng-container *ngFor="let option of chapter.usersDecisions.options">
                                     <button class="btn col-6 text-center" (click)="toggleChapterInfo(option.value)">
                                         <h6>{{option.name}}</h6>
@@ -64,8 +77,9 @@
                                     </button>
                                 </ng-container>
                             </div>
-                            <div *ngIf="chapter.endLocation && chapter.endLocation.locationType">
-                                {{chapter.endLocation | json}}
+
+                            <div *ngIf="chapter.endLocation && chapter.endLocation.endChapter">
+                                Ubicacion final {{chapter.endLocation.locationId}}
                             </div>
 
                         </ng-container>
