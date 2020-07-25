@@ -1,0 +1,22 @@
+<div class="d-flex align-items-stretch" *ngIf="decision">
+
+    <ng-container *ngIf="decision.options && decision.options.length>0">
+        <div class="col-6 text-center" (click)="takeDecision(decision.options[0].value)">
+            <div class="hide-y border-bottom pb-1">
+                <h6 [@bounceIn]="bounceIn">{{decision.options[0].name}}</h6>
+            </div>
+            <div class="hide-y pt-2">
+                <p [@fadeInDown]="fadeInDown" class="align-self-stretch">{{decision.options[0].description}}</p>
+            </div>
+        </div>
+        <div class="col-6 text-center border-left" (click)="takeDecision(decision.options[1].value)">
+            <div class="hide-y border-bottom pb-1">
+                <h6 [@bounceIn]="bounceIn">{{decision.options[1].name}}</h6>
+            </div>
+            <div class="hide-y pt-2">
+                <p [@fadeInDown]="fadeInDown" class="align-self-stretch">{{decision.options[1].description}}</p>
+            </div>
+        </div>
+
+    </ng-container>
+</div>

@@ -75,17 +75,7 @@
             </ng-container>
             <!-- Decision -->
             <ng-container *ngIf="!npcsTabs.editing && npcsTabs.tab == 'decision'">
-              <div class="row">
-                <div class="col-6 text-center">
-                  <h6>{{npc.decision.options[0].name}}</h6>
-                  <p class="pl-3">{{npc.decision.options[0].description}}</p>
-                </div>
-                <div class="col-6 text-center">
-                  <h6>{{npc.decision.options[1].name}}</h6>
-                  <p class="pl-3">{{npc.decision.options[1].description}}</p>
-                </div>
-              </div>
-
+              <app-take-decision [decision]="npc.decision" (taken)="takeNpcDecision(npc, $event)"></app-take-decision>
             </ng-container>
 
             <!-- formulario de edicion y creacion -->

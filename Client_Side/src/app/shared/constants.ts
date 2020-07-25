@@ -20,3 +20,9 @@ export enum NpcTabs {
     decision = 'decision',
     reject = 'reject',
 }
+
+export enum AnimationsTypes {
+    default = 'default',
+    chatA = 'chatA',
+    chatB = 'chatB'
+}

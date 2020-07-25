@@ -1,18 +1,19 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { UsersRoles } from 'src/app/shared/constants';
 import { HttpClient } from '@angular/common/http';
-import { Store } from '@ngxs/store';
+import { Store, Select } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { AddUserRoll } from 'src/app/shared/store/users/users.actions';
 import { User, RequestSetRol } from 'src/client-api';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-write-or-read',
   templateUrl: './write-or-read.component.html',
   styleUrls: ['./write-or-read.component.scss']
 })
-export class WriteOrReadComponent implements OnInit {
+export class WriteOrReadComponent implements OnInit, OnDestroy {
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -21,6 +22,7 @@ export class WriteOrReadComponent implements OnInit {
     private http: HttpClient,
   ) { }
 
+  @Select(UserState.getUser) user$: Observable<User>;
   user: User;
   rolConfirmation = '';
 
@@ -28,8 +30,16 @@ export class WriteOrReadComponent implements OnInit {
   errorMsg = '';
 
 
+  subscriptions: Subscription[] = [];
   ngOnInit() {
-    this.user = this.store.selectSnapshot(UserState.getUser);
+    this.subscriptions.push(
+      this.user$.subscribe(us => {
+        this.user = us;
+      })
+    );
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   getOut() {

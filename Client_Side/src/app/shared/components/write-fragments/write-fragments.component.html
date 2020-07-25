@@ -3,28 +3,43 @@
     <div class="col-8 pb-1">
         <ng-container *ngFor="let form of talesForm.controls; let i = index">
             <div class="row" [formGroup]="form">
-                <div class="col-10" [ngClass]="{'tale-invalid': tale.invalid && tale.touched && i === talesForm.length - 1 }">
-                    <textarea 
-                        [id]="'input-'+i" 
-                        formControlName="text" 
-                        class="form-control tale-textarea" 
-                        cdkTextareaAutosize rows="3" 
-                        (keyup.enter)="focusOnFragment(i + 1)">
-                    
+                <div class="col-11"
+                    [ngClass]="{'tale-invalid': tale.invalid && tale.touched && i === talesForm.length - 1 }">
+                    <textarea [id]="'input-'+i" formControlName="text" class="form-control tale-textarea"
+                        cdkTextareaAutosize rows="3" (keyup.enter)="focusOnFragment(i + 1)">
+
                     </textarea>
                 </div>
-                <div class="col-2">
-                    animacion
+                <div class="col-1">
+                    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                        <i class="fas fa-forward"></i>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item [matMenuTriggerFor]="animations">
+                            Animación
+                        </button>
+                    </mat-menu>
+                    <mat-menu #animations="matMenu">
+                        <button mat-menu-item (click)="selectAnimation(i,animationsTypes.default)">Default</button>
+                        <button mat-menu-item (click)="selectAnimation(i,animationsTypes.chatA)">Conversacion 1</button>
+                        <button mat-menu-item (click)="selectAnimation(i,animationsTypes.chatB)">Conversacion 2</button>
+                    </mat-menu>
                 </div>
             </div>
         </ng-container>
-
     </div>
 
     <!-- seccion de prueba -->
     <div class="col-4">
-        <ng-container *ngFor="let tale of talesForm.value">
-            <p> {{tale.text }}</p>
+
+        <ng-container *ngIf="typeWriting">
+            <div class="col-12 d-flex">
+                <app-loader class="mx-auto" size="lg"></app-loader>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="!typeWriting && talesForm.value">
+            <app-animated-fragment [tale]="talesForm.value"></app-animated-fragment>
         </ng-container>
     </div>
 </div>

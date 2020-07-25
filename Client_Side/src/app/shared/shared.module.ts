@@ -10,6 +10,7 @@ import { WriteDecisionComponent } from './components/write-decision/write-decisi
 import { AnimatedFragmentComponent } from './components/animated-fragment/animated-fragment.component';
 import {TeximateModule} from 'ngx-teximate';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TakeDecisionComponent } from './components/take-decision/take-decision.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MessagesComponent,
     WriteFragmentsComponent,
     WriteDecisionComponent,
-    AnimatedFragmentComponent
+    AnimatedFragmentComponent,
+    TakeDecisionComponent
   ],
   exports: [
     LoaderComponent,
@@ -36,7 +38,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     WriteFragmentsComponent,
     WriteDecisionComponent,
     AnimatedFragmentComponent,
-    TeximateModule
+    TeximateModule,
+    TakeDecisionComponent
   ]
 })
 export class SharedModule { }

@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ReadFragment } from 'src/client-api';
-import { Subscription } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
+import { AnimationsTypes } from '../../constants';
 
 @Component({
   selector: 'app-write-fragments',
@@ -15,9 +16,15 @@ export class WriteFragmentsComponent implements OnInit, OnDestroy {
   @Input() tale: AbstractControl;
   @Input() maxSize: number;
 
-  talesForm: FormArray;
+  talesForm: FormArrayTyped<ReadFragment>;
 
   subscription: Subscription;
+
+  timer = timer(0, 500);
+  subscribeTimer: Subscription;
+  typeWriting = false;
+
+  animationsTypes = AnimationsTypes;
 
   ngOnInit() {
 
@@ -37,7 +44,6 @@ export class WriteFragmentsComponent implements OnInit, OnDestroy {
     }
 
     this.subscription = this.talesForm.valueChanges.subscribe(values => {
-
       let toRemove = null;
       values.forEach((value, i) => {
 
@@ -66,6 +72,7 @@ export class WriteFragmentsComponent implements OnInit, OnDestroy {
 
 
       const castTale = this.talesForm.value.filter(value => value.text);
+      this.startTimer();
       this.tale.setValue(castTale);
 
     });
@@ -74,6 +81,9 @@ export class WriteFragmentsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    if (this.subscribeTimer) {
+      this.subscribeTimer.unsubscribe();
+    }
   }
 
   addFragmentControl() {
@@ -97,6 +107,28 @@ export class WriteFragmentsComponent implements OnInit, OnDestroy {
   focusOnFragment(index) {
     const elem = document.getElementById('input-' + index);
     elem && elem.focus();
+  }
+
+  selectAnimation(index, value) {
+    this.talesForm.controls[index].get('animation').setValue(value);
+  }
+
+
+  startTimer() {
+    if (this.subscribeTimer) {
+      this.subscribeTimer.unsubscribe();
+    }
+    this.subscribeTimer = this.timer.subscribe(val => {
+      this.typeWriting = true;
+      this.cd.markForCheck();
+      if (val >= 1) {
+        if (this.subscribeTimer) {
+          this.subscribeTimer.unsubscribe();
+        }
+        this.typeWriting = false;
+        this.cd.markForCheck();
+      }
+    });
   }
 
 }

@@ -34,7 +34,7 @@
                             <div class="mb-3 row">
                                 <div class="col-8"
                                     *ngIf="chapter.story && chapter.story[0] && chapter.story[0].text ; else noStory">
-                                    <app-animated-fragment [tale]="chapter.story"></app-animated-fragment>
+                                    <app-animated-fragment [tale]="chapter.story" (finish)="endStoryAnimation()"></app-animated-fragment>
                                 </div>
                                 <ng-template #noStory>
                                     <div class="col-8 h6">
@@ -42,7 +42,7 @@
                                     </div>
                                 </ng-template>
                                 <div class="col-4 d-flex">
-                                    <button class="btn ml-auto"
+                                    <button class="btn ml-auto mb-auto"
                                         (click)="publishChapter(chapter.id, !chapter.published)">
                                         <span *ngIf="!chapter.published">
                                             <i class="fas fa-cloud-upload-alt"></i>
@@ -51,7 +51,7 @@
                                             <i class="fas fa-cloud-download-alt"></i>
                                         </span>
                                     </button>
-                                    <button class="btn"
+                                    <button class="btn mb-auto"
                                         (click)="editChapter(chapter); $event.stopPropagation()">
                                         <i class="fas fa-pen"></i>
                                     </button>
@@ -68,14 +68,10 @@
 
 
                             <!-- seccion de decision -->
-                            <div class="row"
+                            <div class="col-12"
                                 *ngIf="chapter.story && chapter.usersDecisions?.options?.length>0 && !chapter.endLocation?.endChapter ">
-                                <ng-container *ngFor="let option of chapter.usersDecisions.options">
-                                    <button class="btn col-6 text-center" (click)="toggleChapterInfo(option.value)">
-                                        <h6>{{option.name}}</h6>
-                                        <p class="pl-3">{{option.description}}</p>
-                                    </button>
-                                </ng-container>
+                                <app-take-decision [decision]="chapter.usersDecisions" (taken)="toggleChapterInfo($event)"></app-take-decision>
+
                             </div>
 
                             <div *ngIf="chapter.endLocation && chapter.endLocation.endChapter">

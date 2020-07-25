@@ -123,7 +123,11 @@ export class ChaptersBuilderComponent implements OnInit {
     };
 
     await this.store.dispatch(new PublishChapter({ placeId: this.place.id, npcId: this.npc.id, chapter: req })).toPromise();
-    
+
+  }
+
+  endStoryAnimation() {
+    console.log('aca llego');
   }
 
 

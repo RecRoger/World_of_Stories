@@ -180,9 +180,18 @@ export class NpcBuilderComponent implements OnInit {
     await this.store.dispatch(new PublishNpc({ placeId: this.place.id, req }));
   }
 
-   selectNpc(id) {
-     this.npcSelect.emit(id);
-   }
+  selectNpc(id) {
+    this.npcSelect.emit(id);
+  }
+
+  takeNpcDecision(npc, value) {
+    if (value === 'true') {
+      this.selectNpc(npc.id);
+    } else {
+      this.npcsTabs.tab = NpcTabs.reject;
+      this.cd.markForCheck();
+    }
+  }
 
 
 }
