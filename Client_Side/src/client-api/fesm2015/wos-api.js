@@ -1525,6 +1525,45 @@ class UsersService {
      * @param {?=} reportProgress
      * @return {?}
      */
+    deleteCharacter(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling deleteCharacter.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/characters/delete`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
     deleteUser(data, observe = 'body', reportProgress = false) {
         if (data === null || data === undefined) {
             throw new Error('Required parameter data was null or undefined when calling deleteUser.');
@@ -1552,6 +1591,45 @@ class UsersService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
         return this.httpClient.post(`${this.basePath}/users/delete`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
+    getCharacters(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling getCharacters.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/characters`, data, {
             withCredentials: this.configuration.withCredentials,
             headers: headers,
             observe: observe,
@@ -1655,6 +1733,84 @@ class UsersService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
         return this.httpClient.post(`${this.basePath}/users/login`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
+    newCharacter(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling newCharacter.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/characters/new`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
+    readFragment(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling readFragment.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/characters/read`, data, {
             withCredentials: this.configuration.withCredentials,
             headers: headers,
             observe: observe,
@@ -1778,6 +1934,45 @@ class UsersService {
             reportProgress: reportProgress
         });
     }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
+    updateCharacter(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling updateCharacter.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/characters/update`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
 }
 UsersService.decorators = [
     { type: Injectable, args: [{
@@ -1824,6 +2019,30 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/character.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/characterData.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/characterLocation.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/characterUpdate.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/city.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1855,6 +2074,12 @@ UsersService.ctorParameters = () => [
 /**
  * @fileoverview added by tsickle
  * Generated from: model/listChapters.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/listCharacters.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -1944,6 +2169,12 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/requestDeleteCharacter.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/requestDeleteCity.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1975,6 +2206,12 @@ UsersService.ctorParameters = () => [
 /**
  * @fileoverview added by tsickle
  * Generated from: model/requestGetChapters.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/requestGetCharacters.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -2023,6 +2260,12 @@ UsersService.ctorParameters = () => [
 /**
  * @fileoverview added by tsickle
  * Generated from: model/requestLogin.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/requestNewCharacter.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -2094,6 +2337,12 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/requestReadFragment.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/requestRemoveCityDescription.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -2142,6 +2391,12 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/requestUpdateCharacter.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/requestUpdateCityDescription.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -2184,6 +2439,12 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/responseDeleteCharacter.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/responseDeleteCity.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -2215,6 +2476,12 @@ UsersService.ctorParameters = () => [
 /**
  * @fileoverview added by tsickle
  * Generated from: model/responseGetChapters.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/responseGetCharacters.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -2269,6 +2536,12 @@ UsersService.ctorParameters = () => [
 /**
  * @fileoverview added by tsickle
  * Generated from: model/responseLogin.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/responseNewCharacter.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -2340,6 +2613,12 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/responseReadFragment.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/responseRemoveCityDescription.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -2383,6 +2662,12 @@ UsersService.ctorParameters = () => [
 /**
  * @fileoverview added by tsickle
  * Generated from: model/responseUpdateChapter.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: model/responseUpdateCharacter.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 

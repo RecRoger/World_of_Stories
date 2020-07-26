@@ -2211,6 +2211,269 @@
           }
         }
       }
+    },
+    "/characters": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get User's Characters",
+        "description": "Get character of an user",
+        "operationId": "get_characters",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestGetCharacters"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseGetCharacters"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "characters": [
+                    {}
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/characters/new": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create New Character",
+        "description": "Create new character for an User",
+        "operationId": "new_character",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestNewCharacter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseNewCharacter"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "chapter": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/characters/read": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Character read fragment",
+        "description": "Set fragment as readed for a User",
+        "operationId": "read_fragment",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestReadFragment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseReadFragment"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/characters/update": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update Characer",
+        "description": "Update Characer items, money, name or Location",
+        "operationId": "update_character",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestUpdateCharacter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseUpdateCharacter"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "character": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/characters/delete": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete Character",
+        "description": "Delete Character",
+        "operationId": "delete_character",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestDeleteCharacter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseDeleteCharacter"
+            },
+            "examples": {
+              "application/json": {
+                "data": "OK"
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -2256,7 +2519,7 @@
         "characters": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/Character"
           }
         }
       }
@@ -2267,6 +2530,62 @@
         "user": {
           "type": "object",
           "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "Character": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "location": {
+          "type": "object",
+          "$ref": "#/definitions/CharacterLocation"
+        },
+        "money": {
+          "type": "number"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fragmentsRead": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "CharacterData": {
+      "type": "object",
+      "properties": {
+        "character": {
+          "type": "object",
+          "$ref": "#/definitions/Character"
+        }
+      }
+    },
+    "CharacterLocation": {
+      "type": "object",
+      "properties": {
+        "cityId": {
+          "type": "string"
+        },
+        "placeId": {
+          "type": "string"
+        },
+        "npcId": {
+          "type": "string"
+        },
+        "chapterId": {
+          "type": "string"
         }
       }
     },
@@ -3541,6 +3860,129 @@
       }
     },
     "ResponsePublishChapter": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/ResponseData"
+        }
+      }
+    },
+    "RequestGetCharacters": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseGetCharacters": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/ListCharacters"
+        }
+      }
+    },
+    "ListCharacters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "$ref": "#/definitions/Character"
+      }
+    },
+    "RequestNewCharacter": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseNewCharacter": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/ChapterData"
+        }
+      }
+    },
+    "RequestReadFragment": {
+      "type": "object",
+      "properties": {
+        "characterId": {
+          "type": "string"
+        },
+        "fragmentId": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseReadFragment": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/ResponseData"
+        }
+      }
+    },
+    "RequestUpdateCharacter": {
+      "type": "object",
+      "properties": {
+        "character": {
+          "type": "object",
+          "$ref": "#/definitions/CharacterUpdate"
+        }
+      }
+    },
+    "CharacterUpdate": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "location": {
+          "type": "object",
+          "$ref": "#/definitions/CharacterLocation"
+        },
+        "money": {
+          "type": "number"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ResponseUpdateCharacter": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/CharacterData"
+        }
+      }
+    },
+    "RequestDeleteCharacter": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseDeleteCharacter": {
       "type": "object",
       "properties": {
         "data": {

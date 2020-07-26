@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-writer-nav',
@@ -7,11 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WriterNavComponent implements OnInit {
 
+  @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   constructor() { }
 
-  navOpen = false;
-
   ngOnInit() {
+  }
+
+  closeEmit() {
+    this.close.emit(true);
   }
 
 }

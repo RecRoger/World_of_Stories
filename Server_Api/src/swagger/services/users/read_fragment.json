@@ -1,0 +1,75 @@
+{
+    "path": {
+        "post": {
+            "tags": [
+                "Users"
+            ],
+            "summary": "Character read fragment",
+            "description": "Set fragment as readed for a User",
+            "operationId": "read_fragment",
+            "consumes": [
+                "application/json"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "Transaction details",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/RequestReadFragment"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Success Operation",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseReadFragment"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {}
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Error response.",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseData"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "RequestReadFragment": {
+            "type": "object",
+            "properties": {
+                "characterId": {
+                    "type": "string"
+                },
+                "fragmentId": {
+                    "type": "string"
+                }
+            }
+        },
+        "ResponseReadFragment": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/ResponseData"
+                }
+            }
+        }
+    }
+}

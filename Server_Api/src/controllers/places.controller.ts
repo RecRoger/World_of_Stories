@@ -129,7 +129,7 @@ class PlacesController {
                 }
             ).lean();
 
-            const place = (city) ? city.places.slice(1)[0] : null;
+            const place = (city) ? city.places.slice(-1)[0] : null;
 
             const castPlace = place ? {
                 ...place,
@@ -254,7 +254,7 @@ class PlacesController {
 
             const place: PlaceInterface | null = (city) ? city.places[0] : null;
 
-            const newDescription = (place) ? place.description.slice(1)[0] : null;
+            const newDescription = (place) ? place.description.slice(-1)[0] : null;
 
             console.log('> response' + ((newDescription) ? 'OK' : 'Not Found'));
             console.log('_____________________________________________________');
@@ -383,7 +383,7 @@ class PlacesController {
 
             const place: PlaceInterface | null = (city) ? city.places[0] : null;
 
-            const newEntry = (place) ? place.entry.slice(1)[0] : null;
+            const newEntry = (place) ? place.entry.slice(-1)[0] : null;
 
             console.log('> response: ' + ((edition.nModified && newEntry) ? 'OK' : 'Not Found'));
             console.log('_____________________________________________________');

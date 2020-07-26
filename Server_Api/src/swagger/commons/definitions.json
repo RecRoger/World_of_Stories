@@ -11,6 +11,15 @@
     "UserData": {
         "$ref": "../commons/models.json#/definitions/UserData"
     },
+    "Character": {
+        "$ref": "../commons/models.json#/definitions/Character"
+    },
+    "CharacterData": {
+        "$ref": "../commons/models.json#/definitions/CharacterData"
+    },
+    "CharacterLocation": {
+        "$ref": "../commons/models.json#/definitions/CharacterLocation"
+    },
     "ReadFragment": {
         "$ref": "../commons/models.json#/definitions/ReadFragment"
     },
@@ -239,8 +248,6 @@
     "ResponseUpdatePlaceEntry": {
         "$ref": "../services/locations/update_place_entry.json#/definitions/ResponseUpdatePlaceEntry"
     },
-
-    
     "RequestGetNpcs": {
         "$ref": "../services/stories/get_npcs.json#/definitions/RequestGetNpcs"
     },
@@ -250,7 +257,6 @@
     "ListNpcs": {
         "$ref": "../services/stories/get_npcs.json#/definitions/ListNpcs"
     },
-
     "RequestGetNpc": {
         "$ref": "../services/stories/get_npc.json#/definitions/RequestGetNpc"
     },
@@ -287,8 +293,6 @@
     "ResponseUpdateNpc": {
         "$ref": "../services/stories/update_npc.json#/definitions/ResponseUpdateNpc"
     },
-
-
     "RequestGetChapters": {
         "$ref": "../services/stories/get_chapters.json#/definitions/RequestGetChapters"
     },
@@ -304,7 +308,6 @@
     "ResponseGetChapter": {
         "$ref": "../services/stories/get_chapter.json#/definitions/ResponseGetChapter"
     },
-    
     "RequestUpdateChapter": {
         "$ref": "../services/stories/update_chapter.json#/definitions/RequestUpdateChapter"
     },
@@ -325,7 +328,41 @@
     },
     "ResponsePublishChapter": {
         "$ref": "../services/stories/publish_chapter.json#/definitions/ResponsePublishChapter"
+    },
+    "RequestGetCharacters": {
+        "$ref": "../services/users/get_characters.json#/definitions/RequestGetCharacters"
+    },
+    "ResponseGetCharacters": {
+        "$ref": "../services/users/get_characters.json#/definitions/ResponseGetCharacters"
+    },
+    "ListCharacters": {
+        "$ref": "../services/users/get_characters.json#/definitions/ListCharacters"
+    },
+    "RequestNewCharacter": {
+        "$ref": "../services/users/new_character.json#/definitions/RequestNewCharacter"
+    },
+    "ResponseNewCharacter": {
+        "$ref": "../services/users/new_character.json#/definitions/ResponseNewCharacter"
+    },
+    "RequestReadFragment": {
+        "$ref": "../services/users/read_fragment.json#/definitions/RequestReadFragment"
+    },
+    "ResponseReadFragment": {
+        "$ref": "../services/users/read_fragment.json#/definitions/ResponseReadFragment"
+    },
+    "RequestUpdateCharacter": {
+        "$ref": "../services/users/update_character.json#/definitions/RequestUpdateCharacter"
+    },
+    "CharacterUpdate": {
+        "$ref": "../services/users/update_character.json#/definitions/CharacterUpdate"
+    },
+    "ResponseUpdateCharacter": {
+        "$ref": "../services/users/update_character.json#/definitions/ResponseUpdateCharacter"
+    },
+    "RequestDeleteCharacter": {
+        "$ref": "../services/users/delete_character.json#/definitions/RequestDeleteCharacter"
+    },
+    "ResponseDeleteCharacter": {
+        "$ref": "../services/users/delete_character.json#/definitions/ResponseDeleteCharacter"
     }
-
-
 }

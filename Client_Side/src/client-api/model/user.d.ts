@@ -9,10 +9,11 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
+import { Character } from './character';
 export interface User {
     id?: string;
     username?: string;
     password?: string;
     rol?: Array<string>;
-    characters?: Array<string>;
+    characters?: Array<Character>;
 }

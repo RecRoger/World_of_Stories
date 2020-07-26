@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -15,6 +15,7 @@ export class HeaderComponent implements OnInit {
   ) { }
 
   @Input() backBtn: boolean;
+  @Output() menu: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 
 
@@ -26,7 +27,8 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/']);
   }
   goBack() {
-    this.location.back();
+    this.menu.emit(true);
+    // this.location.back();
   }
 
 }

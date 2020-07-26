@@ -120,5 +120,20 @@
     },
     "/chapters/publish": {
         "$ref": "../services/stories/publish_chapter.json#/path"
+    },
+    "/characters": {
+        "$ref": "../services/users/get_characters.json#/path"
+    },
+    "/characters/new": {
+        "$ref": "../services/users/new_character.json#/path"
+    },
+    "/characters/read": {
+        "$ref": "../services/users/read_fragment.json#/path"
+    },
+    "/characters/update": {
+        "$ref": "../services/users/update_character.json#/path"
+    },
+    "/characters/delete": {
+        "$ref": "../services/users/delete_character.json#/path"
     }
 }

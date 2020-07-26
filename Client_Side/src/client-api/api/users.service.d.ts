@@ -11,19 +11,29 @@
  */
 import { HttpClient, HttpHeaders, HttpResponse, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { RequestDeleteCharacter } from '../model/requestDeleteCharacter';
 import { RequestDeleteUser } from '../model/requestDeleteUser';
+import { RequestGetCharacters } from '../model/requestGetCharacters';
 import { RequestGetUser } from '../model/requestGetUser';
 import { RequestLogin } from '../model/requestLogin';
+import { RequestNewCharacter } from '../model/requestNewCharacter';
+import { RequestReadFragment } from '../model/requestReadFragment';
 import { RequestRemoveRol } from '../model/requestRemoveRol';
 import { RequestSetRol } from '../model/requestSetRol';
 import { RequestSignin } from '../model/requestSignin';
+import { RequestUpdateCharacter } from '../model/requestUpdateCharacter';
+import { ResponseDeleteCharacter } from '../model/responseDeleteCharacter';
 import { ResponseDeleteUser } from '../model/responseDeleteUser';
+import { ResponseGetCharacters } from '../model/responseGetCharacters';
 import { ResponseGetUser } from '../model/responseGetUser';
 import { ResponseGetUsers } from '../model/responseGetUsers';
 import { ResponseLogin } from '../model/responseLogin';
+import { ResponseNewCharacter } from '../model/responseNewCharacter';
+import { ResponseReadFragment } from '../model/responseReadFragment';
 import { ResponseRemoveRol } from '../model/responseRemoveRol';
 import { ResponseSetRol } from '../model/responseSetRol';
 import { ResponseSignin } from '../model/responseSignin';
+import { ResponseUpdateCharacter } from '../model/responseUpdateCharacter';
 import { Configuration } from '../configuration';
 export declare class UsersService {
     protected httpClient: HttpClient;
@@ -37,6 +47,16 @@ export declare class UsersService {
      */
     private canConsumeForm;
     /**
+     * Delete Character
+     * Delete Character
+     * @param data Transaction details
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    deleteCharacter(data: RequestDeleteCharacter, observe?: 'body', reportProgress?: boolean): Observable<ResponseDeleteCharacter>;
+    deleteCharacter(data: RequestDeleteCharacter, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ResponseDeleteCharacter>>;
+    deleteCharacter(data: RequestDeleteCharacter, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ResponseDeleteCharacter>>;
+    /**
      * Delete an User
      * Delete an user
      * @param data Transaction details
@@ -46,6 +66,16 @@ export declare class UsersService {
     deleteUser(data: RequestDeleteUser, observe?: 'body', reportProgress?: boolean): Observable<ResponseDeleteUser>;
     deleteUser(data: RequestDeleteUser, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ResponseDeleteUser>>;
     deleteUser(data: RequestDeleteUser, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ResponseDeleteUser>>;
+    /**
+     * Get User&#39;s Characters
+     * Get character of an user
+     * @param data Transaction details
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    getCharacters(data: RequestGetCharacters, observe?: 'body', reportProgress?: boolean): Observable<ResponseGetCharacters>;
+    getCharacters(data: RequestGetCharacters, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ResponseGetCharacters>>;
+    getCharacters(data: RequestGetCharacters, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ResponseGetCharacters>>;
     /**
      * Get an User
      * Get an user
@@ -76,6 +106,26 @@ export declare class UsersService {
     login(data: RequestLogin, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ResponseLogin>>;
     login(data: RequestLogin, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ResponseLogin>>;
     /**
+     * Create New Character
+     * Create new character for an User
+     * @param data Transaction details
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    newCharacter(data: RequestNewCharacter, observe?: 'body', reportProgress?: boolean): Observable<ResponseNewCharacter>;
+    newCharacter(data: RequestNewCharacter, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ResponseNewCharacter>>;
+    newCharacter(data: RequestNewCharacter, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ResponseNewCharacter>>;
+    /**
+     * Character read fragment
+     * Set fragment as readed for a User
+     * @param data Transaction details
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    readFragment(data: RequestReadFragment, observe?: 'body', reportProgress?: boolean): Observable<ResponseReadFragment>;
+    readFragment(data: RequestReadFragment, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ResponseReadFragment>>;
+    readFragment(data: RequestReadFragment, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ResponseReadFragment>>;
+    /**
      * Remove User Rol
      * Remove new rol to an User
      * @param data Transaction details
@@ -105,4 +155,14 @@ export declare class UsersService {
     signin(data: RequestSignin, observe?: 'body', reportProgress?: boolean): Observable<ResponseSignin>;
     signin(data: RequestSignin, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ResponseSignin>>;
     signin(data: RequestSignin, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ResponseSignin>>;
+    /**
+     * Update Characer
+     * Update Characer items, money, name or Location
+     * @param data Transaction details
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    updateCharacter(data: RequestUpdateCharacter, observe?: 'body', reportProgress?: boolean): Observable<ResponseUpdateCharacter>;
+    updateCharacter(data: RequestUpdateCharacter, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ResponseUpdateCharacter>>;
+    updateCharacter(data: RequestUpdateCharacter, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ResponseUpdateCharacter>>;
 }

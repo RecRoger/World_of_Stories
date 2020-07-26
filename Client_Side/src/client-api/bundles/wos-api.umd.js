@@ -2071,6 +2071,57 @@
          * @param {?=} reportProgress
          * @return {?}
          */
+        UsersService.prototype.deleteCharacter = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling deleteCharacter.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/characters/delete", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
         UsersService.prototype.deleteUser = /**
          * @param {?} data
          * @param {?=} observe
@@ -2110,6 +2161,57 @@
                     headers = headers.set('Content-Type', httpContentTypeSelected);
                 }
                 return this.httpClient.post(this.basePath + "/users/delete", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        UsersService.prototype.getCharacters = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling getCharacters.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/characters", data, {
                     withCredentials: this.configuration.withCredentials,
                     headers: headers,
                     observe: observe,
@@ -2248,6 +2350,108 @@
                     headers = headers.set('Content-Type', httpContentTypeSelected);
                 }
                 return this.httpClient.post(this.basePath + "/users/login", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        UsersService.prototype.newCharacter = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling newCharacter.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/characters/new", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        UsersService.prototype.readFragment = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling readFragment.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/characters/read", data, {
                     withCredentials: this.configuration.withCredentials,
                     headers: headers,
                     observe: observe,
@@ -2401,6 +2605,57 @@
                     headers = headers.set('Content-Type', httpContentTypeSelected);
                 }
                 return this.httpClient.post(this.basePath + "/users/signin", data, {
+                    withCredentials: this.configuration.withCredentials,
+                    headers: headers,
+                    observe: observe,
+                    reportProgress: reportProgress
+                });
+            };
+        /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+        UsersService.prototype.updateCharacter = /**
+         * @param {?} data
+         * @param {?=} observe
+         * @param {?=} reportProgress
+         * @return {?}
+         */
+            function (data, observe, reportProgress) {
+                if (observe === void 0) {
+                    observe = 'body';
+                }
+                if (reportProgress === void 0) {
+                    reportProgress = false;
+                }
+                if (data === null || data === undefined) {
+                    throw new Error('Required parameter data was null or undefined when calling updateCharacter.');
+                }
+                /** @type {?} */
+                var headers = this.defaultHeaders;
+                // to determine the Accept header
+                /** @type {?} */
+                var httpHeaderAccepts = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+                if (httpHeaderAcceptSelected != undefined) {
+                    headers = headers.set('Accept', httpHeaderAcceptSelected);
+                }
+                // to determine the Content-Type header
+                /** @type {?} */
+                var consumes = [
+                    'application/json'
+                ];
+                /** @type {?} */
+                var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+                if (httpContentTypeSelected != undefined) {
+                    headers = headers.set('Content-Type', httpContentTypeSelected);
+                }
+                return this.httpClient.post(this.basePath + "/characters/update", data, {
                     withCredentials: this.configuration.withCredentials,
                     headers: headers,
                     observe: observe,

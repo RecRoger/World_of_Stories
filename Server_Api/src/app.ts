@@ -12,6 +12,7 @@ import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import * as swaggerDocument from './swagger/swagger.json'
 import NpcsRouter from './routes/npcs.routes';
+import CharactersRouter from './routes/characters.routes';
 
 class App {
     private express: any
@@ -25,6 +26,7 @@ class App {
         this.express.use(cors());
 
         new UserRouter(this.express);
+        new CharactersRouter(this.express);
 
         new CitiesRouter(this.express);
         new PlacesRouter(this.express);

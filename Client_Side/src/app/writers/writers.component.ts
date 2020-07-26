@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-writers',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WritersComponent implements OnInit {
 
+  @ViewChild('sidenav', { static: false }) sidenav: MatSidenav;
+
   constructor() { }
 
+  
   ngOnInit() {
+  }
+
+  close(reason: string) {
+    this.sidenav.close();
   }
 
 }

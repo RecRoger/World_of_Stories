@@ -1,0 +1,82 @@
+{
+    "path": {
+        "post": {
+            "tags": [
+                "Users"
+            ],
+            "summary": "Get User's Characters",
+            "description": "Get character of an user",
+            "operationId": "get_characters",
+            "consumes": [
+                "application/json"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "Transaction details",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/RequestGetCharacters"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Success Operation",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseGetCharacters"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {
+                                "characters": [{
+                                }]
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Error response.",
+                    "schema": {
+                        "$ref": "#/definitions/ResponseData"
+                    },
+                    "examples": {
+                        "application/json": {
+                            "data": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "RequestGetCharacters": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "ResponseGetCharacters": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/ListCharacters"
+                }
+            }
+        },
+        "ListCharacters": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/Character"
+            }
+        }
+    }
+}

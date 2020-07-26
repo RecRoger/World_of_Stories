@@ -2,16 +2,18 @@ import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector, Store } from '@ngxs/store';
 import { LoginUser, SigninUser, LogonUser, AddUserRoll, UpdateUserData } from './users.actions';
 import { SetError, SetInfo } from '../general/general.actions';
-import { UsersService, User, RequestGetUser, ResponseGetUser } from 'src/client-api';
+import { UsersService, User, RequestGetUser, ResponseGetUser, Character } from 'src/client-api';
 
 export interface UserStateModel {
   activedUser: User;
+  character: Character;
 }
 
 @State<UserStateModel>({
   name: 'user',
   defaults: {
-    activedUser: (localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))) || null
+    activedUser: (localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))) || null,
+    character: null
   }
 })
 @Injectable()
@@ -36,9 +38,7 @@ export class UserState {
   @Action(LoginUser)
   async LoginUser(ctx: StateContext<UserStateModel>, action: LoginUser) {
 
-
     try {
-
       const resp = await this.userService.login(action.payload).toPromise();
       if (resp && resp.data && resp.data.user) {
         const user: User = resp.data.user;
@@ -103,7 +103,6 @@ export class UserState {
       this.store.dispatch(new SetError('Ha ocurrido un problema consultando su usuario. Intente mas tarde'));
     }
   }
-
 
   @Action(UpdateUserData)
   async UpdateUserData(ctx: StateContext<UserStateModel>, action: UpdateUserData) {

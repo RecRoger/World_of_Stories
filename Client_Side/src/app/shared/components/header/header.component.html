@@ -1,7 +1,17 @@
 <div class="container-fluid main-header">
   <div class="d-flex px-4 py-2">
-    <button class="mr-auto btn btn-link" *ngIf="backBtn" (click)="goBack()">Volver</button>
-    <div class="main-title">World of Story</div>
-    <button class="ml-auto btn btn-link" (click)="getOut()">Salir</button>
+
+    <div class="col-3 text-left">
+      <button class="btn btn-link" *ngIf="backBtn" (click)="goBack()">
+        <i class="fas fa-ellipsis-v fa-2x"></i>
+      </button>
+    </div>
+
+    <div class="main-title col-6">World of Story</div>
+
+    <div class="col-3 text-right">
+      <button class="ml-auto btn btn-link" (click)="getOut()">Salir</button>
+    </div>
+
   </div>
 </div>
