@@ -20,10 +20,6 @@ export class WriteFragmentsComponent implements OnInit, OnDestroy {
 
   subscription: Subscription;
 
-  timer = timer(0, 500);
-  subscribeTimer: Subscription;
-  typeWriting = false;
-
   animationsTypes = AnimationsTypes;
 
   ngOnInit() {
@@ -72,7 +68,6 @@ export class WriteFragmentsComponent implements OnInit, OnDestroy {
 
 
       const castTale = this.talesForm.value.filter(value => value.text);
-      this.startTimer();
       this.tale.setValue(castTale);
 
     });
@@ -81,9 +76,6 @@ export class WriteFragmentsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    if (this.subscribeTimer) {
-      this.subscribeTimer.unsubscribe();
-    }
   }
 
   addFragmentControl() {
@@ -113,22 +105,5 @@ export class WriteFragmentsComponent implements OnInit, OnDestroy {
     this.talesForm.controls[index].get('animation').setValue(value);
   }
 
-
-  startTimer() {
-    if (this.subscribeTimer) {
-      this.subscribeTimer.unsubscribe();
-    }
-    this.subscribeTimer = this.timer.subscribe(val => {
-      this.typeWriting = true;
-      this.cd.markForCheck();
-      if (val >= 1) {
-        if (this.subscribeTimer) {
-          this.subscribeTimer.unsubscribe();
-        }
-        this.typeWriting = false;
-        this.cd.markForCheck();
-      }
-    });
-  }
 
 }

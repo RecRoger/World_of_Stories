@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { isValid } from 'src/app/shared/utils/commons';
-import { UpdateChapter, PublishChapter } from 'src/app/shared/store/stories/stories.actions';
+import { UpdateChapter, PublishChapter, GetChapterData } from 'src/app/shared/store/stories/stories.actions';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 
 @Component({
@@ -28,7 +28,7 @@ export class ChaptersBuilderComponent implements OnInit {
 
   chaptersTab: {
     chapters?: string[];
-    loading?: boolean
+    loading?: string[]
     editing?: boolean;
     endChapter?: false;
   } = { chapters: [] };
@@ -48,14 +48,20 @@ export class ChaptersBuilderComponent implements OnInit {
   ngOnInit() {
   }
 
-  toggleChapterInfo(id: string) {
+  async toggleChapterInfo(id: string) {
     if (!this.chaptersTab || !this.chaptersTab.editing) {
       if (this.chaptersTab && this.chaptersTab.chapters.includes(id)) {
         this.chaptersTab.chapters = this.chaptersTab.chapters.filter(i => i !== id);
       } else {
         this.chaptersTab.chapters = [id];
+        this.chaptersTab.loading = [id];
         this.chaptersTab.editing = false;
         this.chaptersTab.endChapter = false;
+
+        await this.store.dispatch(new GetChapterData({ placeId: this.place.id, chapterId: id, npcId: this.npc.id })).toPromise();
+        this.chaptersTab.loading = this.chaptersTab.loading.filter(i => i !== id);
+        this.cd.markForCheck();
+
       }
       this.cd.markForCheck();
     }

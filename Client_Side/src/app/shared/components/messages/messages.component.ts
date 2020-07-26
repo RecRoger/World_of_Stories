@@ -20,12 +20,17 @@ export class MessagesComponent implements OnInit {
       this.error = error;
       this.cd.markForCheck();
 
-      setTimeout(() => {
-        this.error = null;
-        this.cd.markForCheck();
-      }, 5000);
+      // setTimeout(() => {
+      //   this.error = null;
+      //   this.cd.markForCheck();
+      // }, 10000);
 
     });
+  }
+
+  hardClose() {
+    this.error = null;
+    this.cd.markForCheck();
   }
 
 }

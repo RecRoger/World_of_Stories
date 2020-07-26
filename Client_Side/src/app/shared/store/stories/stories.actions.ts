@@ -4,6 +4,10 @@ export class GetAllNpcs {
     static readonly type = '[Stories] Get All Npcs';
     constructor(public payload: { placeId: string, published: boolean, force?: boolean }) { }
 }
+export class GetNpcData {
+    static readonly type = '[Stories] Get Npc Data';
+    constructor(public payload: { placeId: string, npcId: string, force?: boolean }) { }
+}
 export class NewNpc {
     static readonly type = '[Stories] New Npc';
     constructor(public payload: RequestNewNpc) { }
@@ -21,6 +25,10 @@ export class UpdateNpc {
 export class GetNpcStory {
     static readonly type = '[Stories] Get Npc Story';
     constructor(public payload: { placeId: string, npcId: string, request: RequestGetChapters }) { }
+}
+export class GetChapterData {
+    static readonly type = '[Stories] Get Chapter Data';
+    constructor(public payload: { placeId: string, npcId: string, chapterId: string }) { }
 }
 
 export class UpdateChapter {

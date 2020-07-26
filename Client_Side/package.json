@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --proxy-config proxy.conf.json",
+    "start": "ng serve --proxy-config proxy.conf.json --host 0.0.0.0",
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
@@ -28,6 +28,7 @@
     "core-js": "^2.5.4",
     "lodash": "^4.17.19",
     "ng-animate": "^0.3.4",
+    "ngx-device-detector": "^1.4.6",
     "ngx-teximate": "^0.3.0",
     "rxjs": "~6.5.2",
     "rxjs-compat": "^6.6.0",

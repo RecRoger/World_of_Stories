@@ -251,11 +251,11 @@
         "$ref": "../services/stories/get_npcs.json#/definitions/ListNpcs"
     },
 
-    "RequestGetNPC": {
-        "$ref": "../services/stories/get_npc.json#/definitions/RequestGetNPC"
+    "RequestGetNpc": {
+        "$ref": "../services/stories/get_npc.json#/definitions/RequestGetNpc"
     },
-    "ResponseGetNPC": {
-        "$ref": "../services/stories/get_npc.json#/definitions/ResponseGetNPC"
+    "ResponseGetNpc": {
+        "$ref": "../services/stories/get_npc.json#/definitions/ResponseGetNpc"
     },
     "RequestNewNpc": {
         "$ref": "../services/stories/new_npc.json#/definitions/RequestNewNpc"
@@ -298,7 +298,13 @@
     "ListChapters": {
         "$ref": "../services/stories/get_chapters.json#/definitions/ListChapters"
     },
-
+    "RequestGetChapter": {
+        "$ref": "../services/stories/get_chapter.json#/definitions/RequestGetChapter"
+    },
+    "ResponseGetChapter": {
+        "$ref": "../services/stories/get_chapter.json#/definitions/ResponseGetChapter"
+    },
+    
     "RequestUpdateChapter": {
         "$ref": "../services/stories/update_chapter.json#/definitions/RequestUpdateChapter"
     },

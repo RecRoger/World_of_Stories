@@ -1,21 +1,19 @@
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector, Store } from '@ngxs/store';
 import { SetLoader, SetError, SetInfo } from '../general/general.actions';
-import { City, Place, LocationsService, RequestGetCities, RequestNewCity, RequestPublishCity, RequestUpdateCityDescription, RequestUpdateCityTravel, PublicTale, RequestNewCityDescription, RequestNewCityTravel, RequestRemoveCityDescription, RequestRemoveCityTravel, RequestGetPlaces, RequestNewPlace, RequestPublishPlace, RequestNewPlaceDescription, RequestNewPlaceEntry, RequestUpdatePlaceDescription, RequestUpdatePlaceEntry, RequestRemovePlaceDescription, RequestRemovePlaceEntry } from 'src/client-api';
-import { GetAllCities, NewCity, PublishCity, EditCityStory, AddCityStory, DeleteCityStory, GetAllPlaces, NewPlace, PublishPlace, AddPlaceStory, EditPlaceStory, DeletePlaceStory } from '../locations/locations.actions';
+import { City, Place, LocationsService, RequestGetCities, RequestNewCity, RequestPublishCity, RequestUpdateCityDescription, RequestUpdateCityTravel, PublicTale, RequestNewCityDescription, RequestNewCityTravel, RequestRemoveCityDescription, RequestRemoveCityTravel, RequestGetPlaces, RequestNewPlace, RequestPublishPlace, RequestNewPlaceDescription, RequestNewPlaceEntry, RequestUpdatePlaceDescription, RequestUpdatePlaceEntry, RequestRemovePlaceDescription, RequestRemovePlaceEntry, RequestGetCity } from 'src/client-api';
+import { GetAllCities, NewCity, PublishCity, EditCityStory, AddCityStory, DeleteCityStory, GetAllPlaces, NewPlace, PublishPlace, AddPlaceStory, EditPlaceStory, DeletePlaceStory, GetCityData, GetPlaceData } from '../locations/locations.actions';
 import { patch, append, updateItem, removeItem } from '@ngxs/store/operators';
 import { CityTabs, PlaceTabs } from '../../constants';
 
 export interface LocationsStateModel {
   cities: City[];
-  places: Place[];
 }
 
 @State<LocationsStateModel>({
   name: 'locations',
   defaults: {
-    cities: [],
-    places: []
+    cities: []
   }
 })
 @Injectable()
@@ -35,10 +33,6 @@ export class LocationState {
       return state.cities.find(city => city.id === cityId).places;
     };
   }
-  @Selector()
-  static getCityPlaces(state: LocationsStateModel) {
-    return state.places || [];
-  }
 
 
 
@@ -56,6 +50,41 @@ export class LocationState {
           ctx.patchState({
             cities: resp.data.cities
           });
+
+        } else {
+          this.store.dispatch(new SetError('No hay ciudades en el sistema'));
+          return false;
+        }
+
+      }
+
+    } catch (err) {
+      console.log('*** ERROR ***', err);
+
+      this.store.dispatch(new SetError('Ha ocurrido un problema consultando las ciudades. Intente mas tarde'));
+      return false;
+    }
+  }
+  @Action(GetCityData)
+  async GetCityData(ctx: StateContext<LocationsStateModel>, action: GetCityData) {
+
+    try {
+      const { cityId, force } = action.payload;
+      const city = ctx.getState().cities.find(c => c.id === cityId);
+
+      if (!city.description || city.description.length <= 0 &&
+        !city.travel || city.travel.length <= 0 || force) {
+
+
+        const req: RequestGetCity = { id: cityId };
+        const resp = await this.locationsService.getCity(req).toPromise();
+
+        if (resp && resp.data && resp.data.city) {
+          ctx.setState(patch({
+            cities: updateItem<City>(c => c.id === cityId, patch<City>({
+              ...resp.data.city
+            }))
+          }));
 
         } else {
           this.store.dispatch(new SetError('No hay ciudades en el sistema'));
@@ -321,7 +350,7 @@ export class LocationState {
         ...action.payload.request
       };
       const city = ctx.getState().cities.find(c => c.id === req.cityId);
-      let places = city.places;
+      const places = city.places;
 
       if (!places || places.length === 0 || action.payload.force) {
 
@@ -333,7 +362,6 @@ export class LocationState {
               places: resp.data.places
             }))
           }));
-          places = resp.data.places;
         } else {
           this.store.dispatch(new SetError('No hay lugares en esta ciudad'));
           return false;
@@ -341,9 +369,46 @@ export class LocationState {
 
       }
 
-      ctx.setState(patch({
-        places
-      }));
+    } catch (err) {
+      console.log('*** ERROR ***', err);
+
+      this.store.dispatch(new SetError('Ha ocurrido un problema consultando los lugares. Intente mas tarde'));
+      return false;
+    }
+  }
+
+  @Action(GetPlaceData)
+  async GetPlaceData(ctx: StateContext<LocationsStateModel>, action: GetPlaceData) {
+
+    try {
+
+      const { cityId, placeId, force } = action.payload;
+
+      const city = ctx.getState().cities.find(c => c.id === cityId);
+      const place: Place = city.places.find(p => p.id === placeId);
+
+      if (!place.description || place.description.length <= 0 ||
+        !place.entry || place.entry.length <= 0 || action.payload.force) {
+        const req: RequestGetCity = {
+          id: placeId
+        };
+
+        const resp = await this.locationsService.getPlace(req).toPromise();
+
+        if (resp && resp.data && resp.data.place) {
+          ctx.setState(patch({
+            cities: updateItem<City>(c => c.id === cityId, patch({
+              places: updateItem<Place>(p => p.id === placeId, patch({
+                ...resp.data.place
+              }))
+            }))
+          }));
+        } else {
+          this.store.dispatch(new SetError('No hay lugares en esta ciudad'));
+          return false;
+        }
+
+      }
 
 
     } catch (err) {

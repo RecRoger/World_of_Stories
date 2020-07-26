@@ -17,6 +17,7 @@ import { GeneralState } from './shared/store/general/general.reducer';
 import { environment } from 'src/environments/environment';
 import { LocationState } from './shared/store/locations/locations.reducer';
 import { StoriesState } from './shared/store/stories/stories.reducer';
+import { DeviceDetectorModule } from 'ngx-device-detector';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,6 +29,7 @@ import { StoriesState } from './shared/store/stories/stories.reducer';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    DeviceDetectorModule,
     NgxsModule.forRoot([UserState, GeneralState, LocationState, StoriesState], {
       developmentMode: !environment.production
     }),

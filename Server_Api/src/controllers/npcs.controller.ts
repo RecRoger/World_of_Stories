@@ -35,11 +35,14 @@ class NpcsController {
                         _id: { $in: ids },
                     },
                     {
-                        // decision: 0,
-                        // rejected: 0,
-                        //items:0,
-                        // title: 0,
-                        chapters: 0,
+                        // decision:_id
+                        name: 1,
+                        npcType: 1,
+                        author: 1,
+                        published: 1,
+                        writeDate: 1,
+                        publishDate: 1,
+                        // chapters: 0,
                     }
                 ).lean();
                 filterNpcs = npcs || [];
@@ -98,6 +101,10 @@ class NpcsController {
                 meeting: npc.meeting ? {
                     ...npc.meeting,
                     id: npc.meeting._id
+                } : {},
+                rejected: npc.rejected ? {
+                    ...npc.rejected,
+                    id: npc.rejected._id
                 } : {}
 
             } : null;

@@ -9,7 +9,7 @@ import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
 import { map } from 'rxjs/operators';
 import { NpcTabs } from 'src/app/shared/constants';
 import { isValid } from 'src/app/shared/utils/commons';
-import { NewNpc, PublishNpc, UpdateNpc } from 'src/app/shared/store/stories/stories.actions';
+import { NewNpc, PublishNpc, UpdateNpc, GetNpcData } from 'src/app/shared/store/stories/stories.actions';
 
 @Component({
   selector: 'app-npc-builder',
@@ -58,15 +58,20 @@ export class NpcBuilderComponent implements OnInit {
   }
 
   // desplegar tarjeta del Npc
-  toggleNpcInfo(id: string) {
+  async toggleNpcInfo(id: string) {
 
     if (this.npcsTabs && id === this.npcsTabs.npc) {
       this.npcsTabs = null;
     } else {
       this.npcsTabs = {
+        loading: true,
         npc: id,
         tab: NpcTabs.descripcion
       };
+      this.cd.markForCheck();
+      await this.store.dispatch(new GetNpcData({ npcId: id, placeId: this.place.id, force: false })).toPromise();
+      this.npcsTabs.loading = false;
+
     }
     this.newNpcTab.newNpc = false;
     this.cd.markForCheck();

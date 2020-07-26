@@ -1,4 +1,5 @@
-<div #scrollMe [scrollTop]="scrollMe.scrollHeight" class="readable-section" *ngIf="shownFragments.length > 0" (click)="skipParagraph()">
+<div #scrollMe [scrollTop]="scrollMe.scrollHeight" class="readable-section" *ngIf="shownFragments.length > 0"
+    (click)="skipParagraph()">
 
     <ng-container *ngFor="let fragment of shownFragments; let i = index">
         <!-- <p class="card-text">{{ fragment.text }}</p> -->
@@ -9,19 +10,9 @@
         </ng-container>
 
         <ng-template #animatedTemplate>
-            <ng-container [ngSwitch]="fragment.fragment.animation">
-                <ng-container *ngSwitchCase="animationsTypes.chatA">
-                    <p [@fadeInLeft]="fadeInLeft" (@fadeInLeft.done)="finishAnimation(i)">{{fragment.fragment.text}}</p>
-                </ng-container>
-                <ng-container *ngSwitchCase="animationsTypes.chatB">
-                    <p [@fadeInRight]="fadeInRight" (@fadeInRight.done)="finishAnimation(i)">{{fragment.fragment.text}}</p>
-                </ng-container>
-                <ng-container *ngSwitchDefault>
-                    <teximate *ngIf="fragment.fragment.text" [text]="fragment.fragment.text" [enter]="fragment.options"
-                        (finish)="finishAnimation(i)"></teximate>
-                </ng-container>
-    
-            </ng-container>
+           <teximate *ngIf="fragment.fragment.text" [text]="fragment.fragment.text" [enter]="fragment.options"
+                (finish)="finishAnimation(i)"></teximate>
+
         </ng-template>
 
 

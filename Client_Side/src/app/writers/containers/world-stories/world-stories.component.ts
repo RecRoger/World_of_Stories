@@ -49,9 +49,11 @@ export class WorldStoriesComponent implements OnInit, OnDestroy {
         }
 
         if (queryParam['place']) {
-          const places = this.store.selectSnapshot(LocationState.getCityPlaces);
-          this.selectedPlace = places.find(c => c.id === queryParam['place']);
-          await this.getAllNpcs();
+          const auxSub = this.store.select(LocationState.getPlaces).pipe(map(filterFn => filterFn(this.selectedCity.id))).pipe(take(1))
+            .subscribe(async (places) => {
+              this.selectedPlace = places.find(c => c.id === queryParam['place']);
+              await this.getAllNpcs();
+            });
         } else {
           this.selectedPlace = null;
           this.selectedNpc = null;

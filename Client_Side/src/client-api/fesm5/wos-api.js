@@ -145,7 +145,7 @@ var Configuration = /** @class */ (function () {
 var LocationsService = /** @class */ (function () {
     function LocationsService(httpClient, basePath, configuration) {
         this.httpClient = httpClient;
-        this.basePath = 'http://localhost:3000';
+        this.basePath = 'http://192.168.0.8:3000';
         this.defaultHeaders = new HttpHeaders();
         this.configuration = new Configuration();
         if (basePath) {
@@ -1248,7 +1248,7 @@ var LocationsService = /** @class */ (function () {
 var StoriesService = /** @class */ (function () {
     function StoriesService(httpClient, basePath, configuration) {
         this.httpClient = httpClient;
-        this.basePath = 'http://localhost:3000';
+        this.basePath = 'http://192.168.0.8:3000';
         this.defaultHeaders = new HttpHeaders();
         this.configuration = new Configuration();
         if (basePath) {
@@ -1394,6 +1394,53 @@ var StoriesService = /** @class */ (function () {
      * @param {?=} reportProgress
      * @return {?}
      */
+    StoriesService.prototype.getChapter = /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
+    function (data, observe, reportProgress) {
+        if (observe === void 0) { observe = 'body'; }
+        if (reportProgress === void 0) { reportProgress = false; }
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling getChapter.');
+        }
+        /** @type {?} */
+        var headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        var httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        var consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(this.basePath + "/chapters/chapter", data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    };
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
     StoriesService.prototype.getChapters = /**
      * @param {?} data
      * @param {?=} observe
@@ -1441,7 +1488,7 @@ var StoriesService = /** @class */ (function () {
      * @param {?=} reportProgress
      * @return {?}
      */
-    StoriesService.prototype.getCity = /**
+    StoriesService.prototype.getNpc = /**
      * @param {?} data
      * @param {?=} observe
      * @param {?=} reportProgress
@@ -1451,7 +1498,7 @@ var StoriesService = /** @class */ (function () {
         if (observe === void 0) { observe = 'body'; }
         if (reportProgress === void 0) { reportProgress = false; }
         if (data === null || data === undefined) {
-            throw new Error('Required parameter data was null or undefined when calling getCity.');
+            throw new Error('Required parameter data was null or undefined when calling getNpc.');
         }
         /** @type {?} */
         var headers = this.defaultHeaders;
@@ -1787,7 +1834,7 @@ var StoriesService = /** @class */ (function () {
 var UsersService = /** @class */ (function () {
     function UsersService(httpClient, basePath, configuration) {
         this.httpClient = httpClient;
-        this.basePath = 'http://localhost:3000';
+        this.basePath = 'http://192.168.0.8:3000';
         this.defaultHeaders = new HttpHeaders();
         this.configuration = new Configuration();
         if (basePath) {
@@ -2338,6 +2385,12 @@ var UsersService = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/requestGetChapter.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/requestGetChapters.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -2356,7 +2409,7 @@ var UsersService = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: model/requestGetNPC.ts
+ * Generated from: model/requestGetNpc.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -2572,6 +2625,12 @@ var UsersService = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/responseGetChapter.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/responseGetChapters.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -2590,7 +2649,7 @@ var UsersService = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: model/responseGetNPC.ts
+ * Generated from: model/responseGetNpc.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 

@@ -4,9 +4,9 @@
             "tags": [
                 "Stories"
             ],
-            "summary": "Get NPC",
-            "description": "Get complete info of one NPC",
-            "operationId": "get_npc",
+            "summary": "Get Chapter",
+            "description": "Get complete Chapter",
+            "operationId": "get_chapter",
             "consumes": [
                 "application/json"
             ],
@@ -20,7 +20,7 @@
                     "description": "Transaction details",
                     "required": true,
                     "schema": {
-                        "$ref": "#/definitions/RequestGetNpc"
+                        "$ref": "#/definitions/RequestGetChapter"
                     }
                 }
             ],
@@ -28,12 +28,12 @@
                 "200": {
                     "description": "Success Operation",
                     "schema": {
-                        "$ref": "#/definitions/ResponseGetNpc"
+                        "$ref": "#/definitions/ResponseGetChapter"
                     },
                     "examples": {
                         "application/json": {
                             "data": {
-                                "npc": {}
+                                "chapters": []
                             }
                         }
                     }
@@ -53,23 +53,20 @@
         }
     },
     "definitions": {
-        "RequestGetNpc": {
+        "RequestGetChapter": {
             "type": "object",
             "properties": {
-                "id": {
+                "id":{
                     "type": "string"
-                },
-                "published": {
-                    "type": "boolean"
                 }
             }
         },
-        "ResponseGetNpc": {
+        "ResponseGetChapter": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "object",
-                    "$ref": "#/definitions/NpcData"
+                    "$ref": "#/definitions/ChapterData"
                 }
             }
         }

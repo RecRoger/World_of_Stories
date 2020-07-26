@@ -1,5 +1,5 @@
 <main class="container">
-  <div class="card mt-5 col-4 mx-auto position-relative">
+  <div class="card mt-5 col-10 col-md-6 col-lg-4 col-sm-10  mx-auto position-relative">
     <app-loader class="loader" size="lg" *ngIf="loading"></app-loader>
     <div class="card-body">
       <form class="form-row" [formGroup]="loginForm" (submit)="(!type)?login():signin()">
@@ -42,13 +42,7 @@
       </div>
     </div>
   </div>
-  <div class="col-6 mx-auto text-danger text-center" *ngIf="errorMsg">
-    {{errorMsg}}
-  </div>
-  <div class="col-6 mx-auto text-center" *ngIf="successMsg">
-    {{successMsg}}
-  </div>
-  <div class="col-4 mx-auto mt-5">
+  <div class="col-10 col-md-6 col-lg-4 col-sm-10  mx-auto mt-5">
     <button class="btn btn-secondary" (click)="back()">Volver</button>
   </div>
 </main>

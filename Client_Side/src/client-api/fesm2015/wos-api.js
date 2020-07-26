@@ -100,7 +100,7 @@ class LocationsService {
      */
     constructor(httpClient, basePath, configuration) {
         this.httpClient = httpClient;
-        this.basePath = 'http://localhost:3000';
+        this.basePath = 'http://192.168.0.8:3000';
         this.defaultHeaders = new HttpHeaders();
         this.configuration = new Configuration();
         if (basePath) {
@@ -1011,7 +1011,7 @@ class StoriesService {
      */
     constructor(httpClient, basePath, configuration) {
         this.httpClient = httpClient;
-        this.basePath = 'http://localhost:3000';
+        this.basePath = 'http://192.168.0.8:3000';
         this.defaultHeaders = new HttpHeaders();
         this.configuration = new Configuration();
         if (basePath) {
@@ -1121,6 +1121,45 @@ class StoriesService {
      * @param {?=} reportProgress
      * @return {?}
      */
+    getChapter(data, observe = 'body', reportProgress = false) {
+        if (data === null || data === undefined) {
+            throw new Error('Required parameter data was null or undefined when calling getChapter.');
+        }
+        /** @type {?} */
+        let headers = this.defaultHeaders;
+        // to determine the Accept header
+        /** @type {?} */
+        let httpHeaderAccepts = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        const consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        const httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        return this.httpClient.post(`${this.basePath}/chapters/chapter`, data, {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    }
+    /**
+     * @param {?} data
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @return {?}
+     */
     getChapters(data, observe = 'body', reportProgress = false) {
         if (data === null || data === undefined) {
             throw new Error('Required parameter data was null or undefined when calling getChapters.');
@@ -1160,9 +1199,9 @@ class StoriesService {
      * @param {?=} reportProgress
      * @return {?}
      */
-    getCity(data, observe = 'body', reportProgress = false) {
+    getNpc(data, observe = 'body', reportProgress = false) {
         if (data === null || data === undefined) {
-            throw new Error('Required parameter data was null or undefined when calling getCity.');
+            throw new Error('Required parameter data was null or undefined when calling getNpc.');
         }
         /** @type {?} */
         let headers = this.defaultHeaders;
@@ -1454,7 +1493,7 @@ class UsersService {
      */
     constructor(httpClient, basePath, configuration) {
         this.httpClient = httpClient;
-        this.basePath = 'http://localhost:3000';
+        this.basePath = 'http://192.168.0.8:3000';
         this.defaultHeaders = new HttpHeaders();
         this.configuration = new Configuration();
         if (basePath) {
@@ -1929,6 +1968,12 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/requestGetChapter.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/requestGetChapters.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1947,7 +1992,7 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
- * Generated from: model/requestGetNPC.ts
+ * Generated from: model/requestGetNpc.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -2163,6 +2208,12 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: model/responseGetChapter.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: model/responseGetChapters.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -2181,7 +2232,7 @@ UsersService.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
- * Generated from: model/responseGetNPC.ts
+ * Generated from: model/responseGetNpc.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 

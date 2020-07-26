@@ -109,6 +109,9 @@
     "/chapters": {
         "$ref": "../services/stories/get_chapters.json#/path"
     },
+    "/chapters/chapter": {
+        "$ref": "../services/stories/get_chapter.json#/path"
+    },
     "/chapters/update": {
         "$ref": "../services/stories/update_chapter.json#/path"
     },

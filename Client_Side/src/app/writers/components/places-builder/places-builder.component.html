@@ -16,145 +16,156 @@
 
         <ng-container *ngIf="placesTabs?.place === place.id">
 
-          <!-- tabs de descripcion y entrada -->
-          <ul class="nav nav-tabs mt-3">
-            <li class="nav-item ml-2">
-              <a class="nav-link" (click)="placesTabs.page = 0; placesTabs.tab = 'desc'"
-                [ngClass]="{'active': placesTabs.tab == 'desc', 'disabled': placesTabs.editing }">
-                Descripciones
-                <span class="badge badge-pill"
-                  [ngClass]="{'badge-primary': !placesTabs.editing, 'badge-secondary': placesTabs.editing }">
-                  {{place?.description?.length}}
-                </span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" (click)="placesTabs.page = 0; placesTabs.tab = 'entry'"
-                [ngClass]="{'active': placesTabs.tab == 'entry', 'disabled': placesTabs.editing }">
-                Entradas
-                <span class="badge badge-pill"
-                  [ngClass]="{'badge-primary': !placesTabs.editing, 'badge-secondary': placesTabs.editing }">
-                  {{place.entry.length}}
-                </span>
-              </a>
-            </li>
-            <div class="ml-auto" *ngIf="!placesTabs.editing">
-              <!-- boton de editar descripcion o viaje -->
-              <button class="btn mr-2" (click)="editTale(place.id)">
-                <i class="fas fa-pen"></i>
-              </button>
-              <!-- boton de nueva descripcion o viaje -->
-              <button class="btn mr-2" (click)="newTale()">
-                <i class="fas fa-plus"></i>
-              </button>
+          <ng-container *ngIf="placesTabs.loading">
+            <div class="card-body d-flex">
+              <app-loader class="loader mx-auto" size="md"></app-loader>
             </div>
-          </ul>
-          <div class="card-body place-info d-flex flex-column">
-            <!-- Descripciones -->
-            <ng-container *ngIf="!placesTabs.editing && placesTabs.tab == 'desc'">
-
-              <div>
-                <app-animated-fragment [tale]="place.description[placesTabs.page].tale"></app-animated-fragment>
-                <p class="text-muted text-right"> - {{place.description[placesTabs.page].author}}</p>
-              </div>
-
-              <small class="text-muted ml-auto">
-                <span *ngIf="!place.description[placesTabs.page].published">Sin Publicar</span>
-                <span *ngIf="place.description[placesTabs.page].published">Publicado el
-                  {{ place.description[placesTabs.page].publishDate | date}}</span>
-              </small>
-
-              <div class="text-muted mt-auto text-center">
-                <button class="btn btn-link" *ngIf="placesTabs.page!== 0" (click)="changePage(place.id,false)">
-                  <i class="fas fa-angle-left"></i>
-                </button>
-                {{placesTabs.page + 1}}/{{place.description.length}}
-                <button class="btn btn-link" *ngIf="placesTabs.page + 1 !== place.description.length"
-                  (click)="changePage(i,true)">
-                  <i class="fas fa-angle-right"></i>
-                </button>
-              </div>
-            </ng-container>
-            <!-- Entradas -->
-            <ng-container *ngIf="!placesTabs.editing && placesTabs.tab == 'entry'">
-              <div>
-                <app-animated-fragment [tale]="place.entry[placesTabs.page].tale"></app-animated-fragment>
-                <p class="text-muted text-right"> - {{place.entry[placesTabs.page].author}}</p>
-              </div>
-              <small class="text-muted ml-auto">
-                <span *ngIf="!place.entry[placesTabs.page].published">Sin Publicar</span>
-                <span *ngIf="place.entry[placesTabs.page].published">Publicado el
-                  {{ place.description[placesTabs.page].publishDate | date}}</span>
-              </small>
-              <div class="text-muted mt-auto text-center">
-                <button class="btn btn-link" *ngIf="placesTabs.page!== 0" (click)="changePage(place.id,false)">
-                  <i class="fas fa-angle-left"></i>
-                </button>
-                {{placesTabs.page + 1}}/{{place.entry.length}}
-                <button class="btn btn-link" *ngIf="placesTabs.page + 1 !== place.entry.length"
-                  (click)="changePage(place.id,true)">
-                  <i class="fas fa-angle-right"></i>
-                </button>
-              </div>
-            </ng-container>
-
-            <!-- formulario de edicion y creacion -->
-            <ng-container *ngIf="placesTabs.editing">
-              <div class="d-flex">
-                <div>
-                  <span *ngIf="placesTabs.tab == 'desc'">
-                    {{place.name}} es ...
+          </ng-container>
+          <ng-container *ngIf="!placesTabs.loading">
+            <!-- tabs de descripcion y entrada -->
+            <ul class="nav nav-tabs mt-3">
+              <li class="nav-item ml-2">
+                <a class="nav-link" (click)="placesTabs.page = 0; placesTabs.tab = 'desc'"
+                  [ngClass]="{'active': placesTabs.tab == 'desc', 'disabled': placesTabs.editing }">
+                  Descripciones
+                  <span class="badge badge-pill"
+                    [ngClass]="{'badge-primary': !placesTabs.editing, 'badge-secondary': placesTabs.editing }">
+                    {{place?.description?.length}}
                   </span>
-                  <span *ngIf="placesTabs.tab == 'entry'">
-                    Entrando a {{place.name}} ...
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" (click)="placesTabs.page = 0; placesTabs.tab = 'entry'"
+                  [ngClass]="{'active': placesTabs.tab == 'entry', 'disabled': placesTabs.editing }">
+                  Entradas
+                  <span class="badge badge-pill"
+                    [ngClass]="{'badge-primary': !placesTabs.editing, 'badge-secondary': placesTabs.editing }">
+                    {{place.entry.length}}
                   </span>
-                </div>
-                <div class="ml-auto" *ngIf="!placesTabs.newTale">
-                  <!-- boton de publicar descripcion o viaje -->
-                  <button class="btn mr-2" (click)="publishTale(place.id)">
-                    <span *ngIf="!placeForm.get('published').value">
-                      <i class="fas fa-cloud-upload-alt"></i>
-                    </span>
-                    <span *ngIf="placeForm.get('published').value">
-                      <i class="fas fa-cloud-download-alt"></i>
-                    </span>
-                  </button>
-                  <!-- boton de eliminar descripcion o viaje -->
-                  <button class="btn mr-2" (click)="deleteTale(place.id)">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
+                </a>
+              </li>
+              <div class="ml-auto" *ngIf="!placesTabs.editing">
+                <!-- boton de editar descripcion o viaje -->
+                <button class="btn mr-2" (click)="editTale(place.id)">
+                  <i class="fas fa-pen"></i>
+                </button>
+                <!-- boton de nueva descripcion o viaje -->
+                <button class="btn mr-2" (click)="newTale()">
+                  <i class="fas fa-plus"></i>
+                </button>
               </div>
-              <form [formGroup]="placeForm">
-                <app-write-fragments  [maxSize]="(placesTabs.tab == 'desc') ? 3 : null" [tale]="placeForm.get('tale')"></app-write-fragments>
-              </form>
+            </ul>
+            <div class="card-body place-info d-flex flex-column">
+    
+              <ng-container *ngIf="!placesTabs.editing">
+                <!-- Descripciones -->
+                <ng-container *ngIf="placesTabs.tab == 'desc'">
+    
+                  <div>
+                    <app-animated-fragment [tale]="place.description[placesTabs.page].tale"></app-animated-fragment>
+                    <p class="text-muted text-right"> - {{place.description[placesTabs.page].author}}</p>
+                  </div>
+    
+                  <small class="text-muted ml-auto">
+                    <span *ngIf="!place.description[placesTabs.page].published">Sin Publicar</span>
+                    <span *ngIf="place.description[placesTabs.page].published">Publicado el
+                      {{ place.description[placesTabs.page].publishDate | date}}</span>
+                  </small>
+    
+                  <div class="text-muted mt-auto text-center">
+                    <button class="btn btn-link" *ngIf="placesTabs.page!== 0" (click)="changePage(place.id,false)">
+                      <i class="fas fa-angle-left"></i>
+                    </button>
+                    {{placesTabs.page + 1}}/{{place.description.length}}
+                    <button class="btn btn-link" *ngIf="placesTabs.page + 1 !== place.description.length"
+                      (click)="changePage(i,true)">
+                      <i class="fas fa-angle-right"></i>
+                    </button>
+                  </div>
+                </ng-container>
+                <!-- Entradas -->
+                <ng-container *ngIf="placesTabs.tab == 'entry'">
+                  <div>
+                    <app-animated-fragment [tale]="place.entry[placesTabs.page].tale"></app-animated-fragment>
+                    <p class="text-muted text-right"> - {{place.entry[placesTabs.page].author}}</p>
+                  </div>
+                  <small class="text-muted ml-auto">
+                    <span *ngIf="!place.entry[placesTabs.page].published">Sin Publicar</span>
+                    <span *ngIf="place.entry[placesTabs.page].published">Publicado el
+                      {{ place.description[placesTabs.page].publishDate | date}}</span>
+                  </small>
+                  <div class="text-muted mt-auto text-center">
+                    <button class="btn btn-link" *ngIf="placesTabs.page!== 0" (click)="changePage(place.id,false)">
+                      <i class="fas fa-angle-left"></i>
+                    </button>
+                    {{placesTabs.page + 1}}/{{place.entry.length}}
+                    <button class="btn btn-link" *ngIf="placesTabs.page + 1 !== place.entry.length"
+                      (click)="changePage(place.id,true)">
+                      <i class="fas fa-angle-right"></i>
+                    </button>
+                  </div>
+                </ng-container>
+              </ng-container>
+  
+              <!-- formulario de edicion y creacion -->
+              <ng-container *ngIf="placesTabs.editing">
+                <div class="d-flex">
+                  <div>
+                    <span *ngIf="placesTabs.tab == 'desc'">
+                      {{place.name}} es ...
+                    </span>
+                    <span *ngIf="placesTabs.tab == 'entry'">
+                      Entrando a {{place.name}} ...
+                    </span>
+                  </div>
+                  <div class="ml-auto" *ngIf="!placesTabs.newTale">
+                    <!-- boton de publicar descripcion o viaje -->
+                    <button class="btn mr-2" (click)="publishTale(place.id)">
+                      <span *ngIf="!placeForm.get('published').value">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                      </span>
+                      <span *ngIf="placeForm.get('published').value">
+                        <i class="fas fa-cloud-download-alt"></i>
+                      </span>
+                    </button>
+                    <!-- boton de eliminar descripcion o viaje -->
+                    <button class="btn mr-2" (click)="deleteTale(place.id)">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+                <form [formGroup]="placeForm">
+                  <app-write-fragments  [maxSize]="(placesTabs.tab == 'desc') ? 3 : null" [tale]="placeForm.get('tale')"></app-write-fragments>
+                </form>
+  
+              </ng-container>
+            </div>
+            <div class="card-footer d-flex">
+              <ng-container *ngIf="!placesTabs.editing">
+                <button class="btn btn-secondary mr-auto" (click)="publishPlace(place.id, !place.published)">
+                  <span *ngIf="!place.published">
+                    <i class="fas fa-cloud-upload-alt"></i> Publicar
+                  </span>
+                  <span *ngIf="place.published">
+                    <i class="fas fa-cloud-download-alt"></i> Quitar publicacion
+                  </span>
+                </button>
+                <button class="btn btn-primary ml-auto" (click)="selectPlace(place)">
+                  Personas y eventos
+                  <span class="badge badge-pill">
+                    {{place?.events?.length}}
+                  </span>
+                </button>
+              </ng-container>
+  
+              <ng-container *ngIf="placesTabs.editing">
+                <button class="btn btn-secondary ml-auto" (click)="savePlaceEdition(place.id, true)">Cancelar</button>
+                <button class="btn btn-primary ml-4" (click)="savePlaceEdition(place.id)">Guardar</button>
+              </ng-container>
+  
+            </div>
+          </ng-container>
 
-            </ng-container>
-          </div>
-          <div class="card-footer d-flex">
-            <ng-container *ngIf="!placesTabs.editing">
-              <button class="btn btn-secondary mr-auto" (click)="publishPlace(place.id, !place.published)">
-                <span *ngIf="!place.published">
-                  <i class="fas fa-cloud-upload-alt"></i> Publicar
-                </span>
-                <span *ngIf="place.published">
-                  <i class="fas fa-cloud-download-alt"></i> Quitar publicacion
-                </span>
-              </button>
-              <button class="btn btn-primary ml-auto" (click)="selectPlace(place)">
-                Personas y eventos
-                <span class="badge badge-pill">
-                  {{place?.events?.length}}
-                </span>
-              </button>
-            </ng-container>
-
-            <ng-container *ngIf="placesTabs.editing">
-              <button class="btn btn-secondary ml-auto" (click)="savePlaceEdition(place.id, true)">Cancelar</button>
-              <button class="btn btn-primary ml-4" (click)="savePlaceEdition(place.id)">Guardar</button>
-            </ng-container>
-
-          </div>
         </ng-container>
       </div>
     </div>

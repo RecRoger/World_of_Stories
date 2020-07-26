@@ -7,6 +7,8 @@ import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { AddUserRoll } from 'src/app/shared/store/users/users.actions';
 import { User, RequestSetRol } from 'src/client-api';
 import { Subscription } from 'rxjs';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import { SetInfo } from 'src/app/shared/store/general/general.actions';
 
 @Component({
   selector: 'app-write-or-read',
@@ -19,7 +21,7 @@ export class WriteOrReadComponent implements OnInit, OnDestroy {
     private cd: ChangeDetectorRef,
     private store: Store,
     private router: Router,
-    private http: HttpClient,
+    private deviceService: DeviceDetectorService
   ) { }
 
   @Select(UserState.getUser) user$: Observable<User>;
@@ -47,15 +49,32 @@ export class WriteOrReadComponent implements OnInit, OnDestroy {
   }
 
   userChooseActivity(activity: boolean) {
+    const isMobile = this.deviceService.isMobile();
+    const isTablet = this.deviceService.isTablet();
+    const isDesktopDevice = this.deviceService.isDesktop();
+
+    // alert(isMobile + '-' + isTablet + '-' + isDesktopDevice);
+
     // true para escribir
     const roles: string[] = [...this.user.rol];
     if (activity) {
-      if (roles.includes(UsersRoles.W) || roles.includes(UsersRoles.A)) {
-        this.startActivity(activity);
+      if (!isMobile) {
+        if (roles.includes(UsersRoles.W) || roles.includes(UsersRoles.A)) {
+          this.startActivity(activity);
+        } else {
+          this.rolConfirmation = 'W';
+        }
       } else {
-        this.rolConfirmation = 'W';
+        this.store.dispatch(
+          new SetInfo('Lo sentimos, pero el modo escritor requiere mejor resolucion y no esta disponible mobile por el momento')
+        );
       }
     } else {
+      if (!isMobile) {
+        this.store.dispatch(
+          new SetInfo('La experience de lector esta pensada para dispositivos móviles.')
+        );
+      }
       if (roles.includes(UsersRoles.R)) {
         this.startActivity(activity);
       } else {
@@ -82,7 +101,7 @@ export class WriteOrReadComponent implements OnInit, OnDestroy {
     if (action) {
       this.router.navigate(['/writers']);
     } else {
-      alert('en desarrollo');
+      this.router.navigate(['/readers']);
     }
   }
 }

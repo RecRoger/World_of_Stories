@@ -1,5 +1,10 @@
-<div class="messages" *ngIf="error">
-    <div class="alert" [ngClass]="{'alert-success': error.type==='success','alert-danger': error.type==='error','alert-primary': error.type==='info'}" role="alert">
-        {{error.text}}
+<div class="messages px-1 d-flex" *ngIf="error">
+
+    <div class="col-12 col-md-6 d-flex mx-auto">
+        <div class="alert w-100" role="alert" (click)="hardClose()"
+            [ngClass]="{'alert-success': error.type==='success','alert-danger': error.type==='error','alert-primary': error.type==='info'}">
+            {{error.text}}
+        </div>
+
     </div>
 </div>

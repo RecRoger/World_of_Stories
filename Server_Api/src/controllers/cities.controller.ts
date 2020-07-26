@@ -13,13 +13,16 @@ class CitiesController {
             const { published } = req.body;
             const filter = (published) ? { published: true } : {};
             const cities: CityInterface[] = await CitiesSchema.find(filter, {
-                places: 0
+                '_id': 1,
+                'name': 1,
+                'published': 1,
+                'publishDate': 1
             }).lean();
 
             const castCities = cities.map(city => {
                 city.id = city._id;
-                city.description = city.description.map(t => ({ ...t, id: t._id }))
-                city.travel = city.travel.map(t => ({ ...t, id: t._id }))
+                // city.description = city.description.map(t => ({ ...t, id: t._id }))
+                // city.travel = city.travel.map(t => ({ ...t, id: t._id }))
                 return city
             })
             console.log('_____________________________________________________');
@@ -46,9 +49,7 @@ class CitiesController {
             const city: CityInterface | null = await CitiesSchema.findById(
                 { _id: req.body.id },
                 {
-                    "places.description": 0,
-                    "places.entry": 0,
-                    "places.events": 0
+                    "places": 0,
                 }
             ).lean();
 
@@ -57,7 +58,7 @@ class CitiesController {
                 id: city._id,
                 description: city.description.map(t => ({ ...t, id: t._id })),
                 travel: city.travel.map(t => ({ ...t, id: t._id })),
-                places: city.places.map(t => ({ ...t, id: t._id })),
+                // places: city.places.map(t => ({ ...t, id: t._id })),
             } : null;
 
             console.log('> response:' + ((city) ? (<CityInterface>city).name : city));

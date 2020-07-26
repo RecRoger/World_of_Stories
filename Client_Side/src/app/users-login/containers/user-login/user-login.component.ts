@@ -18,8 +18,6 @@ export class UserLoginComponent implements OnInit {
 
   loginForm: FormGroup;
   loading = false;
-  errorMsg: string;
-  successMsg: string;
   type: boolean;    // true para signin, false para login
 
   constructor(
@@ -65,7 +63,6 @@ export class UserLoginComponent implements OnInit {
   }
 
   async login() {
-    this.errorMsg = null;
     if (isValid(this.loginForm)) {
 
       this.loading = true;
@@ -87,7 +84,6 @@ export class UserLoginComponent implements OnInit {
   }
 
   async signin() {
-    this.errorMsg = null;
     if (isValid(this.loginForm)) {
 
       this.loading = true;

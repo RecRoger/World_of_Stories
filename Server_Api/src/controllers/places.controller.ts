@@ -14,17 +14,25 @@ class PlacesController {
             const cities: CityInterface | null = await CitiesSchema.findOne(
                 { _id: cityId },
                 {
-                    description: 0,
-                    travel: 0,
+                    "palces.description": 0,
+                    "palces.entry": 0,
+                    "palces.events": 0
+                    // description: 0,
+                    // travel: 0
                 }
             ).lean();
 
             let places: PlaceInterface[] = (cities) ? cities.places : []
 
             const castPlaecs = places.map(city => {
-                city.description = city.description.map(t => ({ ...t, id: t._id }))
-                city.entry = city.entry.map(t => ({ ...t, id: t._id }))
-                return { ...city, id: city._id }
+                // city.description = city.description.map(t => ({ ...t, id: t._id }))
+                // city.entry = city.entry.map(t => ({ ...t, id: t._id }))
+                return {
+                    "id": city._id,
+                    "name": city.name,
+                    "publishDate": city.publishDate,
+                    "published": city.published,
+                }
             })
 
             console.log('_____________________________________________________');

@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Store, Select } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { User, City, ReadFragment, RequestNewCity, RequestPublishCity, NewCityTale } from 'src/client-api';
-import { GetAllCities, NewCity, PublishCity, EditCityStory, AddCityStory, DeleteCityStory } from 'src/app/shared/store/locations/locations.actions';
+import { GetAllCities, NewCity, PublishCity, EditCityStory, AddCityStory, DeleteCityStory, GetCityData } from 'src/app/shared/store/locations/locations.actions';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { Subscription } from 'rxjs';
 import { isValid } from 'src/app/shared/utils/commons';
@@ -58,16 +58,20 @@ export class CitiesBuilderComponent implements OnInit, OnDestroy {
   }
 
   // desplegar tarjeta de ciudad
-  toggleCityInfo(id) {
+  async toggleCityInfo(id) {
 
     if (this.citiesTabs && id === this.citiesTabs.city) {
       this.citiesTabs = null;
     } else {
       this.citiesTabs = {
         city: id,
+        loading: true,
         tab: CityTabs.descripcion,
         page: 0,
       };
+      this.cd.markForCheck();
+      await this.store.dispatch(new GetCityData({ cityId: id, force: false })).toPromise();
+      this.citiesTabs.loading = false;
     }
     this.newCityTab.newCity = false;
     this.cd.markForCheck();
@@ -78,7 +82,7 @@ export class CitiesBuilderComponent implements OnInit, OnDestroy {
     this.cd.markForCheck();
   }
 
-  
+
   // habilitar la redaccion de nueva descripcion o viaje
   newTale() {
     this.cityForm = this.fb.group({

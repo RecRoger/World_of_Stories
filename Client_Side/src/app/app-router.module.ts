@@ -10,6 +10,10 @@ const routes: Routes = [
     path: 'writers',
     loadChildren: () => import('../app/writers/writers.module').then(m => m.WritersModule),
   },
+  {
+    path: 'readers',
+    loadChildren: () => import('../app/readers/readers.module').then(m => m.ReadersModule),
+  },
   // { path: 'message', component: MessageComponent}
 ];
 

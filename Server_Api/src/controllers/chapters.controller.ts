@@ -29,17 +29,65 @@ class ChaptersController {
             }
 
             const castChapters = (filterChapters) ? filterChapters.map((c) => ({
-                ...c,
+                // ...c,
                 id: c._id,
-                usersDecisions: {
-                    ...c.usersDecisions,
-                    options: c.usersDecisions && c.usersDecisions.options.map(o=> ({...o, id: o._id}))
-                }
+                name: c.name,
+                published: c.published,
+                author: c.author,
+                writeDate: c.writeDate,
+                publishDate: c.publishDate,
+                // usersDecisions: {
+                //     ...c.usersDecisions,
+                //     options: c.usersDecisions && c.usersDecisions.options.map(o => ({ ...o, id: o._id }))
+                // }
             })) : null;
 
             console.log('_____________________________________________________');
             res.json({
                 "data": { "chapters": castChapters }
+            })
+        } catch (err) {
+            console.log('Error ---->', err);
+            console.log('_____________________________________________________');
+            res.json({
+                "error": err
+            })
+        }
+    }
+
+    // get all npcs of a places
+    public async getChapter(req: Request, res: Response) {
+        try {
+            console.log('.');
+            console.log('________________________________________________');
+            console.log('*************** getChapter *******************');
+            const { id } = req.body;
+            console.log('> chapterId:', id);
+            const npcs: NpcInterface | null = await NpcsSchema.findOne(
+                {
+                    "chapters._id": id,
+                },
+                {
+                    title: 1,
+                    chapters: 1
+                }
+            ).lean();
+            console.log('> story name:', npcs && npcs.title);
+            let filterChapters = (npcs) ? npcs.chapters : [];
+            const chapter = filterChapters && filterChapters.find(n => n._id == id);
+            
+            const castChapter = (chapter) ? {
+                ...chapter,
+                id: chapter._id,
+                usersDecisions: {
+                    ...chapter.usersDecisions,
+                    options: chapter.usersDecisions && chapter.usersDecisions.options.map(o => ({ ...o, id: o._id }))
+                }
+            } : null;
+
+            console.log('_____________________________________________________');
+            res.json({
+                "data": { "chapter": castChapter }
             })
         } catch (err) {
             console.log('Error ---->', err);
@@ -95,13 +143,13 @@ class ChaptersController {
                     if (option["id"]) {
                         const i = chapter.usersDecisions.options.indexOf(option);
                         console.log('> option vieja', i);
-                        setUpdates['chapters.$.usersDecisions.options.$[elem'+i+'].description'] = option.description;
-                        setUpdates['chapters.$.usersDecisions.options.$[elem'+i+'].name'] = option.name;
-                        setUpdates['chapters.$.usersDecisions.options.$[elem'+i+'].value'] = option.value;
-                        if(!arrayFilters){
-                            arrayFilters = { arrayFilters: [{ ["elem"+i+"._id"]: option.id }] }                            
+                        setUpdates['chapters.$.usersDecisions.options.$[elem' + i + '].description'] = option.description;
+                        setUpdates['chapters.$.usersDecisions.options.$[elem' + i + '].name'] = option.name;
+                        setUpdates['chapters.$.usersDecisions.options.$[elem' + i + '].value'] = option.value;
+                        if (!arrayFilters) {
+                            arrayFilters = { arrayFilters: [{ ["elem" + i + "._id"]: option.id }] }
                         } else {
-                            arrayFilters.arrayFilters.push({ ["elem"+i+"._id"]: option.id });
+                            arrayFilters.arrayFilters.push({ ["elem" + i + "._id"]: option.id });
                         }
                     } else {
 
@@ -127,7 +175,7 @@ class ChaptersController {
                             }
                             console.log('> new chapterId: ', option.value);
                         }
-                        if(!pullUpdates['chapters.$.usersDecisions.options']) {
+                        if (!pullUpdates['chapters.$.usersDecisions.options']) {
                             pullUpdates['chapters.$.usersDecisions.options'] = [];
                         }
                         pullUpdates['chapters.$.usersDecisions.options'].push({
