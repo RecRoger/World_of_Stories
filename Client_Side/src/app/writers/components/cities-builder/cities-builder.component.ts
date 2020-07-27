@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { isValid } from 'src/app/shared/utils/commons';
 import { CityTabs } from 'src/app/shared/constants';
 import { TaleEdition } from 'src/client-api';
+import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faChevronLeft, faChevronRight, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-cities-builder',
@@ -39,6 +40,14 @@ export class CitiesBuilderComponent implements OnInit, OnDestroy {
   } = { newCity: false, tab: 'desc' };
 
   cityForm: FormGroupTyped<NewCityFormData>;
+
+  faUpload = faCloudUploadAlt;
+  faDownload = faCloudDownloadAlt;
+  faEdit = faEdit;
+  faLeft = faChevronLeft;
+  faRight = faChevronRight;
+  faPlus = faPlus;
+  faCross = faTimes;
 
   constructor(
     private cd: ChangeDetectorRef,

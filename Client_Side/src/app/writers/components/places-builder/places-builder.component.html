@@ -47,11 +47,11 @@
               <div class="ml-auto" *ngIf="!placesTabs.editing">
                 <!-- boton de editar descripcion o viaje -->
                 <button class="btn mr-2" (click)="editTale(place.id)">
-                  <i class="fas fa-pen"></i>
+                  <fa-icon [icon]="faEdit" size="xl"></fa-icon>
                 </button>
                 <!-- boton de nueva descripcion o viaje -->
                 <button class="btn mr-2" (click)="newTale()">
-                  <i class="fas fa-plus"></i>
+                  <fa-icon [icon]="faPlus" size="xl"></fa-icon>
                 </button>
               </div>
             </ul>
@@ -74,14 +74,14 @@
     
                   <div class="text-muted mt-auto text-center">
                     <button class="btn btn-link" *ngIf="placesTabs.page!== 0" (click)="changePage(place.id,false)">
-                      <i class="fas fa-angle-left"></i>
+                      <fa-icon [icon]="faLeft"></fa-icon>
                     </button>
                     {{placesTabs.page + 1}}/{{place.description.length}}
                     <button class="btn btn-link" *ngIf="placesTabs.page + 1 !== place.description.length"
-                      (click)="changePage(i,true)">
-                      <i class="fas fa-angle-right"></i>
-                    </button>
-                  </div>
+                    (click)="changePage(i,true)">
+                    <fa-icon [icon]="faRight"></fa-icon>
+                  </button>
+                </div>
                 </ng-container>
                 <!-- Entradas -->
                 <ng-container *ngIf="placesTabs.tab == 'entry'">
@@ -93,15 +93,15 @@
                     <span *ngIf="!place.entry[placesTabs.page].published">Sin Publicar</span>
                     <span *ngIf="place.entry[placesTabs.page].published">Publicado el
                       {{ place.description[placesTabs.page].publishDate | date}}</span>
-                  </small>
-                  <div class="text-muted mt-auto text-center">
-                    <button class="btn btn-link" *ngIf="placesTabs.page!== 0" (click)="changePage(place.id,false)">
-                      <i class="fas fa-angle-left"></i>
-                    </button>
-                    {{placesTabs.page + 1}}/{{place.entry.length}}
-                    <button class="btn btn-link" *ngIf="placesTabs.page + 1 !== place.entry.length"
+                    </small>
+                    <div class="text-muted mt-auto text-center">
+                      <button class="btn btn-link" *ngIf="placesTabs.page!== 0" (click)="changePage(place.id,false)">
+                        <fa-icon [icon]="faLeft"></fa-icon>
+                      </button>
+                      {{placesTabs.page + 1}}/{{place.entry.length}}
+                      <button class="btn btn-link" *ngIf="placesTabs.page + 1 !== place.entry.length"
                       (click)="changePage(place.id,true)">
-                      <i class="fas fa-angle-right"></i>
+                      <fa-icon [icon]="faRight"></fa-icon>
                     </button>
                   </div>
                 </ng-container>
@@ -122,15 +122,15 @@
                     <!-- boton de publicar descripcion o viaje -->
                     <button class="btn mr-2" (click)="publishTale(place.id)">
                       <span *ngIf="!placeForm.get('published').value">
-                        <i class="fas fa-cloud-upload-alt"></i>
+                        <fa-icon [icon]="faUpload" size="xl"></fa-icon>
                       </span>
                       <span *ngIf="placeForm.get('published').value">
-                        <i class="fas fa-cloud-download-alt"></i>
+                        <fa-icon [icon]="faDownload" size="xl"></fa-icon>
                       </span>
                     </button>
                     <!-- boton de eliminar descripcion o viaje -->
                     <button class="btn mr-2" (click)="deleteTale(place.id)">
-                      <i class="fas fa-times"></i>
+                      <fa-icon [icon]="faTimes" size="xl"></fa-icon>
                     </button>
                   </div>
                 </div>
@@ -144,10 +144,10 @@
               <ng-container *ngIf="!placesTabs.editing">
                 <button class="btn btn-secondary mr-auto" (click)="publishPlace(place.id, !place.published)">
                   <span *ngIf="!place.published">
-                    <i class="fas fa-cloud-upload-alt"></i> Publicar
+                    <fa-icon [icon]="faUpload" size="xl"></fa-icon> Publicar
                   </span>
                   <span *ngIf="place.published">
-                    <i class="fas fa-cloud-download-alt"></i> Quitar publicacion
+                    <fa-icon [icon]="faDownload" size="xl"></fa-icon> Quitar publicacion
                   </span>
                 </button>
                 <button class="btn btn-primary ml-auto" (click)="selectPlace(place)">

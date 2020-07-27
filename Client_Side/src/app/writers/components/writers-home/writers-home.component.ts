@@ -4,6 +4,7 @@ import { Store, Select } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { User } from 'src/client-api';
 import { Subscription } from 'rxjs';
+import { faGlobeAmericas } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-writers-home',
@@ -15,6 +16,8 @@ export class WritersHomeComponent implements OnInit, OnDestroy {
 
   subscription: Subscription;
   @Select(UserState.getUser) $user: Observable<User>;
+
+  faGlobeAmericas = faGlobeAmericas;
 
   constructor(
     private store: Store,

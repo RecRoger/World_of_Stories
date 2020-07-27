@@ -1,0 +1,26 @@
+.menu {
+
+    &-main {
+      // position: fixed;
+      height: 100%;
+      /* padding-top: 3.5rem; */
+      // box-shadow: 2px 0 5px 0px #00000080;
+      // background: whitesmoke;
+      // z-index: 40;
+    }
+  
+    // &-backdrop {
+    //   background: #00000080;
+    //   z-index: 35;
+    // }
+    
+    // &-btn{
+    //   padding: 80px 30px 30px 30px;
+    //   display: inline-table;
+    //   margin-right: -70px;
+    // }
+    &-navbar{
+      padding: 40px 30px 30px 30px;
+    }
+  }
+    

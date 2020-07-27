@@ -52,11 +52,11 @@
               <div class="ml-auto" *ngIf="!citiesTabs.editing">
                 <!-- boton de editar descripcion o viaje -->
                 <button class="btn mr-2" (click)="editTale(city.id)">
-                  <i class="fas fa-pen"></i>
+                  <fa-icon [icon]="faEdit" size="lg"></fa-icon>
                 </button>
                 <!-- boton de nueva descripcion o viaje -->
                 <button class="btn mr-2" (click)="newTale()">
-                  <i class="fas fa-plus"></i>
+                  <fa-icon [icon]="faPlus" size="lg"></fa-icon>
                 </button>
               </div>
 
@@ -82,12 +82,12 @@
 
                   <div class="text-muted mt-auto text-center">
                     <button class="btn btn-link" *ngIf="citiesTabs.page!== 0" (click)="changePage(i,false)">
-                      <i class="fas fa-angle-left"></i>
+                      <fa-icon [icon]="faLeft"></fa-icon>
                     </button>
                     {{citiesTabs.page + 1}}/{{city.description.length}}
                     <button class="btn btn-link" *ngIf="citiesTabs.page + 1 !== city.description.length"
-                      (click)="changePage(i,true)">
-                      <i class="fas fa-angle-right"></i>
+                    (click)="changePage(i,true)">
+                    <fa-icon [icon]="faRight"></fa-icon>
                     </button>
                   </div>
                 </ng-container>
@@ -104,12 +104,12 @@
                   </small>
                   <div class="text-muted mt-auto text-center">
                     <button class="btn btn-link" *ngIf="citiesTabs.page!== 0" (click)="changePage(i,false)">
-                      <i class="fas fa-angle-left"></i>
+                      <fa-icon [icon]="faLeft"></fa-icon>
                     </button>
                     {{citiesTabs.page + 1}}/{{city.travel.length}}
                     <button class="btn btn-link" *ngIf="citiesTabs.page + 1 !== city.travel.length"
                       (click)="changePage(i,true)">
-                      <i class="fas fa-angle-right"></i>
+                      <fa-icon [icon]="faRight"></fa-icon>
                     </button>
                   </div>
                 </ng-container>
@@ -130,15 +130,15 @@
                     <!-- boton de publicar descripcion o viaje -->
                     <button class="btn mr-2" (click)="publishTale(city.id)">
                       <span *ngIf="!cityForm.get('published').value">
-                        <i class="fas fa-cloud-upload-alt"></i>
+                        <fa-icon [icon]="faUpload" size="xl"></fa-icon>
                       </span>
                       <span *ngIf="cityForm.get('published').value">
-                        <i class="fas fa-cloud-download-alt"></i>
+                        <fa-icon [icon]="faDownload" size="xl"></fa-icon>
                       </span>
                     </button>
                     <!-- boton de eliminar descripcion o viaje -->
                     <button class="btn mr-2" (click)="deleteTale(city.id)">
-                      <i class="fas fa-times"></i>
+                      <fa-icon [icon]="faTimes" size="xl"></fa-icon>
                     </button>
                   </div>
                 </div>
@@ -156,10 +156,10 @@
               <ng-container *ngIf="!citiesTabs.editing">
                 <button class="btn btn-secondary mr-auto" (click)="publishCity(city.id, !city.published)">
                   <span *ngIf="!city.published">
-                    <i class="fas fa-cloud-upload-alt"></i> Publicar
+                    <fa-icon [icon]="faUpload" size="xl"></fa-icon> Publicar
                   </span>
                   <span *ngIf="city.published">
-                    <i class="fas fa-cloud-download-alt"></i> Quitar publicacion
+                    <fa-icon [icon]="faDownload" size="xl"></fa-icon> Quitar publicacion
                   </span>
                 </button>
                 <button class="btn btn-primary ml-auto" (click)="selectCity(city.id)">Lugares</button>

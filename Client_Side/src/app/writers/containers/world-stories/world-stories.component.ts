@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
 import { map, take } from 'rxjs/operators';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-world-stories',
@@ -34,6 +35,8 @@ export class WorldStoriesComponent implements OnInit, OnDestroy {
 
   subscription: Subscription[] = [];
 
+  faLeft = faChevronLeft;
+
   async ngOnInit() {
     await this.getAllCities();
     this.subscription.push(
@@ -53,24 +56,24 @@ export class WorldStoriesComponent implements OnInit, OnDestroy {
             .subscribe(async (places) => {
               this.selectedPlace = places.find(c => c.id === queryParam['place']);
               await this.getAllNpcs();
+
+
+              if (queryParam['event']) {
+                const places = this.store.select(StoriesState.getNpcs).pipe(map(filterFn => filterFn(this.selectedPlace.id))).pipe(take(1))
+                  .subscribe(async (npcs) => {
+                    console.log(npcs);
+                    this.selectedNpc = npcs.find(c => c.id === queryParam['event']);
+                    await this.getNpcStory();
+                  }
+                  );
+              } else {
+                this.selectedNpc = null;
+              }
             });
         } else {
           this.selectedPlace = null;
           this.selectedNpc = null;
         }
-
-        if (queryParam['event']) {
-          const places = this.store.select(StoriesState.getNpcs).pipe(map(filterFn => filterFn(this.selectedPlace.id))).pipe(take(1))
-            .subscribe(async (npcs) => {
-              console.log(npcs);
-              this.selectedNpc = npcs.find(c => c.id === queryParam['event']);
-              await this.getNpcStory();
-            }
-            );
-        } else {
-          this.selectedNpc = null;
-        }
-
 
         this.cd.markForCheck();
       })

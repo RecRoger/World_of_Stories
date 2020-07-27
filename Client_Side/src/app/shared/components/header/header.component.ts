@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
+import {faBars} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-header',
@@ -17,7 +18,7 @@ export class HeaderComponent implements OnInit {
   @Input() backBtn: boolean;
   @Output() menu: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-
+  faBars = faBars;
 
 
   ngOnInit() {

@@ -53,7 +53,7 @@
               <div class="ml-auto" *ngIf="!npcsTabs.editing">
                 <!-- boton de editar descripcion o viaje -->
                 <button class="btn mr-2" (click)="editTale(npc)">
-                  <i class="fas fa-pen"></i>
+                  <fa-icon [icon]="faEdit" size="xl"></fa-icon>
                 </button>
               </div>
             </ul>
@@ -127,10 +127,10 @@
               <ng-container *ngIf="!npcsTabs.editing">
                 <button class="btn btn-secondary mr-auto" (click)="publishNpc(npc.id, !npc.published)">
                   <span *ngIf="!npc.published">
-                    <i class="fas fa-cloud-upload-alt"></i> Publicar
+                    <fa-icon [icon]="faUpload" size="xl"></fa-icon> Publicar
                   </span>
                   <span *ngIf="npc.published">
-                    <i class="fas fa-cloud-download-alt"></i> Quitar publicacion
+                    <fa-icon [icon]="faDownload" size="xl"></fa-icon> Quitar publicacion
                   </span>
                 </button>
                 <button class="btn btn-primary ml-auto" (click)="selectNpc(npc.id)">

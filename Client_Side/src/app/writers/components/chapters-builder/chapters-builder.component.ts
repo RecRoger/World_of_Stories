@@ -8,6 +8,7 @@ import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { isValid } from 'src/app/shared/utils/commons';
 import { UpdateChapter, PublishChapter, GetChapterData } from 'src/app/shared/store/stories/stories.actions';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
+import { faCloudUploadAlt, faCloudDownloadAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-chapters-builder',
@@ -35,6 +36,10 @@ export class ChaptersBuilderComponent implements OnInit {
 
   chapterForm: FormGroupTyped<ChapterUpdate>;
   cities = [];
+
+  faUpload = faCloudUploadAlt;
+  faDownload = faCloudDownloadAlt;
+  faEdit = faEdit;
 
   constructor(
     private cd: ChangeDetectorRef,

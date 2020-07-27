@@ -16,7 +16,7 @@
     <ng-container *ngIf="selectedCity && !selectedPlace">
         <h2 class="mb-4">
             <button class="btn btn-link" (click)="getSelectedCity(null)">
-                <i class="fas fa-angle-left fa-2x"></i>
+                <fa-icon [icon]="faLeft" size="2x"></fa-icon>
             </button>
             Lugares de {{selectedCity.name}}
         </h2>
@@ -33,10 +33,10 @@
     <ng-container *ngIf="selectedCity && selectedPlace && !selectedNpc">
         <h2 class="mb-4">
             <button class="btn btn-link" (click)="getSelectedCity(null)">
-                <i class="fas fa-angle-left fa-2x"></i>
+                <fa-icon [icon]="faLeft" size="2x"></fa-icon>
             </button>
             <button class="btn btn-link" (click)="getSelectedPlace(null)">
-                <i class="fas fa-angle-left fa-2x"></i>
+                <fa-icon [icon]="faLeft" size="2x"></fa-icon>
             </button>
             Personas y eventos de {{selectedPlace.name}} en {{selectedCity.name}}
         </h2>
@@ -47,19 +47,20 @@
             <app-npc-builder [place]="selectedPlace" (npcSelect)="getSelectedNPC($event)"></app-npc-builder>
         </ng-container>
     </ng-container>
+    
     <!-- seccion de capitulos -->
     <ng-container *ngIf="selectedCity && selectedPlace && selectedNpc">
         <h2 class="mb-4">
             <button class="btn btn-link" (click)="getSelectedCity(null)">
-                <i class="fas fa-angle-left fa-2x"></i>
+                <fa-icon [icon]="faLeft" size="2x"></fa-icon>
             </button>
             <button class="btn btn-link" (click)="getSelectedPlace(null)">
-                <i class="fas fa-angle-left fa-2x"></i>
+                <fa-icon [icon]="faLeft" size="2x"></fa-icon>
             </button>
             <button class="btn btn-link" (click)="getSelectedNPC(null)">
-                <i class="fas fa-angle-left fa-2x"></i>
+                <fa-icon [icon]="faLeft" size="2x"></fa-icon>
             </button>
-            {{selectedNpc.name}} en {{selectedPlace.name}} en {{selectedCity.name}}
+            {{selectedNpc.name}} en {{selectedPlace.name}} ({{selectedCity.name}})
         </h2>
 
         <div class="row text center" *ngIf="chaptersloading">

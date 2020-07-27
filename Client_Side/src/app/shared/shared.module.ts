@@ -11,12 +11,14 @@ import { AnimatedFragmentComponent } from './components/animated-fragment/animat
 import {TeximateModule} from 'ngx-teximate';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TakeDecisionComponent } from './components/take-decision/take-decision.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
   imports: [
     CommonModule,
     AngularMaterialModule,
+    FontAwesomeModule,
     FormsModule,
     ReactiveFormsModule,
     TeximateModule
@@ -39,6 +41,7 @@ import { TakeDecisionComponent } from './components/take-decision/take-decision.
     WriteDecisionComponent,
     AnimatedFragmentComponent,
     TeximateModule,
+    FontAwesomeModule,
     TakeDecisionComponent
   ]
 })

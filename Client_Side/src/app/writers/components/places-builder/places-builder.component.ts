@@ -9,6 +9,7 @@ import { GetAllPlaces, NewPlace, PublishPlace, AddPlaceStory, EditPlaceStory, De
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { map, take } from 'rxjs/operators';
 import { isValid } from 'src/app/shared/utils/commons';
+import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faChevronLeft, faChevronRight, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-places-builder',
@@ -46,6 +47,15 @@ export class PlacesBuilderComponent implements OnInit {
 
   @Input() city: City;
   @Output() placeSelect: EventEmitter<string> = new EventEmitter<string>();
+
+
+  faUpload = faCloudUploadAlt;
+  faDownload = faCloudDownloadAlt;
+  faEdit = faEdit;
+  faLeft = faChevronLeft;
+  faRight = faChevronRight;
+  faPlus = faPlus;
+  faCross = faTimes;
 
   constructor(
     private cd: ChangeDetectorRef,

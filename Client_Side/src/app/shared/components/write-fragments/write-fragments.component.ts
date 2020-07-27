@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ReadFragment } from 'src/client-api';
 import { Subscription, timer } from 'rxjs';
 import { AnimationsTypes } from '../../constants';
+import { faCogs } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-write-fragments',
@@ -21,6 +22,8 @@ export class WriteFragmentsComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   animationsTypes = AnimationsTypes;
+
+  faCogs = faCogs;
 
   ngOnInit() {
 
