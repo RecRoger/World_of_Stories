@@ -190,7 +190,7 @@
                 "places": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/PublicTale"
+                        "$ref": "#/definitions/Place"
                     }
                 },
                 "published": {
@@ -411,10 +411,10 @@
                 "endChapter": {
                     "type": "boolean"
                 },
-                "locationType": {
+                "cityId": {
                     "type": "string"
                 },
-                "locationId": {
+                "placeId": {
                     "type": "string"
                 }
             }

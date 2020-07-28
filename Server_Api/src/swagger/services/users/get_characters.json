@@ -33,8 +33,9 @@
                     "examples": {
                         "application/json": {
                             "data": {
-                                "characters": [{
-                                }]
+                                "characters": [
+                                    {}
+                                ]
                             }
                         }
                     }
@@ -72,10 +73,15 @@
             }
         },
         "ListCharacters": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "$ref": "#/definitions/Character"
+            "type": "object",
+            "properties": {
+                "characters": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/Character"
+                    }
+                }
             }
         }
     }

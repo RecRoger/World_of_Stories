@@ -2667,7 +2667,7 @@
         "places": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/PublicTale"
+            "$ref": "#/definitions/Place"
           }
         },
         "published": {
@@ -2888,10 +2888,10 @@
         "endChapter": {
           "type": "boolean"
         },
-        "locationType": {
+        "cityId": {
           "type": "string"
         },
-        "locationId": {
+        "placeId": {
           "type": "string"
         }
       }
@@ -3886,10 +3886,15 @@
       }
     },
     "ListCharacters": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "$ref": "#/definitions/Character"
+      "type": "object",
+      "properties": {
+        "characters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Character"
+          }
+        }
       }
     },
     "RequestNewCharacter": {
@@ -3908,7 +3913,7 @@
       "properties": {
         "data": {
           "type": "object",
-          "$ref": "#/definitions/ChapterData"
+          "$ref": "#/definitions/CharacterData"
         }
       }
     },

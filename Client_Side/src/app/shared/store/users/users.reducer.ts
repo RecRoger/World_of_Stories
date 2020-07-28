@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector, Store } from '@ngxs/store';
-import { LoginUser, SigninUser, LogonUser, AddUserRoll, UpdateUserData } from './users.actions';
+import { LoginUser, SigninUser, LogonUser, AddUserRoll, UpdateUserData, GetCharacters, NewCharacter, DeleteCharacter } from './users.actions';
 import { SetError, SetInfo } from '../general/general.actions';
-import { UsersService, User, RequestGetUser, ResponseGetUser, Character } from 'src/client-api';
+import { UsersService, User, RequestGetUser, ResponseGetUser, Character, RequestGetCharacters, ResponseGetCharacters, RequestNewCharacter, ResponseNewCharacter, RequestDeleteCharacter, ResponseDeleteCharacter } from 'src/client-api';
+import { patch, updateItem, append, removeItem } from '@ngxs/store/operators';
 
 export interface UserStateModel {
   activedUser: User;
@@ -134,6 +135,96 @@ export class UserState {
       this.store.dispatch(new SetError('Ha ocurrido un problema consultando su usuario. Intente mas tarde'));
     }
   }
+
+  @Action(GetCharacters)
+  async GetCharacters(ctx: StateContext<UserStateModel>, action: GetCharacters) {
+
+    try {
+
+      const user = ctx.getState().activedUser;
+      let users = [];
+
+      // if (!user.characters || user.characters.length <= 0) {
+      // }
+
+      const req: RequestGetCharacters = {
+        id: ctx.getState().activedUser.id
+      };
+      const resp: ResponseGetCharacters = await this.userService.getCharacters(req).toPromise();
+      users = resp.data && resp.data.characters || [];
+
+      ctx.setState(patch({
+        activedUser: patch<User>({
+          characters: users
+        })
+      }));
+
+    } catch (err) {
+      console.log('*** ERROR ***', err);
+      this.store.dispatch(new SetError('Ha ocurrido un problema consultando su usuario. Intente mas tarde'));
+    }
+  }
+
+  @Action(NewCharacter)
+  async NewCharacters(ctx: StateContext<UserStateModel>, action: NewCharacter) {
+
+    try {
+
+      const req: RequestNewCharacter = {
+        ...action.payload
+      };
+
+      const resp: ResponseNewCharacter = await this.userService.newCharacter(req).toPromise();
+
+      if (resp.data && resp.data.character) {
+
+        ctx.setState(patch({
+          activedUser: patch<User>({
+            characters: append([resp.data.character])
+          })
+        }));
+
+      } else {
+        this.store.dispatch(new SetError('Ha ocurrido un problema creando el personaje.'));
+      }
+
+
+    } catch (err) {
+      console.log('*** ERROR ***', err);
+      this.store.dispatch(new SetError('Ha ocurrido un problema creando el personaje. Intente mas tarde'));
+    }
+  }
+  @Action(DeleteCharacter)
+  async DeleteCharacters(ctx: StateContext<UserStateModel>, action: DeleteCharacter) {
+
+    try {
+
+      const req: RequestDeleteCharacter = {
+        ...action.payload
+      };
+
+      const resp: ResponseDeleteCharacter = await this.userService.deleteCharacter(req).toPromise();
+
+      if (resp.data && resp.data === 'OK') {
+
+        ctx.setState(patch({
+          activedUser: patch<User>({
+            characters: removeItem<Character>(c => c.id === req.id)
+          })
+        }));
+
+      } else {
+        this.store.dispatch(new SetError('Ha ocurrido un problema creando el personaje.'));
+      }
+
+
+    } catch (err) {
+      console.log('*** ERROR ***', err);
+      this.store.dispatch(new SetError('Ha ocurrido un problema creando el personaje. Intente mas tarde'));
+    }
+  }
+
+
 
 
 

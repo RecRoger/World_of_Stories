@@ -100,8 +100,8 @@ const NpcsSchema = new Schema({
         },
         endLocation: {
             endChapter: Boolean,    // place or city
-            locationType: String,    // place or city
-            locationId: String       // id del lugar de retorno del capiulo
+            cityId: String,    // place or city
+            placeId: String       // id del lugar de retorno del capiulo
         },
         items: [String],		                // Item en caso de victoria
         published: Boolean,

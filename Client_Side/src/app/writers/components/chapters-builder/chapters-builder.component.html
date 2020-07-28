@@ -86,7 +86,11 @@
                                 </div>
 
                                 <div *ngIf="chapter.endLocation && chapter.endLocation.endChapter">
-                                    Ubicacion final {{chapter.endLocation.locationId}}
+                                    Ubicacion final: 
+                                    <span *ngIf="chapter.endLocation.placeId">
+                                        {{chapter.endLocation.placeId | placeName: chapter.endLocation.cityId | async }} en 
+                                    </span>
+                                    {{chapter.endLocation.cityId | cityName | async}}
                                 </div>
 
                             </ng-container>
@@ -113,16 +117,18 @@
                                     <div class="row mb-3" *ngIf="chapterForm.get('endLocation').value.endChapter"
                                         [formGroup]="chapterForm.get('endLocation')">
                                         <div class="col-4">
-                                            <label for="">Tipo de destino</label>
-                                            <select class="form-control" formControlName="locationType">
-                                                <option value="city">Ciudad</option>
-                                                <option value="place" disabled>Lugar</option>
+                                            <label for="">Ciudad</label>
+                                            <select class="form-control" formControlName="cityId">
+                                                <ng-container *ngFor="let city of cities">
+                                                    <option value="{{city.value}}">{{city.name}}</option>
+                                                </ng-container>
                                             </select>
                                         </div>
-                                        <div class="col-4">
-                                            <label for="">Destino</label>
-                                            <select class="form-control" formControlName="locationId">
-                                                <ng-container *ngFor="let city of cities">
+                                        <div class="col-4" *ngIf="places && places.length>0">
+                                            <label for="">Lugar</label>
+                                            <select class="form-control" formControlName="placeId">
+                                                <option [value]="null">Las afueras de la ciudad</option>
+                                                <ng-container *ngFor="let city of places">
                                                     <option value="{{city.value}}">{{city.name}}</option>
                                                 </ng-container>
                                             </select>

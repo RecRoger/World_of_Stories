@@ -12,6 +12,8 @@ import {TeximateModule} from 'ngx-teximate';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TakeDecisionComponent } from './components/take-decision/take-decision.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { CityNamePipe } from './pipes/city-name.pipe';
+import { PlaceNamePipe } from './pipes/place-name.pipe';
 
 
 @NgModule({
@@ -30,7 +32,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     WriteFragmentsComponent,
     WriteDecisionComponent,
     AnimatedFragmentComponent,
-    TakeDecisionComponent
+    TakeDecisionComponent,
+    CityNamePipe,
+    PlaceNamePipe
   ],
   exports: [
     LoaderComponent,
@@ -42,7 +46,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     AnimatedFragmentComponent,
     TeximateModule,
     FontAwesomeModule,
-    TakeDecisionComponent
+    TakeDecisionComponent,
+    CityNamePipe,
+    PlaceNamePipe
   ]
 })
 export class SharedModule { }

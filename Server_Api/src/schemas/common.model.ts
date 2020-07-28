@@ -12,8 +12,8 @@ export interface readFragment {
 }
 export interface chapterLocation {
     endChapter?: boolean,
-    locationType?: string,    // place or city
-    locationId?: string       // id del lugar de retorno del capiulo
+    cityId?: string,    // place or city
+    placeId?: string       // id del lugar de retorno del capiulo
 
 }
 export interface decisionObject {

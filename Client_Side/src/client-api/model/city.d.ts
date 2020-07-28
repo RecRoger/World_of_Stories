@@ -9,13 +9,14 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
+import { Place } from './place';
 import { PublicTale } from './publicTale';
 export interface City {
     id?: string;
     name?: string;
     description?: Array<PublicTale>;
     travel?: Array<PublicTale>;
-    places?: Array<PublicTale>;
+    places?: Array<Place>;
     published?: boolean;
     publishDate?: string;
 }

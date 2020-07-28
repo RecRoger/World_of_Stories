@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
-import { User, Chapter, Place, Npc, ChapterUpdate, RequestUpdateChapter, RequestPublishChapter } from 'src/client-api';
+import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { User, Chapter, Place, Npc, ChapterUpdate, RequestUpdateChapter, RequestPublishChapter, City } from 'src/client-api';
 import { Select, Store } from '@ngxs/store';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
 import { map } from 'rxjs/operators';
@@ -9,13 +9,15 @@ import { isValid } from 'src/app/shared/utils/commons';
 import { UpdateChapter, PublishChapter, GetChapterData } from 'src/app/shared/store/stories/stories.actions';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { faCloudUploadAlt, faCloudDownloadAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from 'rxjs';
+import { GetAllPlaces } from 'src/app/shared/store/locations/locations.actions';
 
 @Component({
   selector: 'app-chapters-builder',
   templateUrl: './chapters-builder.component.html',
   styleUrls: ['./chapters-builder.component.scss']
 })
-export class ChaptersBuilderComponent implements OnInit {
+export class ChaptersBuilderComponent implements OnInit, OnDestroy {
 
   user: User;
 
@@ -36,10 +38,13 @@ export class ChaptersBuilderComponent implements OnInit {
 
   chapterForm: FormGroupTyped<ChapterUpdate>;
   cities = [];
+  places = [];
 
   faUpload = faCloudUploadAlt;
   faDownload = faCloudDownloadAlt;
   faEdit = faEdit;
+
+  subcription: Subscription;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -51,6 +56,10 @@ export class ChaptersBuilderComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy() {
+    if (this.subcription) { this.subcription.unsubscribe(); }
   }
 
   async toggleChapterInfo(id: string) {
@@ -82,20 +91,29 @@ export class ChaptersBuilderComponent implements OnInit {
         story: [chapter.story || [], [Validators.required]],
         item: [chapter.items || [], []],
         endLocation: this.fb.group({
-          endChapter: null,
-          locationType: [chapter.endLocation && chapter.endLocation.locationType || 'city', []],
-          locationId: [chapter.endLocation && chapter.endLocation.locationId || null, []]
+          endChapter: chapter.endLocation && chapter.endLocation.endChapter,
+          cityId: [chapter.endLocation && chapter.endLocation.cityId || null, []],
+          placeId: [chapter.endLocation && chapter.endLocation.placeId || null, []]
         }),
         usersDecisions: [chapter.usersDecisions || {}, [Validators.required]],
         author: [this.user.username, [Validators.required]]
       });
+      this.subcription = this.chapterForm.get('endLocation').get('cityId').valueChanges.subscribe(async (val: string) => {
+        const store = await this.store.dispatch(new GetAllPlaces({ request: { cityId: val } })).toPromise();
+        const cities: City[] = store.locations && store.locations.cities || [];
+        const city: City = cities.find(c => c.id === val);
+        this.places = city && city.places && city.places.map(l => ({ name: l.name, value: l.id })) || [];
+        this.cd.markForCheck();
+
+      });
+
     }
     this.chaptersTab.editing = !this.chaptersTab.editing;
     this.cd.markForCheck();
 
   }
 
-  saveChapterEdition(cancel?) {
+  async saveChapterEdition(cancel?) {
     if (cancel) {
       this.chaptersTab.editing = false;
       this.cd.markForCheck();
@@ -115,12 +133,12 @@ export class ChaptersBuilderComponent implements OnInit {
         published: false
       };
 
-      this.store.dispatch(new UpdateChapter({
+      await this.store.dispatch(new UpdateChapter({
         placeId: this.place.id,
         npcId: this.npc.id,
         request: getChaptersRequest,
         npc: updateRequest
-      }));
+      })).toPromise();
       this.chaptersTab.editing = false;
       this.cd.markForCheck();
     }
