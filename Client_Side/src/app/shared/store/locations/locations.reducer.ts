@@ -8,12 +8,16 @@ import { CityTabs, PlaceTabs } from '../../constants';
 
 export interface LocationsStateModel {
   cities: City[];
+  cityLoading: boolean;
+  placeLoading: boolean;
 }
 
 @State<LocationsStateModel>({
   name: 'locations',
   defaults: {
-    cities: []
+    cities: [],
+    cityLoading: false,
+    placeLoading: false
   }
 })
 @Injectable()
@@ -41,14 +45,22 @@ export class LocationState {
 
     try {
 
-      if (!ctx.getState().cities || ctx.getState().cities.length === 0 || action.payload.force) {
+      const cities = ctx.getState().cities;
+      const cityLoading = ctx.getState().cityLoading;
+
+      if ((!cities || cities.length === 0 || action.payload.force) && !cityLoading) {
+
+        ctx.patchState({
+          cityLoading: true
+        });
         const req: RequestGetCities = { published: action.payload.published };
 
         const resp = await this.locationsService.getCities(req).toPromise();
 
         if (resp && resp.data && resp.data.cities) {
           ctx.patchState({
-            cities: resp.data.cities
+            cities: resp.data.cities,
+            cityLoading: false
           });
 
         } else {
@@ -350,10 +362,13 @@ export class LocationState {
         ...action.payload.request
       };
       const city = ctx.getState().cities.find(c => c.id === req.cityId);
-      const places = city.places;
+      const places = city && city.places;
+      const loading = ctx.getState().placeLoading;
 
-      if (!places || places.length === 0 || action.payload.force) {
-
+      if (!loading && city && (!places || places.length === 0 || action.payload.force)) {
+        ctx.patchState({
+          placeLoading: true
+        });
         const resp = await this.locationsService.getPlaces(req).toPromise();
 
         if (resp && resp.data && resp.data.places) {

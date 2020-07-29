@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector, Store } from '@ngxs/store';
-import { LoginUser, SigninUser, LogonUser, AddUserRoll, UpdateUserData, GetCharacters, NewCharacter, DeleteCharacter } from './users.actions';
+import { LoginUser, SigninUser, LogonUser, AddUserRoll, UpdateUserData, GetCharacters, NewCharacter, DeleteCharacter, SelectCharacter } from './users.actions';
 import { SetError, SetInfo } from '../general/general.actions';
 import { UsersService, User, RequestGetUser, ResponseGetUser, Character, RequestGetCharacters, ResponseGetCharacters, RequestNewCharacter, ResponseNewCharacter, RequestDeleteCharacter, ResponseDeleteCharacter } from 'src/client-api';
 import { patch, updateItem, append, removeItem } from '@ngxs/store/operators';
@@ -225,6 +225,27 @@ export class UserState {
   }
 
 
+  @Action(SelectCharacter)
+  async SelectCharacters(ctx: StateContext<UserStateModel>, action: SelectCharacter) {
+
+    try {
+
+      let character = action.payload;
+
+      ctx.setState(patch<UserStateModel>({
+        activedUser: patch<User>({
+          characters: updateItem(c => c.id === character.id, character)
+        }),
+        character: {
+          ...character
+        }
+      }));
+
+    } catch (err) {
+      console.log('*** ERROR ***', err);
+      this.store.dispatch(new SetError('Ha ocurrido un problema creando el personaje. Intente mas tarde'));
+    }
+  }
 
 
 

@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { ReadersComponent } from './readers.component';
 import { ReadersHomeComponent } from './componentes/readers-home/readers-home.component';
+import { SelectCityComponent } from './componentes/select-city/select-city.component';
 
 const routes: Routes = [
     {
@@ -12,11 +13,16 @@ const routes: Routes = [
             {
                 path: '',
                 component: ReadersHomeComponent
+            },
+            // {
+            //     path: '',
+            //     component: ReadersHomeComponent
+
+            // },
+            {
+                path: 'select',
+                component: SelectCityComponent
             }
-            // , {
-            //     path: 'world',
-            //     component: WorldStoriesComponent
-            // }
         ]
     }
 ];

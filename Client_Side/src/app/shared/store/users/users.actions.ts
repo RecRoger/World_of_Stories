@@ -1,4 +1,4 @@
-import { RequestLogin, RequestSignin, RequestSetRol, User, RequestNewCharacter, RequestDeleteCharacter } from 'src/client-api/model/models';
+import { RequestLogin, RequestSignin, RequestSetRol, User, RequestNewCharacter, RequestDeleteCharacter, Character } from 'src/client-api/model/models';
 // import { RequestSignin, RequestLogin, RequestSetRol } from 'src/client-api';
 
 export class LogonUser {
@@ -39,6 +39,11 @@ export class NewCharacter {
 export class DeleteCharacter {
     static readonly type = '[User] Delete Character';
     constructor(public payload: RequestDeleteCharacter) { }
+}
+
+export class SelectCharacter {
+    static readonly type = '[User] Select Character';
+    constructor(public payload: Character) { }
 }
 
 

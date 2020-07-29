@@ -14,6 +14,7 @@ import { TakeDecisionComponent } from './components/take-decision/take-decision.
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CityNamePipe } from './pipes/city-name.pipe';
 import { PlaceNamePipe } from './pipes/place-name.pipe';
+import { GetRandomPipe } from './pipes/get-random.pipe';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { PlaceNamePipe } from './pipes/place-name.pipe';
     AnimatedFragmentComponent,
     TakeDecisionComponent,
     CityNamePipe,
-    PlaceNamePipe
+    PlaceNamePipe,
+    GetRandomPipe
   ],
   exports: [
     LoaderComponent,
@@ -48,7 +50,8 @@ import { PlaceNamePipe } from './pipes/place-name.pipe';
     FontAwesomeModule,
     TakeDecisionComponent,
     CityNamePipe,
-    PlaceNamePipe
+    PlaceNamePipe,
+    GetRandomPipe
   ]
 })
 export class SharedModule { }

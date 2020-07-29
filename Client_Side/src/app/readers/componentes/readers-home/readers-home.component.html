@@ -16,32 +16,32 @@
                             <fa-icon class="ml-3" [icon]="faTimes" size="lg"></fa-icon>
                         </div>
                     </div>
-                    <div class="mt-3 w-100 d-flex">
-                        <div class="mr-auto">
+                    <div class="my-3 w-100">
+                        <div class="d-flex">
+                            <label for="">Dinero</label>
+                            <div class="ml-auto">
+                                {{character.money}}
+                            </div>
+                        </div>
+                        <div class="d-flex">
                             <label for="">Ubicacion</label>
-                            <div *ngIf="character.location; else noPlace">
+                            <div class="ml-auto" *ngIf="character.location; else noPlace">
                                 {{character.location.cityId | cityName | async}}
                                 <span *ngIf="character.location.placeId">
                                     - {{character.location.placeId | placeName: character.location?.cityId | async }}
                                 </span>
                             </div>
                             <ng-template #noPlace>
-                                <div>
+                                <div class="ml-auto">
                                     Inicio
                                 </div>
                             </ng-template>
 
                         </div>
 
-                        <div class="ml-auto text-right">
-                            <label for="">Dinero</label>
-                            <div>
-                                {{character.money}}
-                            </div>
-                        </div>
 
                     </div>
-                    <div class="ml-auto mt-4 h5">
+                    <div class="ml-auto mt-4 h5" (click)="selectCharacter(character)">
                         Continuar
                         <fa-icon class="ml-3" [icon]="faRight" size="lg"></fa-icon>
                     </div>
@@ -58,7 +58,7 @@
                             Nuevo personaje:
                         </div>
                     </div>
-                    <div class="my-3 ml-4">
+                    <div class="my-3 ml-4 py-3">
                         <input class="form-control" type="text" formControlName="name"
                             placeholder="Nombre del personaje">
                     </div>

@@ -1,0 +1,50 @@
+<div class="app-main_writers" *ngIf="(cities$ | async) as cities">
+    <h2>Selecciona una ciudad</h2>
+    <p>Para comenzar, debes elegir la ciudad donde deseas comenzar tu aventura.</p>
+
+    <div class="mt-3">
+        <mat-accordion>
+
+            <ng-container *ngFor="let city of cities">
+                <mat-expansion-panel hideToggle>
+                    <mat-expansion-panel-header [collapsedHeight]="'60px'" [expandedHeight]="'60px'">
+                        <mat-panel-title>
+                            <div class="h5">
+                                {{city.name}}
+                            </div>
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            <div *ngIf="loading.includes(cityId)">
+                                <app-loader class="loader" size="md"></app-loader>
+                            </div>
+                            <div class="ml-auto mt-auto" *ngIf="city?.description">
+                                <fa-icon [icon]="faDown" size="xl"></fa-icon>
+                            </div>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    
+                    <ng-template matExpansionPanelContent>
+                        <div *ngIf="(city?.description | getRandom) as description">
+                            <app-animated-fragment [tale]="description.tale" (finish)="showEnter()"></app-animated-fragment>
+                            <p class="text-muted text-right"> - {{description.author}}</p>
+                        </div>
+                        <div class="d-flex" *ngIf="enterBtn">
+                            <div class="btn ml-auto">
+                                Viajar
+                                <fa-icon class="ml-3" [icon]="faRight" size="xl"></fa-icon>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                </mat-expansion-panel>
+            </ng-container>
+
+
+        </mat-accordion>
+
+    </div>
+
+    <!-- <pre>
+        {{cities | json}}
+    </pre> -->
+</div>
