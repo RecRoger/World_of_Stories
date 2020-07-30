@@ -30,18 +30,13 @@ export class ReadersHomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: Store,
-    private router: Router,
-    private fb: FormBuilder,
-    private actions$: Actions
+    private fb: FormBuilder
   ) { }
 
   ngOnInit() {
     this.subscription.push(
       this.$user.subscribe(val => {
         this.user = val;
-      }),
-      this.actions$.pipe(ofActionSuccessful(SelectCharacter)).subscribe(() => {
-        this.router.navigate(['/readers/select']);
       })
     );
     this.createForm();
@@ -75,10 +70,6 @@ export class ReadersHomeComponent implements OnInit, OnDestroy {
 
   async selectCharacter(character: Character) {
     await this.store.dispatch(new SelectCharacter(character)).toPromise();
-  }
-
-  redirectTo(url: string) {
-    this.router.navigate([url]);
   }
 
 }

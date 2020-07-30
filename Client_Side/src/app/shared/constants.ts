@@ -24,5 +24,6 @@ export enum NpcTabs {
 export enum AnimationsTypes {
     default = 'default',
     chatA = 'chatA',
-    chatB = 'chatB'
+    chatB = 'chatB',
+    title = 'title'
 }

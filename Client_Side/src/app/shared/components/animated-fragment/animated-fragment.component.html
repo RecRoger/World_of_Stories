@@ -1,4 +1,4 @@
-<div #scrollMe [scrollTop]="scrollMe.scrollHeight" class="readable-section" *ngIf="shownFragments.length > 0"
+<div class="readable-section" *ngIf="shownFragments.length > 0"
     (click)="skipParagraph()">
 
     <ng-container *ngFor="let fragment of shownFragments; let i = index">

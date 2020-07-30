@@ -1,8 +1,37 @@
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector, Store } from '@ngxs/store';
-import { LoginUser, SigninUser, LogonUser, AddUserRoll, UpdateUserData, GetCharacters, NewCharacter, DeleteCharacter, SelectCharacter } from './users.actions';
-import { SetError, SetInfo } from '../general/general.actions';
-import { UsersService, User, RequestGetUser, ResponseGetUser, Character, RequestGetCharacters, ResponseGetCharacters, RequestNewCharacter, ResponseNewCharacter, RequestDeleteCharacter, ResponseDeleteCharacter } from 'src/client-api';
+import {
+  LoginUser,
+  SigninUser,
+  LogonUser,
+  AddUserRoll,
+  UpdateUserData,
+  GetCharacters,
+  NewCharacter,
+  DeleteCharacter,
+  SelectCharacter,
+  UpdateCharacterLocation,
+  SetReadFragment
+} from './users.actions';
+import {
+  SetError,
+  SetInfo
+} from '../general/general.actions';
+import {
+  UsersService,
+  User,
+  RequestGetUser,
+  ResponseGetUser,
+  Character,
+  RequestGetCharacters,
+  ResponseGetCharacters,
+  RequestNewCharacter,
+  ResponseNewCharacter,
+  RequestDeleteCharacter,
+  ResponseDeleteCharacter,
+  RequestUpdateCharacter,
+  RequestReadFragment
+} from 'src/client-api';
 import { patch, updateItem, append, removeItem } from '@ngxs/store/operators';
 
 export interface UserStateModel {
@@ -14,7 +43,7 @@ export interface UserStateModel {
   name: 'user',
   defaults: {
     activedUser: (localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))) || null,
-    character: null
+    character: (localStorage.getItem('character') && JSON.parse(localStorage.getItem('character'))) || null
   }
 })
 @Injectable()
@@ -27,6 +56,10 @@ export class UserState {
   @Selector()
   static getUser(state: UserStateModel): User {
     return state.activedUser;
+  }
+  @Selector()
+  static getCharacter(state: UserStateModel): Character {
+    return state.character;
   }
 
   @Action(LogonUser)
@@ -104,7 +137,6 @@ export class UserState {
       this.store.dispatch(new SetError('Ha ocurrido un problema consultando su usuario. Intente mas tarde'));
     }
   }
-
   @Action(UpdateUserData)
   async UpdateUserData(ctx: StateContext<UserStateModel>, action: UpdateUserData) {
 
@@ -136,6 +168,8 @@ export class UserState {
     }
   }
 
+
+
   @Action(GetCharacters)
   async GetCharacters(ctx: StateContext<UserStateModel>, action: GetCharacters) {
 
@@ -164,7 +198,6 @@ export class UserState {
       this.store.dispatch(new SetError('Ha ocurrido un problema consultando su usuario. Intente mas tarde'));
     }
   }
-
   @Action(NewCharacter)
   async NewCharacters(ctx: StateContext<UserStateModel>, action: NewCharacter) {
 
@@ -232,6 +265,7 @@ export class UserState {
 
       let character = action.payload;
 
+      localStorage.setItem('character', JSON.stringify(character));
       ctx.setState(patch<UserStateModel>({
         activedUser: patch<User>({
           characters: updateItem(c => c.id === character.id, character)
@@ -246,6 +280,83 @@ export class UserState {
       this.store.dispatch(new SetError('Ha ocurrido un problema creando el personaje. Intente mas tarde'));
     }
   }
+
+  @Action(UpdateCharacterLocation)
+  async UpdateCharacterLocation(ctx: StateContext<UserStateModel>, action: UpdateCharacterLocation) {
+
+    try {
+
+      const location = action.payload;
+      const id = ctx.getState().character.id;
+
+      const req: RequestUpdateCharacter = {
+        character: {
+          id,
+          location
+        }
+      };
+
+      const resp = await this.userService.updateCharacter(req).toPromise();
+
+      if (resp.data && resp.data.character) {
+
+        ctx.setState(patch<UserStateModel>({
+          character: {
+            ...resp.data.character
+          }
+        }));
+
+      } else {
+        this.store.dispatch(new SetError('error guardando'));
+      }
+
+
+    } catch (err) {
+      console.log('*** ERROR ***', err);
+      this.store.dispatch(new SetError('Ha ocurrido un problema guardando'));
+    }
+  }
+
+
+  @Action(SetReadFragment)
+  async SetReadFragment(ctx: StateContext<UserStateModel>, action: SetReadFragment) {
+
+    try {
+
+      const { fragmentId } = action.payload;
+      const character = ctx.getState().character;
+      const characterId = character.id;
+
+      if (!character.fragmentsRead && !character.fragmentsRead.includes(fragmentId)) {
+
+        const req: RequestReadFragment = {
+          characterId,
+          fragmentId
+        };
+
+        const resp = await this.userService.readFragment(req).toPromise();
+
+        if (resp.data && resp.data === 'OK') {
+
+          ctx.setState(patch<UserStateModel>({
+            character: patch<Character>({
+              fragmentsRead: append([fragmentId])
+            })
+          }));
+
+        } else {
+          this.store.dispatch(new SetError('error guardando'));
+        }
+
+      }
+
+    } catch (err) {
+      console.log('*** ERROR ***', err);
+      this.store.dispatch(new SetError('Ha ocurrido un problema guardando'));
+    }
+  }
+
+
 
 
 

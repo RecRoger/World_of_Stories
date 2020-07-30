@@ -7,11 +7,12 @@ import { ReaderNavComponent } from './componentes/reader-nav/reader-nav.componen
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReadersHomeComponent } from './componentes/readers-home/readers-home.component';
 import { SelectCityComponent } from './componentes/select-city/select-city.component';
+import { ReadCityComponent } from './componentes/read-city/read-city.component';
 
 
 
 @NgModule({
-  declarations: [ReadersComponent, ReaderNavComponent, ReadersHomeComponent, SelectCityComponent],
+  declarations: [ReadersComponent, ReaderNavComponent, ReadersHomeComponent, SelectCityComponent, ReadCityComponent],
   imports: [
     CommonModule,
     ReadersRoutingModule,

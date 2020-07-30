@@ -22,12 +22,17 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges {
   @Input() title: string;
   @Output() finish: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  @ViewChild('scrollMe', { static: false }) private myScrollContainer: ElementRef;
+
 
   options: TextAnimation = {
     animation: bounceIn,
     delay: 10,
     type: 'paragraph'
+  };
+  titleOption: TextAnimation = {
+    animation: bounceIn,
+    delay: 30,
+    type: 'letter'
   };
 
   shownFragments: { fragment: ReadFragment, options: TextAnimation }[] = [];
@@ -51,28 +56,21 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges {
 
   finishAnimation(i) {
     if (this.tale[i + 1]) {
-
-
       this.shownFragments.push({
         fragment: this.tale[i + 1],
         options: this.getAnimationOptions(this.tale[i + 1].animation)
       }
       );
-      // try {
-      //   setTimeout(() => {
-      //     this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
-      //   }, 100);
-      // } catch (err) { }
     } else {
       this.finish.emit(true);
     }
   }
 
   getAnimationOptions(animation: string): TextAnimation {
-    const option: TextAnimation = {
+    let option: TextAnimation = {
       animation: bounceIn,
-      delay: 5,
-      type: 'letter'
+      delay: 65,
+      type: 'word'
     };
 
     switch (animation) {
@@ -83,6 +81,9 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges {
       case AnimationsTypes.chatB:
         option.animation = fadeInRight;
         option.type = 'paragraph';
+        return option;
+      case AnimationsTypes.title:
+        option = this.titleOption;
         return option;
       default:
         return option;

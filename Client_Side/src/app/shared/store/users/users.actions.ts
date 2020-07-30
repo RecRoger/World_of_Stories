@@ -1,4 +1,4 @@
-import { RequestLogin, RequestSignin, RequestSetRol, User, RequestNewCharacter, RequestDeleteCharacter, Character } from 'src/client-api/model/models';
+import { RequestLogin, RequestSignin, RequestSetRol, User, RequestNewCharacter, RequestDeleteCharacter, Character, CharacterLocation } from 'src/client-api/model/models';
 // import { RequestSignin, RequestLogin, RequestSetRol } from 'src/client-api';
 
 export class LogonUser {
@@ -44,6 +44,15 @@ export class DeleteCharacter {
 export class SelectCharacter {
     static readonly type = '[User] Select Character';
     constructor(public payload: Character) { }
+}
+
+export class UpdateCharacterLocation {
+    static readonly type = '[User] Update Character Location';
+    constructor(public payload: CharacterLocation ) { }
+}
+export class SetReadFragment {
+    static readonly type = '[User] Set Read Fragment';
+    constructor(public payload: { fragmentId: string }) { }
 }
 
 
