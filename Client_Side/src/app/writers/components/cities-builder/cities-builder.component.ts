@@ -47,7 +47,7 @@ export class CitiesBuilderComponent implements OnInit, OnDestroy {
   faLeft = faChevronLeft;
   faRight = faChevronRight;
   faPlus = faPlus;
-  faCross = faTimes;
+  faTimes = faTimes;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -175,7 +175,7 @@ export class CitiesBuilderComponent implements OnInit, OnDestroy {
       tale: data
     })).toPromise();
 
-    this.citiesTabs.loading = true;
+    this.citiesTabs.loading = false;
     this.citiesTabs.editing = false;
   }
   // guardar nueva descripcion o viaje

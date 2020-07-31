@@ -300,6 +300,7 @@ export class UserState {
 
       if (resp.data && resp.data.character) {
 
+        localStorage.setItem('character', JSON.stringify(resp.data.character));
         ctx.setState(patch<UserStateModel>({
           character: {
             ...resp.data.character

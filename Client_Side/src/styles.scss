@@ -8,6 +8,7 @@
 
 .app-main {
     padding: 55px 0 1.5rem 0;
+    overflow-y: auto;
     &_writers {
         padding: 5rem 2rem !important;
     }

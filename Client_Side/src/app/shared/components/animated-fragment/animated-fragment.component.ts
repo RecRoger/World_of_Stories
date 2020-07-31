@@ -1,9 +1,11 @@
-import { Component, OnInit, Input, ChangeDetectorRef, OnChanges, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, OnChanges, ElementRef, ViewChild, Output, EventEmitter, HostListener, OnDestroy } from '@angular/core';
 import { ReadFragment } from 'src/client-api';
 import { TextAnimation } from 'ngx-teximate';
 import { rotateInDownLeft, fadeInDown, bounceInDown, bounceIn, fadeInLeft, fadeInRight } from 'ng-animate';
 import { trigger, transition, useAnimation, AnimationOptions } from '@angular/animations';
 import { AnimationsTypes } from '../../constants';
+import { ScrollAnimationService } from '../../services/scroll-animation.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-animated-fragment',
@@ -14,15 +16,13 @@ import { AnimationsTypes } from '../../constants';
     trigger('fadeInRight', [transition('* => *', useAnimation(fadeInRight))]),
   ],
 })
-export class AnimatedFragmentComponent implements OnInit, OnChanges {
+export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
 
-  constructor(private cd: ChangeDetectorRef) { }
+  constructor(private cd: ChangeDetectorRef, private scrollService: ScrollAnimationService) { }
 
   @Input() tale: ReadFragment[];
   @Input() title: string;
   @Output() finish: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-
 
   options: TextAnimation = {
     animation: bounceIn,
@@ -31,22 +31,44 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges {
   };
   titleOption: TextAnimation = {
     animation: bounceIn,
-    delay: 30,
+    delay: 70,
     type: 'letter'
   };
 
   shownFragments: { fragment: ReadFragment, options: TextAnimation }[] = [];
 
-  skipedParagrafs = [];
 
   animationsTypes = AnimationsTypes;
+  skipedParagrafs = [];
+  pendingIndex = null;
+
+  subscription: Subscription[] = [];
+  scrollElement: any;
+
   ngOnInit() {
+    this.subscription.push(
+      this.scrollService.scrollAtBottom$.subscribe(bottom => {
+        if (bottom) {
+          if (this.pendingIndex) {
+            this.finishAnimation(this.pendingIndex);
+            this.pendingIndex = null;
+          }
+        }
+      }),
+      this.scrollService.scrollElement$.subscribe(element => {
+        this.scrollElement = element;
+      })
+    );
   }
 
   ngOnChanges() {
     if (this.tale && this.tale.length > 0) {
       this.startAnimation();
+      this.skipedParagrafs = [];
     }
+  }
+  ngOnDestroy() {
+    this.subscription.forEach(subs => subs.unsubscribe());
   }
 
   startAnimation() {
@@ -55,21 +77,30 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges {
   }
 
   finishAnimation(i) {
-    if (this.tale[i + 1]) {
-      this.shownFragments.push({
-        fragment: this.tale[i + 1],
-        options: this.getAnimationOptions(this.tale[i + 1].animation)
+    if (!this.scrollElement ||
+      (this.scrollElement.scrollHeight - this.scrollElement.scrollTop === this.scrollElement.clientHeight) ||
+      (this.scrollElement.scrollHeight - this.scrollElement.scrollTop === this.scrollElement.clientHeight - 1) ||
+      (this.scrollElement.scrollHeight - this.scrollElement.scrollTop === this.scrollElement.clientHeight + 1)
+    ) {
+      if (this.tale[i + 1]) {
+        this.scrollService.scrollAtBottom$.next(false);
+        this.shownFragments.push({
+          fragment: this.tale[i + 1],
+          options: this.getAnimationOptions(this.tale[i + 1].animation)
+        }
+        );
+      } else {
+        this.finish.emit(true);
       }
-      );
     } else {
-      this.finish.emit(true);
+      this.pendingIndex = i + 1;
     }
   }
 
   getAnimationOptions(animation: string): TextAnimation {
     let option: TextAnimation = {
       animation: bounceIn,
-      delay: 65,
+      delay: 75,
       type: 'word'
     };
 

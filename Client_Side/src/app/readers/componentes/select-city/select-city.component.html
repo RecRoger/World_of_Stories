@@ -1,10 +1,10 @@
-<div class="app-main d-flex flex-column h-100" *ngIf="(cities$ | async) as cities">
-    <div class="description-tale"  #scrollBottom [scrollTop]="scrollBottom.scrollHeight">
+<div class="app-main d-flex flex-column h-100 col-12 col-md-4 mx-md-auto" #scroll (scroll)="scrollCityDescription($event)" *ngIf="(cities$ | async) as cities">
+    <div class="description-tale">
         <h2>Selecciona una ciudad</h2>
         <p>Para comenzar, debes elegir la ciudad donde deseas comenzar tu aventura.</p>
 
         <ng-container *ngIf="selectedCity">
-            <div class="mt-3" *ngIf="(selectedCity.description | getRandom) as description">
+            <div class="mt-1 pt-2 border-left pl-3" *ngIf="(selectedCity.description | getRandom) as description">
                 <app-animated-fragment [tale]="description.tale" (finish)="showEnter(description.id)">
                 </app-animated-fragment>
                 <p class="text-muted text-right" *ngIf="enterBtn"> - {{description.author}}</p>
@@ -19,23 +19,20 @@
         </ng-container>
 
     </div>
-    <div class="city-selector border-top">
-        <ng-container *ngFor="let city of cities">
-            <div class="d-flex py-3 border-bottom" (click)="selectCity(city)">
-                <div class="h5">
-                    {{city.name}}
-                </div>
-                <div class="ml-auto" *ngIf="loading.includes(cityId)">
-                    <app-loader class="loader" size="md"></app-loader>
-                </div>
-                <div class="ml-auto mt-auto" *ngIf="city?.description">
-                    <fa-icon [icon]="faUp" size="xl"></fa-icon>
-                </div>
-            </div>
-        </ng-container>
-    </div>
 
-    <!-- <pre>
-        {{cities | json}}
-    </pre> -->
+</div>
+<div class="city-selector border-top">
+    <ng-container *ngFor="let city of cities">
+        <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" (click)="selectCity(city)">
+            <div class="h5 font-weight-normal">
+                {{city.name}}
+            </div>
+            <div class="ml-auto" *ngIf="loading.includes(cityId)">
+                <app-loader class="loader" size="md"></app-loader>
+            </div>
+            <div class="ml-auto mt-auto" *ngIf="city?.description">
+                <fa-icon [icon]="faUp" size="xl"></fa-icon>
+            </div>
+        </div>
+    </ng-container>
 </div>

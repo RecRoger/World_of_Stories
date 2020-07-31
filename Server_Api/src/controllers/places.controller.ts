@@ -67,7 +67,7 @@ class PlacesController {
                 ...place,
                 id: place._id,
                 description: place.description.map(t => ({ ...t, id: t._id })),
-                travel: place.entry.map(t => ({ ...t, id: t._id })),
+                entry: place.entry.map(t => ({ ...t, id: t._id })),
             } : null;
 
             console.log('> respnse:' + ((place) ? (<PlaceInterface>place).name : city));

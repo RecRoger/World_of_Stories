@@ -27,7 +27,7 @@ export class ReadersComponent implements OnInit, OnDestroy {
     private actions$: Actions) { }
 
   ngOnInit() {
-    this.store.dispatch(new GetAllCities({ published: true, force: false }));
+    this.store.dispatch(new GetAllCities({ published: false, force: false }));
 
     this.subscriptions.push(
       this.character$.subscribe((character) => {
@@ -38,6 +38,8 @@ export class ReadersComponent implements OnInit, OnDestroy {
           this.router.navigate(['/readers/select']);
         } else if (!this.character.location.placeId) {
           this.router.navigate(['/readers/city']);
+        } else if (!this.character.location.npcId) {
+          this.router.navigate(['/readers/place']);
         }
       })
     );

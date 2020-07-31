@@ -55,7 +55,7 @@ export class PlacesBuilderComponent implements OnInit {
   faLeft = faChevronLeft;
   faRight = faChevronRight;
   faPlus = faPlus;
-  faCross = faTimes;
+  faTimes = faTimes;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -185,7 +185,7 @@ export class PlacesBuilderComponent implements OnInit {
       tale: data,
     }));
 
-    this.placesTabs.loading = true;
+    this.placesTabs.loading = false;
     this.placesTabs.editing = false;
 
   }

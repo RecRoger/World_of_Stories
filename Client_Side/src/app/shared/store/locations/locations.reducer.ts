@@ -34,7 +34,7 @@ export class LocationState {
   @Selector()
   static getPlaces(state: LocationsStateModel) {
     return (cityId: string): Place[] => {
-      return state.cities.find(city => city.id === cityId).places;
+      return cityId ? state.cities.find(city => city.id === cityId).places : [];
     };
   }
 
