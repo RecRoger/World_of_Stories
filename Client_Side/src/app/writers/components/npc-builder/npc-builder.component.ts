@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Store, Select } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
-import { User, Place, Npc, RequestNewNpc, ReadFragment, Decision, RequestPublishNpc } from 'src/client-api';
+import { User, Place, Npc, RequestNewNpc, ReadFragment, Decision, RequestPublishNpc } from 'wos-api';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
 import { map } from 'rxjs/operators';
 import { NpcTabs } from 'src/app/shared/constants';

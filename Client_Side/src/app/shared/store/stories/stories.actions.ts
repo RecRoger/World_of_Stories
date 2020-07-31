@@ -1,4 +1,4 @@
-import { RequestNewNpc, RequestPublishNpc, UpdateNpcStructure, RequestGetChapters, RequestUpdateChapter, RequestPublishChapter } from 'src/client-api';
+import { RequestNewNpc, RequestPublishNpc, UpdateNpcStructure, RequestGetChapters, RequestUpdateChapter, RequestPublishChapter } from 'wos-api';
 
 export class GetAllNpcs {
     static readonly type = '[Stories] Get All Npcs';

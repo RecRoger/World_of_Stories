@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { SelectCharacter, UpdateCharacterLocation } from '../shared/store/users/users.actions';
 import { Router } from '@angular/router';
 import { UserState } from '../shared/store/users/users.reducer';
-import { Character } from 'src/client-api';
+import { Character } from 'wos-api';
 
 @Component({
   selector: 'app-readers',

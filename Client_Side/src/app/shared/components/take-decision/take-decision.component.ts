@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Decision } from 'src/client-api';
+import { Decision } from 'wos-api';
 import { trigger, transition, useAnimation } from '@angular/animations';
 import { slideInDown, bounceInUp, bounceIn, fadeInDown } from 'ng-animate';
 

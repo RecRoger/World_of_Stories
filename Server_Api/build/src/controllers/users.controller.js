@@ -78,9 +78,9 @@ class UsersController {
                 }, {
                     _v: 0
                 }).lean();
-                // console.log('User ======>', user);
                 console.log('> user response: ' + ((user) ? user.username : 'not Found'));
                 console.log('_____________________________________________________');
+                // console.log('User ======>', user);
                 res.json({
                     "data": { "user": user && Object.assign({}, user, { id: user._id }) }
                 });

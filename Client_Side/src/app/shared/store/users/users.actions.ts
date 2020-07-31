@@ -1,5 +1,5 @@
-import { RequestLogin, RequestSignin, RequestSetRol, User, RequestNewCharacter, RequestDeleteCharacter, Character, CharacterLocation } from 'src/client-api/model/models';
-// import { RequestSignin, RequestLogin, RequestSetRol } from 'src/client-api';
+import { RequestLogin, RequestSignin, RequestSetRol, User, RequestNewCharacter, RequestDeleteCharacter, Character, CharacterLocation } from 'wos-api';
+// import { RequestSignin, RequestLogin, RequestSetRol } from 'wos-api';
 
 export class LogonUser {
     static readonly type = '[User] Logon User';

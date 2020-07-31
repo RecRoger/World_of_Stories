@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { City, Place, Npc } from 'src/client-api';
+import { City, Place, Npc } from 'wos-api';
 import { Store } from '@ngxs/store';
 import { GetAllCities, GetAllPlaces } from 'src/app/shared/store/locations/locations.actions';
 import { GetAllNpcs, GetNpcStory } from 'src/app/shared/store/stories/stories.actions';

@@ -3,7 +3,7 @@ import { npcsController } from './../controllers/npcs.controller'
 import cors from 'cors'
 
 class NpcsRouter {
-    constructor(server: express.Express){
+    constructor(server: express.Application){
         const router = express.Router();
 
         router.post('/', cors(), npcsController.getAllNPCs);

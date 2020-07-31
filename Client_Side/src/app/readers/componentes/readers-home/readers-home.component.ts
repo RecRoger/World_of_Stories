@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { User, Character } from 'src/client-api';
+import { User, Character } from 'wos-api';
 import { Subscription } from 'rxjs';
 import { Select, Store, Actions, ofActionSuccessful } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';

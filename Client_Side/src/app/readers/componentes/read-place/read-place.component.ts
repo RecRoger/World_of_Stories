@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
-import { Character, Place, Npc } from 'src/client-api';
+import { Character, Place, Npc } from 'wos-api';
 import { Select, Store } from '@ngxs/store';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { UserState } from 'src/app/shared/store/users/users.reducer';

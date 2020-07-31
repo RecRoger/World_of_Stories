@@ -31,7 +31,7 @@ import {
   ResponseDeleteCharacter,
   RequestUpdateCharacter,
   RequestReadFragment
-} from 'src/client-api';
+} from 'wos-api';
 import { patch, updateItem, append, removeItem } from '@ngxs/store/operators';
 
 export interface UserStateModel {

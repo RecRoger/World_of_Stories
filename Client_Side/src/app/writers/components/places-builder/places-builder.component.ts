@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store, Select } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
-import { User, Place, City, RequestGetPlaces, ReadFragment, RequestNewPlace, RequestPublishPlace, NewPlaceTale, TaleEdition } from 'src/client-api';
+import { User, Place, City, RequestGetPlaces, ReadFragment, RequestNewPlace, RequestPublishPlace, NewPlaceTale, TaleEdition } from 'wos-api';
 import { PlaceTabs } from 'src/app/shared/constants';
 import { GetAllPlaces, NewPlace, PublishPlace, AddPlaceStory, EditPlaceStory, DeletePlaceStory, GetPlaceData } from 'src/app/shared/store/locations/locations.actions';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';

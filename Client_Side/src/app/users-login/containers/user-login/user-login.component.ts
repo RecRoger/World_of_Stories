@@ -7,7 +7,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { LoginUser, SigninUser } from 'src/app/shared/store/users/users.actions';
 import { isValid } from 'src/app/shared/utils/commons';
-import { RequestSignin, RequestLogin } from 'src/client-api';
+import { RequestSignin, RequestLogin } from 'wos-api';
 
 @Component({
   selector: 'app-user-login',

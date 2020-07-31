@@ -1,9 +1,0 @@
-/**
- * @fileoverview added by tsickle
- * Generated from: api/api.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-export { LocationsService } from './locations.service';
-export { StoriesService } from './stories.service';
-export { UsersService } from './users.service';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYXBpLmpzIiwic291cmNlUm9vdCI6Im5nOi8vd29zLWFwaS8iLCJzb3VyY2VzIjpbImFwaS9hcGkudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7QUFDQSxPQUFPLEVBQUUsZ0JBQWdCLEVBQUUsTUFBTSxxQkFBcUIsQ0FBQztBQUN2RCxPQUFPLEVBQUUsY0FBYyxFQUFFLE1BQU0sbUJBQW1CLENBQUM7QUFDbkQsT0FBTyxFQUFFLFlBQVksRUFBRSxNQUFNLGlCQUFpQixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiXG5leHBvcnQgeyBMb2NhdGlvbnNTZXJ2aWNlIH0gZnJvbSAnLi9sb2NhdGlvbnMuc2VydmljZSc7XG5leHBvcnQgeyBTdG9yaWVzU2VydmljZSB9IGZyb20gJy4vc3Rvcmllcy5zZXJ2aWNlJztcbmV4cG9ydCB7IFVzZXJzU2VydmljZSB9IGZyb20gJy4vdXNlcnMuc2VydmljZSc7Il19

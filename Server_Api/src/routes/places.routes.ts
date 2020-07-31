@@ -3,7 +3,7 @@ import { placesController } from '../controllers/places.controller';
 import cors from 'cors'
 
 class PlacesRouter {
-    constructor(server: express.Express) {
+    constructor(server: express.Application) {
         const router = express.Router();
 
         router.post('/', cors(), placesController.getCityPlaces);

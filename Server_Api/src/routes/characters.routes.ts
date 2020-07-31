@@ -3,7 +3,7 @@ import cors from 'cors'
 import { charactersController } from '../controllers/characters.controller';
 
 class CharactersRouter {
-    constructor(server: express.Express){
+    constructor(server: express.Application){
         const router = express.Router();
 
         router.post('/', cors(), charactersController.getUserCharacters);

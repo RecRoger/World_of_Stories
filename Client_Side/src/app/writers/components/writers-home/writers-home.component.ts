@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, Select } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
-import { User } from 'src/client-api';
+import { User } from 'wos-api';
 import { Subscription } from 'rxjs';
 import { faGlobeAmericas } from '@fortawesome/free-solid-svg-icons';
 

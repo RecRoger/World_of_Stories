@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Store, Select } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { AddUserRoll } from 'src/app/shared/store/users/users.actions';
-import { User, RequestSetRol } from 'src/client-api';
+import { User, RequestSetRol } from 'wos-api';
 import { Subscription } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { SetInfo } from 'src/app/shared/store/general/general.actions';

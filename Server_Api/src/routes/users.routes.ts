@@ -3,7 +3,7 @@ import { usersController } from './../controllers/users.controller'
 import cors from 'cors'
 
 class UserRouter {
-    constructor(server: express.Express){
+    constructor(server: express.Application){
         const router = express.Router();
 
         router.get('/', cors(), usersController.getAllUsers);

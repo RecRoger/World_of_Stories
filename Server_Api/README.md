@@ -18,7 +18,7 @@ Run `npm run dev` for start server with last changes
 ## Models and Swagger
 
 In src/swagger/ you will find de swagger documentation directory
-You can run `./generate.sh` to create WoS_Angular_Librery in generator/dist/client-api
+You can run `./generate.sh` to create WoS_Angular_Librery in generator/dist/wos-api
 
 ### To create Service and Model in api
     . Create service path at src/swagger/services/<section>/<serviceName>.json

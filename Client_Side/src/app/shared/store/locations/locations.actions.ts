@@ -1,4 +1,4 @@
-import { RequestNewCity, RequestPublishCity, TaleEdition, NewCityTale, RequestGetPlaces, RequestNewPlace, RequestPublishPlace, NewPlaceTale, RequestGetPlace } from 'src/client-api';
+import { RequestNewCity, RequestPublishCity, TaleEdition, NewCityTale, RequestGetPlaces, RequestNewPlace, RequestPublishPlace, NewPlaceTale, RequestGetPlace } from 'wos-api';
 import { CityTabs, PlaceTabs } from '../../constants';
 
 export class GetAllCities {

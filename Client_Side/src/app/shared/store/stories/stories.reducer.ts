@@ -15,7 +15,7 @@ import {
     Chapter,
     RequestGetNpc,
     RequestGetChapter
-} from 'src/client-api';
+} from 'wos-api';
 import { GetAllNpcs, NewNpc, PublishNpc, UpdateNpc, GetNpcStory, UpdateChapter, PublishChapter, GetNpcData, GetChapterData } from './stories.actions';
 
 export interface StoriesStateModel {

@@ -1,4 +1,4 @@
-import { ReadFragment } from 'src/client-api';
+import { ReadFragment } from 'wos-api';
 
 export enum UsersRoles {
     W = 'Writer',

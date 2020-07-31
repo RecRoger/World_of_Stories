@@ -3,13 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Store, Select } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
-import { User, City, ReadFragment, RequestNewCity, RequestPublishCity, NewCityTale } from 'src/client-api';
+import { User, City, ReadFragment, RequestNewCity, RequestPublishCity, NewCityTale } from 'wos-api';
 import { GetAllCities, NewCity, PublishCity, EditCityStory, AddCityStory, DeleteCityStory, GetCityData } from 'src/app/shared/store/locations/locations.actions';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { Subscription } from 'rxjs';
 import { isValid } from 'src/app/shared/utils/commons';
 import { CityTabs } from 'src/app/shared/constants';
-import { TaleEdition } from 'src/client-api';
+import { TaleEdition } from 'wos-api';
 import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faChevronLeft, faChevronRight, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({

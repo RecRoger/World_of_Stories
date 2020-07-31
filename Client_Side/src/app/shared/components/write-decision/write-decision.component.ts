@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, Input, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Decision, DeciosionOption } from 'src/client-api';
+import { Decision, DeciosionOption } from 'wos-api';
 import { Subscription } from 'rxjs';
 import { isValid } from '../../utils/commons';
 import { SubjectSubscriber } from 'rxjs/internal/Subject';

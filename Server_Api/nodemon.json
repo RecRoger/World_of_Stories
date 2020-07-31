@@ -7,5 +7,5 @@
         "src/**/*.spect.ts",
         "src/swagger"
     ],
-    "exec": "ts-node ./src/index.ts"
+    "exec": "ts-node ./src/server.ts"
 }

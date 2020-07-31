@@ -17,6 +17,7 @@ class ChaptersRouter {
     constructor(server) {
         const router = express.Router();
         router.post('/', cors_1.default(), chapters_controller_1.chaptersController.getAllChapters);
+        router.post('/chapter', cors_1.default(), chapters_controller_1.chaptersController.getChapter);
         router.post('/update', cors_1.default(), chapters_controller_1.chaptersController.updateChapter);
         router.post('/delete', cors_1.default(), chapters_controller_1.chaptersController.deleteChapter);
         router.post('/publish', cors_1.default(), chapters_controller_1.chaptersController.publishChapter);

@@ -9,7 +9,7 @@
       "url": "https://github.com/RecRoger/World_of_Stories"
     }
   },
-  "host": "192.168.0.8:3000",
+  "host": "192.168.0.4:3000",
   "basePath": "/",
   "tags": [
     {

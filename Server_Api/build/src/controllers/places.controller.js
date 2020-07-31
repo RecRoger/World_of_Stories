@@ -22,14 +22,22 @@ class PlacesController {
                 console.log('*************** getCityPlaces *******************');
                 const { cityId, published } = req.body;
                 const cities = yield cities_model_1.default.findOne({ _id: cityId }, {
-                    description: 0,
-                    travel: 0,
+                    "palces.description": 0,
+                    "palces.entry": 0,
+                    "palces.events": 0
+                    // description: 0,
+                    // travel: 0
                 }).lean();
                 let places = (cities) ? cities.places : [];
                 const castPlaecs = places.map(city => {
-                    city.description = city.description.map(t => (Object.assign({}, t, { id: t._id })));
-                    city.entry = city.entry.map(t => (Object.assign({}, t, { id: t._id })));
-                    return Object.assign({}, city, { id: city._id });
+                    // city.description = city.description.map(t => ({ ...t, id: t._id }))
+                    // city.entry = city.entry.map(t => ({ ...t, id: t._id }))
+                    return {
+                        "id": city._id,
+                        "name": city.name,
+                        "publishDate": city.publishDate,
+                        "published": city.published,
+                    };
                 });
                 console.log('_____________________________________________________');
                 if (published)
@@ -58,7 +66,7 @@ class PlacesController {
                 const city = yield cities_model_1.default.findOne({ "places._id": req.body.id }, { places: 1 }).lean();
                 const places = (city) ? city.places : [];
                 const place = places.find(place => place._id == req.body.id);
-                const castPlace = place ? Object.assign({}, place, { id: place._id, description: place.description.map(t => (Object.assign({}, t, { id: t._id }))), travel: place.entry.map(t => (Object.assign({}, t, { id: t._id }))) }) : null;
+                const castPlace = place ? Object.assign({}, place, { id: place._id, description: place.description.map(t => (Object.assign({}, t, { id: t._id }))), entry: place.entry.map(t => (Object.assign({}, t, { id: t._id }))) }) : null;
                 console.log('> respnse:' + ((place) ? place.name : city));
                 console.log('_____________________________________________________');
                 res.json({
@@ -107,7 +115,7 @@ class PlacesController {
                 const city = yield cities_model_1.default.findById({ _id: cityId }, {
                     "places": 1
                 }).lean();
-                const place = (city) ? city.places.slice(1)[0] : null;
+                const place = (city) ? city.places.slice(-1)[0] : null;
                 const castPlace = place ? Object.assign({}, place, { id: place._id, description: place.description.map(t => (Object.assign({}, t, { id: t._id }))), travel: place.entry.map(t => (Object.assign({}, t, { id: t._id }))) }) : null;
                 console.log('> response: ' + ((place) ? place.name : 'Not Found'));
                 console.log('_____________________________________________________');
@@ -206,7 +214,7 @@ class PlacesController {
                     "places.$[elem]": 1
                 }, { arrayFilters: [{ "elem._id": placeId }] }).lean();
                 const place = (city) ? city.places[0] : null;
-                const newDescription = (place) ? place.description.slice(1)[0] : null;
+                const newDescription = (place) ? place.description.slice(-1)[0] : null;
                 console.log('> response' + ((newDescription) ? 'OK' : 'Not Found'));
                 console.log('_____________________________________________________');
                 res.json({
@@ -310,7 +318,7 @@ class PlacesController {
                     "places.$[elem]": 1
                 }, { arrayFilters: [{ "elem._id": placeId }] }).lean();
                 const place = (city) ? city.places[0] : null;
-                const newEntry = (place) ? place.entry.slice(1)[0] : null;
+                const newEntry = (place) ? place.entry.slice(-1)[0] : null;
                 console.log('> response: ' + ((edition.nModified && newEntry) ? 'OK' : 'Not Found'));
                 console.log('_____________________________________________________');
                 res.json({

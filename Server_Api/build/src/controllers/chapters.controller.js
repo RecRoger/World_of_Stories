@@ -33,10 +33,51 @@ class ChaptersController {
                 if (published && npcs) {
                     filterChapters = (npcs.chapters) ? npcs.chapters.filter(npc => npc.published == true) : [];
                 }
-                const castChapters = (filterChapters) ? filterChapters.map((c) => (Object.assign({}, c, { id: c._id }))) : null;
+                const castChapters = (filterChapters) ? filterChapters.map((c) => ({
+                    // ...c,
+                    id: c._id,
+                    name: c.name,
+                    published: c.published,
+                    author: c.author,
+                    writeDate: c.writeDate,
+                    publishDate: c.publishDate,
+                })) : null;
                 console.log('_____________________________________________________');
                 res.json({
                     "data": { "chapters": castChapters }
+                });
+            }
+            catch (err) {
+                console.log('Error ---->', err);
+                console.log('_____________________________________________________');
+                res.json({
+                    "error": err
+                });
+            }
+        });
+    }
+    // get all npcs of a places
+    getChapter(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log('.');
+                console.log('________________________________________________');
+                console.log('*************** getChapter *******************');
+                const { id } = req.body;
+                console.log('> chapterId:', id);
+                const npcs = yield npcs_model_1.default.findOne({
+                    "chapters._id": id,
+                }, {
+                    title: 1,
+                    chapters: 1
+                }).lean();
+                console.log('> story name:', npcs && npcs.title);
+                let filterChapters = (npcs) ? npcs.chapters : [];
+                const chapter = filterChapters && filterChapters.find(n => n._id == id);
+                const castChapter = (chapter) ? Object.assign({}, chapter, { id: chapter._id, usersDecisions: Object.assign({}, chapter.usersDecisions, { options: chapter.usersDecisions && chapter.usersDecisions.options.map(o => (Object.assign({}, o, { id: o._id }))) }) }) : null;
+                console.log('_____________________________________________________');
+                res.json({
+                    "data": { "chapter": castChapter }
                 });
             }
             catch (err) {
@@ -81,15 +122,21 @@ class ChaptersController {
                     setUpdates['chapters.$.usersDecisions.decisionType'] = chapter.usersDecisions.decisionType;
                     setUpdates['chapters.$.usersDecisions.amount'] = chapter.usersDecisions.amount;
                     setUpdates['chapters.$.usersDecisions.item'] = chapter.usersDecisions.item;
-                    pullUpdates['chapters.$.usersDecisions.options'] = [];
                     // las Decisiones generan otros capitulos 
                     for (const option of (chapter.usersDecisions.options)) {
                         // la edicione tiene id, significa que edito existente.
                         if (option["id"]) {
-                            setUpdates['chapters.$.usersDecisions.option.$[elem].description'] = option.description;
-                            setUpdates['chapters.$.usersDecisions.option.$[elem].name'] = option.name;
-                            setUpdates['chapters.$.usersDecisions.option.$[elem].value'] = option.value;
-                            arrayFilters = { arrayFilters: [{ "elem._id": option.id }] };
+                            const i = chapter.usersDecisions.options.indexOf(option);
+                            console.log('> option vieja', i);
+                            setUpdates['chapters.$.usersDecisions.options.$[elem' + i + '].description'] = option.description;
+                            setUpdates['chapters.$.usersDecisions.options.$[elem' + i + '].name'] = option.name;
+                            setUpdates['chapters.$.usersDecisions.options.$[elem' + i + '].value'] = option.value;
+                            if (!arrayFilters) {
+                                arrayFilters = { arrayFilters: [{ ["elem" + i + "._id"]: option.id }] };
+                            }
+                            else {
+                                arrayFilters.arrayFilters.push({ ["elem" + i + "._id"]: option.id });
+                            }
                         }
                         else {
                             console.log('> new option');
@@ -111,6 +158,9 @@ class ChaptersController {
                                 }
                                 console.log('> new chapterId: ', option.value);
                             }
+                            if (!pullUpdates['chapters.$.usersDecisions.options']) {
+                                pullUpdates['chapters.$.usersDecisions.options'] = [];
+                            }
                             pullUpdates['chapters.$.usersDecisions.options'].push({
                                 "description": option.description,
                                 "name": option.name,
@@ -131,7 +181,9 @@ class ChaptersController {
                     "chapters": 1
                 }).lean();
                 // console.log("> capitulos", findChapter)
-                const castChapter = findChapter && findChapter.chapters ? findChapter.chapters.find(c => c._id === chapter.id) : null;
+                const castChapter = (findChapter && findChapter.chapters) ? findChapter.chapters.find(c => c._id == chapter.id) : null;
+                console.log('> response: ', castChapter && castChapter.name);
+                console.log('_____________________________________________________');
                 res.json({
                     "data": { chapter: castChapter ? Object.assign({}, castChapter, { id: castChapter._id }) : null }
                 });
@@ -203,7 +255,7 @@ class ChaptersController {
                 console.log('> chapterEdition: ', chapterEdition);
                 const edition = yield npcs_model_1.default.updateOne({ "chapters._id": id }, {
                     $set: {
-                        "chapters.$[elem].usersDecisions.$[choice].published": published
+                        "chapters.$[elem].usersDecisions.options.$[choice].published": published
                     }
                 }, {
                     arrayFilters: [
@@ -215,10 +267,11 @@ class ChaptersController {
                         }
                     ]
                 });
-                console.log('> response: ' + ((edition.nModified) ? 'OK' : 'not Found'));
+                console.log('> option Edition', edition);
+                console.log('> response: ' + ((chapterEdition.nModified) ? 'OK' : 'not Found'));
                 console.log('_____________________________________________________');
                 res.json({
-                    "data": (edition.nModified) ? 'OK' : 'error'
+                    "data": (chapterEdition.nModified) ? 'OK' : 'error'
                 });
             }
             catch (err) {

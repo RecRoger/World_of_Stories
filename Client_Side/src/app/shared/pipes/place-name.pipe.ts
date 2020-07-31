@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { GetAllCities, GetAllPlaces } from '../store/locations/locations.actions';
 import { LocationState } from '../store/locations/locations.reducer';
-import { City, Place } from 'src/client-api';
+import { City, Place } from 'wos-api';
 
 @Pipe({
   name: 'placeName'

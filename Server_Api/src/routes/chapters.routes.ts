@@ -3,7 +3,7 @@ import { chaptersController } from './../controllers/chapters.controller'
 import cors from 'cors'
 
 class ChaptersRouter {
-    constructor(server: express.Express){
+    constructor(server: express.Application){
         const router = express.Router();
 
         router.post('/', cors(), chaptersController.getAllChapters);

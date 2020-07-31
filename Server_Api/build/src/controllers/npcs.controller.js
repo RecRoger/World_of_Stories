@@ -36,11 +36,13 @@ class NpcsController {
                     const npcs = yield npcs_model_1.default.find({
                         _id: { $in: ids },
                     }, {
-                        // decision: 0,
-                        // rejected: 0,
-                        //items:0,
-                        // title: 0,
-                        chapters: 0,
+                        // decision:_id
+                        name: 1,
+                        npcType: 1,
+                        author: 1,
+                        published: 1,
+                        writeDate: 1,
+                        publishDate: 1,
                     }).lean();
                     filterNpcs = npcs || [];
                     if (published) {
@@ -83,7 +85,7 @@ class NpcsController {
                     // "chapters.defeat": 0,
                     // "chapters.item": 0,
                 }).lean();
-                const castNpc = npc ? Object.assign({}, npc, { id: npc._id, description: npc.description ? Object.assign({}, npc.description, { id: npc.description._id }) : {}, meeting: npc.meeting ? Object.assign({}, npc.meeting, { id: npc.meeting._id }) : {} }) : null;
+                const castNpc = npc ? Object.assign({}, npc, { id: npc._id, description: npc.description ? Object.assign({}, npc.description, { id: npc.description._id }) : {}, meeting: npc.meeting ? Object.assign({}, npc.meeting, { id: npc.meeting._id }) : {}, rejected: npc.rejected ? Object.assign({}, npc.rejected, { id: npc.rejected._id }) : {} }) : null;
                 console.log('> response:' + ((npc) ? npc.name : npc));
                 console.log('_____________________________________________________');
                 res.json({

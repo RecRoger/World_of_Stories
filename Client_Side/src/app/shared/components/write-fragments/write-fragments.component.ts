@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ReadFragment } from 'src/client-api';
+import { ReadFragment } from 'wos-api';
 import { Subscription, timer } from 'rxjs';
 import { AnimationsTypes } from '../../constants';
 import { faCogs } from '@fortawesome/free-solid-svg-icons';

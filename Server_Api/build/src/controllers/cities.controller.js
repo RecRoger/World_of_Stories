@@ -23,12 +23,15 @@ class CitiesController {
                 const { published } = req.body;
                 const filter = (published) ? { published: true } : {};
                 const cities = yield cities_model_1.default.find(filter, {
-                    places: 0
+                    '_id': 1,
+                    'name': 1,
+                    'published': 1,
+                    'publishDate': 1
                 }).lean();
                 const castCities = cities.map(city => {
                     city.id = city._id;
-                    city.description = city.description.map(t => (Object.assign({}, t, { id: t._id })));
-                    city.travel = city.travel.map(t => (Object.assign({}, t, { id: t._id })));
+                    // city.description = city.description.map(t => ({ ...t, id: t._id }))
+                    // city.travel = city.travel.map(t => ({ ...t, id: t._id }))
                     return city;
                 });
                 console.log('_____________________________________________________');
@@ -54,11 +57,9 @@ class CitiesController {
                 console.log('*************** getCity **************************');
                 console.log('> cityId: ' + req.body.id);
                 const city = yield cities_model_1.default.findById({ _id: req.body.id }, {
-                    "places.description": 0,
-                    "places.entry": 0,
-                    "places.events": 0
+                    "places": 0,
                 }).lean();
-                const castCity = city ? Object.assign({}, city, { id: city._id, description: city.description.map(t => (Object.assign({}, t, { id: t._id }))), travel: city.travel.map(t => (Object.assign({}, t, { id: t._id }))), places: city.places.map(t => (Object.assign({}, t, { id: t._id }))) }) : null;
+                const castCity = city ? Object.assign({}, city, { id: city._id, description: city.description.map(t => (Object.assign({}, t, { id: t._id }))), travel: city.travel.map(t => (Object.assign({}, t, { id: t._id }))) }) : null;
                 console.log('> response:' + ((city) ? city.name : city));
                 console.log('_____________________________________________________');
                 res.json({

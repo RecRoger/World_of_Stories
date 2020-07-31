@@ -67,8 +67,9 @@ const NpcsSchema = new mongoose_1.Schema({
                     }]
             },
             endLocation: {
-                locationType: String,
-                locationId: String // id del lugar de retorno del capiulo
+                endChapter: Boolean,
+                cityId: String,
+                placeId: String // id del lugar de retorno del capiulo
             },
             items: [String],
             published: Boolean,

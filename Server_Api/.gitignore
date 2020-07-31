@@ -1,2 +1,3 @@
 node_modules
 src/swagger/generator/workspace
+src/public

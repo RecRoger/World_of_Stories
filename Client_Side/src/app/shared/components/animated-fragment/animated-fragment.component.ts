@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ChangeDetectorRef, OnChanges, ElementRef, ViewChild, Output, EventEmitter, HostListener, OnDestroy } from '@angular/core';
-import { ReadFragment } from 'src/client-api';
+import { ReadFragment } from 'wos-api';
 import { TextAnimation } from 'ngx-teximate';
 import { rotateInDownLeft, fadeInDown, bounceInDown, bounceIn, fadeInLeft, fadeInRight } from 'ng-animate';
 import { trigger, transition, useAnimation, AnimationOptions } from '@angular/animations';

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef, OnDestroy, HostListener } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
-import { City } from 'src/client-api';
+import { City } from 'wos-api';
 import { GetCityData } from 'src/app/shared/store/locations/locations.actions';
 import { MatAccordion } from '@angular/material/expansion';
 import { faChevronUp, faChevronRight } from '@fortawesome/free-solid-svg-icons';
