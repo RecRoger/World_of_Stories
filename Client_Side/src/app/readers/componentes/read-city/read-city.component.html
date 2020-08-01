@@ -1,7 +1,10 @@
-<div class="app-main d-flex flex-column h-100 col-12 col-md-4 mx-md-auto" #scroll (scroll)="scrollCit($event)" *ngIf="city">
+<ng-container *ngIf="city">
     <div class="description-tale">
         <div>
-            <h2><app-animated-fragment [tale]="[{text: city.name, animation: 'title'}]" (finish)="titleAnimationEnd = true;"></app-animated-fragment></h2>
+            <h2>
+                <app-animated-fragment [tale]="[{text: city.name, animation: 'title'}]"
+                    (finish)="titleAnimationEnd = true;"></app-animated-fragment>
+            </h2>
         </div>
 
         <ng-container *ngIf="city.travel && titleAnimationEnd">
@@ -10,6 +13,11 @@
                 </app-animated-fragment>
                 <!-- <p class="text-muted text-right"> - {{travel.author}}</p> -->
             </div>
+        </ng-container>
+
+        <ng-container *ngIf="showPlaces">
+            <app-animated-fragment [tale]="[{text: '¿A dónde te gustaria ir?', animation: 'defualt'}]">
+            </app-animated-fragment>
         </ng-container>
 
         <ng-container *ngIf="selectedPlace">
@@ -29,11 +37,11 @@
 
     </div>
 
-</div>
+</ng-container>
 <ng-container *ngIf="showPlaces && atBottom && (!selectedPlace || enterBtn)">
     <div class="city-selector border-top" *ngIf="(places$ |async) as places">
         <ng-container *ngFor="let place of places">
-            <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" (click)="selectPlace(place)">
+            <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" (click)="selectPlace(place.id)">
                 <div class="h5 font-weight-normal">
                     {{place.name}}
                 </div>
@@ -45,5 +53,10 @@
                 </div>
             </div>
         </ng-container>
+        <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" *ngIf="places.length === 0" (click)="leaveCity()">
+            <div class="h5 font-weight-normal">
+                La ciudad aun esta en construccion, no hay nada por hacer.
+            </div>
+        </div>
     </div>
 </ng-container>

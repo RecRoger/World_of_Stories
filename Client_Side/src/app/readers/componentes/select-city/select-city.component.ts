@@ -8,6 +8,7 @@ import { faChevronUp, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { SetReadFragment, UpdateCharacterLocation } from 'src/app/shared/store/users/users.actions';
 import { ScrollAnimationService } from 'src/app/shared/services/scroll-animation.service';
+import { isScrollAtBottom } from 'src/app/shared/utils/commons';
 
 @Component({
   selector: 'app-select-city',
@@ -19,7 +20,6 @@ export class SelectCityComponent implements OnInit, OnDestroy {
   @Select(LocationState.getCities) cities$: Observable<City[]>;
   cities: City[] = [];
 
-  @ViewChild('scroll', { static: false }) private scrollDiv: ElementRef;
   loading = [];
   enterBtn = false;
 
@@ -29,6 +29,7 @@ export class SelectCityComponent implements OnInit, OnDestroy {
   selectedCity: City;
 
   subscriptions: Subscription[] = [];
+  atBottom = false;
 
 
   constructor(private store: Store, private cd: ChangeDetectorRef, private scrollService: ScrollAnimationService) { }
@@ -37,31 +38,22 @@ export class SelectCityComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.cities$.subscribe(list => {
         this.cities = list;
-        this.cities.forEach(async city => {
-          if (!city.description) {
-
-            this.loading.push(city.id);
-            await this.store.dispatch(new GetCityData({ cityId: city.id })).toPromise();
-            this.loading = this.loading.filter(id => id !== city.id);
-          }
-        });
       }),
+      this.scrollService.scrollAtBottom$.subscribe(bottom => this.atBottom = bottom)
     );
   }
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
-  scrollCityDescription($event) {
-    const element = this.scrollDiv.nativeElement;
-    this.scrollService.scrollAtBottom$.next(element.scrollHeight - element.scrollTop === element.clientHeight);
-  }
 
-  async selectCity(city) {
-    if (!this.selectedCity || city.id !== this.selectedCity.id) {
+  async selectCity(cityId) {
+    if (!this.selectedCity || cityId !== this.selectedCity.id) {
       this.enterBtn = false;
+      this.loading.push(cityId);
+      await this.store.dispatch(new GetCityData({ cityId })).toPromise();
+      const city = this.cities.find(c => c.id === cityId);
       this.selectedCity = city;
-      this.scrollDiv.nativeElement.scrollTop = 0;
-      this.scrollService.scrollElement$.next(this.scrollDiv.nativeElement);
+      this.loading.filter(i => i !== cityId);
     } else {
       this.selectedCity = null;
       this.cd.markForCheck();

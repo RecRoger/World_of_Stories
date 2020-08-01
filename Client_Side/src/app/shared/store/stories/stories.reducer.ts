@@ -38,7 +38,7 @@ export class StoriesState {
     @Selector()
     static getNpcs(state: StoriesStateModel) {
         return (placeId: string): Npc[] => {
-            return state[placeId];
+            return state[placeId] || [];
         };
     }
     @Selector()
@@ -95,9 +95,9 @@ export class StoriesState {
             const { placeId, npcId, force } = action.payload;
 
             const place = ctx.getState()[placeId];
-            const npc = ctx.getState()[placeId].find(n => n.id === npcId);
+            const npc = place && place.find(n => n.id === npcId);
 
-            if (!npc.decision || !npc.description || !npc.rejected || !npc.meeting || action.payload.force) {
+            if (!npc || !npc.decision || !npc.description || !npc.rejected || !npc.meeting || action.payload.force) {
 
 
                 const req: RequestGetNpc = {

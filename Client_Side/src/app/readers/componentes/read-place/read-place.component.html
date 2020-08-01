@@ -1,7 +1,10 @@
-<div class="app-main d-flex flex-column h-100 col-12 col-md-4 mx-md-auto" #scroll (scroll)="scrollPlace($event)" *ngIf="place">
+<ng-container *ngIf="place">
     <div class="description-tale">
         <div>
-            <h2><app-animated-fragment [tale]="[{text: place.name, animation: 'title'}]" (finish)="titleAnimationEnd = true;"></app-animated-fragment></h2>
+            <h2>
+                <app-animated-fragment [tale]="[{text: place.name, animation: 'title'}]"
+                    (finish)="titleAnimationEnd = true;"></app-animated-fragment>
+            </h2>
         </div>
 
         <ng-container *ngIf="place.entry && titleAnimationEnd">
@@ -10,6 +13,11 @@
                 </app-animated-fragment>
                 <!-- <p class="text-muted text-right"> - {{travel.author}}</p> -->
             </div>
+        </ng-container>
+
+        <ng-container *ngIf="showNpcs">
+            <app-animated-fragment [tale]="[{text: '¿Qué te gustaria ver?', animation: 'defualt'}]">
+            </app-animated-fragment>
         </ng-container>
 
         <ng-container *ngIf="selectedNpc">
@@ -29,11 +37,11 @@
 
     </div>
 
-</div>
+</ng-container>
 <ng-container *ngIf="showNpcs && atBottom && (!selectedNpc || visitBtn)">
     <div class="city-selector border-top" *ngIf="(npcs$ |async) as npcs">
         <ng-container *ngFor="let npc of npcs">
-            <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" (click)="selectNpc(npc)">
+            <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" (click)="selectNpc(npc.id)">
                 <div class="h5 font-weight-normal">
                     {{npc.name}}
                 </div>
@@ -45,5 +53,19 @@
                 </div>
             </div>
         </ng-container>
+
+        <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" *ngIf="npcs.length <= 0">
+            <div class="h5 font-weight-normal">
+                No mucho para hacer
+            </div>
+        </div>
+        <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" (click)="leavPlace()">
+            <div class="h5 font-weight-normal">
+                Dejar Lugar
+            </div>
+            <div class="ml-auto mt-auto">
+                <fa-icon [icon]="faDown" size="xl"></fa-icon>
+            </div>
+        </div>
     </div>
 </ng-container>

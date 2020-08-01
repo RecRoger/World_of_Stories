@@ -30,7 +30,8 @@ import {
   RequestDeleteCharacter,
   ResponseDeleteCharacter,
   RequestUpdateCharacter,
-  RequestReadFragment
+  RequestReadFragment,
+  CharacterLocation
 } from 'wos-api';
 import { patch, updateItem, append, removeItem } from '@ngxs/store/operators';
 
@@ -60,6 +61,10 @@ export class UserState {
   @Selector()
   static getCharacter(state: UserStateModel): Character {
     return state.character;
+  }
+  @Selector()
+  static getCharacterLocation(state: UserStateModel): CharacterLocation {
+    return state.character.location;
   }
 
   @Action(LogonUser)

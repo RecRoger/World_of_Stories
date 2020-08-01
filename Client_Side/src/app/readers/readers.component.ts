@@ -3,7 +3,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { Store, Actions, ofActionSuccessful, Select } from '@ngxs/store';
 import { GetAllCities } from '../shared/store/locations/locations.actions';
 import { Subscription } from 'rxjs';
-import { SelectCharacter, UpdateCharacterLocation } from '../shared/store/users/users.actions';
+import { SelectCharacter } from '../shared/store/users/users.actions';
 import { Router } from '@angular/router';
 import { UserState } from '../shared/store/users/users.reducer';
 import { Character } from 'wos-api';
@@ -33,14 +33,8 @@ export class ReadersComponent implements OnInit, OnDestroy {
       this.character$.subscribe((character) => {
         this.character = character;
       }),
-      this.actions$.pipe(ofActionSuccessful(SelectCharacter, UpdateCharacterLocation)).subscribe(() => {
-        if (!this.character.location || !this.character.location.cityId) {
-          this.router.navigate(['/readers/select']);
-        } else if (!this.character.location.placeId) {
-          this.router.navigate(['/readers/city']);
-        } else if (!this.character.location.npcId) {
-          this.router.navigate(['/readers/place']);
-        }
+      this.actions$.pipe(ofActionSuccessful(SelectCharacter)).subscribe(() => {
+          this.router.navigate(['/readers/story']);
       })
     );
   }

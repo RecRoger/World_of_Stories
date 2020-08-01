@@ -34,7 +34,9 @@ export class LocationState {
   @Selector()
   static getPlaces(state: LocationsStateModel) {
     return (cityId: string): Place[] => {
-      return cityId ? state.cities.find(city => city.id === cityId).places : [];
+      const cities = state.cities;
+      const city = cityId ? state.cities.find(c => c.id === cityId) : null;
+      return city ? city.places : [];
     };
   }
 
@@ -84,8 +86,9 @@ export class LocationState {
       const { cityId, force } = action.payload;
       const city = ctx.getState().cities.find(c => c.id === cityId);
 
-      if (!city.description || city.description.length <= 0 &&
-        !city.travel || city.travel.length <= 0 || force) {
+      if (city && (
+        !city.description || city.description.length <= 0 ||
+        !city.travel || city.travel.length <= 0 || force)) {
 
 
         const req: RequestGetCity = { id: cityId };
@@ -363,12 +366,8 @@ export class LocationState {
       };
       const city = ctx.getState().cities.find(c => c.id === req.cityId);
       const places = city && city.places;
-      const loading = ctx.getState().placeLoading;
 
-      if (!loading && city && (!places || places.length === 0 || action.payload.force)) {
-        ctx.patchState({
-          placeLoading: true
-        });
+      if (city && (!places || places.length === 0 || action.payload.force)) {
         const resp = await this.locationsService.getPlaces(req).toPromise();
 
         if (resp && resp.data && resp.data.places) {

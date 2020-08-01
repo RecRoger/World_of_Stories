@@ -6,6 +6,7 @@ import { trigger, transition, useAnimation, AnimationOptions } from '@angular/an
 import { AnimationsTypes } from '../../constants';
 import { ScrollAnimationService } from '../../services/scroll-animation.service';
 import { Subscription } from 'rxjs';
+import { isScrollAtBottom } from '../../utils/commons';
 
 @Component({
   selector: 'app-animated-fragment',
@@ -42,12 +43,15 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
   skipedParagrafs = [];
   pendingIndex = null;
 
+  atBottom = false;
+
   subscription: Subscription[] = [];
   scrollElement: any;
 
   ngOnInit() {
     this.subscription.push(
       this.scrollService.scrollAtBottom$.subscribe(bottom => {
+        this.atBottom = bottom;
         if (bottom) {
           if (this.pendingIndex) {
             this.finishAnimation(this.pendingIndex);
@@ -78,12 +82,10 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
 
   finishAnimation(i) {
     if (!this.scrollElement ||
-      (this.scrollElement.scrollHeight - this.scrollElement.scrollTop === this.scrollElement.clientHeight) ||
-      (this.scrollElement.scrollHeight - this.scrollElement.scrollTop === this.scrollElement.clientHeight - 1) ||
-      (this.scrollElement.scrollHeight - this.scrollElement.scrollTop === this.scrollElement.clientHeight + 1)
+      isScrollAtBottom(this.scrollElement)
     ) {
-      if (this.tale[i + 1]) {
-        this.scrollService.scrollAtBottom$.next(false);
+      if (this.tale[i + 1] && this.tale[i + 1].text) {
+        // this.scrollService.scrollAtBottom$.next(false);
         this.shownFragments.push({
           fragment: this.tale[i + 1],
           options: this.getAnimationOptions(this.tale[i + 1].animation)

@@ -6,6 +6,7 @@ import { ReadersHomeComponent } from './componentes/readers-home/readers-home.co
 import { SelectCityComponent } from './componentes/select-city/select-city.component';
 import { ReadCityComponent } from './componentes/read-city/read-city.component';
 import { ReadPlaceComponent } from './componentes/read-place/read-place.component';
+import { ReadStoryContainerComponent } from './containers/read-story-container/read-story-container.component';
 
 const routes: Routes = [
     {
@@ -17,19 +18,9 @@ const routes: Routes = [
                 component: ReadersHomeComponent
             },
             {
-                path: 'select',
-                component: SelectCityComponent
-            },
-            {
-                path: 'city',
-                component: ReadCityComponent
-
-            },
-            {
-                path: 'place',
-                component: ReadPlaceComponent
-
-            },
+                path: 'story',
+                component: ReadStoryContainerComponent
+            }
         ]
     }
 ];

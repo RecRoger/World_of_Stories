@@ -1,16 +1,17 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
-import { Character, Place, Npc } from 'wos-api';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef, Input } from '@angular/core';
+import { Character, Place, Npc, City } from 'wos-api';
 import { Select, Store } from '@ngxs/store';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { map } from 'rxjs/operators';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
-import { faChevronUp, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronUp, faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { ScrollAnimationService } from 'src/app/shared/services/scroll-animation.service';
-import { GetPlaceData } from 'src/app/shared/store/locations/locations.actions';
+import { GetPlaceData, GetCityData } from 'src/app/shared/store/locations/locations.actions';
 import { GetNpcData, GetAllNpcs } from 'src/app/shared/store/stories/stories.actions';
-import { SetReadFragment } from 'src/app/shared/store/users/users.actions';
+import { SetReadFragment, UpdateCharacterLocation } from 'src/app/shared/store/users/users.actions';
+import { isScrollAtBottom } from 'src/app/shared/utils/commons';
 
 @Component({
   selector: 'app-read-place',
@@ -19,21 +20,20 @@ import { SetReadFragment } from 'src/app/shared/store/users/users.actions';
 })
 export class ReadPlaceComponent implements OnInit, OnDestroy {
 
-  @Select(UserState.getCharacter) character$: Observable<Character>;
+
   @Select(LocationState.getPlaces) allPlaces$: Observable<any>;
   get places$(): Observable<Place[]> {
-    return this.allPlaces$.pipe(map(filterFn => filterFn(this.cityId)));
+    return this.allPlaces$.pipe(map(filterFn => filterFn(this.city.id)));
   }
+
   @Select(StoriesState.getNpcs) allNpcs$: Observable<any>;
   get npcs$(): Observable<Npc[]> {
     return this.allNpcs$.pipe(map(filterFn => filterFn(this.place && this.place.id)));
   }
+  npcs: Npc[] = [];
 
-  @ViewChild('scroll', { static: false }) private scrollDiv: ElementRef;
-
-  character: Character;
-  cityId: string;
-  place: Place;
+  @Input() city: City;
+  @Input() place: Place;
 
   loading: string[] = [];
 
@@ -42,6 +42,7 @@ export class ReadPlaceComponent implements OnInit, OnDestroy {
   visitBtn = false;
 
   faUp = faChevronUp;
+  faDown = faChevronDown;
   faRight = faChevronRight;
 
   selectedNpc: Npc;
@@ -52,50 +53,29 @@ export class ReadPlaceComponent implements OnInit, OnDestroy {
   constructor(private store: Store, private cd: ChangeDetectorRef, private scrollService: ScrollAnimationService) { }
 
   ngOnInit() {
+    this.store.dispatch(new GetAllNpcs({ placeId: this.place.id, published: false }));
     this.subscriptions.push(
-      this.character$.subscribe(char => {
-        this.character = char;
-        this.cityId = this.character.location.cityId;
-      }),
-      this.places$.subscribe(list => {
-        const places = list;
-        this.place = places.find(c => c.id === this.character.location.placeId);
-        if (this.place) {
-          this.store.dispatch(new GetPlaceData({ cityId: this.cityId, placeId: this.place.id }));
-          this.store.dispatch(new GetAllNpcs({ placeId: this.place.id, published: false }));
-        }
-      }),
-      this.npcs$.subscribe(list => {
-        list ? list.forEach(async npc => {
-          if (!npc.description) {
-            this.loading.push(npc.id);
-            await this.store.dispatch(
-              new GetNpcData({ npcId: npc.id, placeId: this.character.location.placeId })
-            ).toPromise();
-            this.loading = this.loading.filter(id => id !== npc.id);
-          }
-        }) : null;
-      }),
-
+      this.scrollService.scrollAtBottom$.subscribe(value => { this.atBottom = value; this.cd.markForCheck(); }),
+      this.npcs$.subscribe(n => this.npcs = n)
     );
   }
   ngOnDestroy() {
     this.subscriptions.forEach(subs => subs.unsubscribe());
   }
 
-  scrollPlace($event) {
-    const element = this.scrollDiv.nativeElement;
-    this.atBottom = element.scrollHeight - element.scrollTop === element.clientHeight;
-    this.scrollService.scrollAtBottom$.next(element.scrollHeight - element.scrollTop === element.clientHeight);
-  }
+  async selectNpc(npcId) {
+    if (!this.selectedNpc || npcId !== this.selectedNpc.id) {
 
-  async selectNpc(npc) {
-    if (!this.selectedNpc || npc.id !== this.selectedNpc.id) {
+      this.loading.push(npcId);
+      await this.store.dispatch(new GetNpcData({ placeId: this.place.id, npcId })).toPromise();
+
       this.visitBtn = false;
+      const npc = this.npcs.find(n => n.id === npcId);
       this.selectedNpc = npc;
+      this.loading = this.loading.filter(id => id !== npcId);
       this.cd.markForCheck();
-      // this.scrollDiv.nativeElement.scrollTop = 0;
-      // this.scrollService.scrollElement$.next(this.scrollDiv.nativeElement);
+
+
     } else {
       this.selectedNpc = null;
       this.cd.markForCheck();
@@ -119,8 +99,11 @@ export class ReadPlaceComponent implements OnInit, OnDestroy {
   }
 
   enterPlace(npcId) {
-    // this.store.dispatch(new UpdateCharacterLocation({ cityId: this.city.id, placeId }));
-    console.log('entrar en', npcId);
+    this.store.dispatch(new UpdateCharacterLocation({ cityId: this.city.id, placeId: this.place.id, npcId }));
+    // console.log('entrar en', npcId);
+  }
+  leavPlace() {
+    this.store.dispatch(new UpdateCharacterLocation({ cityId: this.city.id, placeId: null }));
   }
 
 }

@@ -14,3 +14,10 @@ export function isValid(form: FormGroup): boolean {
 
     return (validCount === controls.length);
 }
+
+export function isScrollAtBottom(scrollElement) {
+    const rest = scrollElement.scrollHeight - scrollElement.scrollTop - scrollElement.clientHeight;
+    return (rest === 0) ||
+        (rest >= -2.5 && rest <= 2.5);
+}
+

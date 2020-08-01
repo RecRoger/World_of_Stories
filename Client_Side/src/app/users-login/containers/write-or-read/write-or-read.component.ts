@@ -8,7 +8,9 @@ import { AddUserRoll } from 'src/app/shared/store/users/users.actions';
 import { User, RequestSetRol } from 'wos-api';
 import { Subscription } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { SetInfo } from 'src/app/shared/store/general/general.actions';
+import { SetInfo, SetError } from 'src/app/shared/store/general/general.actions';
+
+const WritersCode = 'am I a Writer?';
 
 @Component({
   selector: 'app-write-or-read',
@@ -31,6 +33,7 @@ export class WriteOrReadComponent implements OnInit, OnDestroy {
   loading = false;
   errorMsg = '';
 
+  writerPass = '';
 
   subscriptions: Subscription[] = [];
   ngOnInit() {
@@ -70,13 +73,14 @@ export class WriteOrReadComponent implements OnInit, OnDestroy {
         );
       }
     } else {
-      if (!isMobile) {
-        this.store.dispatch(
-          new SetInfo('La experience de lector esta pensada para dispositivos móviles.')
-        );
-      }
       if (roles.includes(UsersRoles.R)) {
-        this.startActivity(activity);
+        if (!isMobile) {
+          this.store.dispatch(
+            new SetInfo('La experience de lector esta pensada para dispositivos móviles.')
+          );
+        } else {
+          this.startActivity(activity);
+        }
       } else {
         this.rolConfirmation = 'R';
       }
@@ -84,16 +88,21 @@ export class WriteOrReadComponent implements OnInit, OnDestroy {
   }
 
   async addRol(rol) {
-    this.rolConfirmation = '';
-    this.loading = true;
-    this.cd.markForCheck();
-    const data: RequestSetRol = {
-      id: this.user.id,
-      rol: (rol === 'W') ? UsersRoles.W : UsersRoles.R
-    };
-    await this.store.dispatch(new AddUserRoll(data)).toPromise();
-    this.startActivity((rol === 'W') ? true : false);
-    this.loading = false;
+    if (rol === UsersRoles.R || (this.writerPass === WritersCode)) {
+      this.rolConfirmation = '';
+      this.loading = true;
+      this.cd.markForCheck();
+      const data: RequestSetRol = {
+        id: this.user.id,
+        rol: (rol === 'W') ? UsersRoles.W : UsersRoles.R
+      };
+      await this.store.dispatch(new AddUserRoll(data)).toPromise();
+      this.startActivity((rol === 'W') ? true : false);
+      this.loading = false;
+    } else {
+      this.writerPass = '';
+      this.store.dispatch(new SetError('Codigo invalido'));
+    }
     this.cd.markForCheck();
   }
 

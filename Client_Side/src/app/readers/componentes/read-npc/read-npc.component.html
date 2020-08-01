@@ -1,0 +1,68 @@
+<ng-container *ngIf="npc">
+    <div class="description-tale">
+        <div>
+            <h2>
+                <app-animated-fragment [tale]="[{text: npc.name, animation: 'title'}]"
+                    (finish)="titleAnimationEnd = true;"></app-animated-fragment>
+            </h2>
+        </div>
+        <ng-container *ngIf="npc.meeting && titleAnimationEnd">
+            <div class="mt-3" *ngIf="(npc.meeting) as meeting">
+                <app-animated-fragment [tale]="meeting.tale" (finish)="finishMeeting(meeting.id)">
+                </app-animated-fragment>
+                <!-- <p class="text-muted text-right"> - {{travel.author}}</p> -->
+            </div>
+        </ng-container>
+
+        <!-- <ng-container *ngIf="showNpcs">
+            <app-animated-fragment [tale]="[{text: '¿Qué te gustaria ver?', animation: 'defualt'}]">
+            </app-animated-fragment>
+        </ng-container> -->
+
+        <ng-container *ngIf="selectedOption">
+            <div class="mt-2 pt-2 border-left pl-3" *ngIf="(selectedOption.description) as description">
+                <app-animated-fragment [tale]="[{text: description, animation: 'default'}]" (finish)="showEnter()">
+                </app-animated-fragment>
+                <!-- <p class="text-muted text-right" *ngIf="visitBtn"> - {{description.author}}</p> -->
+            </div>
+            <div class="d-flex mb-2" *ngIf="enterBtn && !showRejection">
+                <div class="btn"
+                    [ngClass]="{'mr-auto': selectedOption.value !== 'true','ml-auto': selectedOption.value === 'true' }"
+                    (click)="takeDecision(selectedOption.value)">
+                    <fa-icon class="ml-3" [icon]="selectedOption.value === 'true'? faRight : faLeft" size="xl">
+                    </fa-icon>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="npc.rejected && showRejection">
+            <div class="mt-3" *ngIf="(npc.rejected) as rejected">
+                <app-animated-fragment [tale]="rejected.tale" (finish)="showExit = true">
+                </app-animated-fragment>
+                <!-- <p class="text-muted text-right"> - {{travel.author}}</p> -->
+            </div>
+            <div class="d-flex mb-2" *ngIf="showExit">
+                <div class="btn mr.auto" (click)="getOut()">
+                    <fa-icon class="ml-3" [icon]=" faLeft" size="xl">
+                    </fa-icon>
+                </div>
+            </div>
+        </ng-container>
+
+    </div>
+
+</ng-container>
+<ng-container *ngIf="showDecision && atBottom && (!selectedDecision || enterBtn) && !showRejection">
+    <div class="city-selector border-top">
+        <ng-container *ngFor="let option of npc.decision.options">
+            <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" (click)="selectDecision(option)">
+                <div class="h5 font-weight-normal">
+                    {{option.name}}
+                </div>
+                <div class="ml-auto mt-auto">
+                    <fa-icon [icon]="faUp" size="xl"></fa-icon>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</ng-container>

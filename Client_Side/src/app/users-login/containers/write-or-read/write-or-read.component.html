@@ -20,15 +20,19 @@
     <div class="card my-5 position-relative" *ngIf="rolConfirmation">
       <app-loader class="loader" size="lg" *ngIf="loading"></app-loader>
       <div class="row card-body">
-        <div class="col-8">
+        <div class="col-12 col-md-8">
           <p>
             No posees el rol de
             <span *ngIf="rolConfirmation=='R'">Lector,</span>
             <span *ngIf="rolConfirmation=='W'">Escritor,</span> deseas obtenerlo y continuar?
           </p>
+          <div class="d-flex" *ngIf="rolConfirmation=='W'">
+            <label class="text-right" for="">Confirma el codigo de escritor</label>
+            <input class="form-control ml-3 my-auto" type="text" [(ngModel)]="writerPass">
+          </div>
         </div>
-        <div class="col-4 text-center">
-          <button class="btn btn-secondary" (click)="addRol(rolConfirmation)">
+        <div class="col-12 col-md-4 text-center d-flex">
+          <button class="btn btn-secondary my-auto mx-auto" (click)="addRol(rolConfirmation)">
             Aceptar
           </button>
         </div>
