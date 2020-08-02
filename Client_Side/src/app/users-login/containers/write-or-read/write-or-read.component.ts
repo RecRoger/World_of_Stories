@@ -74,12 +74,11 @@ export class WriteOrReadComponent implements OnInit, OnDestroy {
       }
     } else {
       if (roles.includes(UsersRoles.R)) {
+        this.startActivity(activity);
         if (!isMobile) {
-          this.store.dispatch(
-            new SetInfo('La experience de lector esta pensada para dispositivos móviles.')
-          );
-        } else {
-          this.startActivity(activity);
+          // this.store.dispatch(
+          //   new SetInfo('La experience de lector esta pensada para dispositivos móviles.')
+          // );
         }
       } else {
         this.rolConfirmation = 'R';
@@ -88,7 +87,7 @@ export class WriteOrReadComponent implements OnInit, OnDestroy {
   }
 
   async addRol(rol) {
-    if (rol === UsersRoles.R || (this.writerPass === WritersCode)) {
+    if (rol === 'R' || (this.writerPass === WritersCode)) {
       this.rolConfirmation = '';
       this.loading = true;
       this.cd.markForCheck();

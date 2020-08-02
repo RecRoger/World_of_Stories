@@ -43,6 +43,8 @@ export class ReadCityComponent implements OnInit, OnDestroy {
   constructor(private store: Store, private cd: ChangeDetectorRef, private scrollService: ScrollAnimationService) { }
 
   ngOnInit() {
+    
+    this.store.dispatch(new GetCityData({ cityId: this.city.id }));
     this.store.dispatch(new GetAllPlaces({ request: { cityId: this.city.id } }));
     this.subscriptions.push(this.scrollService.scrollAtBottom$.subscribe(value => { this.atBottom = value; this.cd.markForCheck(); }));
   }
@@ -88,7 +90,7 @@ export class ReadCityComponent implements OnInit, OnDestroy {
     this.store.dispatch(new UpdateCharacterLocation({ cityId: this.city.id, placeId }));
     // console.log('entrar en', placeId);
   }
-  leaveCity(){
+  leaveCity() {
     this.store.dispatch(new UpdateCharacterLocation({ cityId: null, placeId: null }));
   }
 

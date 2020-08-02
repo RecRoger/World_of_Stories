@@ -11,11 +11,12 @@ import { ReadCityComponent } from './componentes/read-city/read-city.component';
 import { ReadPlaceComponent } from './componentes/read-place/read-place.component';
 import { ReadStoryContainerComponent } from './containers/read-story-container/read-story-container.component';
 import { ReadNpcComponent } from './componentes/read-npc/read-npc.component';
+import { ReadChaptersComponent } from './componentes/read-chapters/read-chapters.component';
 
 
 
 @NgModule({
-  declarations: [ReadersComponent, ReaderNavComponent, ReadersHomeComponent, SelectCityComponent, ReadCityComponent, ReadPlaceComponent, ReadStoryContainerComponent, ReadNpcComponent],
+  declarations: [ReadersComponent, ReaderNavComponent, ReadersHomeComponent, SelectCityComponent, ReadCityComponent, ReadPlaceComponent, ReadStoryContainerComponent, ReadNpcComponent, ReadChaptersComponent],
   imports: [
     CommonModule,
     ReadersRoutingModule,

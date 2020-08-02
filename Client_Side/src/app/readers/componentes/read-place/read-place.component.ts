@@ -53,6 +53,7 @@ export class ReadPlaceComponent implements OnInit, OnDestroy {
   constructor(private store: Store, private cd: ChangeDetectorRef, private scrollService: ScrollAnimationService) { }
 
   ngOnInit() {
+    this.store.dispatch(new GetPlaceData({ placeId: this.place.id, cityId: this.city.id }));
     this.store.dispatch(new GetAllNpcs({ placeId: this.place.id, published: false }));
     this.subscriptions.push(
       this.scrollService.scrollAtBottom$.subscribe(value => { this.atBottom = value; this.cd.markForCheck(); }),

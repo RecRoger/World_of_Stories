@@ -156,7 +156,7 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
   }
 
   endStoryAnimation() {
-    console.log('aca llego');
+    // console.log('aca llego');
   }
 
 

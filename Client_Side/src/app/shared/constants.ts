@@ -27,3 +27,10 @@ export enum AnimationsTypes {
     chatB = 'chatB',
     title = 'title'
 }
+export enum ReaderTabs {
+    start = 'start',
+    city = 'city',
+    place = 'place',
+    npc = 'npc',
+    story = 'story'
+}

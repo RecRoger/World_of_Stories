@@ -35,6 +35,12 @@
             </div>
         </ng-container>
 
+        <ng-container *ngIf="loadingChapters">
+            <div class="d-flex w-100">
+                <app-loader class="mx-auto loader" size="lg"></app-loader>
+            </div>
+        </ng-container>
+
         <ng-container *ngIf="npc.rejected && showRejection">
             <div class="mt-3" *ngIf="(npc.rejected) as rejected">
                 <app-animated-fragment [tale]="rejected.tale" (finish)="showExit = true">

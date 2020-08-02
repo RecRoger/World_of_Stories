@@ -1,21 +1,31 @@
 <div class="app-main d-flex flex-column h-100 col-12 col-md-4 mx-md-auto" #scroll (scroll)="scrolling($event)">
 
-    <ng-container *ngIf="!location || !location.cityId">
-
+    <ng-container *ngIf="activeTab == 'start'">
         <app-select-city></app-select-city>
-
     </ng-container>
 
-    <ng-container *ngIf="location && location.cityId && !location?.placeId && this.city">
+
+    <ng-container *ngIf="activeTab == 'city' && this.city">
         <app-read-city [city]="city"></app-read-city>
     </ng-container>
+    
 
-    <ng-container *ngIf="location && location.placeId && !location.npcId && this.city && this.place">
+    <ng-container *ngIf="activeTab == 'place' && this.city && this.place">
         <app-read-place [city]="city" [place]="place"></app-read-place>
     </ng-container>
 
-    <ng-container *ngIf="location && location.npcId && !location.chapterId && this.place">
+    <ng-container *ngIf="activeTab == 'npc' && this.place">
         <app-read-npc [cityId]="this.city.id" [npc]="npc" [place]="place"></app-read-npc>
     </ng-container>
+
+    <ng-container *ngIf="activeTab == 'story' && this.place && this.npc">
+        <app-read-chapters [cityId]="this.city.id" [npc]="npc" [placeId]="place.id"></app-read-chapters>
+    </ng-container>
+
+
+    
+    
+    
+    
 
 </div>

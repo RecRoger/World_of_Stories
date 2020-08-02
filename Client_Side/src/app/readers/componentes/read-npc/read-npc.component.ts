@@ -7,6 +7,7 @@ import { faChevronUp, faChevronDown, faChevronRight, faChevronLeft } from '@fort
 import { Subscription } from 'rxjs';
 import { ScrollAnimationService } from 'src/app/shared/services/scroll-animation.service';
 import { SetReadFragment, UpdateCharacterLocation } from 'src/app/shared/store/users/users.actions';
+import { GetNpcStory, GetChapterData } from 'src/app/shared/store/stories/stories.actions';
 
 @Component({
   selector: 'app-read-npc',
@@ -28,6 +29,7 @@ export class ReadNpcComponent implements OnInit, OnDestroy {
 
   showDecision = false;
   enterBtn = false;
+  loadingChapters = false;
 
   showRejection = false;
   showExit = false;
@@ -68,15 +70,36 @@ export class ReadNpcComponent implements OnInit, OnDestroy {
     this.cd.markForCheck();
   }
 
-  selectDecision(option: DeciosionOption){
+  selectDecision(option: DeciosionOption) {
     this.selectedOption = option;
     this.cd.markForCheck();
   }
 
-  takeDecision(decision: string) {
+  async takeDecision(decision: string) {
 
-    if(decision === 'true') {
-      console.log('esta es la decision', decision);
+    if (decision === 'true') {
+      this.loadingChapters = true;
+      const store = await this.store.dispatch(new GetNpcStory(
+        { npcId: this.npc.id, placeId: this.place.id, request: { id: this.npc.id, published: false } }
+      )).toPromise();
+      const npc: Npc = store.stories[this.place.id].find(n => n.id === this.npc.id);
+      const chapters = npc.chapters;
+      this.store.dispatch(new UpdateCharacterLocation(
+        {
+          cityId: this.cityId,
+          placeId: this.place.id,
+          npcId: this.npc.id,
+          chapterId: chapters[0].id
+        }
+      ));
+      this.store.dispatch(new GetChapterData(
+        {
+          placeId: this.place.id,
+          npcId: this.npc.id,
+          chapterId: chapters[0].id
+        }
+      ));
+
     } else {
       this.showRejection = true;
       this.cd.markForCheck();

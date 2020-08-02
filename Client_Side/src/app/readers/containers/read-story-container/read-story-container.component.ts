@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Select, Store, Actions, ofActionSuccessful } from '@ngxs/store';
-import { Character, CharacterLocation, City, Place, Npc } from 'wos-api';
+import { Character, CharacterLocation, City, Place, Npc, Chapter } from 'wos-api';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -11,7 +11,8 @@ import { UpdateCharacterLocation } from 'src/app/shared/store/users/users.action
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
 import { map } from 'rxjs/operators';
-import { GetNpcData, GetAllNpcs } from 'src/app/shared/store/stories/stories.actions';
+import { GetNpcData, GetAllNpcs, GetNpcStory, GetChapterData } from 'src/app/shared/store/stories/stories.actions';
+import { ReaderTabs } from 'src/app/shared/constants';
 
 @Component({
   selector: 'app-read-story-container',
@@ -27,6 +28,7 @@ export class ReadStoryContainerComponent implements OnInit, OnDestroy {
   get npcs$(): Observable<Npc[]> {
     return this.allNpcs$.pipe(map(filterFn => filterFn(this.place && this.place.id)));
   }
+
   npcs: Npc[] = [];
 
   @ViewChild('scroll', { static: false }) private scrollDiv: ElementRef;
@@ -34,12 +36,18 @@ export class ReadStoryContainerComponent implements OnInit, OnDestroy {
   atBottom = true;
   location: CharacterLocation = {};
 
+  activeTab = null;
+
   citiesloading = false;
 
+  cityId: string;
+
+  
   cities: City[];
   city: City;
   place: Place;
   npc: Npc;
+  chapters: Chapter[];
 
   subscriptions: Subscription[] = [];
 
@@ -60,6 +68,19 @@ export class ReadStoryContainerComponent implements OnInit, OnDestroy {
         this.character = char;
         this.location = this.character.location;
         this.scrolling(null);
+
+        if (!this.location || !this.location.cityId) {
+          this.activeTab = ReaderTabs.start;
+        } else if (!this.location.placeId && this.location.cityId) {
+          this.activeTab = ReaderTabs.city;
+        } else if (!this.location.npcId && this.location.placeId) {
+          this.activeTab = ReaderTabs.place;
+        } else if (!this.location.chapterId && this.location.npcId) {
+          this.activeTab = ReaderTabs.npc;
+        } else if (this.location.chapterId) {
+          this.activeTab = ReaderTabs.story;
+        }
+
       }),
       this.cities$.subscribe(async list => {
         if (this.location) {
@@ -86,7 +107,6 @@ export class ReadStoryContainerComponent implements OnInit, OnDestroy {
           if (this.location.npcId && !this.npc) {
             if (this.place && this.place.entry) {
               await this.store.dispatch(new GetAllNpcs({ placeId: this.place.id, published: false })).toPromise();
-              // this.store.dispatch(new GetNpcData({ npcId: this.location.npcId, placeId: this.place.id }));
             }
           }
         }
@@ -94,12 +114,40 @@ export class ReadStoryContainerComponent implements OnInit, OnDestroy {
       this.npcs$.subscribe(npcList => {
         if (this.location) {
           this.npcs = npcList || [];
+
           if (this.place && this.location.npcId) {
             this.npc = this.npcs.find(n => n.id === this.location.npcId);
             if (this.npc && !this.npc.meeting) {
               this.store.dispatch(new GetNpcData({ npcId: this.location.npcId, placeId: this.place.id }));
             }
           }
+
+          if (this.npc && this.location.chapterId) {
+            this.chapters = this.npc.chapters;
+            if (this.npc.meeting && (!this.npc.chapters || this.npc.chapters.length === 0)) {
+              this.store.dispatch(new GetNpcStory(
+                {
+                  placeId: this.place.id,
+                  npcId: this.npc.id,
+                  request: { id: this.npc.id, published: false }
+                }
+              ));
+            }
+
+            const specificChapter = this.chapters && this.chapters.find(c => c.id === this.location.chapterId);
+            if (specificChapter && !specificChapter.story) {
+              this.store.dispatch(new GetChapterData(
+                {
+                  placeId: this.location.placeId,
+                  npcId: this.location.npcId,
+                  chapterId: this.location.chapterId
+                }
+              ));
+            }
+            this.cd.markForCheck();
+          }
+
+
         }
       }),
       this.actions$.pipe(ofActionSuccessful(UpdateCharacterLocation)).subscribe((action: UpdateCharacterLocation) => {

@@ -258,8 +258,8 @@ export class StoriesState {
             const { placeId, npcId, chapterId } = action.payload;
 
             const npc = ctx.getState()[placeId].find(n => n.id === npcId);
-            const chapter = npc.chapters.find(c => c.id === chapterId);
-            if (!chapter.story) {
+            const chapter = npc.chapters && npc.chapters.find(c => c.id === chapterId);
+            if (chapter && !chapter.story) {
                 const req: RequestGetChapter = {
                     id: chapterId
                 };
