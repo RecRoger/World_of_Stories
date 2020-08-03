@@ -3,4 +3,5 @@ Client_Side/node_modules
 
 Server_Api/node_modules
 Server_Api/src/swagger/generator/workspace
+Server_Api/build/src
 Server_Api/build
