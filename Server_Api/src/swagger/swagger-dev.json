@@ -9,7 +9,7 @@
             "url": "https://github.com/RecRoger/World_of_Stories"
         }
     },
-    "host": "/",
+    "host": "world-of-stories.herokuapp.com",
     "basePath": "/",
     "tags": [
         {
@@ -18,7 +18,7 @@
         }
     ],
     "schemes": [
-        "http"
+        "https"
     ],
     "paths": {
         "$ref": "./commons/paths.json"

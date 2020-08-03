@@ -1,0 +1,34 @@
+{
+  "name": "wos-build",
+  "version": "1.0.0",
+  "description": "aplicacion buildeada de wos",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RecRoger/wos_build.git"
+  },
+  "author": "RecRoger",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RecRoger/wos_build/issues"
+  },
+  "homepage": "https://github.com/RecRoger/wos_build#readme",
+  "dependencies": {
+    "@types/angular": "^1.7.2",
+    "@types/cors": "^2.8.6",
+    "@types/node": "^14.0.22",
+    "@types/swagger-ui-express": "^4.1.2",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-handlebars": "^3.1.0",
+    "mongoose": "^5.5.14",
+    "multi-file-swagger": "2.2.0",
+    "swagger-ui-express": "^4.1.4",
+    "typescript": "^3.5.1"
+  }
+}
