@@ -58,7 +58,7 @@
     </div>
 
 </ng-container>
-<ng-container *ngIf="showDecision && atBottom && (!selectedDecision || enterBtn) && !showRejection">
+<ng-container *ngIf="showDecision && atBottom && (!selectedOption || enterBtn) && !showRejection">
     <div class="city-selector border-top">
         <ng-container *ngFor="let option of npc.decision.options">
             <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" (click)="selectDecision(option)">
