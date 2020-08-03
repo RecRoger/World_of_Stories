@@ -24,8 +24,8 @@
                             </div>
                         </div>
                         <div class="d-flex">
-                            <label for="">Ubicacion</label>
-                            <div class="ml-auto" *ngIf="character.location; else noPlace">
+                            <label class="mr-3">Ubicacion</label>
+                            <div class="ml-auto text-right" *ngIf="character.location; else noPlace">
                                 {{character.location.cityId | cityName | async}}
                                 <span *ngIf="character.location.placeId">
                                     - {{character.location.placeId | placeName: character.location?.cityId | async }}

@@ -23,18 +23,21 @@ export class ReadPlaceComponent implements OnInit, OnDestroy {
 
   @Select(LocationState.getPlaces) allPlaces$: Observable<any>;
   get places$(): Observable<Place[]> {
-    return this.allPlaces$.pipe(map(filterFn => filterFn(this.city.id)));
+    return this.allPlaces$.pipe(map(filterFn => filterFn(this.cityId)));
   }
 
   @Select(StoriesState.getNpcs) allNpcs$: Observable<any>;
   get npcs$(): Observable<Npc[]> {
-    return this.allNpcs$.pipe(map(filterFn => filterFn(this.place && this.place.id)));
+    return this.allNpcs$.pipe(map(filterFn => filterFn(this.placeId)));
   }
   npcs: Npc[] = [];
 
-  @Input() city: City;
-  @Input() place: Place;
+  @Input() cityId: string;
+  @Input() placeId: string;
+  city: City;
+  place: Place;
 
+  loadingPlace = false;
   loading: string[] = [];
 
   titleAnimationEnd = false;
@@ -52,11 +55,15 @@ export class ReadPlaceComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store, private cd: ChangeDetectorRef, private scrollService: ScrollAnimationService) { }
 
-  ngOnInit() {
-    this.store.dispatch(new GetPlaceData({ placeId: this.place.id, cityId: this.city.id }));
-    this.store.dispatch(new GetAllNpcs({ placeId: this.place.id, published: false }));
+  async ngOnInit() {
+    this.loadingPlace = true;
+    await this.store.dispatch(new GetPlaceData({ placeId: this.placeId, cityId: this.cityId })).toPromise();
+    this.loadingPlace = false;
+
+    this.store.dispatch(new GetAllNpcs({ placeId: this.placeId, published: false }));
     this.subscriptions.push(
       this.scrollService.scrollAtBottom$.subscribe(value => { this.atBottom = value; this.cd.markForCheck(); }),
+      this.places$.subscribe(list => this.place = list.find(p => p.id === this.placeId)),
       this.npcs$.subscribe(n => this.npcs = n)
     );
   }
@@ -100,11 +107,11 @@ export class ReadPlaceComponent implements OnInit, OnDestroy {
   }
 
   enterPlace(npcId) {
-    this.store.dispatch(new UpdateCharacterLocation({ cityId: this.city.id, placeId: this.place.id, npcId }));
+    this.store.dispatch(new UpdateCharacterLocation({ cityId: this.cityId, placeId: this.placeId, npcId }));
     // console.log('entrar en', npcId);
   }
   leavPlace() {
-    this.store.dispatch(new UpdateCharacterLocation({ cityId: this.city.id, placeId: null }));
+    this.store.dispatch(new UpdateCharacterLocation({ cityId: this.cityId, placeId: null }));
   }
 
 }

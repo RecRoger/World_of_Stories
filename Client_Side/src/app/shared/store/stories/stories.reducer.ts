@@ -205,7 +205,12 @@ export class StoriesState {
             if (resp && resp.data && resp.data.npc) {
                 ctx.setState(
                     patch({
-                        [placeId]: updateItem<Npc>(n => n.id === req.id, resp.data.npc)
+                        [placeId]: updateItem<Npc>(n => n.id === req.id, patch<Npc>({
+                            items: resp.data.npc.items,
+                            decision: resp.data.npc.decision,
+                            meeting: resp.data.npc.meeting,
+                            rejected: resp.data.npc.rejected
+                        }))
                     })
                 );
 

@@ -4,10 +4,10 @@
         <!-- seccion de edicion -->
         <div class="col-8 pb-1">
             <ng-container >
-                <div class="row" [formGroup]="form">
+                <div class="row h-100" [formGroup]="form">
                     <div class="col-11"
                         [ngClass]="{'tale-invalid': tale.invalid && tale.touched && i === talesForm.length - 1 }">
-                        <textarea [id]="'input-'+i" formControlName="text" class="form-control tale-textarea"
+                        <textarea [id]="'input-'+i" formControlName="text" class="form-control tale-textarea h-100"
                             cdkTextareaAutosize rows="3" (keyup.enter)="focusOnFragment(i + 1)">
     
                         </textarea>
@@ -25,6 +25,7 @@
                             <button mat-menu-item (click)="selectAnimation(i,animationsTypes.default)">Default</button>
                             <button mat-menu-item (click)="selectAnimation(i,animationsTypes.chatA)">Conversacion 1</button>
                             <button mat-menu-item (click)="selectAnimation(i,animationsTypes.chatB)">Conversacion 2</button>
+                            <button mat-menu-item (click)="selectAnimation(i,animationsTypes.surprise)">Sorpresa</button>
                         </mat-menu>
                     </div>
                 </div>

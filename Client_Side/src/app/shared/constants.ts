@@ -25,6 +25,7 @@ export enum AnimationsTypes {
     default = 'default',
     chatA = 'chatA',
     chatB = 'chatB',
+    surprise = 'surprise',
     title = 'title'
 }
 export enum ReaderTabs {

@@ -6,9 +6,9 @@ import { map } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { isValid } from 'src/app/shared/utils/commons';
-import { UpdateChapter, PublishChapter, GetChapterData } from 'src/app/shared/store/stories/stories.actions';
+import { UpdateChapter, PublishChapter, GetChapterData, UpdateNpc, GetNpcStory } from 'src/app/shared/store/stories/stories.actions';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
-import { faCloudUploadAlt, faCloudDownloadAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faPen, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { GetAllPlaces } from 'src/app/shared/store/locations/locations.actions';
 
@@ -33,9 +33,11 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
     chapters?: string[];
     loading?: string[]
     editing?: boolean;
+    editingTitle?: boolean;
     endChapter?: false;
   } = { chapters: [] };
 
+  titleForm: FormGroup;
   chapterForm: FormGroupTyped<ChapterUpdate>;
   cities = [];
   places = [];
@@ -43,6 +45,8 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
   faUpload = faCloudUploadAlt;
   faDownload = faCloudDownloadAlt;
   faEdit = faEdit;
+  faPen = faPen;
+  faCheck = faCheck;
 
   subcription: Subscription;
 
@@ -157,6 +161,25 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
 
   endStoryAnimation() {
     // console.log('aca llego');
+  }
+
+  async editStoryTitle() {
+    if (!this.chaptersTab.editingTitle) {
+      this.titleForm = this.fb.group({
+        id: [this.npc.id],
+        title: [this.npc && this.npc.title, [Validators.required]]
+      });
+      this.chaptersTab.editingTitle = true;
+      this.cd.markForCheck();
+    } else {
+      if (isValid(this.titleForm)) {
+        await this.store.dispatch(new UpdateNpc({ placeId: this.place.id, npcId: this.npc.id, npc: { ...this.titleForm.value } })).toPromise();
+        await this.store.dispatch(new GetNpcStory({ placeId: this.place.id, npcId: this.npc.id, request: { id: this.npc.id } })).toPromise();
+        this.chaptersTab.editingTitle = false;
+        this.chaptersTab.chapters = [];
+        this.cd.markForCheck();
+      }
+    }
   }
 
 

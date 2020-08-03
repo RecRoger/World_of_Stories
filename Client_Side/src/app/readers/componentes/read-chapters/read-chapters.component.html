@@ -3,7 +3,7 @@
     <div class="description-tale">
         <div>
             <h2>
-                <app-animated-fragment [tale]="[{text: npc.title, animation: 'title'}]"
+                <app-animated-fragment [tale]="[{text: npc.title || '...', animation: 'title'}]"
                     (finish)="titleAnimationEnd = true;"></app-animated-fragment>
             </h2>
         </div>

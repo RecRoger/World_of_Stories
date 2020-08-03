@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ChangeDetectorRef, OnChanges, ElementRef, ViewChild, Output, EventEmitter, HostListener, OnDestroy } from '@angular/core';
 import { ReadFragment } from 'wos-api';
 import { TextAnimation } from 'ngx-teximate';
-import { rotateInDownLeft, fadeInDown, bounceInDown, bounceIn, fadeInLeft, fadeInRight } from 'ng-animate';
+import { rotateInDownLeft, fadeInDown, bounceInDown, bounceIn, fadeInLeft, fadeInRight, zoomIn } from 'ng-animate';
 import { trigger, transition, useAnimation, AnimationOptions } from '@angular/animations';
 import { AnimationsTypes } from '../../constants';
 import { ScrollAnimationService } from '../../services/scroll-animation.service';
@@ -114,6 +114,11 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
       case AnimationsTypes.chatB:
         option.animation = fadeInRight;
         option.type = 'paragraph';
+        return option;
+      case AnimationsTypes.surprise:
+        // option.delay = 35;
+        option.animation = zoomIn;
+        option.type = 'word';
         return option;
       case AnimationsTypes.title:
         option = this.titleOption;

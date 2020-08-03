@@ -18,13 +18,18 @@ import { isScrollAtBottom } from 'src/app/shared/utils/commons';
 })
 export class ReadCityComponent implements OnInit, OnDestroy {
 
+  @Select(LocationState.getCities) cities$: Observable<City[]>;
   @Select(LocationState.getPlaces) allPlaces$: Observable<any>;
   get places$(): Observable<Place[]> {
-    return this.allPlaces$.pipe(map(filterFn => filterFn(this.city && this.city.id)));
+    return this.allPlaces$.pipe(map(filterFn => filterFn(this.cityId)));
   }
 
-  @Input() city: City;
+  @Input() cityId: string;
 
+  city: City;
+
+
+  loadingCity = false;
   loading: string[] = [];
 
   titleAnimationEnd = false;
@@ -42,11 +47,17 @@ export class ReadCityComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store, private cd: ChangeDetectorRef, private scrollService: ScrollAnimationService) { }
 
-  ngOnInit() {
-    
-    this.store.dispatch(new GetCityData({ cityId: this.city.id }));
-    this.store.dispatch(new GetAllPlaces({ request: { cityId: this.city.id } }));
-    this.subscriptions.push(this.scrollService.scrollAtBottom$.subscribe(value => { this.atBottom = value; this.cd.markForCheck(); }));
+  async ngOnInit() {
+
+    this.loadingCity = true;
+    await this.store.dispatch(new GetCityData({ cityId: this.cityId })).toPromise();
+    this.loadingCity = false;
+
+    this.store.dispatch(new GetAllPlaces({ request: { cityId: this.cityId } }));
+    this.subscriptions.push(
+      this.scrollService.scrollAtBottom$.subscribe(value => { this.atBottom = value; this.cd.markForCheck(); }),
+      this.cities$.subscribe(list => this.city = list && list.find(c => c.id === this.cityId))
+    );
   }
   ngOnDestroy() {
     this.subscriptions.forEach(subs => subs.unsubscribe());

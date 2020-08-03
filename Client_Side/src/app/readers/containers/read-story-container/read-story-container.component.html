@@ -5,21 +5,21 @@
     </ng-container>
 
 
-    <ng-container *ngIf="activeTab == 'city' && this.city">
-        <app-read-city [city]="city"></app-read-city>
+    <ng-container *ngIf="activeTab == 'city' && this.cityId">
+        <app-read-city [cityId]="cityId"></app-read-city>
     </ng-container>
     
 
-    <ng-container *ngIf="activeTab == 'place' && this.city && this.place">
-        <app-read-place [city]="city" [place]="place"></app-read-place>
+    <ng-container *ngIf="activeTab == 'place' && this.placeId">
+        <app-read-place [cityId]="cityId" [placeId]="placeId"></app-read-place>
     </ng-container>
 
-    <ng-container *ngIf="activeTab == 'npc' && this.place">
-        <app-read-npc [cityId]="this.city.id" [npc]="npc" [place]="place"></app-read-npc>
+    <ng-container *ngIf="activeTab == 'npc' && this.npcId">
+        <app-read-npc [cityId]="this.cityId" [npcId]="npcId" [placeId]="placeId"></app-read-npc>
     </ng-container>
 
-    <ng-container *ngIf="activeTab == 'story' && this.place && this.npc">
-        <app-read-chapters [cityId]="this.city.id" [npc]="npc" [placeId]="place.id"></app-read-chapters>
+    <ng-container *ngIf="activeTab == 'story' && this.npcId">
+        <app-read-chapters [cityId]="cityId" [npcId]="npcId" [placeId]="placeId"></app-read-chapters>
     </ng-container>
 
 

@@ -25,13 +25,14 @@ export class ReadChaptersComponent implements OnInit, OnDestroy {
   }
   @Select(StoriesState.getStory) allChapters$: Observable<any>;
   get chapters$(): Observable<Chapter[]> {
-    return this.allChapters$.pipe(map(filterFn => filterFn(this.placeId, this.npc.id)));
+    return this.allChapters$.pipe(map(filterFn => filterFn(this.placeId, this.npcId)));
   }
 
   @Input() cityId: string;
   @Input() placeId: string;
-  @Input() npc: Npc;
+  @Input() npcId: string;
 
+  npc: Npc;
 
   titleAnimationEnd = false;
 
@@ -69,15 +70,16 @@ export class ReadChaptersComponent implements OnInit, OnDestroy {
           const chapter = list.find(c => c.id === location.chapterId);
           if (chapter && chapter.story) {
             this.continueChapter(chapter);
+          } else {
+            this.store.dispatch(new GetChapterData({ chapterId: location.chapterId, npcId: location.npcId, placeId: location.placeId }));
           }
         }
       }),
       this.location$.subscribe(location => {
-
-        const lastChapter = this.storyChapters.slice(-1)[0];
-        if (location.chapterId && (lastChapter && location.chapterId !== lastChapter.chapter.id)) {
-          this.store.dispatch(new GetChapterData({ chapterId: location.chapterId, npcId: location.npcId, placeId: location.placeId }));
-        }
+        this.store.dispatch(new GetChapterData({ chapterId: location.chapterId, npcId: location.npcId, placeId: location.placeId }));
+      }),
+      this.npcs$.subscribe(list => {
+        this.npc = list && list.find(n => n.id === this.npcId);
       })
     );
   }
@@ -134,7 +136,7 @@ export class ReadChaptersComponent implements OnInit, OnDestroy {
       chapterId,
       cityId: this.cityId,
       placeId: this.placeId,
-      npcId: this.npc.id
+      npcId: this.npcId
     }));
 
     // console.log('llegue a tomar decision', decision);
@@ -161,7 +163,7 @@ export class ReadChaptersComponent implements OnInit, OnDestroy {
   }
 
   getOut() {
-    this.store.dispatch(new UpdateCharacterLocation({ cityId: this.cityId, placeId: this.placeId, npcId: this.npc.id, chapterId: null }));
+    this.store.dispatch(new UpdateCharacterLocation({ cityId: this.cityId, placeId: this.placeId, npcId: this.npcId, chapterId: null }));
   }
 
 

@@ -21,7 +21,7 @@ export class SelectCityComponent implements OnInit, OnDestroy {
   cities: City[] = [];
 
   loading = [];
-  enterBtn = false;
+  enterBtn = true;
 
   faUp = faChevronUp;
   faRight = faChevronRight;

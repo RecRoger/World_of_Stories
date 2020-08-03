@@ -1,6 +1,15 @@
 <div class="row" *ngIf="(chapters$ | async) as chapters">
-    <div class="col-12 mb-3 ml-3">
-        <h3>{{npc.title}}</h3>
+    <div class="col-12 mb-3 ml-3 d-flex">
+        <h3 *ngIf="!chaptersTab.editingTitle">{{npc.title}}</h3>
+        <div *ngIf="chaptersTab.editingTitle" [formGroup]="titleForm">
+            <input class="form-control" type="text" formControlName="title"
+                placeholder="Titulo del cuento">
+        </div>
+
+        <button class="btn ml-3" (click)="editStoryTitle()">
+            <fa-icon [icon]="!chaptersTab.editingTitle ? faPen : faCheck" size="lg"></fa-icon>
+        </button>
+
     </div>
     <ng-container *ngFor="let chapter of chapters; let i = index">
         <div class="col-12 mb-2">
@@ -86,9 +95,10 @@
                                 </div>
 
                                 <div *ngIf="chapter.endLocation && chapter.endLocation.endChapter">
-                                    Ubicacion final: 
+                                    Ubicacion final:
                                     <span *ngIf="chapter.endLocation.placeId">
-                                        {{chapter.endLocation.placeId | placeName: chapter.endLocation.cityId | async }} en 
+                                        {{chapter.endLocation.placeId | placeName: chapter.endLocation.cityId | async }}
+                                        en
                                     </span>
                                     {{chapter.endLocation.cityId | cityName | async}}
                                 </div>

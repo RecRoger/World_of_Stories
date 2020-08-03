@@ -21,7 +21,7 @@
     </div>
 </ng-container>
 
-<ng-container *ngIf="atBottom">
+<ng-container *ngIf="atBottom && (enterBtn)">
     <div class="city-selector border-top" *ngIf="(cities$ | async) as cities">
         <ng-container *ngFor="let city of cities">
             <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" (click)="selectCity(city.id)">
