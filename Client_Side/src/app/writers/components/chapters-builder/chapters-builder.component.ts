@@ -173,7 +173,9 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
       this.cd.markForCheck();
     } else {
       if (isValid(this.titleForm)) {
-        await this.store.dispatch(new UpdateNpc({ placeId: this.place.id, npcId: this.npc.id, npc: { ...this.titleForm.value } })).toPromise();
+        const store = await this.store.dispatch(new UpdateNpc({ placeId: this.place.id, npcId: this.npc.id, npc: { ...this.titleForm.value } })).toPromise();
+        const npcs: Npc[] = store.stories[this.place.id];
+        this.npc = npcs.find(n => n.id === this.npc.id);
         await this.store.dispatch(new GetNpcStory({ placeId: this.place.id, npcId: this.npc.id, request: { id: this.npc.id } })).toPromise();
         this.chaptersTab.editingTitle = false;
         this.chaptersTab.chapters = [];

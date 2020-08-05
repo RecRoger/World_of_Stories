@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
 import { map, take } from 'rxjs/operators';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faInfo } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-world-stories',
@@ -33,14 +33,26 @@ export class WorldStoriesComponent implements OnInit, OnDestroy {
   selectedPlace: Place;
   selectedNpc: Npc;
 
+  displayCityInfo = false;
+  displayPlaceInfo = false;
+  displayNpcInfo = false;
+  displayStoryInfo = false;
+  displayWriteGuideline = false;
+
   subscription: Subscription[] = [];
 
   faLeft = faChevronLeft;
+  faInfo = faInfo;
 
   async ngOnInit() {
     await this.getAllCities();
     this.subscription.push(
       this.route.queryParams.subscribe(async (queryParam: any) => {
+
+        this.displayCityInfo = false;
+        this.displayPlaceInfo = false;
+        this.displayNpcInfo = false;
+        this.displayStoryInfo = false;
 
         if (queryParam['city']) {
           const cities = this.store.selectSnapshot(LocationState.getCities);

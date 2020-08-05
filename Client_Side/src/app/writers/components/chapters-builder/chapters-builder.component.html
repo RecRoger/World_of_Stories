@@ -1,6 +1,6 @@
 <div class="row" *ngIf="(chapters$ | async) as chapters">
     <div class="col-12 mb-3 ml-3 d-flex">
-        <h3 *ngIf="!chaptersTab.editingTitle">{{npc.title}}</h3>
+        <h3 *ngIf="!chaptersTab.editingTitle">{{npc.title || 'Titulo de la historia'}}</h3>
         <div *ngIf="chaptersTab.editingTitle" [formGroup]="titleForm">
             <input class="form-control" type="text" formControlName="title"
                 placeholder="Titulo del cuento">

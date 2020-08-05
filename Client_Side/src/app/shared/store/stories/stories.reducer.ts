@@ -209,7 +209,8 @@ export class StoriesState {
                             items: resp.data.npc.items,
                             decision: resp.data.npc.decision,
                             meeting: resp.data.npc.meeting,
-                            rejected: resp.data.npc.rejected
+                            rejected: resp.data.npc.rejected,
+                            title: resp.data.npc.title
                         }))
                     })
                 );
