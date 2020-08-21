@@ -10,7 +10,7 @@
         </ng-container>
 
         <ng-template #animatedTemplate>
-           <teximate *ngIf="fragment.fragment.text" [text]="fragment.fragment.text" [enter]="fragment.options"
+           <teximate class="text-justified" *ngIf="fragment.fragment.text" [text]="fragment.fragment.text" [enter]="fragment.options"
                 (finish)="finishAnimation(i)"></teximate>
 
         </ng-template>

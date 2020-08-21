@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, Input, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Decision, DeciosionOption } from 'wos-api';
+import { Decision, DeciosionOption, Chapter } from 'wos-api';
 import { Subscription } from 'rxjs';
 import { isValid } from '../../utils/commons';
 import { SubjectSubscriber } from 'rxjs/internal/Subject';
@@ -16,6 +16,7 @@ export class WriteDecisionComponent implements OnInit, OnDestroy {
 
   @Input() npcDecisio: boolean;
   @Input() decision: AbstractControl;
+  @Input() continuesChapter: Chapter;
 
   decisionForm: FormGroupTyped<Decision>;
   optionsForm: FormArrayTyped<DeciosionOption> = this.fb.array([]);

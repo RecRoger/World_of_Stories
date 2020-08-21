@@ -1,21 +1,21 @@
 <div class="row" *ngIf="(chapters$ | async) as chapters">
+<!-- <div class="row" *ngIf="(shownChapters) as chapters"> -->
     <div class="col-12 mb-3 ml-3 d-flex">
         <h3 *ngIf="!chaptersTab.editingTitle">{{npc.title || 'Titulo de la historia'}}</h3>
         <div *ngIf="chaptersTab.editingTitle" [formGroup]="titleForm">
-            <input class="form-control" type="text" formControlName="title"
-                placeholder="Titulo del cuento">
+            <input class="form-control" type="text" formControlName="title" placeholder="Titulo del cuento">
         </div>
-
-        <button class="btn ml-3" (click)="editStoryTitle()">
-            <fa-icon [icon]="!chaptersTab.editingTitle ? faPen : faCheck" size="lg"></fa-icon>
+        <button class="btn ml-3 mb-auto" (click)="editStoryTitle()">
+            <fa-icon [icon]="!chaptersTab.editingTitle ? faPen : faCheck" size="sm"></fa-icon>
         </button>
-
     </div>
+
+
     <ng-container *ngFor="let chapter of chapters; let i = index">
         <div class="col-12 mb-2">
 
             <!-- card del capitulo -->
-            <div class="card chapter-card">
+            <div class="">
                 <div class="card-header d-flex" (click)="toggleChapterInfo(chapter.id)">
                     <ng-container
                         *ngIf="chaptersTab?.editing && chaptersTab?.chapters.includes(chapter.id); else chapterTitle">
@@ -26,7 +26,7 @@
                     </ng-container>
                     <ng-template #chapterTitle>
                         <h4 class="card-title">{{chapter.name || 'Nuevo Capitulo'}}</h4>
-                        <small class="text-muted ml-auto">
+                        <small class="text-muted ml-2 my-auto">
                             <span *ngIf="!chapter.published">Sin Publicar</span>
                             <span *ngIf="chapter.published">Publicado el {{ chapter.publishDate | date}}</span>
                         </small>

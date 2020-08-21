@@ -44,7 +44,11 @@ export class StoriesState {
     @Selector()
     static getStory(state: StoriesStateModel) {
         return (placeId: string, npcId: string): Chapter[] => {
-            return state[placeId].find(n => n.id === npcId).chapters;
+            if (placeId && npcId) {
+                return state[placeId].find(n => n.id === npcId).chapters;
+            } else {
+                return [];
+            }
         };
     }
 

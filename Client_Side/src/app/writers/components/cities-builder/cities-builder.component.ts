@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
 import { isValid } from 'src/app/shared/utils/commons';
 import { CityTabs } from 'src/app/shared/constants';
 import { TaleEdition } from 'wos-api';
-import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faChevronLeft, faChevronRight, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faChevronLeft, faChevronRight, faPlus, faTimes, faCaretRight, faCircle, faMapMarker, faMapMarkerAlt, faMapMarked, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-cities-builder',
@@ -48,6 +48,8 @@ export class CitiesBuilderComponent implements OnInit, OnDestroy {
   faRight = faChevronRight;
   faPlus = faPlus;
   faTimes = faTimes;
+  faMapMarker = faMapMarked;
+  faMapMarkerAlt = faMapMarkedAlt;
 
   constructor(
     private cd: ChangeDetectorRef,

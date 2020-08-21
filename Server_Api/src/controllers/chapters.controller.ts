@@ -75,7 +75,7 @@ class ChaptersController {
             console.log('> story name:', npcs && npcs.title);
             let filterChapters = (npcs) ? npcs.chapters : [];
             const chapter = filterChapters && filterChapters.find(n => n._id == id);
-            
+
             const castChapter = (chapter) ? {
                 ...chapter,
                 id: chapter._id,
@@ -161,8 +161,11 @@ class ChaptersController {
                                 {
                                     $push: {
                                         chapters: [{
-                                            name: '',
-                                            story: '',	                // narracion previa a batalla o decision.
+                                            name: option.name,
+                                            story: [],	                // narracion previa a batalla o decision.
+                                            endLocation: {
+                                                endChapter: true
+                                            },
                                             published: false,
                                             writeDate: new Date()     // Fecha de creacion
                                         }]

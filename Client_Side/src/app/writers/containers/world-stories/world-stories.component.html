@@ -13,7 +13,7 @@
                     <fa-icon [icon]="faInfo" size="md"></fa-icon>
                 </button>
             </div>
-            <div class="mb-5 mt-3 ml-4 border-left pl-4" *ngIf="displayCityInfo">
+            <div class="mb-5 ml-4 border-left pl-4" *ngIf="displayCityInfo">
                 <p>Las ciudades son la mayor estructura de localización de este mundo. Solo las a publicadas tendrán acceso los lectores.</p>
                 <p>Cada ciudad cuenta con:</p>
                 <ul>
@@ -71,7 +71,7 @@
                     <fa-icon [icon]="faInfo" size="md"></fa-icon>
                 </button>
             </div>
-            <div class="mb-5 mt-3 ml-4 border-left pl-4" *ngIf="displayPlaceInfo">
+            <div class="mb-5 ml-4 border-left pl-4" *ngIf="displayPlaceInfo">
                 <p>Los lugares son estructura de localización interna de las ciudades. Los lectores podran entrar y salir libremente de los lugares en cada ciudad. <br>
                     Solo las a publicadas tendrán acceso los lectores.</p>
                 <p>Cada lugar cuenta con:</p>
@@ -132,7 +132,7 @@
                     <fa-icon [icon]="faInfo" size="md"></fa-icon>
                 </button>
             </div>
-            <div class="mb-5 mt-3 ml-4 border-left pl-4" *ngIf="displayNpcInfo">
+            <div class="mb-5 ml-4 border-left pl-4" *ngIf="displayNpcInfo">
                 <p>Los Npcs son la estructura principal de historia. Los lectores podran interactuar libremente con los npcs de algun lugar. <br>
                     Solo a los publicados tendrán acceso los lectores.</p>
                 <p>Cada npc cuenta con:</p>
@@ -214,7 +214,7 @@
                     <fa-icon [icon]="faInfo" size="md"></fa-icon>
                 </button>
             </div>
-            <div class="mb-5 mt-3 ml-4 border-left pl-4" *ngIf="displayStoryInfo">
+            <div class="mb-5 ml-4 border-left pl-4" *ngIf="displayStoryInfo">
                 <p>La historia es la estructura narrativa final. Los lectores podran leer un conjunto de capitulos y dependiendo de las decisiones armar la historia. <br>
                     Solo a los capitulos publicados tendrán acceso los lectores.</p>
                 <p>La  historia cuenta con un <b>Titulo principal</b> y luego cada capitulo cuenta con:</p>
@@ -260,16 +260,20 @@
         </ng-container>
     </ng-container>
 
+
+
+
+    <!-- Lineamientos narrativos -->
     <ng-container>
-        <div class="mt-5 d-flex mb-3">
-            <h5 class="my-auto">
+        <div class="mt-auto d-flex mb-3">
+            <h4 class="my-auto">
                 Lineamientos narrativos.
-            </h5>
+            </h4>
             <button class="btn btn-link" (click)="displayWriteGuideline = !displayWriteGuideline">
                 <fa-icon [icon]="faInfo" size="md"></fa-icon>
             </button>
         </div>
-        <div class="mb-5 mt-3 ml-4 border-left pl-4" *ngIf="displayWriteGuideline">
+        <div class="mb-5 ml-4 border-left pl-4" *ngIf="displayWriteGuideline">
             <p>Aunque puedes crear la historia que te plazca en este mundo, me parece adecuado colocar ciertos lineamientos para poder mantener el mismo esquema narrativo en cada historia.</p>
             <!-- <p>La  historia cuenta con un <b>Titulo principal</b> y luego cada capitulo cuenta con:</p> -->
             <ul>
@@ -289,7 +293,7 @@
                     Los jugadores tienen el rol de <i>El Peregrino</i> en la historia, asi que el narrador debe referirse a ellos en 2da persona.
                     <span class="text-muted">(Quizas esta es la mas compleja de implementar)</span>
                 </li>
-                <li class="mb-2 mt-3">
+                <li class="mb-2">
                     <b class="mb-2">Evitemos</b>
                     <ul>
                         <li class="mb-2">
@@ -317,7 +321,6 @@
             </ul>
             <div class="text-right text-muted">- RecRoger</div>
         </div>
-        <div class="mt-5"></div>
     </ng-container>
 
 

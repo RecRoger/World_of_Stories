@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 import { NpcTabs } from 'src/app/shared/constants';
 import { isValid } from 'src/app/shared/utils/commons';
 import { NewNpc, PublishNpc, UpdateNpc, GetNpcData } from 'src/app/shared/store/stories/stories.actions';
-import { faCloudUploadAlt, faCloudDownloadAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faCaretRight, faComment, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-npc-builder',
@@ -48,6 +48,8 @@ export class NpcBuilderComponent implements OnInit {
   faUpload = faCloudUploadAlt;
   faDownload = faCloudDownloadAlt;
   faEdit = faEdit;
+  faMapMarker = faComment;
+  faMapMarkerAlt = faCommentAlt;
 
   constructor(
     private cd: ChangeDetectorRef,

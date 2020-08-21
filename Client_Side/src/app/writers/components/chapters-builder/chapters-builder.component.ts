@@ -23,7 +23,7 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
 
   @Select(StoriesState.getStory) allChapters$: Observable<any>;
   get chapters$(): Observable<Chapter[]> {
-    return this.allChapters$.pipe(map(filterFn => filterFn(this.place.id, this.npc.id)));
+    return this.allChapters$.pipe(map(filterFn => filterFn(this.place && this.place.id, this.npc && this.npc.id)));
   }
 
   @Input() place: Place;
@@ -41,6 +41,8 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
   chapterForm: FormGroupTyped<ChapterUpdate>;
   cities = [];
   places = [];
+  chapters: Chapter[] = [];
+  shownChapters: Chapter[] = [];
 
   faUpload = faCloudUploadAlt;
   faDownload = faCloudDownloadAlt;
@@ -48,7 +50,8 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
   faPen = faPen;
   faCheck = faCheck;
 
-  subcription: Subscription;
+  formSubcription: Subscription;
+  chapterSubcription: Subscription;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -57,13 +60,23 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
   ) {
     this.user = this.store.selectSnapshot(UserState.getUser);
     this.cities = this.store.selectSnapshot(LocationState.getCities).map(l => ({ name: l.name, value: l.id }));
+    this.chapterSubcription = this.chapters$.subscribe(async chapList => {
+      this.chapters = chapList;
+      if (this.chapters.length !== 0 && this.shownChapters.length === 0) {
+        this.shownChapters.push(null);
+        await this.toggleChapterInfo(this.chapters[0].id);
+        this.shownChapters[0] = this.chapters[0];
+      }
+    });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+
   }
 
   ngOnDestroy() {
-    if (this.subcription) { this.subcription.unsubscribe(); }
+    if (this.formSubcription) { this.formSubcription.unsubscribe(); }
+    if (this.chapterSubcription) { this.chapterSubcription.unsubscribe(); }
   }
 
   async toggleChapterInfo(id: string) {
@@ -102,7 +115,7 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
         usersDecisions: [chapter.usersDecisions || {}, [Validators.required]],
         author: [this.user.username, [Validators.required]]
       });
-      this.subcription = this.chapterForm.get('endLocation').get('cityId').valueChanges.subscribe(async (val: string) => {
+      this.formSubcription = this.chapterForm.get('endLocation').get('cityId').valueChanges.subscribe(async (val: string) => {
         const store = await this.store.dispatch(new GetAllPlaces({ request: { cityId: val } })).toPromise();
         const cities: City[] = store.locations && store.locations.cities || [];
         const city: City = cities.find(c => c.id === val);
