@@ -74,9 +74,9 @@ export class WriteDecisionComponent implements OnInit, OnDestroy {
       this.optionsForm.push(
         this.fb.group({
           id: ['', []],
-          name: ['Aceptar', [Validators.required]],
+          name: [(this.npcDecisio) ? 'Aceptar' : 'Continuar', [Validators.required]],
           description: ['', [Validators.required]],
-          value: ['true', []],
+          value: [(this.npcDecisio) ? 'true' : '', []],
           published: [false, []],
           removeItem: [false, []]
         })
@@ -84,9 +84,9 @@ export class WriteDecisionComponent implements OnInit, OnDestroy {
         this.optionsForm.push(
           this.fb.group({
             id: ['', []],
-            name: ['Cancelar', [Validators.required]],
+            name: [(this.npcDecisio) ? 'Cancelar' : 'Nuevo', [Validators.required]],
             description: ['', [Validators.required]],
-            value: ['false', []],
+            value: [(this.npcDecisio) ? 'false' : '', []],
             published: [false, []],
             removeItem: [false, []]
           })

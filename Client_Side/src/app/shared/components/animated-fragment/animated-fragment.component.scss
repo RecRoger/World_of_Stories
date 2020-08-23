@@ -4,9 +4,9 @@
     // border-radius: .30em;
     // min-height: 160px;
     // max-height: 600px;
-    overflow-x: hidden;
+    // overflow-x: hidden;
     // overflow-y: auto;
-
+    
     text-align: justify;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -14,5 +14,42 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    
+}
+.hide-overflow{
+    overflow-x: hidden;
+    
+}
 
+.chapter-decision{
+    // background: red;
+    margin-top: -7px;
+    position: relative;
+    height: 10px;
+    z-index: 2;
+}
+
+.hide {
+    // display: block;
+    display: none;
+    position: absolute;
+    top: -15px;
+    left: 99%;
+
+}
+.new-decision{
+    display: block;
+    // padding: .5em .75em;
+    background: #fff;
+    width: 130px;
+    box-shadow: 1px 1px 1px #00000030
+
+}
+
+.chapter-decision:hover {
+    border-top: 1px solid #dee2e6;
+}
+
+.chapter-decision:hover> .hide {
+    display: block;
 }

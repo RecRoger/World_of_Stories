@@ -117,7 +117,7 @@
                 <!-- Decision -->
                 <ng-container *ngIf="npcsTabs.tab == 'decision'">
                   <form [formGroup]="npcForm">
-                    <app-write-decision [decision]="npcForm.get('decision')"></app-write-decision>
+                    <app-write-decision [decision]="npcForm.get('decision')" [npcDecisio]="true"></app-write-decision>
                   </form>
                 </ng-container>
 
@@ -245,7 +245,7 @@
           <!-- Decision -->
           <ng-container *ngIf="newNpcTab.tab == 'decision'">
             <form [formGroup]="npcForm">
-              <app-write-decision [decision]="npcForm.get('decision')"></app-write-decision>
+              <app-write-decision [decision]="npcForm.get('decision')" [npcDecisio]="true"></app-write-decision>
             </form>
           </ng-container>
 

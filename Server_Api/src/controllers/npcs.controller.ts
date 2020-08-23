@@ -176,7 +176,7 @@ class NpcsController {
                 items: [],	       // items del npc (tienda);
                 title: npc.title,		       // Titulo de la historia
                 chapters: [{
-                    name: 'Introduccion',
+                    name: 'Inicio',
                     story: [],	                // narracion previa a batalla o decision.
                     endLocation: {
                         endChapter: true

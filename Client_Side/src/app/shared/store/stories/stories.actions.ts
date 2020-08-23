@@ -1,4 +1,5 @@
-import { RequestNewNpc, RequestPublishNpc, UpdateNpcStructure, RequestGetChapters, RequestUpdateChapter, RequestPublishChapter } from 'wos-api';
+import { RequestNewNpc, RequestPublishNpc, UpdateNpcStructure, RequestGetChapters, RequestUpdateChapter, RequestPublishChapter, Chapter } from 'wos-api';
+import { ChapterDividerModel } from '../../components/animated-fragment/animated-fragment.component';
 
 export class GetAllNpcs {
     static readonly type = '[Stories] Get All Npcs';
@@ -38,6 +39,11 @@ export class UpdateChapter {
 export class PublishChapter {
     static readonly type = '[Stories] Publish Chapter';
     constructor(public payload: { placeId: string, npcId: string, chapter: RequestPublishChapter }) { }
+}
+
+export class DivideChapter {
+    static readonly type = '[Stories] Divide Chapter';
+    constructor(public payload: { placeId: string, npcId: string, chapter: Chapter, division: ChapterDividerModel }) { }
 }
 // export class AddPlaceStory {
 //     static readonly type = '[Stories] New Place Story';

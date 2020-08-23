@@ -3,13 +3,16 @@
     <div class="row" *ngFor="let form of talesForm.controls; let i = index">
         <!-- seccion de edicion -->
         <div class="col-8 pb-1">
-            <ng-container >
+            <ng-container>
                 <div class="row h-100" [formGroup]="form">
-                    <div class="col-11"
+                    <div class="col-11 d-flex"
                         [ngClass]="{'tale-invalid': tale.invalid && tale.touched && i === talesForm.length - 1 }">
+                        <div class="ml-n2 mr-2 pt-2">
+                            P{{i+1}}
+                        </div> 
                         <textarea [id]="'input-'+i" formControlName="text" class="form-control tale-textarea h-100"
                             cdkTextareaAutosize rows="3" (keyup.enter)="focusOnFragment(i + 1)">
-    
+
                         </textarea>
                     </div>
                     <div class="col-1">
@@ -23,15 +26,18 @@
                         </mat-menu>
                         <mat-menu #animations="matMenu">
                             <button mat-menu-item (click)="selectAnimation(i,animationsTypes.default)">Default</button>
-                            <button mat-menu-item (click)="selectAnimation(i,animationsTypes.chatA)">Conversacion 1</button>
-                            <button mat-menu-item (click)="selectAnimation(i,animationsTypes.chatB)">Conversacion 2</button>
-                            <button mat-menu-item (click)="selectAnimation(i,animationsTypes.surprise)">Sorpresa</button>
+                            <button mat-menu-item (click)="selectAnimation(i,animationsTypes.chatA)">Conversacion
+                                1</button>
+                            <button mat-menu-item (click)="selectAnimation(i,animationsTypes.chatB)">Conversacion
+                                2</button>
+                            <button mat-menu-item
+                                (click)="selectAnimation(i,animationsTypes.surprise)">Sorpresa</button>
                         </mat-menu>
                     </div>
                 </div>
             </ng-container>
         </div>
-    
+
         <!-- seccion de prueba -->
         <div class="col-4">
             <app-animated-fragment [tale]="[form.value]"></app-animated-fragment>

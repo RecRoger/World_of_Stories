@@ -139,45 +139,50 @@ class ChaptersController {
                 setUpdates['chapters.$.usersDecisions.item'] = chapter.usersDecisions.item;
                 // las Decisiones generan otros capitulos 
                 for (const option of (chapter.usersDecisions.options)) {
+
+
+                    // si la opcion no tiene valor, debemos crear el capitulo correspondiente
+                    if (!option.value) {
+                        const newChapter = await NpcsSchema.updateOne(
+                            { "chapters._id": chapter.id },
+                            {
+                                $push: {
+                                    chapters: [{
+                                        name: option.name,
+                                        story: [],	                // narracion previa a batalla o decision.
+                                        endLocation: {
+                                            endChapter: true
+                                        },
+                                        published: false,
+                                        writeDate: new Date()     // Fecha de creacion
+                                    }]
+                                }
+                            }
+                        );
+                        const npc: NpcInterface | null = await NpcsSchema.findOne({ "chapters._id": chapter.id }, { chapters: 1 }).lean();
+                        if (npc && npc.chapters) {
+                            option.value = npc.chapters[npc.chapters.length - 1]._id
+                        }
+                        console.log('> new chapterId: ', option.value);
+                    }
+
                     // la edicione tiene id, significa que edito existente.
                     if (option["id"]) {
                         const i = chapter.usersDecisions.options.indexOf(option);
                         console.log('> option vieja', i);
+
                         setUpdates['chapters.$.usersDecisions.options.$[elem' + i + '].description'] = option.description;
                         setUpdates['chapters.$.usersDecisions.options.$[elem' + i + '].name'] = option.name;
                         setUpdates['chapters.$.usersDecisions.options.$[elem' + i + '].value'] = option.value;
+
                         if (!arrayFilters) {
                             arrayFilters = { arrayFilters: [{ ["elem" + i + "._id"]: option.id }] }
                         } else {
                             arrayFilters.arrayFilters.push({ ["elem" + i + "._id"]: option.id });
                         }
                     } else {
-
                         console.log('> new option');
                         // la decision no tiene id, agrego nueva decision y capitulo.
-                        if (!option.value) {
-                            const newChapter = await NpcsSchema.updateOne(
-                                { "chapters._id": chapter.id },
-                                {
-                                    $push: {
-                                        chapters: [{
-                                            name: option.name,
-                                            story: [],	                // narracion previa a batalla o decision.
-                                            endLocation: {
-                                                endChapter: true
-                                            },
-                                            published: false,
-                                            writeDate: new Date()     // Fecha de creacion
-                                        }]
-                                    }
-                                }
-                            );
-                            const npc: NpcInterface | null = await NpcsSchema.findOne({ "chapters._id": chapter.id }, { chapters: 1 }).lean();
-                            if (npc && npc.chapters) {
-                                option.value = npc.chapters[npc.chapters.length - 1]._id
-                            }
-                            console.log('> new chapterId: ', option.value);
-                        }
                         if (!pullUpdates['chapters.$.usersDecisions.options']) {
                             pullUpdates['chapters.$.usersDecisions.options'] = [];
                         }

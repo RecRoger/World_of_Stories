@@ -6,11 +6,12 @@ import { map } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { isValid } from 'src/app/shared/utils/commons';
-import { UpdateChapter, PublishChapter, GetChapterData, UpdateNpc, GetNpcStory } from 'src/app/shared/store/stories/stories.actions';
+import { UpdateChapter, PublishChapter, GetChapterData, UpdateNpc, GetNpcStory, DivideChapter } from 'src/app/shared/store/stories/stories.actions';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faPen, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { GetAllPlaces } from 'src/app/shared/store/locations/locations.actions';
+import { ChapterDividerModel } from 'src/app/shared/components/animated-fragment/animated-fragment.component';
 
 @Component({
   selector: 'app-chapters-builder',
@@ -30,19 +31,19 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
   @Input() npc: Npc;
 
   chaptersTab: {
-    chapters?: string[];
+    options?: string[];
     loading?: string[]
-    editing?: boolean;
+    editing?: string;
     editingTitle?: boolean;
     endChapter?: false;
-  } = { chapters: [] };
+  } = { options: [], loading: [] };
 
   titleForm: FormGroup;
   chapterForm: FormGroupTyped<ChapterUpdate>;
   cities = [];
   places = [];
   chapters: Chapter[] = [];
-  shownChapters: Chapter[] = [];
+  shownChapters: Chapter[];
 
   faUpload = faCloudUploadAlt;
   faDownload = faCloudDownloadAlt;
@@ -62,10 +63,10 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
     this.cities = this.store.selectSnapshot(LocationState.getCities).map(l => ({ name: l.name, value: l.id }));
     this.chapterSubcription = this.chapters$.subscribe(async chapList => {
       this.chapters = chapList;
-      if (this.chapters.length !== 0 && this.shownChapters.length === 0) {
-        this.shownChapters.push(null);
+      if (this.chapters.length !== 0 && !this.shownChapters) {
+        this.shownChapters = [];
+        this.chaptersTab.options = [];
         await this.toggleChapterInfo(this.chapters[0].id);
-        this.shownChapters[0] = this.chapters[0];
       }
     });
   }
@@ -79,32 +80,34 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
     if (this.chapterSubcription) { this.chapterSubcription.unsubscribe(); }
   }
 
-  async toggleChapterInfo(id: string) {
-    if (!this.chaptersTab || !this.chaptersTab.editing) {
-      if (this.chaptersTab && this.chaptersTab.chapters.includes(id)) {
-        this.chaptersTab.chapters = this.chaptersTab.chapters.filter(i => i !== id);
-      } else {
-        this.chaptersTab.chapters = [id];
-        this.chaptersTab.loading = [id];
-        this.chaptersTab.editing = false;
-        this.chaptersTab.endChapter = false;
+  async toggleChapterInfo(id: string, startChapter?: Chapter) {
+    if (!this.chaptersTab.editing) {
+      this.chaptersTab.editing = null;
+      this.chaptersTab.endChapter = false;
 
-        await this.store.dispatch(new GetChapterData({ placeId: this.place.id, chapterId: id, npcId: this.npc.id })).toPromise();
-        this.chaptersTab.loading = this.chaptersTab.loading.filter(i => i !== id);
-        this.cd.markForCheck();
-
+      if (startChapter) {
+        const index = this.shownChapters.findIndex(c => c.id === startChapter.id);
+        this.shownChapters = this.shownChapters.slice(0, index + 1);
+        this.chaptersTab.options = this.chaptersTab.options.slice(0, index + 1);
       }
+
+      this.chaptersTab.loading.push(id);
+      await this.store.dispatch(new GetChapterData({ placeId: this.place.id, chapterId: id, npcId: this.npc.id })).toPromise();
+      this.chaptersTab.loading = this.chaptersTab.loading.filter(i => i !== id);
+
+      const nextChapter = this.chapters.find(chap => chap.id === id);
+      this.shownChapters.push(nextChapter);
+
+
       this.cd.markForCheck();
     }
   }
 
   editChapter(chapter: Chapter) {
     if (!this.chaptersTab.editing) {
-      this.chaptersTab.chapters = [chapter.id];
-
       this.chapterForm = this.fb.group({
         id: [chapter.id, [Validators.required]],
-        name: [chapter.name, [Validators.required]],
+        name: [chapter.name, []],
         story: [chapter.story || [], [Validators.required]],
         item: [chapter.items || [], []],
         endLocation: this.fb.group({
@@ -125,14 +128,14 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
       });
 
     }
-    this.chaptersTab.editing = !this.chaptersTab.editing;
+    this.chaptersTab.editing = chapter.id;
     this.cd.markForCheck();
 
   }
 
   async saveChapterEdition(cancel?) {
     if (cancel) {
-      this.chaptersTab.editing = false;
+      this.chaptersTab.editing = null;
       this.cd.markForCheck();
       return true;
     }
@@ -156,7 +159,18 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
         request: getChaptersRequest,
         npc: updateRequest
       })).toPromise();
-      this.chaptersTab.editing = false;
+
+      const editedChapter = this.shownChapters.find(c => c.id === this.chaptersTab.editing);
+      const editedIndex = this.shownChapters.findIndex(c => c.id === this.chaptersTab.editing);
+      this.chaptersTab.editing = null;
+
+      if (!editedIndex) {
+        this.shownChapters = [];
+        this.toggleChapterInfo(editedChapter.id);
+      } else {
+        this.toggleChapterInfo(editedChapter.id, this.shownChapters[editedIndex - 1]);
+      }
+
       this.cd.markForCheck();
     }
   }
@@ -172,8 +186,16 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
 
   }
 
-  endStoryAnimation() {
-    // console.log('aca llego');
+  endStoryAnimation(chapter: Chapter) {
+    if (!chapter.endLocation.endChapter && chapter.usersDecisions.options) {
+      this.chaptersTab.options.push(chapter.id);
+    }
+    if (!chapter.endLocation.endChapter && chapter.usersDecisions.options && chapter.usersDecisions.options[0].value) {
+      const chapterAlreadyExist = this.shownChapters.find(chap => chap.id === chapter.usersDecisions.options[0].value);
+      if (!chapterAlreadyExist) {
+        this.toggleChapterInfo(chapter.usersDecisions.options[0].value);
+      }
+    }
   }
 
   async editStoryTitle() {
@@ -191,10 +213,18 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
         this.npc = npcs.find(n => n.id === this.npc.id);
         await this.store.dispatch(new GetNpcStory({ placeId: this.place.id, npcId: this.npc.id, request: { id: this.npc.id } })).toPromise();
         this.chaptersTab.editingTitle = false;
-        this.chaptersTab.chapters = [];
         this.cd.markForCheck();
       }
     }
+  }
+
+  async addDivision(chapter: Chapter, divider: ChapterDividerModel) {
+
+    await this.store.dispatch(new DivideChapter({ placeId: this.place.id, npcId: this.npc.id, chapter, division: divider })).toPromise();
+
+    this.shownChapters = [];
+    this.chaptersTab.options = [];
+    this.toggleChapterInfo(this.chapters[0].id);
   }
 
 
