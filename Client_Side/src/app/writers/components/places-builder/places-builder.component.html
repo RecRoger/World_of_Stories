@@ -3,18 +3,20 @@
     <div class="col-6 mb-5" [ngClass]="{'col-6': (!placesTabs || !placesTabs.editing || placesTabs.place !== place.id), 'col-12': (placesTabs && placesTabs.place === place.id && placesTabs.editing)}">
 
       <!-- Carta de ciudad -->
-      <div class="card place-card">
+      <div class="">
         <div class="card-header d-flex" (click)="togglePlaceInfo(place.id)">
+          <fa-icon [icon]="placesTabs?.place === place.id ? faMapMarkerAlt : faMapMarker" size="lg" class="mr-2">
+          </fa-icon>
           <h4 class="card-title">
             {{place.name}}
           </h4>
-          <small class="text-muted ml-auto">
+          <small class="text-muted ml-2 my-auto">
             <span *ngIf="!place.published">Sin Publicar</span>
             <span *ngIf="place.published">Publicado el {{ place.publishDate | date}}</span>
           </small>
         </div>
 
-        <ng-container *ngIf="placesTabs?.place === place.id">
+        <div *ngIf="placesTabs?.place === place.id">
 
           <ng-container *ngIf="placesTabs.loading">
             <div class="card-body d-flex">
@@ -23,7 +25,7 @@
           </ng-container>
           <ng-container *ngIf="!placesTabs.loading">
             <!-- tabs de descripcion y entrada -->
-            <ul class="nav nav-tabs mt-3">
+            <ul class="nav nav-tabs pt-3 px-3">
               <li class="nav-item ml-2">
                 <a class="nav-link" (click)="placesTabs.page = 0; placesTabs.tab = 'desc'"
                   [ngClass]="{'active': placesTabs.tab == 'desc', 'disabled': placesTabs.editing }">
@@ -55,7 +57,7 @@
                 </button>
               </div>
             </ul>
-            <div class="card-body place-info d-flex flex-column">
+            <div class="card-body border-left d-flex flex-column">
     
               <ng-container *ngIf="!placesTabs.editing">
                 <!-- Descripciones -->
@@ -142,7 +144,7 @@
             </div>
             <div class="card-footer d-flex">
               <ng-container *ngIf="!placesTabs.editing">
-                <button class="btn btn-secondary mr-auto" (click)="publishPlace(place.id, !place.published)">
+                <button class="btn btn-secondary ml-auto" (click)="publishPlace(place.id, !place.published)">
                   <span *ngIf="!place.published">
                     <fa-icon [icon]="faUpload" size="xl"></fa-icon> Publicar
                   </span>
@@ -150,7 +152,7 @@
                     <fa-icon [icon]="faDownload" size="xl"></fa-icon> Quitar publicacion
                   </span>
                 </button>
-                <button class="btn btn-primary ml-auto" (click)="selectPlace(place)">
+                <button class="btn btn-primary ml-3" (click)="selectPlace(place)">
                   Personas y eventos
                   <span class="badge badge-pill">
                     {{place?.events?.length}}
@@ -166,14 +168,14 @@
             </div>
           </ng-container>
 
-        </ng-container>
+        </div>
       </div>
     </div>
   </ng-container>
 
   <!-- Loading de la Nueva Ciudad -->
   <div class="col-6 mb-5" *ngIf="newPlaceTab.loading">
-    <div class="card place-card">
+    <div class="">
       <div class="card-header d-flex">
         <h4 class="card-title">
           <app-loader class="loader" size="md"></app-loader>
@@ -184,14 +186,16 @@
 
   <!-- Carta de Nuevo Lugar -->
   <div class="col-6 mb-5" [ngClass]="{'col-6': !newPlaceTab.newPlace, 'col-12': newPlaceTab.newPlace}">
-    <div class="card place-card">
+    <div class="">
       <div class="card-header d-flex" (click)="toggleNewPlace()">
+        <fa-icon [icon]="newPlaceTab.newPlace ? faMapMarkerAlt : faMapMarker" size="lg" class="mr-2">
+        </fa-icon>
         <h4 class="card-title">
           Nuevo Lugar
         </h4>
       </div>
-      <ng-container *ngIf="newPlaceTab.newPlace">
-        <ul class="nav nav-tabs mt-3">
+      <div *ngIf="newPlaceTab.newPlace">
+        <ul class="nav nav-tabs pt-3 px-3">
           <li class="nav-item ml-2 mt-n1">
             <form [formGroup]="placeForm">
               <input type="text" class="form-control" formControlName="name" placeholder="Nombre del Lugar">
@@ -210,7 +214,7 @@
             </a>
           </li>
         </ul>
-        <div class="card-body place-info d-flex flex-column">
+        <div class="card-body border-left d-flex flex-column">
           <!-- Descripciones -->
           <ng-container *ngIf="newPlaceTab.tab == 'desc'">
             {{placeForm.get('name').value}} es ...
@@ -233,7 +237,7 @@
           <button class="btn btn-primary ml-4" (click)="addNewPlace()">Guardar</button>
 
         </div>
-      </ng-container>
+      </div>
     </div>
   </div>
 </div>

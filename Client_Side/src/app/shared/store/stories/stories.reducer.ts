@@ -14,9 +14,10 @@ import {
     RequestGetChapters,
     Chapter,
     RequestGetNpc,
-    RequestGetChapter
+    RequestGetChapter,
+    RequestUpdateChapter
 } from 'wos-api';
-import { GetAllNpcs, NewNpc, PublishNpc, UpdateNpc, GetNpcStory, UpdateChapter, PublishChapter, GetNpcData, GetChapterData } from './stories.actions';
+import { GetAllNpcs, NewNpc, PublishNpc, UpdateNpc, GetNpcStory, UpdateChapter, PublishChapter, GetNpcData, GetChapterData, DivideChapter } from './stories.actions';
 
 export interface StoriesStateModel {
     [placeId: string]: Npc[];
@@ -44,7 +45,11 @@ export class StoriesState {
     @Selector()
     static getStory(state: StoriesStateModel) {
         return (placeId: string, npcId: string): Chapter[] => {
-            return state[placeId].find(n => n.id === npcId).chapters;
+            if (placeId && npcId) {
+                return state[placeId].find(n => n.id === npcId).chapters;
+            } else {
+                return [];
+            }
         };
     }
 
@@ -350,6 +355,81 @@ export class StoriesState {
             console.log('*** ERROR ***', err);
 
             this.store.dispatch(new SetError('Ha ocurrido un problema consultando los eventos. Intente mas tarde'));
+            return false;
+        }
+    }
+
+    @Action(DivideChapter)
+    async DivideChapter(ctx: StateContext<StoriesStateModel>, action: DivideChapter) {
+
+        // TODO - aqui viene el beta
+        try {
+
+            const { chapter, npcId, placeId, division } = action.payload;
+
+            division.decision.options = division.decision.options.map((op, i) => ({
+                ...op,
+                id: chapter.usersDecisions.options && chapter.usersDecisions.options[i] ? chapter.usersDecisions.options[i].id : '',
+            }));
+
+            const firstChapter: Chapter = {
+                ...chapter,
+                story: division.previousTales,
+                usersDecisions: division.decision,
+                endLocation: {
+                    endChapter: false
+                }
+            };
+            const nextChapter: Chapter = {
+                ...chapter,
+                id: '',
+                story: division.nextTales,
+                usersDecisions: {
+                    ...chapter.usersDecisions,
+                    options: chapter.usersDecisions.options.map(o => ({ ...o, id: '' }))
+                },
+                endLocation: chapter.endLocation
+            };
+
+
+            const request1: RequestUpdateChapter = {
+                chapter: {
+                    ...firstChapter
+                }
+            };
+            const resp = await this.storiesService.updateChapter(request1).toPromise();
+
+            if (resp && resp.data && resp.data.chapter) {
+
+                const editedChapter = resp.data.chapter;
+                const request2: RequestUpdateChapter = {
+                    chapter: {
+                        ...nextChapter,
+                        id: editedChapter.usersDecisions.options[0].value,
+                        name: editedChapter.usersDecisions.options[0].name
+                    }
+                };
+                const resp2 = await this.storiesService.updateChapter(request2).toPromise();
+
+                if (resp2 && resp2.data && resp2.data.chapter) {
+
+                    await this.store.dispatch(new GetNpcStory({ npcId, placeId, request: { id: npcId } })).toPromise();
+                    console.log('llego hasta aca?');
+
+                } else {
+                    this.store.dispatch(new SetError('No se han podido cargar el capitulo continuación'));
+                    return false;
+                }
+
+            } else {
+                this.store.dispatch(new SetError('No se han podido cargar los capitulos'));
+                return false;
+            }
+
+
+        } catch (err) {
+            console.log('*** ERROR ***', err);
+            this.store.dispatch(new SetError('Ha ocurrido un dividiendo el capitulo. Intente mas tarde'));
             return false;
         }
     }

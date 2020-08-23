@@ -1,12 +1,14 @@
 import { Component, OnInit, Input, ChangeDetectorRef, OnChanges, ElementRef, ViewChild, Output, EventEmitter, HostListener, OnDestroy } from '@angular/core';
-import { ReadFragment } from 'wos-api';
+import { ReadFragment, Decision } from 'wos-api';
 import { TextAnimation } from 'ngx-teximate';
 import { rotateInDownLeft, fadeInDown, bounceInDown, bounceIn, fadeInLeft, fadeInRight, zoomIn } from 'ng-animate';
 import { trigger, transition, useAnimation, AnimationOptions } from '@angular/animations';
 import { AnimationsTypes } from '../../constants';
 import { ScrollAnimationService } from '../../services/scroll-animation.service';
 import { Subscription } from 'rxjs';
-import { isScrollAtBottom } from '../../utils/commons';
+import { isScrollAtBottom, isValid } from '../../utils/commons';
+import { faLongArrowAltLeft } from '@fortawesome/free-solid-svg-icons';
+import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-animated-fragment',
@@ -19,11 +21,13 @@ import { isScrollAtBottom } from '../../utils/commons';
 })
 export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
 
-  constructor(private cd: ChangeDetectorRef, private scrollService: ScrollAnimationService) { }
+  constructor(private cd: ChangeDetectorRef, private scrollService: ScrollAnimationService, private fb: FormBuilder) { }
 
   @Input() tale: ReadFragment[];
   @Input() title: string;
+  @Input() chapterMode = false;
   @Output() finish: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() setChapterDivision: EventEmitter<ChapterDividerModel> = new EventEmitter<ChapterDividerModel>();
 
   options: TextAnimation = {
     animation: bounceIn,
@@ -47,6 +51,14 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
 
   subscription: Subscription[] = [];
   scrollElement: any;
+
+  faLongArrow = faLongArrowAltLeft;
+
+  completedAnimation = false;
+
+  newDivision: ChapterDividerModel = null;
+
+  optionForm: FormGroup;
 
   ngOnInit() {
     this.subscription.push(
@@ -92,7 +104,10 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
         }
         );
       } else {
-        this.finish.emit(true);
+        if (!this.completedAnimation) {
+          this.completedAnimation = true;
+          this.finish.emit(true);
+        }
       }
     } else {
       this.pendingIndex = i + 1;
@@ -140,4 +155,37 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
   }
 
 
+  addDecision(fragmentIndex: number) {
+    this.newDivision = {
+      splitIndex: fragmentIndex,
+      previousTales: this.shownFragments.slice(0, fragmentIndex + 1).map(t => t.fragment),
+      decision: {},
+      nextTales: this.shownFragments.slice(fragmentIndex + 1).map(t => t.fragment),
+    };
+    this.optionForm = this.fb.group({
+      decision: [null, [Validators.required]]
+    });
+    console.log('estructura de division de caps', this.newDivision);
+    this.cd.markForCheck();
+  }
+
+  saveChapterDivicion(cancel?) {
+    if (cancel) {
+      this.newDivision = null;
+      return 0;
+    }
+    if(isValid(this.optionForm)) {
+      this.newDivision.decision = this.optionForm.get('decision').value;
+      this.setChapterDivision.emit(this.newDivision);
+    }
+  }
+
+
+}
+
+export class ChapterDividerModel {
+  splitIndex?: number;
+  previousTales?: ReadFragment[];
+  decision?: Decision;
+  nextTales?: ReadFragment[];
 }

@@ -4,12 +4,14 @@
       [ngClass]="{'col-6': (!npcsTabs || !npcsTabs.editing || npcsTabs.npc !== npc.id), 'col-12': (npcsTabs && npcsTabs.npc === npc.id && npcsTabs.editing)}">
 
       <!-- Carta de ciudad -->
-      <div class="card npc-card">
+      <div class="">
         <div class="card-header d-flex" (click)="toggleNpcInfo(npc.id)">
+          <fa-icon [icon]="npcsTabs && npcsTabs.npc === npc.id ? faMapMarkerAlt : faMapMarker" size="lg" class="mr-2">
+          </fa-icon>
           <h4 class="card-title">
             {{npc.name}}
           </h4>
-          <small class="text-muted ml-auto">
+          <small class="text-muted ml-2 my-auto">
             <span *ngIf="!npc.published">Sin Publicar</span>
             <span *ngIf="npc.published">Publicado el {{ npc.publishDate | date }}</span>
           </small>
@@ -22,9 +24,9 @@
               <app-loader class="loader mx-auto" size="md"></app-loader>
             </div>
           </ng-container>
-          <ng-container *ngIf="!npcsTabs.loading">
+          <div *ngIf="!npcsTabs.loading">
             <!-- tabs de descripcion, encuentro, decision y rechazo -->
-            <ul class="nav nav-tabs mt-3">
+            <ul class="nav nav-tabs pt-3 px-3">
               <li class="nav-item ml-2">
                 <a class="nav-link" (click)="npcsTabs.tab = 'desc'"
                   [ngClass]="{'active': npcsTabs.tab == 'desc', 'disabled': npcsTabs.editing }">
@@ -57,7 +59,7 @@
                 </button>
               </div>
             </ul>
-            <div class="card-body npc-info d-flex flex-column">
+            <div class="card-body border-left d-flex flex-column">
 
               <ng-container *ngIf="!npcsTabs.editing">
                 <!-- Descripciones -->
@@ -115,7 +117,7 @@
                 <!-- Decision -->
                 <ng-container *ngIf="npcsTabs.tab == 'decision'">
                   <form [formGroup]="npcForm">
-                    <app-write-decision [decision]="npcForm.get('decision')"></app-write-decision>
+                    <app-write-decision [decision]="npcForm.get('decision')" [npcDecisio]="true"></app-write-decision>
                   </form>
                 </ng-container>
 
@@ -125,7 +127,7 @@
             </div>
             <div class="card-footer d-flex">
               <ng-container *ngIf="!npcsTabs.editing">
-                <button class="btn btn-secondary mr-auto" (click)="publishNpc(npc.id, !npc.published)">
+                <button class="btn btn-secondary ml-auto" (click)="publishNpc(npc.id, !npc.published)">
                   <span *ngIf="!npc.published">
                     <fa-icon [icon]="faUpload" size="xl"></fa-icon> Publicar
                   </span>
@@ -133,7 +135,7 @@
                     <fa-icon [icon]="faDownload" size="xl"></fa-icon> Quitar publicacion
                   </span>
                 </button>
-                <button class="btn btn-primary ml-auto" (click)="selectNpc(npc.id)">
+                <button class="btn btn-primary ml-3" (click)="selectNpc(npc.id)">
                   Historia
                 </button>
               </ng-container>
@@ -144,7 +146,7 @@
               </ng-container>
 
             </div>
-          </ng-container>
+          </div>
 
         </ng-container>
       </div>
@@ -153,7 +155,7 @@
 
   <!-- Loading de la Nuevo NPC -->
   <div class="col-6 mb-5" *ngIf="newNpcTab.loading">
-    <div class="card place-card">
+    <div class="">
       <div class="card-header d-flex">
         <h4 class="card-title">
           <app-loader class="loader" size="md"></app-loader>
@@ -164,14 +166,16 @@
 
   <!-- Carta de Nuevo Lugar -->
   <div class="col-6 mb-5" [ngClass]="{'col-6': !newNpcTab.newNpc, 'col-12': newNpcTab.newNpc}">
-    <div class="card npc-card">
+    <div class="">
       <div class="card-header d-flex" (click)="toggleNewNpc()">
+        <fa-icon [icon]="newNpcTab.newNpc ? faMapMarkerAlt : faMapMarker" size="lg" class="mr-2">
+        </fa-icon>
         <h4 class="card-title">
           Nuevo Evento
         </h4>
       </div>
-      <ng-container *ngIf="newNpcTab.newNpc">
-        <ul class="nav nav-tabs mt-3">
+      <div *ngIf="newNpcTab.newNpc">
+        <ul class="nav nav-tabs pt-3 px-3">
           <li class="nav-item ml-2 mt-n1">
             <form [formGroup]="npcForm">
               <input type="text" class="form-control" formControlName="name" placeholder="Nombre del evento">
@@ -216,7 +220,7 @@
             </a>
           </li>
         </ul>
-        <div class="card-body npc-info d-flex flex-column">
+        <div class="card-body border-left d-flex flex-column">
           <!-- Descripciones -->
           <ng-container *ngIf="newNpcTab.tab == 'desc'">
             {{npcForm.get('name').value}} es ...
@@ -241,7 +245,7 @@
           <!-- Decision -->
           <ng-container *ngIf="newNpcTab.tab == 'decision'">
             <form [formGroup]="npcForm">
-              <app-write-decision [decision]="npcForm.get('decision')"></app-write-decision>
+              <app-write-decision [decision]="npcForm.get('decision')" [npcDecisio]="true"></app-write-decision>
             </form>
           </ng-container>
 
@@ -252,7 +256,7 @@
           <button class="btn btn-primary ml-4" (click)="addNewNpc()">Guardar</button>
 
         </div>
-      </ng-container>
+      </div>
     </div>
   </div>
 </div>

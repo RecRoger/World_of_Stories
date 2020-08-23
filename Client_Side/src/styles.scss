@@ -12,8 +12,26 @@
     
     &_writers {
         padding: 5rem !important;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
     &_readers {
         padding: 5rem 1.5rem !important;
     }
+}
+
+.card-header{
+    background-color: transparent !important;
+    border: none !important;
+    // padding-left: 0 !important;
+    padding-bottom: 0 !important;
+}
+.card-footer {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+.nav-link.active{
+    background-color: transparent !important;
 }
