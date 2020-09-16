@@ -92,6 +92,12 @@
     "ResponseSignin": {
         "$ref": "../services/users/signin.json#/definitions/ResponseSignin"
     },
+    "RequestUpdateUser": {
+        "$ref": "../services/users/update_user.json#/definitions/RequestUpdateUser"
+    },
+    "ResponseUpdateUser": {
+        "$ref": "../services/users/update_user.json#/definitions/ResponseUpdateUser"
+    },
     "RequestDeleteUser": {
         "$ref": "../services/users/delete_user.json#/definitions/RequestDeleteUser"
     },

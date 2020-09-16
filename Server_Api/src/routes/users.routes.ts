@@ -13,6 +13,8 @@ class UserRouter {
         router.post('/user', cors(), usersController.getUserById);
         
         router.post('/signin', cors(), usersController.saveUser);
+
+        router.post('/update', cors(), usersController.updateUser);
         
         router.post('/delete', cors(), usersController.deleteUser);
         

@@ -65,8 +65,15 @@ class UsersController {
             const { username, password } = req.body;
             const user: UserInterface | null = await UsersSchema.findOne(
                 {
-                    username: username,
-                    password: password
+                    $and: [
+                        {
+                            $or: [
+                                { username: username },
+                                { email: username },
+                            ]
+                        },
+                        { password: password }
+                    ]
                 }, {
                 _v: 0
             }
@@ -91,21 +98,107 @@ class UsersController {
         console.log('________________________________________________');
         console.log('****************** savwUser *******************');
         try {
-            const { username, password } = req.body.user;
-            const newUser: UserInterface = new UsersSchema({
-                username,
-                password,
-                rol: []
-            });
-            await newUser.save();
+            const { email, username, password } = req.body.user;
 
-            const user = await UsersSchema.findOne({ "_id": newUser._id }).lean();
 
-            console.log('> user response:' + ((user) ? (user as UserInterface).username : 'not Found'));
+            const exist: UserInterface | null = await UsersSchema.findOne(
+                {
+                    $or: [
+                        { username: username },
+                        { email: email },
+                    ]
+                }, {
+                _v: 0
+            }
+            ).lean();
+
+            if (!exist) {
+                const newUser: UserInterface = new UsersSchema({
+                    email,
+                    username,
+                    password,
+                    rol: []
+                });
+                await newUser.save();
+
+                const user = await UsersSchema.findOne({ "_id": newUser._id }).lean();
+
+                console.log('> user response:' + ((user) ? (user as UserInterface).username : 'not Found'));
+                console.log('_____________________________________________________');
+                res.json({
+                    "data": { "user": { ...user, id: user._id } }
+                });
+            } else {
+                console.log('> user repeated:' + (exist));
+                console.log('_____________________________________________________');
+                res.json({
+                    "data": "repeated"
+                });
+            }
+
+        } catch (err) {
+            console.log('Error ---->', err);
             console.log('_____________________________________________________');
             res.json({
-                "data": { "user": { ...user, id: user._id } }
-            });
+                "error": err
+            })
+        }
+    }
+    // Update
+    public async updateUser(req: Request, res: Response): Promise<void> {
+        console.log('.');
+        console.log('________________________________________________');
+        console.log('****************** updateUser *******************');
+        try {
+            const { id, email, username, password } = req.body.user;
+            console.log('> userID ' + id);
+
+            const exist: UserInterface | null = await UsersSchema.findOne(
+                {
+                    $and: [
+                        { _id: { $ne: id } },
+                        {
+                            $or: [
+                                { username: username },
+                                { email: email },
+                            ]
+                        }
+                    ]
+                }, {
+                _v: 0
+            }
+            ).lean();
+
+
+            if (!exist) {
+                const edition = await UsersSchema.updateOne(
+                    { _id: id },
+                    {
+                        $set: {
+                            email: email,
+                            username: username,
+                            password: password,
+                        }
+                    }
+                );
+                const user: UserInterface | null = await UsersSchema.findById(
+                    { _id: id },
+                    { _v: 0 }
+                ).lean();
+    
+                console.log('> response:' + ((edition.ok) ? 'OK' : 'not Found'));
+                console.log('_____________________________________________________');
+                res.json({
+                    "data": edition.ok ? { user: user && { ...user, id: user._id } } : null
+                })
+            } else {
+                console.log('> user repeated:' + (exist));
+                console.log('_____________________________________________________');
+                res.json({
+                    "data": "repeated"
+                });
+            }
+
         } catch (err) {
             console.log('Error ---->', err);
             console.log('_____________________________________________________');
@@ -166,8 +259,8 @@ class UsersController {
             console.log('_____________________________________________________');
             res.json({
                 "data": edition.ok ? { user: user && { ...user, id: user._id } } : null
-
             });
+
         } catch (err) {
             console.log('Error ---->', err);
             console.log('_____________________________________________________');

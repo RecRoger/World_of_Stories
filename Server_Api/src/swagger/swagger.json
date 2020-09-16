@@ -9,7 +9,7 @@
       "url": "https://github.com/RecRoger/World_of_Stories"
     }
   },
-  "host": "192.168.0.4:3000",
+  "host": "192.168.0.8:3000",
   "basePath": "/",
   "tags": [
     {
@@ -262,6 +262,68 @@
             "description": "Success Operation",
             "schema": {
               "$ref": "#/definitions/ResponseSignin"
+            },
+            "examples": {
+              "application/json": {
+                "data": {
+                  "users": {
+                    "rol": [
+                      "Writer"
+                    ],
+                    "characters": [],
+                    "id": "5eba19ac6ebb474d647903b7",
+                    "username": "recroger",
+                    "password": "123",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error response.",
+            "schema": {
+              "$ref": "#/definitions/ResponseData"
+            },
+            "examples": {
+              "application/json": {
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/update": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update new User",
+        "description": "Update new user",
+        "operationId": "updateUser",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "Transaction details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestUpdateUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseUpdateUser"
             },
             "examples": {
               "application/json": {
@@ -2504,6 +2566,9 @@
         "id": {
           "type": "string"
         },
+        "email": {
+          "type": "string"
+        },
         "username": {
           "type": "string"
         },
@@ -3006,6 +3071,24 @@
       }
     },
     "ResponseSignin": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "$ref": "#/definitions/UserData"
+        }
+      }
+    },
+    "RequestUpdateUser": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "type": "object",
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "ResponseUpdateUser": {
       "type": "object",
       "properties": {
         "data": {

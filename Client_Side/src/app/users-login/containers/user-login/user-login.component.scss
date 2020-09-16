@@ -1,8 +1,14 @@
 .loader{
     position: absolute;
     z-index: 2;
-    background: white;
+    background: #fafafa;
     width: calc(100% - 2rem);
     height: 100%;
+    width: 100%;
     display: flex;
+}
+
+.main {
+    background: #fafafa;
+    position: absolute;
 }

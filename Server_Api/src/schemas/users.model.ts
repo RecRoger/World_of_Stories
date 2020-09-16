@@ -2,6 +2,7 @@ import { Document, Schema, model } from 'mongoose';
 
 export interface UserInterface extends Document {
     _id: string,
+    email: string,
     username: string,
     password: string,
     rol: string[],
@@ -23,6 +24,7 @@ export interface CharacterInterface {
 }
 
 const UsersSchema = new Schema({
+    email: String,
     username: String,
     password: String,
     rol: [String],
