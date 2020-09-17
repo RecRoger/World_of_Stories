@@ -21,6 +21,7 @@ export interface CharacterInterface {
     money?: number,
     items?: string[],
     fragmentsRead?: string[],
+    animations?: boolean
 }
 
 const UsersSchema = new Schema({
@@ -38,7 +39,8 @@ const UsersSchema = new Schema({
         },
         money: Number,
         items: [String],
-        fragmentsRead: [String]
+        fragmentsRead: [String],
+        animations: Boolean
     }]
 })
 

@@ -50,6 +50,11 @@ export class SelectCharacter {
     constructor(public payload: Character) { }
 }
 
+export class UpdateCharacterAnimations {
+    static readonly type = '[User] Update Character Animations';
+    constructor(public payload: Character ) { }
+}
+
 export class UpdateCharacterLocation {
     static readonly type = '[User] Update Character Location';
     constructor(public payload: CharacterLocation ) { }

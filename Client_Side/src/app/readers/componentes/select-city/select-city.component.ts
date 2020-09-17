@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef, OnDestroy, HostListener } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
-import { City } from 'wos-api';
+import { City, Character } from 'wos-api';
 import { GetCityData } from 'src/app/shared/store/locations/locations.actions';
 import { MatAccordion } from '@angular/material/expansion';
 import { faChevronUp, faChevronRight } from '@fortawesome/free-solid-svg-icons';
@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 import { SetReadFragment, UpdateCharacterLocation } from 'src/app/shared/store/users/users.actions';
 import { ScrollAnimationService } from 'src/app/shared/services/scroll-animation.service';
 import { isScrollAtBottom } from 'src/app/shared/utils/commons';
+import { UserState } from 'src/app/shared/store/users/users.reducer';
 
 @Component({
   selector: 'app-select-city',
@@ -19,6 +20,8 @@ export class SelectCityComponent implements OnInit, OnDestroy {
 
   @Select(LocationState.getCities) cities$: Observable<City[]>;
   cities: City[] = [];
+  @Select(UserState.getCharacter) character$: Observable<Character>;
+  character: Character;
 
   loading = [];
   enterBtn = true;
@@ -38,6 +41,9 @@ export class SelectCityComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.cities$.subscribe(list => {
         this.cities = list;
+      }),
+      this.character$.subscribe(char => {
+        this.character = char;
       }),
       this.scrollService.scrollAtBottom$.subscribe(bottom => this.atBottom = bottom)
     );

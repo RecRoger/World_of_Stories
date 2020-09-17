@@ -23,7 +23,9 @@ export class ReadCityComponent implements OnInit, OnDestroy {
   get places$(): Observable<Place[]> {
     return this.allPlaces$.pipe(map(filterFn => filterFn(this.cityId)));
   }
-
+  @Select(UserState.getCharacter) character$: Observable<Character>;
+  character: Character;
+  
   @Input() cityId: string;
 
   city: City;
@@ -56,7 +58,8 @@ export class ReadCityComponent implements OnInit, OnDestroy {
     this.store.dispatch(new GetAllPlaces({ request: { cityId: this.cityId } }));
     this.subscriptions.push(
       this.scrollService.scrollAtBottom$.subscribe(value => { this.atBottom = value; this.cd.markForCheck(); }),
-      this.cities$.subscribe(list => this.city = list && list.find(c => c.id === this.cityId))
+      this.cities$.subscribe(list => this.city = list && list.find(c => c.id === this.cityId)),
+      this.character$.subscribe(char => this.character = char)
     );
   }
   ngOnDestroy() {

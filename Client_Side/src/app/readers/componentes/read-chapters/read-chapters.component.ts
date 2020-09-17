@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
-import { DeciosionOption, Place, Npc, Chapter, CharacterLocation, Decision } from 'wos-api';
+import { DeciosionOption, Place, Npc, Chapter, CharacterLocation, Decision, Character } from 'wos-api';
 import { map } from 'rxjs/operators';
 import { faChevronUp, faChevronDown, faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
@@ -27,6 +27,8 @@ export class ReadChaptersComponent implements OnInit, OnDestroy {
   get chapters$(): Observable<Chapter[]> {
     return this.allChapters$.pipe(map(filterFn => filterFn(this.placeId, this.npcId)));
   }
+  @Select(UserState.getCharacter) character$: Observable<Character>;
+  character: Character;
 
   @Input() cityId: string;
   @Input() placeId: string;
@@ -80,6 +82,9 @@ export class ReadChaptersComponent implements OnInit, OnDestroy {
       }),
       this.npcs$.subscribe(list => {
         this.npc = list && list.find(n => n.id === this.npcId);
+      }),
+      this.character$.subscribe(char => {
+        this.character = char;
       })
     );
   }

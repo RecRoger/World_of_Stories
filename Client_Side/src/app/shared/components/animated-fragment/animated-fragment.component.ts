@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ChangeDetectorRef, OnChanges, ElementRef, ViewChild, Output, EventEmitter, HostListener, OnDestroy } from '@angular/core';
 import { ReadFragment, Decision } from 'wos-api';
 import { TextAnimation } from 'ngx-teximate';
-import { rotateInDownLeft, fadeInDown, bounceInDown, bounceIn, fadeInLeft, fadeInRight, zoomIn } from 'ng-animate';
+import { rotateInDownLeft, fadeInDown, bounceInDown, bounceIn, fadeInLeft, fadeInRight, zoomIn, fadeIn } from 'ng-animate';
 import { trigger, transition, useAnimation, AnimationOptions } from '@angular/animations';
 import { AnimationsTypes } from '../../constants';
 import { ScrollAnimationService } from '../../services/scroll-animation.service';
@@ -15,7 +15,7 @@ import { FormBuilder, Validators } from '@angular/forms';
   templateUrl: './animated-fragment.component.html',
   styleUrls: ['./animated-fragment.component.scss'],
   animations: [
-    trigger('fadeInLeft', [transition('* => *', useAnimation(fadeInLeft))]),
+    trigger('fadeIn', [transition('* => *', useAnimation(fadeIn))]),
     trigger('fadeInRight', [transition('* => *', useAnimation(fadeInRight))]),
   ],
 })
@@ -26,6 +26,7 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
   @Input() tale: ReadFragment[];
   @Input() title: string;
   @Input() chapterMode = false;
+  @Input() animations = true;
   @Output() finish: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() setChapterDivision: EventEmitter<ChapterDividerModel> = new EventEmitter<ChapterDividerModel>();
 
@@ -147,11 +148,14 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   skipParagraph() {
-    const lastIndex = this.shownFragments.length - 1;
-    this.skipedParagrafs.push(lastIndex);
-    this.cd.markForCheck();
+    if (this.animations) {
 
-    this.finishAnimation(lastIndex);
+      const lastIndex = this.shownFragments.length - 1;
+      this.skipedParagrafs.push(lastIndex);
+      this.cd.markForCheck();
+
+      this.finishAnimation(lastIndex);
+    }
   }
 
 
@@ -174,7 +178,7 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
       this.newDivision = null;
       return 0;
     }
-    if(isValid(this.optionForm)) {
+    if (isValid(this.optionForm)) {
       this.newDivision.decision = this.optionForm.get('decision').value;
       this.setChapterDivision.emit(this.newDivision);
     }

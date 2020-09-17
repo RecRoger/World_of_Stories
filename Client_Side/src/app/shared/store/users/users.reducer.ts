@@ -11,7 +11,7 @@ import {
   DeleteCharacter,
   SelectCharacter,
   UpdateCharacterLocation,
-  SetReadFragment, UpdateUser
+  SetReadFragment, UpdateUser, UpdateCharacterAnimations
 } from './users.actions';
 import {
   SetError,
@@ -334,6 +334,44 @@ export class UserState {
     }
   }
 
+  @Action(UpdateCharacterAnimations)
+  async UpdateCharacterAnimations(ctx: StateContext<UserStateModel>, action: UpdateCharacterAnimations) {
+
+    try {
+
+      const { id, animations } = action.payload;
+      // const id = ctx.getState().character.id;
+
+      const req: RequestUpdateCharacter = {
+        character: {
+          id,
+          animations: !animations
+        }
+      };
+
+      const resp = await this.userService.updateCharacter(req).toPromise();
+
+      if (resp.data && resp.data.character) {
+
+        localStorage.setItem('character', JSON.stringify(resp.data.character));
+        ctx.setState(patch<UserStateModel>({
+          activedUser: patch<User>({
+            characters: updateItem(c => c.id === id, patch<Character>({
+              ...resp.data.character
+            }))
+          })
+        }));
+
+      } else {
+        this.store.dispatch(new SetError('error guardando'));
+      }
+
+
+    } catch (err) {
+      console.log('*** ERROR ***', err);
+      this.store.dispatch(new SetError('Ha ocurrido un problema guardando'));
+    }
+  }
   @Action(UpdateCharacterLocation)
   async UpdateCharacterLocation(ctx: StateContext<UserStateModel>, action: UpdateCharacterLocation) {
 

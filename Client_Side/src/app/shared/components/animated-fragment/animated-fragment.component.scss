@@ -21,6 +21,7 @@
     
 }
 
+
 .chapter-decision{
     // background: red;
     margin-top: -7px;
@@ -28,14 +29,12 @@
     height: 10px;
     z-index: 2;
 }
-
 .hide {
     // display: block;
     display: none;
     position: absolute;
     top: -15px;
     left: 99%;
-
 }
 .new-decision{
     display: block;
@@ -43,8 +42,8 @@
     background: #fff;
     width: 130px;
     box-shadow: 1px 1px 1px #00000030
-
 }
+
 
 .chapter-decision:hover {
     border-top: 1px solid #dee2e6;

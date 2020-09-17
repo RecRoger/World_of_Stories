@@ -1,7 +1,9 @@
 <div class="app-main_readers" *ngIf="($user | async) as user">
     <h2>Bienvenido {{ user.username | titlecase}}!</h2>
-    <p>Este es <b>El Modo Lector</b>. Aca podras disfrutar de las aventuras de este nuevo mundo como un <i>Peregrino</i>.</p>
-    <div class="ml-2 pl-3 border-left">Los peregrinos son conocidos en todos los confines del mundo, personajes errantes que viajan con el fin de documentar
+    <p>Este es <b>El Modo Lector</b>. Aca podras disfrutar de las aventuras de este nuevo mundo como un
+        <i>Peregrino</i>.</p>
+    <div class="ml-2 pl-3 border-left">Los peregrinos son conocidos en todos los confines del mundo, personajes errantes
+        que viajan con el fin de documentar
         toda la historia de la existencia, desde el mas minimo acontecimiento hasta grandes sucesos historicos.</div>
 
     <div class="row mt-5">
@@ -43,9 +45,17 @@
 
 
                     </div>
-                    <div class="ml-auto mt-4 h5" (click)="selectCharacter(character)">
-                        Continuar
-                        <fa-icon class="ml-3" [icon]="faRight" size="lg"></fa-icon>
+                    <div class="row mt-4 h5">
+                        <button class="col-12 col-md-4 btn mr-auto text-left" (click)="updateAnimations(character)">
+                            <mat-slide-toggle class="example-margin" [color]="'primary'" [checked]="character.animations"
+                                [disabled]="updateingAnimations.includes(character.id)">
+                                {{(character.animations) ? 'Animaciones encendidas': 'Animaciones apagadas'}}
+                            </mat-slide-toggle>
+                        </button>
+                        <button class="col-12 col-md-4 btn ml-auto text-right" [disabled]="updateingAnimations.includes(character.id)" (click)="selectCharacter(character)">
+                            Continuar
+                            <fa-icon class="ml-3" [icon]="faRight" size="lg"></fa-icon>
+                        </button>
                     </div>
                 </div>
             </div>

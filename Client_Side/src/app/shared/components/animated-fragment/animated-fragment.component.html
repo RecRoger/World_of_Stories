@@ -3,8 +3,8 @@
     <ng-container *ngFor="let tale of shownFragments; let i = index">
         <!-- <p class="card-text">{{ fragment.text }}</p> -->
         <div class="hide-overflow">
-            <ng-container *ngIf="skipedParagrafs.includes(i); else animatedTemplate">
-                <p>
+            <ng-container *ngIf="skipedParagrafs.includes(i) || !animations; else animatedTemplate">
+                <p [@fadeIn] [@.disabled]="animations" (@fadeIn.done)="finishAnimation(i)">
                     {{tale.fragment.text}}
                 </p>
             </ng-container>
@@ -14,8 +14,13 @@
                     [enter]="tale.options" (finish)="finishAnimation(i)"></teximate>
     
             </ng-template>
+
+            <div style="height: 1px;"></div>
         </div>
 
+        
+
+        <!-- seccion para añadir decisiones intermedias -->
         <ng-container *ngIf="chapterMode && completedAnimation && i!== shownFragments.length - 1 && !newDivision">
             <div class="chapter-decision" (click)="addDecision(i)">
                 <div class="hide">
@@ -30,7 +35,6 @@
                 </div>
             </div>
         </ng-container>
-
         <ng-container *ngIf="newDivision && newDivision.splitIndex === i">
             <div class="pl-3 border-left ml-3 mb-4 " [formGroup]="optionForm">
                 <app-write-decision [decision]="optionForm.get('decision')">

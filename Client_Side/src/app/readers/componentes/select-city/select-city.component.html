@@ -5,7 +5,7 @@
 
         <ng-container *ngIf="selectedCity">
             <div class="mt-1 pt-2 border-left pl-3" *ngIf="(selectedCity.description | getRandom) as description">
-                <app-animated-fragment [tale]="description.tale" (finish)="showEnter(description.id)">
+                <app-animated-fragment [tale]="description.tale" [animations]="character.animations" (finish)="showEnter(description.id)">
                 </app-animated-fragment>
                 <p class="text-muted text-right" *ngIf="enterBtn"> - {{description.author}}</p>
             </div>

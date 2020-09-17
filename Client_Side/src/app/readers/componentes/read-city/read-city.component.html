@@ -9,7 +9,7 @@
 
         <ng-container *ngIf="city.travel && titleAnimationEnd">
             <div class="mt-3" *ngIf="(city.travel | getRandom) as travel">
-                <app-animated-fragment [tale]="travel.tale" (finish)="finishTravel(travel.id)">
+                <app-animated-fragment [animations]="character.animations" [tale]="travel.tale" (finish)="finishTravel(travel.id)">
                 </app-animated-fragment>
                 <!-- <p class="text-muted text-right"> - {{travel.author}}</p> -->
             </div>
@@ -22,7 +22,7 @@
 
         <ng-container *ngIf="selectedPlace">
             <div class="mt-2 pt-2 border-left pl-3" *ngIf="(selectedPlace.description | getRandom) as description">
-                <app-animated-fragment [tale]="description.tale" (finish)="showEnter(description.id)">
+                <app-animated-fragment [animations]="character.animations" [tale]="description.tale" (finish)="showEnter(description.id)">
                 </app-animated-fragment>
                 <p class="text-muted text-right" *ngIf="enterBtn"> - {{description.author}}</p>
             </div>

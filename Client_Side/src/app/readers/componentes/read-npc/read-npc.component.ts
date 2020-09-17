@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
-import { DeciosionOption, Place, Npc, City } from 'wos-api';
+import { DeciosionOption, Place, Npc, City, Character } from 'wos-api';
 import { map } from 'rxjs/operators';
 import { faChevronUp, faChevronDown, faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { ScrollAnimationService } from 'src/app/shared/services/scroll-animation.service';
 import { SetReadFragment, UpdateCharacterLocation } from 'src/app/shared/store/users/users.actions';
 import { GetNpcStory, GetChapterData, GetNpcData } from 'src/app/shared/store/stories/stories.actions';
+import { UserState } from 'src/app/shared/store/users/users.reducer';
 
 @Component({
   selector: 'app-read-npc',
@@ -20,6 +21,8 @@ export class ReadNpcComponent implements OnInit, OnDestroy {
   get npcs$(): Observable<Npc[]> {
     return this.allNpcs$.pipe(map(filterFn => filterFn(this.placeId)));
   }
+  @Select(UserState.getCharacter) character$: Observable<Character>;
+  character: Character;
 
   @Input() cityId: string;
   @Input() placeId: string;
@@ -56,8 +59,8 @@ export class ReadNpcComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.scrollService.scrollAtBottom$.subscribe(value => { this.atBottom = value; this.cd.markForCheck(); }),
-      this.npcs$.subscribe(list => this.npc = list && list.find(n => n.id === this.npcId))
-      // this.npcs$.subscribe(n => this.npcs = n)
+      this.npcs$.subscribe(list => this.npc = list && list.find(n => n.id === this.npcId)),
+      this.character$.subscribe(char => this.character = char)
     );
   }
   ngOnDestroy() {

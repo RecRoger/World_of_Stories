@@ -30,6 +30,9 @@ export class ReadPlaceComponent implements OnInit, OnDestroy {
   get npcs$(): Observable<Npc[]> {
     return this.allNpcs$.pipe(map(filterFn => filterFn(this.placeId)));
   }
+  @Select(UserState.getCharacter) character$: Observable<Character>;
+  character: Character;
+
   npcs: Npc[] = [];
 
   @Input() cityId: string;
@@ -64,7 +67,8 @@ export class ReadPlaceComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.scrollService.scrollAtBottom$.subscribe(value => { this.atBottom = value; this.cd.markForCheck(); }),
       this.places$.subscribe(list => this.place = list.find(p => p.id === this.placeId)),
-      this.npcs$.subscribe(n => this.npcs = n)
+      this.npcs$.subscribe(n => this.npcs = n),
+      this.character$.subscribe(char => this.character = char)
     );
   }
   ngOnDestroy() {
