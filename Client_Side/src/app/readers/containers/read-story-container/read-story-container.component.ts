@@ -57,8 +57,6 @@ export class ReadStoryContainerComponent implements OnInit, OnDestroy {
   constructor(
     private cd: ChangeDetectorRef,
     private store: Store,
-    private route: ActivatedRoute,
-    private router: Router,
     private scrollService: ScrollAnimationService,
     private actions$: Actions
   ) { }
@@ -157,12 +155,12 @@ export class ReadStoryContainerComponent implements OnInit, OnDestroy {
   }
 
   scrolling($event) {
-    if (this.scrollDiv) {
-      const element = this.scrollDiv.nativeElement;
-      this.atBottom = isScrollAtBottom(element);
-      this.scrollService.scrollElement$.next(element);
-      this.scrollService.scrollAtBottom$.next(this.atBottom);
-    }
+    // if (this.scrollDiv) {
+    //   const element = this.scrollDiv.nativeElement;
+    //   this.atBottom = isScrollAtBottom(element);
+    //   this.scrollService.scrollElement$.next(element);
+    //   this.scrollService.scrollAtBottom$.next(this.atBottom);
+    // }
   }
 
 }

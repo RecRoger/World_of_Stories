@@ -11,52 +11,22 @@
             <div class="mt-3" *ngIf="(city.travel | getRandom) as travel">
                 <app-animated-fragment [animations]="character.animations" [tale]="travel.tale" (finish)="finishTravel(travel.id)">
                 </app-animated-fragment>
-                <!-- <p class="text-muted text-right"> - {{travel.author}}</p> -->
             </div>
-        </ng-container>
-
-        <ng-container *ngIf="showPlaces">
-            <app-animated-fragment [tale]="[{text: '¿A dónde te gustaria ir?', animation: 'defualt'}]">
-            </app-animated-fragment>
-        </ng-container>
-
-        <ng-container *ngIf="selectedPlace">
-            <div class="mt-2 pt-2 border-left pl-3" *ngIf="(selectedPlace.description | getRandom) as description">
-                <app-animated-fragment [animations]="character.animations" [tale]="description.tale" (finish)="showEnter(description.id)">
-                </app-animated-fragment>
-                <p class="text-muted text-right" *ngIf="enterBtn"> - {{description.author}}</p>
-            </div>
-            <div class="d-flex mb-2" *ngIf="enterBtn">
-                <div class="btn ml-auto" (click)="enterPlace(selectedPlace.id)">
-                    Visitar
-                    <fa-icon class="ml-3" [icon]="faRight" size="xl"></fa-icon>
-                </div>
-            </div>
-
         </ng-container>
 
     </div>
 
 </ng-container>
-<ng-container *ngIf="showPlaces && atBottom && (!selectedPlace || enterBtn)">
-    <div class="city-selector border-top" *ngIf="(places$ |async) as places">
-        <ng-container *ngFor="let place of places">
-            <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" (click)="selectPlace(place.id)">
-                <div class="h5 font-weight-normal">
-                    {{place.name}}
-                </div>
-                <div class="ml-auto" *ngIf="loading.includes(place.id)">
-                    <app-loader class="loader" size="md"></app-loader>
-                </div>
-                <div class="ml-auto mt-auto" *ngIf="place?.description">
-                    <fa-icon [icon]="faUp" size="xl"></fa-icon>
-                </div>
+<ng-container *ngIf="showPlaces">
+    <div class="city-selector border-top">
+        <div class="d-flex py-2 col-12 col-md-4 mx-md-auto" (click)="openSelection()">
+            <div class="h5 mr-auto">
+                ¿A dónde te gustaría ir?
             </div>
-        </ng-container>
-        <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" *ngIf="places.length === 0" (click)="leaveCity()">
-            <div class="h5 font-weight-normal">
-                La ciudad aun esta en construccion, no hay nada por hacer.
+            <div class="ml-auto my-auto">
+                <fa-icon [icon]="faDown" size="xl"></fa-icon>
             </div>
         </div>
     </div>
+
 </ng-container>

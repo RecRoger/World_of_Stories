@@ -51,7 +51,6 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
   atBottom = false;
 
   subscription: Subscription[] = [];
-  scrollElement: any;
 
   faLongArrow = faLongArrowAltLeft;
 
@@ -63,18 +62,6 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     this.subscription.push(
-      this.scrollService.scrollAtBottom$.subscribe(bottom => {
-        this.atBottom = bottom;
-        if (bottom) {
-          if (this.pendingIndex) {
-            this.finishAnimation(this.pendingIndex);
-            this.pendingIndex = null;
-          }
-        }
-      }),
-      this.scrollService.scrollElement$.subscribe(element => {
-        this.scrollElement = element;
-      })
     );
   }
 
@@ -94,16 +81,16 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   finishAnimation(i) {
-    if (!this.scrollElement ||
-      isScrollAtBottom(this.scrollElement)
+
+    // TODO - validar que el elemento 'parragraf'+i es visible
+    if (
+      true
     ) {
-      if (this.tale[i + 1] && this.tale[i + 1].text) {
-        // this.scrollService.scrollAtBottom$.next(false);
+      if (this.tale[i + 1] && this.tale[i + 1].text && !this.shownFragments.find(frg => frg.fragment.text === this.tale[i + 1].text)) {
         this.shownFragments.push({
           fragment: this.tale[i + 1],
           options: this.getAnimationOptions(this.tale[i + 1].animation)
-        }
-        );
+        });
       } else {
         if (!this.completedAnimation) {
           this.completedAnimation = true;
@@ -111,6 +98,7 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     } else {
+      // TODO - de no ser visible el id='parragraf'+i, poner en pending
       this.pendingIndex = i + 1;
     }
   }
