@@ -12,6 +12,7 @@ import { NpcSelectorComponent, ReadPlaceComponent } from './componentes/read-pla
 import { ReadStoryContainerComponent } from './containers/read-story-container/read-story-container.component';
 import { ReadNpcComponent } from './componentes/read-npc/read-npc.component';
 import { ReadChaptersComponent } from './componentes/read-chapters/read-chapters.component';
+import { StorySelectorComponent } from './componentes/story-selector/story-selector.component';
 
 
 
@@ -27,6 +28,7 @@ import { ReadChaptersComponent } from './componentes/read-chapters/read-chapters
     ReadPlaceComponent,
     ReadStoryContainerComponent,
     ReadNpcComponent,
+    StorySelectorComponent,
     NpcSelectorComponent,
     ReadChaptersComponent
   ],
@@ -40,7 +42,8 @@ import { ReadChaptersComponent } from './componentes/read-chapters/read-chapters
   entryComponents: [
     CitySelectorComponent,
     PlaceSelectorComponent,
-    NpcSelectorComponent
+    NpcSelectorComponent,
+    StorySelectorComponent
   ]
 })
 export class ReadersModule { }

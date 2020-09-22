@@ -1,14 +1,15 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ChangeDetectorRef, Inject } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
-import { DeciosionOption, Place, Npc, City, Character } from 'wos-api';
+import { Decision, DeciosionOption, Place, Npc, City, Character } from 'wos-api';
 import { map } from 'rxjs/operators';
 import { faChevronUp, faChevronDown, faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
-import { ScrollAnimationService } from 'src/app/shared/services/scroll-animation.service';
 import { SetReadFragment, UpdateCharacterLocation } from 'src/app/shared/store/users/users.actions';
 import { GetNpcStory, GetChapterData, GetNpcData } from 'src/app/shared/store/stories/stories.actions';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
+import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
+import { StorySelectorComponent } from '../story-selector/story-selector.component';
 
 @Component({
   selector: 'app-read-npc',
@@ -32,12 +33,12 @@ export class ReadNpcComponent implements OnInit, OnDestroy {
   titleAnimationEnd = false;
 
   showDecision = false;
-  enterBtn = false;
 
   loadingNpc = false;
   loadingChapters = false;
 
   showRejection = false;
+  showLeave = false;
   showExit = false;
 
   faUp = faChevronUp;
@@ -48,9 +49,11 @@ export class ReadNpcComponent implements OnInit, OnDestroy {
   selectedOption: DeciosionOption;
 
   subscriptions: Subscription[] = [];
-  atBottom = true;
 
-  constructor(private store: Store, private cd: ChangeDetectorRef, private scrollService: ScrollAnimationService) { }
+  constructor(
+    private store: Store,
+    private cd: ChangeDetectorRef,
+    private bottomSheet: MatBottomSheet) { }
 
   async ngOnInit() {
     this.loadingNpc = true;
@@ -58,7 +61,6 @@ export class ReadNpcComponent implements OnInit, OnDestroy {
     this.loadingNpc = false;
 
     this.subscriptions.push(
-      this.scrollService.scrollAtBottom$.subscribe(value => { this.atBottom = value; this.cd.markForCheck(); }),
       this.npcs$.subscribe(list => this.npc = list && list.find(n => n.id === this.npcId)),
       this.character$.subscribe(char => this.character = char)
     );
@@ -69,25 +71,27 @@ export class ReadNpcComponent implements OnInit, OnDestroy {
 
   finishMeeting(fragmentId) {
     this.store.dispatch(new SetReadFragment({ fragmentId }));
-
-    // window.scrollTo(0, document.body.scrollHeight);
     this.showDecision = true;
-    // this.enterBtn = false;
     this.cd.markForCheck();
   }
 
-  showEnter() {
-    this.enterBtn = true;
-    this.cd.markForCheck();
-  }
-
-  selectDecision(option: DeciosionOption) {
-    this.selectedOption = option;
-    this.cd.markForCheck();
+  openSelection() {
+    const sheet = this.bottomSheet.open(StorySelectorComponent, {
+      data: {
+        placeId: this.placeId,
+        decisions: this.npc.decision.options
+      }
+    });
+    sheet.afterDismissed().subscribe((selectedDecision: string) => {
+      if (selectedDecision) {
+        this.takeDecision(selectedDecision);
+      }
+    });
   }
 
   async takeDecision(decision: string) {
 
+    this.showDecision = false;
     if (decision === 'true') {
       this.loadingChapters = true;
       const store = await this.store.dispatch(new GetNpcStory(
@@ -115,6 +119,10 @@ export class ReadNpcComponent implements OnInit, OnDestroy {
       this.showRejection = true;
       this.cd.markForCheck();
     }
+  }
+
+  showLeaveBtn() {
+    this.showLeave = true;
   }
 
   getOut() {

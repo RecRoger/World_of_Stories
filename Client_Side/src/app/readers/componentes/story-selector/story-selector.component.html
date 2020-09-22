@@ -1,0 +1,31 @@
+<div class="container" *ngIf="decisions">
+    <ng-container *ngFor="let option of decisions">
+        <div class="d-flex py-2 mx-md-auto" (click)="selectDecision(option)">
+            <div class="h5 font-weight-normal">
+                {{option.name}}
+            </div>
+            <div class="ml-auto mt-auto">
+                <fa-icon [icon]="faDown" size="xl"></fa-icon>
+            </div>
+        </div>
+
+        <ng-container *ngIf="selectedOption?.name === option.name && (character$ | async) as character">
+            <div class="mt-1 pt-2 border-left pl-3" *ngIf="(selectedOption.description) as description">
+                <app-animated-fragment [animations]="character.animations" [tale]="[{text: description, animation: 'default'}]" (finish)="showEnter()">
+                </app-animated-fragment>
+            </div>
+            <div class="d-flex mb-2" *ngIf="enterBtn">
+                <div class="btn"
+                    [ngClass]="{'mr-auto': selectedOption.value === 'false','ml-auto': selectedOption.value !== 'false' }"
+                    (click)="takeDecision(selectedOption.value)">
+                    <fa-icon class="ml-3" [icon]="selectedOption.value !== 'false'? faRight : faLeft " size="xl">
+                    </fa-icon>
+                </div>
+            </div>
+        </ng-container>
+    </ng-container>
+   
+
+
+
+</div>

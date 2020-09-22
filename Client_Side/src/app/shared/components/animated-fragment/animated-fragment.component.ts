@@ -86,11 +86,13 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
     if (
       true
     ) {
-      if (this.tale[i + 1] && this.tale[i + 1].text && !this.shownFragments.find(frg => frg.fragment.text === this.tale[i + 1].text)) {
-        this.shownFragments.push({
-          fragment: this.tale[i + 1],
-          options: this.getAnimationOptions(this.tale[i + 1].animation)
-        });
+      if (this.tale[i + 1] && this.tale[i + 1].text) {
+        if (!this.shownFragments.find(frg => frg.fragment.text === this.tale[i + 1].text)) {
+          this.shownFragments.push({
+            fragment: this.tale[i + 1],
+            options: this.getAnimationOptions(this.tale[i + 1].animation)
+          });
+        }
       } else {
         if (!this.completedAnimation) {
           this.completedAnimation = true;
