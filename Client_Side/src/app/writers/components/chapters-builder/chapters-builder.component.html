@@ -150,9 +150,9 @@
                                         <div class="col-4" *ngIf="places && places.length>0">
                                             <label for="">Lugar</label>
                                             <select class="form-control" formControlName="placeId">
-                                                <option [value]="null">Las afueras de la ciudad</option>
+                                                <option [ngValue]="null">Las afueras de la ciudad</option>
                                                 <ng-container *ngFor="let city of places">
-                                                    <option value="{{city.value}}">{{city.name}}</option>
+                                                    <option [value]="city.value">{{city.name}}</option>
                                                 </ng-container>
                                             </select>
                                         </div>

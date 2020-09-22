@@ -30,24 +30,24 @@ export class UserDataComponent implements OnInit, OnDestroy {
       email: [user.email, [Validators.required]],
       username: [user.username, [Validators.required]],
       password: [user.password, [Validators.required]],
-      confirmation: [user.password, []],
+      confirmation: [user.password, [Validators.required]],
       // rol: [user.rol, []]
     });
-    this.userForm.get('confirmation').disable();
+    // this.userForm.get('confirmation').disable();
 
     this.subscriptions.push(
       this.userForm.get('password').valueChanges.subscribe(val => {
         const confirm = this.userForm.get('confirmation');
         if (val !== user.password) {
-          confirm.setValidators([Validators.required]);
-          confirm.setValue(null);
-          confirm.enable();
+          // confirm.setValidators([Validators.required]);
+          // confirm.setValue(null);
+          // confirm.enable();
           this.passwordChangeIndicator = true;
         } else {
-          confirm.disable();
+          // confirm.disable();
           this.passwordChangeIndicator = false;
-          confirm.setValidators(null);
-          confirm.setValue(user.password);
+          // confirm.setValidators([]);
+          // confirm.setValue(user.password);
         }
       })
     )

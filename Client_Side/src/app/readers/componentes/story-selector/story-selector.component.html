@@ -15,7 +15,7 @@
                 </app-animated-fragment>
             </div>
             <div class="d-flex mb-2" *ngIf="enterBtn">
-                <div class="btn"
+                <div class="btn mt-n3"
                     [ngClass]="{'mr-auto': selectedOption.value === 'false','ml-auto': selectedOption.value !== 'false' }"
                     (click)="takeDecision(selectedOption)">
                     <fa-icon class="ml-3" [icon]="selectedOption.value !== 'false'? faRight : faLeft " size="xl">
