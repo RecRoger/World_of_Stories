@@ -11,29 +11,24 @@
         <ng-container *ngIf="titleAnimationEnd">
 
             <ng-container *ngFor="let chapter of storyChapters">
-                <!-- <pre>
-                    {{chapter | json}}
-                </pre> -->
+
                 <div class="mt-3" *ngIf="(chapter.chapter.story) as story">
                     <app-animated-fragment [animations]="character.animations" [tale]="story" (finish)="finishStory(chapter.chapter.id)">
                     </app-animated-fragment>
                 </div>
 
                 <ng-container *ngIf="chapter.option">
-                    <div class="mt-2 pt-2 border-left pl-3" *ngIf="(chapter.option.description) as description">
+                    <div class="mt-2 pt-2 border-left pl-3" *ngIf="(chapter.option.name) as description">
                         <app-animated-fragment [animations]="character.animations" [tale]="[{text: description, animation: 'default'}]"
-                            (finish)="showAccept()">
+                            (finish)="takeDecision(chapter.option)">
                         </app-animated-fragment>
                     </div>
-                    <div class="d-flex mb-2" *ngIf="chapter.aceptBtn">
-                        <div class="btn ml-auto" (click)="takeDecision(chapter.option.value)">
-                            <fa-icon class="ml-3" [icon]="faRight" size="xl">
-                            </fa-icon>
-                        </div>
-                    </div>
                 </ng-container>
+
+
             </ng-container>
         </ng-container>
+
         <div class="d-flex mb-2" *ngIf="outBtn">
             <div class="btn mr-auto" (click)="finishAllStory()">
                 <fa-icon class="ml-3" [icon]="faLeft" size="xl">
@@ -44,17 +39,15 @@
     </div>
 
 </ng-container>
-<ng-container *ngIf="showDecision && atBottom && currentDecision">
+<ng-container *ngIf="showDecision">
     <div class="city-selector border-top">
-        <ng-container *ngFor="let option of currentDecision.options">
-            <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" (click)="selectDecision(option)">
-                <div class="h5 font-weight-normal">
-                    {{option.name}}
-                </div>
-                <div class="ml-auto mt-auto">
-                    <fa-icon [icon]="faUp" size="xl"></fa-icon>
-                </div>
+        <div class="d-flex py-2 col-12 col-md-4 mx-md-auto" (click)="openSelection()">
+            <div class="h5 mr-auto">
+                ¿Qué harás?
             </div>
-        </ng-container>
+            <div class="ml-auto my-auto">
+                <fa-icon [icon]="faDown" size="xl"></fa-icon>
+            </div>
+        </div>
     </div>
 </ng-container>

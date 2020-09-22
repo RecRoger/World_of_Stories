@@ -13,14 +13,12 @@ import { Decision, DeciosionOption, Place, Npc, City, Character } from 'wos-api'
 export class StorySelectorComponent {
     @Select(UserState.getCharacter) character$: Observable<Character>;
 
-    decisions: DeciosionOption[];
+    decision: Decision;
 
     faUp = faChevronUp;
     faDown = faChevronDown;
     faRight = faChevronRight;
     faLeft = faChevronLeft;
-
-    placeId: string;
 
     selectedOption: DeciosionOption;
     loading = [];
@@ -32,8 +30,7 @@ export class StorySelectorComponent {
         private bottomSheetRef: MatBottomSheetRef<StorySelectorComponent>,
         private store: Store,
         private cd: ChangeDetectorRef) {
-        this.placeId = data.placeId;
-        this.decisions = data.decisions;
+        this.decision = data.decision;
     }
 
     async selectDecision(option: DeciosionOption) {
@@ -49,8 +46,8 @@ export class StorySelectorComponent {
         this.cd.markForCheck();
     }
 
-    takeDecision(decisionId) {
-        this.bottomSheetRef.dismiss(decisionId);
+    takeDecision(option) {
+        this.bottomSheetRef.dismiss(option);
     }
 
 }

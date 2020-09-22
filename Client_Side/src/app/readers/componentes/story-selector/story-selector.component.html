@@ -1,5 +1,5 @@
-<div class="container" *ngIf="decisions">
-    <ng-container *ngFor="let option of decisions">
+<div class="container" *ngIf="decision">
+    <ng-container *ngFor="let option of decision.options">
         <div class="d-flex py-2 mx-md-auto" (click)="selectDecision(option)">
             <div class="h5 font-weight-normal">
                 {{option.name}}
@@ -17,7 +17,7 @@
             <div class="d-flex mb-2" *ngIf="enterBtn">
                 <div class="btn"
                     [ngClass]="{'mr-auto': selectedOption.value === 'false','ml-auto': selectedOption.value !== 'false' }"
-                    (click)="takeDecision(selectedOption.value)">
+                    (click)="takeDecision(selectedOption)">
                     <fa-icon class="ml-3" [icon]="selectedOption.value !== 'false'? faRight : faLeft " size="xl">
                     </fa-icon>
                 </div>

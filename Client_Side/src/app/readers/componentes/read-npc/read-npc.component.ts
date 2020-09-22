@@ -79,12 +79,12 @@ export class ReadNpcComponent implements OnInit, OnDestroy {
     const sheet = this.bottomSheet.open(StorySelectorComponent, {
       data: {
         placeId: this.placeId,
-        decisions: this.npc.decision.options
+        decision: this.npc.decision
       }
     });
-    sheet.afterDismissed().subscribe((selectedDecision: string) => {
-      if (selectedDecision) {
-        this.takeDecision(selectedDecision);
+    sheet.afterDismissed().subscribe((option: DeciosionOption) => {
+      if (option) {
+        this.takeDecision(option.value);
       }
     });
   }

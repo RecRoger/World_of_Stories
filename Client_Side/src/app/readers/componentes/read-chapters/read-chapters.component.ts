@@ -10,6 +10,8 @@ import { SetReadFragment, UpdateCharacterLocation } from 'src/app/shared/store/u
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { last } from 'lodash';
 import { GetChapterData } from 'src/app/shared/store/stories/stories.actions';
+import { MatBottomSheet } from '@angular/material';
+import { StorySelectorComponent } from '../story-selector/story-selector.component';
 
 @Component({
   selector: 'app-read-chapters',
@@ -50,7 +52,6 @@ export class ReadChaptersComponent implements OnInit, OnDestroy {
   storyChapters: {
     chapter: Chapter,
     option: DeciosionOption
-    aceptBtn?: boolean
   }[] = [];
 
   currentDecision: Decision;
@@ -59,11 +60,13 @@ export class ReadChaptersComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   atBottom = true;
 
-  constructor(private store: Store, private cd: ChangeDetectorRef, private scrollService: ScrollAnimationService) { }
+  constructor(
+    private store: Store,
+    private cd: ChangeDetectorRef,
+    private bottomSheet: MatBottomSheet) { }
 
   ngOnInit() {
     this.subscriptions.push(
-      this.scrollService.scrollAtBottom$.subscribe(value => { this.atBottom = value; this.cd.markForCheck(); }),
       this.chapters$.subscribe(list => {
         const location = this.store.selectSnapshot(UserState.getCharacterLocation);
         const lastChapter = this.storyChapters.slice(-1)[0];
@@ -94,19 +97,32 @@ export class ReadChaptersComponent implements OnInit, OnDestroy {
 
   continueChapter(chapter: Chapter) {
     this.currentDecision = (!chapter.endLocation || !chapter.endLocation.endChapter) ? chapter.usersDecisions : null;
-    this.storyChapters.push({ chapter, option: null, aceptBtn: false });
+    this.storyChapters.push({ chapter, option: null });
   }
 
   finishStory(fragmentId) {
     this.store.dispatch(new SetReadFragment({ fragmentId }));
-    // window.scrollTo(0, document.body.scrollHeight);
     if (this.currentDecision) {
       this.showDecision = true;
     } else {
       this.outBtn = true;
     }
-    // this.enterBtn = false;
     this.cd.markForCheck();
+  }
+
+  openSelection() {
+    const sheet = this.bottomSheet.open(StorySelectorComponent, {
+      data: {
+        decision: this.currentDecision
+      }
+    });
+    sheet.afterDismissed().subscribe((option: DeciosionOption) => {
+      if (option) {
+        this.showDecision = false;
+        const lastChapter = this.storyChapters.slice(-1)[0];
+        lastChapter.option = option;
+      }
+    });
   }
 
   finishAllStory() {
@@ -120,51 +136,16 @@ export class ReadChaptersComponent implements OnInit, OnDestroy {
     }));
   }
 
-  selectDecision(option: DeciosionOption) {
-    const lastChapter = this.storyChapters.slice(-1)[0];
-    lastChapter.option = option;
-    lastChapter.aceptBtn = false;
-    this.cd.markForCheck();
-  }
-  showAccept() {
-    const lastChapter = this.storyChapters.slice(-1)[0];
-    lastChapter.aceptBtn = true;
-    this.cd.markForCheck();
-  }
+  async takeDecision(option: DeciosionOption) {
 
-  async takeDecision(chapterId: string) {
+    const chapterId = option.value;
 
-    this.showDecision = false;
-    const lastChapter = this.storyChapters.slice(-1)[0];
-    lastChapter.aceptBtn = false;
     this.store.dispatch(new UpdateCharacterLocation({
       chapterId,
       cityId: this.cityId,
       placeId: this.placeId,
       npcId: this.npcId
     }));
-
-    // console.log('llegue a tomar decision', decision);
-
-    // if (decision === 'true') {
-    //   this.loadingChapters = true;
-    //   const store = await this.store.dispatch(new GetNpcStory(
-    //     { npcId: this.npc.id, placeId: this.place.id, request: { id: this.npc.id, published: false } }
-    //   )).toPromise();
-    //   const npc: Npc = store.stories[this.place.id].find(n => n.id === this.npc.id);
-    //   const chapters = npc.chapters;
-    //   this.store.dispatch(new UpdateCharacterLocation(
-    //     {
-    //       cityId: this.cityId,
-    //       placeId: this.place.id,
-    //       npcId: this.npc.id,
-    //       chapterId: chapters[0].id
-    //     }
-    //   ));
-    // } else {
-    //   this.showRejection = true;
-    //   this.cd.markForCheck();
-    // }
   }
 
   getOut() {
