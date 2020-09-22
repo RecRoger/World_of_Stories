@@ -1,9 +1,9 @@
-<div class="readable-section" *ngIf="shownFragments.length > 0" (click)="skipParagraph()">
+<div class="readable-section" *ngIf="shownFragments.length > 0">
 
     <ng-container *ngFor="let tale of shownFragments; let i = index">
         <!-- <p class="card-text">{{ fragment.text }}</p> -->
         <div class="hide-overflow">
-            <ng-container *ngIf="skipedParagrafs.includes(i) || !animations; else animatedTemplate">
+            <ng-container *ngIf="!animations; else animatedTemplate">
                 <p [@fadeIn] [@.disabled]="animations" (@fadeIn.done)="finishAnimation(i)">
                     {{tale.fragment.text}}
                 </p>

@@ -8,8 +8,6 @@ import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { SetReadFragment, UpdateCharacterLocation } from 'src/app/shared/store/users/users.actions';
 import { GetAllPlaces, GetPlaceData, GetCityData } from 'src/app/shared/store/locations/locations.actions';
 import { map } from 'rxjs/operators';
-import { ScrollAnimationService } from 'src/app/shared/services/scroll-animation.service';
-import { isScrollAtBottom } from 'src/app/shared/utils/commons';
 import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 
 @Component({

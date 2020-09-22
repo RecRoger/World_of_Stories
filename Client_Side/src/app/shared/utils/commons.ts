@@ -5,7 +5,7 @@ export function isValid(form: FormGroup): boolean {
     let validCount = 0;
     controls.forEach(control => {
         const formControl = form.get(control);
-        console.log('control: ' + control, 'valid' + formControl.valid)
+        // console.log('control: ' + control, 'valid' + formControl.valid)
         if (formControl.valid) {
             validCount++;
         } else {

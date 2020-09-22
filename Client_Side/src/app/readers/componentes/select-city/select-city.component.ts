@@ -7,8 +7,6 @@ import { MatAccordion } from '@angular/material/expansion';
 import { faChevronUp, faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { SetReadFragment, UpdateCharacterLocation } from 'src/app/shared/store/users/users.actions';
-import { ScrollAnimationService } from 'src/app/shared/services/scroll-animation.service';
-import { isScrollAtBottom } from 'src/app/shared/utils/commons';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material';
 

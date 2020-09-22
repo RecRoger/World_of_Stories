@@ -5,10 +5,8 @@ import { DeciosionOption, Place, Npc, Chapter, CharacterLocation, Decision, Char
 import { map } from 'rxjs/operators';
 import { faChevronUp, faChevronDown, faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
-import { ScrollAnimationService } from 'src/app/shared/services/scroll-animation.service';
 import { SetReadFragment, UpdateCharacterLocation } from 'src/app/shared/store/users/users.actions';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
-import { last } from 'lodash';
 import { GetChapterData } from 'src/app/shared/store/stories/stories.actions';
 import { MatBottomSheet } from '@angular/material';
 import { StorySelectorComponent } from '../story-selector/story-selector.component';

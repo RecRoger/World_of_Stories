@@ -5,13 +5,11 @@ import { LocationState } from 'src/app/shared/store/locations/locations.reducer'
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { map } from 'rxjs/operators';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
-import { faChevronUp, faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
-import { ScrollAnimationService } from 'src/app/shared/services/scroll-animation.service';
 import { GetPlaceData, GetCityData } from 'src/app/shared/store/locations/locations.actions';
 import { GetNpcData, GetAllNpcs } from 'src/app/shared/store/stories/stories.actions';
 import { SetReadFragment, UpdateCharacterLocation } from 'src/app/shared/store/users/users.actions';
-import { isScrollAtBottom } from 'src/app/shared/utils/commons';
 import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 
 @Component({
