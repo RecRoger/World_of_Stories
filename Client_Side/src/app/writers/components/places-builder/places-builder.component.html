@@ -132,14 +132,12 @@
             <!-- formulario de edicion y creacion -->
             <ng-container *ngIf="placesTabs.editing">
               <div>
-                <div>
-                  <span *ngIf="placesTabs.tab == 'desc'">
-                    {{place.name}} es ...
-                  </span>
-                  <span *ngIf="placesTabs.tab == 'entry'">
-                    En {{place.name}} ...
-                  </span>
-                </div>
+                <span *ngIf="placesTabs.tab == 'desc'">
+                  {{place.name}} es ...
+                </span>
+                <span *ngIf="placesTabs.tab == 'entry'">
+                  En {{place.name}} ...
+                </span>
               </div>
               <form [formGroup]="placeForm">
                 <app-write-fragments [maxSize]="(placesTabs.tab == 'desc') ? 3 : null" [tale]="placeForm.get('tale')">

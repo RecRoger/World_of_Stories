@@ -7,13 +7,13 @@
             <div class="ml-auto" *ngIf="loading.includes(city.id)">
                 <app-loader class="loader" size="md"></app-loader>
             </div>
-            <div class="ml-auto mt-auto" *ngIf="city?.description">
-                <fa-icon [icon]="selectedCity?.id === city.id ? faDown : faRight" size="xl"></fa-icon>
+            <div class="ml-auto mt-auto" *ngIf="selectedCity?.id === city.id">
+                <fa-icon [icon]="faDown" size="xl"></fa-icon>
             </div>
         </div>
 
         <ng-container *ngIf="selectedCity?.id === city.id && (character$ | async) as character">
-            <div class="mt-1 pt-2 border-left pl-3" *ngIf="(selectedCity.description | getRandom) as description">
+            <div class="pt-2 border-left px-3" *ngIf="(selectedCity.description | getRandom) as description">
                 <app-animated-fragment [tale]="description.tale" [animations]="character.animations"
                     (finish)="showEnter(description.id)">
                 </app-animated-fragment>

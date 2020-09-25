@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
-import { faChevronUp, faChevronDown, faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faChevronUp, faChevronDown, faChevronRight, faChevronLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Select, Store } from '@ngxs/store';
 import { SetReadFragment } from 'src/app/shared/store/users/users.actions';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
@@ -19,6 +19,7 @@ export class StorySelectorComponent {
     faDown = faChevronDown;
     faRight = faChevronRight;
     faLeft = faChevronLeft;
+    faCaretRight = faCaretRight;
 
     selectedOption: DeciosionOption;
     loading = [];

@@ -37,26 +37,26 @@
 
           <!-- tabs de descripcion, encuentro, decision y rechazo -->
           <ul class="nav nav-tabs pt-3 text-center">
-            <li class="nav-item col-3 px-1 text-break">
-              <a class="nav-link px-1 px-md-3 h-100 d-flex" (click)="npcsTabs.tab = 'desc'"
+            <li class="nav-item col-3 px-1">
+              <a class="nav-link px-1 px-md-3 h-100 d-flex overflow-hidden" (click)="npcsTabs.tab = 'desc'"
                 [ngClass]="{'active': npcsTabs.tab == 'desc', 'disabled': npcsTabs.editing }">
                 Descripcion
               </a>
             </li>
             <li class="nav-item col-3 px-1">
-              <a class="nav-link px-1 px-md-3 h-100 d-flex" (click)="npcsTabs.tab = 'meet'"
+              <a class="nav-link px-1 px-md-3 h-100 d-flex overflow-hidden" (click)="npcsTabs.tab = 'meet'"
                 [ngClass]="{'active': npcsTabs.tab == 'meet', 'disabled': npcsTabs.editing }">
                 Encuentro
               </a>
             </li>
             <li class="nav-item col-3 px-1">
-              <a class="nav-link px-1 px-md-3 h-100 d-flex" (click)="npcsTabs.tab = 'decision'"
+              <a class="nav-link px-1 px-md-3 h-100 d-flex overflow-hidden" (click)="npcsTabs.tab = 'decision'"
                 [ngClass]="{'active': npcsTabs.tab == 'decision', 'disabled': npcsTabs.editing }">
                 Decisión
               </a>
             </li>
             <li class="nav-item col-3 px-1">
-              <a class="nav-link px-1 px-md-3 h-100 d-flex" (click)="npcsTabs.tab = 'reject'"
+              <a class="nav-link px-1 px-md-3 h-100 d-flex overflow-hidden" (click)="npcsTabs.tab = 'reject'"
                 [ngClass]="{'active': npcsTabs.tab == 'reject', 'disabled': npcsTabs.editing }">
                 Rechazo
               </a>
@@ -212,26 +212,26 @@
         </li>
         <div class="col-12 col-md-5 offset-md-3">
           <div class="row text-center">
-            <li class="nav-item col-3 px-1 text-break">
-              <a class="nav-link h-100 px-1" (click)="newNpcTab.tab = 'desc'"
+            <li class="nav-item col-3 px-1">
+              <a class="nav-link h-100 px-1 overflow-hidden" (click)="newNpcTab.tab = 'desc'"
                 [ngClass]="{'active': newNpcTab.tab == 'desc', 'errorTab': npcForm?.get('description')?.invalid && npcForm?.get('description')?.touched }">
                 Descripciones
               </a>
             </li>
             <li class="nav-item col-3 px-1">
-              <a class="nav-link h-100 px-1" (click)="newNpcTab.tab = 'meet'"
+              <a class="nav-link h-100 px-1 overflow-hidden" (click)="newNpcTab.tab = 'meet'"
                 [ngClass]="{'active': newNpcTab.tab == 'meet', 'errorTab': npcForm?.get('meeting')?.invalid && npcForm?.get('meeting')?.touched}">
                 Encuentro
               </a>
             </li>
             <li class="nav-item col-3 px-1">
-              <a class="nav-link h-100 px-1" (click)="newNpcTab.tab = 'decision'"
+              <a class="nav-link h-100 px-1 overflow-hidden" (click)="newNpcTab.tab = 'decision'"
                 [ngClass]="{'active': newNpcTab.tab == 'decision', 'errorTab': npcForm?.get('decision')?.invalid && npcForm?.get('decision')?.touched}">
                 Decisión
               </a>
             </li>
             <li class="nav-item col-3 px-1">
-              <a class="nav-link h-100 px-1" (click)="newNpcTab.tab = 'reject'"
+              <a class="nav-link h-100 px-1 overflow-hidden" (click)="newNpcTab.tab = 'reject'"
                 [ngClass]="{'active': newNpcTab.tab == 'reject', 'errorTab': npcForm?.get('rejected')?.invalid && npcForm?.get('rejected')?.touched}">
                 Rechazo
               </a>

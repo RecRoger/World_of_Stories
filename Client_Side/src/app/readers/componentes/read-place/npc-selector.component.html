@@ -7,7 +7,7 @@
             <div class="ml-auto" *ngIf="loading.includes(npc.id)">
                 <app-loader class="loader" size="md"></app-loader>
             </div>
-            <div class="ml-auto mt-auto" *ngIf="npc?.description">
+            <div class="ml-auto mt-auto" *ngIf="selectedNpc?.id === npc.id">
                 <fa-icon [icon]="faDown" size="xl"></fa-icon>
             </div>
         </div>
@@ -15,7 +15,7 @@
 
 
         <ng-container *ngIf="selectedNpc?.id === npc.id && (character$ | async) as character">
-            <div class="mt-1 pt-2 border-left pl-3" *ngIf="(selectedNpc.description) as description">
+            <div class="pt-2 border-left px-3" *ngIf="(selectedNpc.description) as description">
                 <app-animated-fragment [animations]="character.animations" [tale]="description.tale"
                     (finish)="showEnter(description.id)">
                 </app-animated-fragment>
