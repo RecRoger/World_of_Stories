@@ -3,9 +3,9 @@
     <!-- seccion de ciudades -->
     <ng-container *ngIf="!selectedCity">
         <h2>Ciudades</h2>
-        
-        <ng-container>
-            <div class="d-flex mb-3">
+
+        <div class="row">
+            <div class="col-12 d-flex mb-3">
                 <div class="my-auto">
                     Aca puedes crear las ciudades de este mundo.
                 </div>
@@ -13,35 +13,41 @@
                     <fa-icon [icon]="faInfo" size="md"></fa-icon>
                 </button>
             </div>
-            <div class="mb-5 ml-4 border-left pl-4" *ngIf="displayCityInfo">
-                <p>Las ciudades son la mayor estructura de localización de este mundo. Solo las a publicadas tendrán acceso los lectores.</p>
-                <p>Cada ciudad cuenta con:</p>
-                <ul>
-                    <li class="mb-2">
-                        <b>Nombre:</b>
-                        <br> El nombre de la ciudad y titulo de la narración de presentacion
-                        <br> <i class="text-muted">La ciudad se publica</i>
-                    </li>
-                    <li class="mb-2">
-                        <b>Descripciones:</b>
-                        <br> Son cortos estractos que describen la ciudad brevemente. <br>
-                        Los lectores podran leer una descripcion aleatoria cada vez que deban seleccionar una ciudad.
-                        <br> <i class="text-muted">Se publican cada una por separado</i>
-                    </li>
-                    <li class="mb-2">
-                        <b>Entradas y viajes:</b>
-                        <br> Narraciones de presentacion descriptiva de la ciudad. El jugador puede participar en la historia<br>
-                        Los lectores podran leer una presentacion aleatoria cada vez que esten en la ciudad.
-                        <br> <i class="text-muted">Se publican cada una por separado</i>
-                    </li>
-                    <li class="mb-2">
-                        <b>Lugares</b>
-                        <br> Conjunto de locaciones internas de la ciudad.<br>
-                        Luego de la narracion de presentación de la ciudad, se les presentará la lista de lugares publicados al lector.
-                    </li>
-                </ul>
+            <div class="col-12 text-justify" *ngIf="displayCityInfo">
+                <div class="mb-5 border-left pl-3">
+                    <p>Las ciudades son la mayor estructura de localización de este mundo. Solo las a publicadas tendrán
+                        acceso los lectores. <br> Cada ciudad cuenta con:
+                    </p>
+                    <ul class="pl-3">
+                        <li class="mb-2">
+                            <b>Nombre:</b>
+                            <br> El nombre de la ciudad y titulo de la narración de presentacion
+                            <br> <i class="text-muted">La ciudad se publica</i>
+                        </li>
+                        <li class="mb-2">
+                            <b>Descripciones:</b>
+                            <br> Son cortos estractos que describen la ciudad brevemente. <br>
+                            Los lectores podran leer una descripcion aleatoria cada vez que deban seleccionar una
+                            ciudad.
+                            <br> <i class="text-muted">Se publican cada una por separado</i>
+                        </li>
+                        <li class="mb-2">
+                            <b>Entradas y viajes:</b>
+                            <br> Narraciones de presentacion descriptiva de la ciudad. El jugador puede participar en la
+                            historia<br>
+                            Los lectores podran leer una presentacion aleatoria cada vez que esten en la ciudad.
+                            <br> <i class="text-muted">Se publican cada una por separado</i>
+                        </li>
+                        <li class="mb-2">
+                            <b>Lugares</b>
+                            <br> Conjunto de locaciones internas de la ciudad.<br>
+                            Luego de la narracion de presentación de la ciudad, se les presentará la lista de lugares
+                            publicados al lector.
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </ng-container>
+        </div>
 
         <div class="row text center" *ngIf="citiesloading">
             <app-loader class="mx-auto" size="lg"></app-loader>
@@ -61,8 +67,8 @@
             Lugares de {{selectedCity.name}}
         </h2>
 
-        <ng-container>
-            <div class="d-flex mb-3">
+        <div class="row">
+            <div class="col-12 d-flex mb-3">
                 <div class="my-auto">
                     Aca puedes crear los lugares de {{selectedCity.name}}.
                 </div>
@@ -70,36 +76,40 @@
                     <fa-icon [icon]="faInfo" size="md"></fa-icon>
                 </button>
             </div>
-            <div class="mb-5 ml-4 border-left pl-4" *ngIf="displayPlaceInfo">
-                <p>Los lugares son estructura de localización interna de las ciudades. Los lectores podran entrar y salir libremente de los lugares en cada ciudad. <br>
-                    Solo las a publicadas tendrán acceso los lectores.</p>
-                <p>Cada lugar cuenta con:</p>
-                <ul>
-                    <li class="mb-2">
-                        <b>Nombre:</b>
-                        <br> El nombre del lugar y titulo de la narración de presentacion
-                        <br> <i class="text-muted">El lugar se publica</i>
-                    </li>
-                    <li class="mb-2">
-                        <b>Descripciones:</b>
-                        <br> Cortos estractos que describen el lugar brevemente. <br>
-                        Los lectores podran leer una descripcion aleatoria cada vez que deban seleccionar un lugar.
-                        <br> <i class="text-muted">Se publican cada una por separado</i>
-                    </li>
-                    <li class="mb-2">
-                        <b>Entradas:</b>
-                        <br> Narraciones de presentacion descriptiva del lugar. El jugador puede participar en la historia<br>
-                        Los lectores podran leer una presentacion aleatoria cada vez que ingresen al lugar.
-                        <br> <i class="text-muted">Se publican cada una por separado</i>
-                    </li>
-                    <li class="mb-2">
-                        <b>Personas y eventos:</b>
-                        <br> Conjunto de Npcs disponibles en el lugar.<br>
-                        Luego de la narracion de entrada, se presentara la lista de Npcs publicados al lector. 
-                    </li>
-                </ul>
+            <div class="col-12 text-justify">
+                <div class="mb-5 border-left pl-3" *ngIf="displayPlaceInfo">
+                    <p>Los lugares son estructura de localización interna de las ciudades. Los lectores podran entrar y
+                        salir libremente de los lugares en cada ciudad. <br>
+                        Solo las a publicadas tendrán acceso los lectores.
+                        <br>Cada lugar cuenta con:</p>
+                    <ul class="pl-3">
+                        <li class="mb-2">
+                            <b>Nombre:</b>
+                            <br> El nombre del lugar y titulo de la narración de presentacion
+                            <br> <i class="text-muted">El lugar se publica</i>
+                        </li>
+                        <li class="mb-2">
+                            <b>Descripciones:</b>
+                            <br> Cortos estractos que describen el lugar brevemente. <br>
+                            Los lectores podran leer una descripcion aleatoria cada vez que deban seleccionar un lugar.
+                            <br> <i class="text-muted">Se publican cada una por separado</i>
+                        </li>
+                        <li class="mb-2">
+                            <b>Entradas:</b>
+                            <br> Narraciones de presentacion descriptiva del lugar. El jugador puede participar en la
+                            historia<br>
+                            Los lectores podran leer una presentacion aleatoria cada vez que ingresen al lugar.
+                            <br> <i class="text-muted">Se publican cada una por separado</i>
+                        </li>
+                        <li class="mb-2">
+                            <b>Personas y eventos:</b>
+                            <br> Conjunto de Npcs disponibles en el lugar.<br>
+                            Luego de la narracion de entrada, se presentara la lista de Npcs publicados al lector.
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </ng-container>
+        </div>
 
         <div class="row text center" *ngIf="placesloading">
             <app-loader class="mx-auto" size="lg"></app-loader>
@@ -121,8 +131,8 @@
             Personas y eventos de {{selectedPlace.name}} en {{selectedCity.name}}
         </h2>
 
-        <ng-container>
-            <div class="d-flex mb-3">
+        <div class="row">
+            <div class="col-12 d-flex mb-3">
                 <div class="my-auto">
                     Aca puedes crear las personas y eventos de {{selectedPlace.name}}.
                 </div>
@@ -130,54 +140,60 @@
                     <fa-icon [icon]="faInfo" size="md"></fa-icon>
                 </button>
             </div>
-            <div class="mb-5 ml-4 border-left pl-4" *ngIf="displayNpcInfo">
-                <p>Los Npcs son la estructura principal de historia. Los lectores podran interactuar libremente con los npcs de algun lugar. <br>
-                    Solo a los publicados tendrán acceso los lectores.</p>
-                <p>Cada npc cuenta con:</p>
-                <ul>
-                    <li class="mb-2">
-                        <b>Nombre:</b>
-                        <br> El nombre del npc sera presentado en la lista de npcs de un lugar.
-                        <br> <i class="text-muted">Cada Npc se publica por separado</i>
-                    </li>
-                    <li class="mb-2">
-                        <b>Tipo de npc:</b>
-                        <br>En la version actual, solo hay de tipo historia<br>
-                        <i class="text-muted">
-                            Para futuras versiones se consideran tiendas y lugares de viajes.
-                        </i>
-                    </li>
-                    <li class="mb-2">
-                        <b>Descripciones:</b>
-                        <br> Corto estracto que describe brevemente la primera impresion del npc. <br>
-                    </li>
-                    <li class="mb-2">
-                        <b>Encuentro:</b>
-                        <br> Narracion de encuentro con el npc. El jugador debe participar en la historia de encuentor<br>
-                    </li>
-                    <li class="mb-2">
-                        <b>Decision:</b>
-                        <br> Decisión de entrada de la historia del npc<br>
-                        <ul>
-                            La decisión consta de:
-                            <li>
-                                <b>Tipo de decision: </b> actualmente solo esta disponible eleccion
-                            </li>
-                            <li>
-                                <b>Opcion afirmativa: </b> nombre y descripcion de la opcion para aceptar la historia
-                            </li>
-                            <li>
-                                <b>Opcion de rechazo: </b> nombre y descripcion de la opcion de rechazo de la historia 
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="mb-2">
-                        <b>Rechazo:</b>
-                        <br> Narracion de rechazo de la historia. El jugador debe participar en esta historia<br>
-                    </li>
-                </ul>
+            <div class="col-12 text-justify">
+                <div class="mb-5 border-left pl-3" *ngIf="displayNpcInfo">
+                    <p>Los Npcs son la estructura principal de historia. Los lectores podran interactuar libremente con
+                        los npcs de algun lugar. <br>
+                        Solo a los publicados tendrán acceso los lectores.
+                        <br> Cada npc cuenta con:</p>
+                    <ul class="pl-3">
+                        <li class="mb-2">
+                            <b>Nombre:</b>
+                            <br> El nombre del npc sera presentado en la lista de npcs de un lugar.
+                            <br> <i class="text-muted">Cada Npc se publica por separado</i>
+                        </li>
+                        <li class="mb-2">
+                            <b>Tipo de npc:</b>
+                            <br>En la version actual, solo hay de tipo historia<br>
+                            <i class="text-muted">
+                                Para futuras versiones se consideran tiendas y lugares de viajes.
+                            </i>
+                        </li>
+                        <li class="mb-2">
+                            <b>Descripciones:</b>
+                            <br> Corto estracto que describe brevemente la primera impresion del npc. <br>
+                        </li>
+                        <li class="mb-2">
+                            <b>Encuentro:</b>
+                            <br> Narracion de encuentro con el npc. El jugador debe participar en la historia de
+                            encuentor<br>
+                        </li>
+                        <li class="mb-2">
+                            <b>Decision:</b>
+                            <br> Decisión de entrada de la historia del npc<br>
+                            <ul>
+                                La decisión consta de:
+                                <li>
+                                    <b>Tipo de decision: </b> actualmente solo esta disponible eleccion
+                                </li>
+                                <li>
+                                    <b>Opcion afirmativa: </b> nombre y descripcion de la opcion para aceptar la
+                                    historia
+                                </li>
+                                <li>
+                                    <b>Opcion de rechazo: </b> nombre y descripcion de la opcion de rechazo de la
+                                    historia
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="mb-2">
+                            <b>Rechazo:</b>
+                            <br> Narracion de rechazo de la historia. El jugador debe participar en esta historia<br>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </ng-container>
+        </div>
 
         <div class="row text center" *ngIf="npcsloading">
             <app-loader class="mx-auto" size="lg"></app-loader>
@@ -202,51 +218,59 @@
             {{selectedNpc.name}} en {{selectedPlace.name}} ({{selectedCity.name}})
         </h2>
 
-        <ng-container>
-            <div class="d-flex mb-3">
+        <div class="row">
+            <div class="col-12 d-flex mb-3">
                 <div class="my-auto">
-                    Aca puedes crear la historia de  {{selectedNpc.name}}.
+                    Aca puedes crear la historia de {{selectedNpc.name}}.
                 </div>
                 <button class="btn btn-link" (click)="displayStoryInfo = !displayStoryInfo">
                     <fa-icon [icon]="faInfo" size="md"></fa-icon>
                 </button>
             </div>
-            <div class="mb-5 ml-4 border-left pl-4" *ngIf="displayStoryInfo">
-                <p>La historia es la estructura narrativa final. Los lectores podran leer un conjunto de capitulos y dependiendo de las decisiones armar la historia. <br>
-                    Solo a los capitulos publicados tendrán acceso los lectores.</p>
-                <p>La  historia cuenta con un <b>Titulo principal</b> y luego cada capitulo cuenta con:</p>
-                <ul>
-                    <li class="mb-2">
-                        <b>Nombre:</b>
-                        <br> El nombre del capitulo es identificativo para escritores, no participa en la historia para los lectores.
-                    </li>
-                    <li class="mb-2">
-                        <b>Historia</b>
-                        <br>Narracion del capitulo. El lector debe interactuar en la historia, mas no deberia ser el protagonista de la misma, conservando su anonimato siempre.<br>
-                    </li>
-                    <li class="mb-2">
-                        <b>Capitulo final:</b>
-                        <br> Significa que el capitulo cierra la historia. <br> 
-                        De ser un capitulo final debe tener una ubicacion de cierre (Ciudad/Lugar) a donde el personaje volverá al finalizar la historia.<br>
-                    </li>
-                    <li class="mb-2">
-                        <b>Decision:</b>
-                        <br> Decision de cierre de capitulo en caso de no ser capitulo final<br>
-                        <ul>
-                            La decisión consta de:
-                            <li>
-                                <b>Tipo de decision: </b> actualmente solo esta disponible eleccion
-                            </li>
-                            <li>
-                                <b>Opciones: </b> nombre y descripcion de las posibles opciones <br>
-                                Cada opcion en la decisión corresponde a un capitulo nuevo.<br> 
-                                <i>Actualmente solo se pueden dos</i> 
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
+            <div class="col-12 text-justify">
+                <div class="mb-5 border-left pl-3" *ngIf="displayStoryInfo">
+                    <p>La historia es la estructura narrativa final. Los lectores podran leer un conjunto de capitulos y
+                        dependiendo de las decisiones armar la historia. <br>
+                        Solo a los capitulos publicados tendrán acceso los lectores.</p>
+                    <p>La historia cuenta con un <b>Titulo principal</b> y luego cada capitulo cuenta con:</p>
+                    <ul class="pl-3">
+                        <li class="mb-2">
+                            <b>Nombre:</b>
+                            <br> El nombre del capitulo es identificativo para escritores, no participa en la historia
+                            para
+                            los lectores.
+                        </li>
+                        <li class="mb-2">
+                            <b>Historia</b>
+                            <br>Narracion del capitulo. El lector debe interactuar en la historia, mas no deberia ser el
+                            protagonista de la misma, conservando su anonimato siempre.<br>
+                        </li>
+                        <li class="mb-2">
+                            <b>Capitulo final:</b>
+                            <br> Significa que el capitulo cierra la historia. <br>
+                            De ser un capitulo final debe tener una ubicacion de cierre (Ciudad/Lugar) a donde el
+                            personaje
+                            volverá al finalizar la historia.<br>
+                        </li>
+                        <li class="mb-2">
+                            <b>Decision:</b>
+                            <br> Decision de cierre de capitulo en caso de no ser capitulo final<br>
+                            <ul>
+                                La decisión consta de:
+                                <li>
+                                    <b>Tipo de decision: </b> actualmente solo esta disponible eleccion
+                                </li>
+                                <li>
+                                    <b>Opciones: </b> nombre y descripcion de las posibles opciones <br>
+                                    Cada opcion en la decisión corresponde a un capitulo nuevo.<br>
+                                    <i>Actualmente solo se pueden dos</i>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </ng-container>
+        </div>
 
         <div class="row text center" *ngIf="chaptersloading">
             <app-loader class="mx-auto" size="lg"></app-loader>
@@ -260,8 +284,8 @@
 
 
     <!-- Lineamientos narrativos -->
-    <ng-container>
-        <div class="mt-auto d-flex mb-3">
+    <div class="row mt-auto">
+        <div class="col-12 d-flex mb-3">
             <h4 class="my-auto">
                 Lineamientos narrativos.
             </h4>
@@ -269,55 +293,66 @@
                 <fa-icon [icon]="faInfo" size="md"></fa-icon>
             </button>
         </div>
-        <div class="mb-5 ml-4 border-left pl-4" *ngIf="displayWriteGuideline">
-            <p>Aunque puedes crear la historia que te plazca en este mundo, me parece adecuado colocar ciertos lineamientos para poder mantener el mismo esquema narrativo en cada historia.</p>
-            <!-- <p>La  historia cuenta con un <b>Titulo principal</b> y luego cada capitulo cuenta con:</p> -->
-            <ul>
-                <li class="mb-2">
-                    El narrador siempre es omnisciente, salvo por las decisiones de los jugadores.
-                </li>
-                <li class="mb-2">
-                    Las descripciones de ciudades y lugares deben ser generales y ajenas a historias específicas.
-                </li>
-                <li class="mb-2">
-                    Todas las historias deben contarse en presente, ya que se supone son eventos que el jugador va experimentando a medida transcurre la historia.
-                </li>
-                <li class="mb-2">
-                    Aunque las narrativas de ciudades y lugares puede relacionarse de alguna forma con las historias particulares, debe considerarse que son lecturas recurrentes en la accion del jugador, asi que hay que considerar que son eventos que se repiten normalmente.
-                </li>
-                <li class="mb-2">
-                    Los jugadores tienen el rol de <i>El Peregrino</i> en la historia, asi que el narrador debe referirse a ellos en 2da persona.
-                    <span class="text-muted">(Quizas esta es la mas compleja de implementar)</span>
-                </li>
-                <li class="mb-2">
-                    <b class="mb-2">Evitemos</b>
-                    <ul>
-                        <li class="mb-2">
-                            Dialogos especificos del Peregrino en la historia, deben ser dialogos generas. <br>
-                            <i>Ejm: 'Dices estar de acuerdo con entusiasmo', 'Hablas un rato de tus experiencias en el campo', etc..</i>
-                        </li>
-                        <li class="mb-2">
-                            Referencias con cosas existentes solo en nuestro mundo.
-                            <i>Por el momento es complejo y esta en consideracion desarrollo tramas con loops de historia.</i>
-                        </li>
-                        <li class="mb-2">
-                            Tramas relacionadas con viajes en el tiempo y problemas temporales. <br>
-                            <i>Por el momento es complejo y esta en consideracion desarrollo tramas con loops de historia.</i>
-                        </li>
-                        <li class="mb-2">
-                            Animales que hablan. <br>
-                            <i>Si bien se puede inventar cualquier criatura, los animales existentes son los existentes de nuestro mundo</i>
-                        </li>
-                        <li class="mb-2">
-                            Inventar idiomas. <br>
-                            <i>Se puede hacer mencion de idiomas extranjeros, mas no tratar de escribirlo.</i>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <div class="text-right text-muted">- RecRoger</div>
+        <div class="col-12">
+            <div class="mb-5 border-left pl-3" *ngIf="displayWriteGuideline">
+                <p>Aunque puedes crear la historia que te plazca en este mundo, me parece adecuado colocar ciertos
+                    lineamientos para poder mantener el mismo esquema narrativo en cada historia.</p>
+                <!-- <p>La  historia cuenta con un <b>Titulo principal</b> y luego cada capitulo cuenta con:</p> -->
+                <ul class="pl-3">
+                    <li class="mb-2">
+                        El narrador siempre es omnisciente, salvo por las decisiones de los jugadores.
+                    </li>
+                    <li class="mb-2">
+                        Las descripciones de ciudades y lugares deben ser generales y ajenas a historias específicas.
+                    </li>
+                    <li class="mb-2">
+                        Todas las historias deben contarse en presente, ya que se supone son eventos que el jugador va
+                        experimentando a medida transcurre la historia.
+                    </li>
+                    <li class="mb-2">
+                        Aunque las narrativas de ciudades y lugares puede relacionarse de alguna forma con las historias
+                        particulares, debe considerarse que son lecturas recurrentes en la accion del jugador, asi que
+                        hay que considerar que son eventos que se repiten normalmente.
+                    </li>
+                    <li class="mb-2">
+                        Los jugadores tienen el rol de <i>El Peregrino</i> en la historia, asi que el narrador debe
+                        referirse a ellos en 2da persona.
+                        <span class="text-muted">(Quizas esta es la mas compleja de implementar)</span>
+                    </li>
+                    <li class="mb-2">
+                        <b class="mb-2">Evitemos</b>
+                        <ul class="pl-3">
+                            <li class="mb-2">
+                                Dialogos especificos del Peregrino en la historia, deben ser dialogos generas. <br>
+                                <i>Ejm: 'Dices estar de acuerdo con entusiasmo', 'Hablas un rato de tus experiencias en
+                                    el campo', etc..</i>
+                            </li>
+                            <li class="mb-2">
+                                Referencias con cosas existentes solo en nuestro mundo.
+                                <i>Por el momento es complejo y esta en consideracion desarrollo tramas con loops de
+                                    historia.</i>
+                            </li>
+                            <li class="mb-2">
+                                Tramas relacionadas con viajes en el tiempo y problemas temporales. <br>
+                                <i>Por el momento es complejo y esta en consideracion desarrollo tramas con loops de
+                                    historia.</i>
+                            </li>
+                            <li class="mb-2">
+                                Animales que hablan. <br>
+                                <i>Si bien se puede inventar cualquier criatura, los animales existentes son los
+                                    existentes de nuestro mundo</i>
+                            </li>
+                            <li class="mb-2">
+                                Inventar idiomas. <br>
+                                <i>Se puede hacer mencion de idiomas extranjeros, mas no tratar de escribirlo.</i>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="text-right text-muted">- RecRoger</div>
+            </div>
         </div>
-    </ng-container>
+    </div>
 
 
 </div>

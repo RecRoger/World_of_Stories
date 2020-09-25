@@ -1,22 +1,26 @@
 <div class="app-main_writers">
-  <h2 class="mb-5">Bienvenido {{ user.username | titlecase}}!</h2>
+  <h2>Bienvenido {{ user.username | titlecase}}!</h2>
   <p>Éste es <b>El Modo Escritor</b>. Aca podras escribir las aventuras de este nuevo mundo. <br></p>
+  <button class="btn btn-link mr-auto mt-n3" (click)="mainInfo = !mainInfo">
+    <fa-icon [icon]="faInfo" size="md"></fa-icon>
+  </button>
 
-  <div class="ml-3 pl-3 border-left">
+  <div class="ml-2 border-left text-justify" *ngIf="mainInfo">
     <p>Construir este mundo implica la creacion de ciudades, descripcion de los lugares visitables de cada ciudad,
       narraciones de las personas y eventos de cada lugar y sus respectivas historias.</p>
     <p>Los lectores estarán viajando por este mundo literario como <i>Peregrinos</i>, personajes dedicadas a recopilar
       la historia de la existencia del universo. <br> Su participación ha de ser lo mas anónima posible en las historias
       que son narradas.</p>
-    <p class="text-muted">***** ALERTA *****<br>En esta version, todo el contenido estará publicado. La idea es restringir el contenido a los
+    <p class="text-muted">***** ALERTA *****<br>En esta version, todo el contenido estará publicado. La idea es
+      restringir el contenido a los
       lectores, a manera de permitir revisiones del contenido en futuras versiones.</p>
   </div>
-  <h5 class="mt-5">¿Dónde te gustaria comenzar?</h5>
+  <h5 class="mt-3">¿Dónde te gustaria comenzar?</h5>
 
   <div class="row my-4 pt-2">
 
-    <div class="col-4">
-      <div class="card selectable" (click)="redirectTo('writers/world')">
+    <div class="col-12 col-md-4">
+      <div class="card" (click)="redirectTo('writers/world')">
         <div class="card-body d-flex">
           <fa-icon [icon]="faGlobeAmericas" size="4x"></fa-icon>
           <div class="my-auto ml-4">
@@ -29,19 +33,19 @@
   </div>
 
 
-  <div class="d-flex">
-    <div class="col-6">
+  <div class="row mt-auto">
+    <div class="col-12 col-md-6 text-justify">
       <h3 class="mt-5 mb-3">
         Futuras implementaciones
       </h3>
-      <ul>
+      <ul class="pl-3">
         <li>Implementar restricción de contenido, estado de publicaciones</li>
         <li>Sistema de viaje entre ciudades, implementacion de lugares de viajes</li>
         <li>Implementacion en sistema de objetos y articulos en decisiones e historias</li>
       </ul>
 
     </div>
-    <div class="col-6 mt-auto border-left">
+    <div class="col-11 offset-1 offset-md-0 col-md-6 mt-auto border-left p-3">
       <p>Muchas gracias por particiapar en este proyecto, estaré trabajando para mejorarlo dia a dia.</p>
       <p class="text-muted text-right">- RecRoger</p>
     </div>

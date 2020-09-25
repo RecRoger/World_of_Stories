@@ -33,6 +33,7 @@
     "core-js": "^2.5.4",
     "lodash": "^4.17.19",
     "ng-animate": "^0.3.4",
+    "ngx-autosize": "^1.8.0",
     "ngx-device-detector": "^1.4.6",
     "ngx-teximate": "^0.3.0",
     "rxjs": "~6.5.2",

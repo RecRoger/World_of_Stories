@@ -42,7 +42,7 @@ export class WriteOrReadComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.user$.subscribe(us => {
         this.user = us;
-        this.needUpdate = (!this.user.email || !this.user.username)
+        this.needUpdate = (!this.user.email || !this.user.username);
       })
     );
   }
@@ -58,32 +58,31 @@ export class WriteOrReadComponent implements OnInit, OnDestroy {
 
     if (!this.needUpdate) {
       const isMobile = this.deviceService.isMobile();
-      const isTablet = this.deviceService.isTablet();
-      const isDesktopDevice = this.deviceService.isDesktop();
+      // const isTablet = this.deviceService.isTablet();
+      // const isDesktopDevice = this.deviceService.isDesktop();
 
       // alert(isMobile + '-' + isTablet + '-' + isDesktopDevice);
 
       // true para escribir
       const roles: string[] = [...this.user.rol];
       if (activity) {
-        if (!isMobile) {
-          if (roles.includes(UsersRoles.W) || roles.includes(UsersRoles.A)) {
-            this.startActivity(activity);
-          } else {
-            this.rolConfirmation = 'W';
+        if (roles.includes(UsersRoles.W) || roles.includes(UsersRoles.A)) {
+          this.startActivity(activity);
+          if (isMobile) {
+            this.store.dispatch(
+              new SetInfo('El modo escritor puede resultar mucho mas comodo desde una pantalla mas grande.')
+            );
           }
         } else {
-          this.store.dispatch(
-            new SetInfo('Lo sentimos, pero el modo escritor requiere mejor resolucion y no esta disponible mobile por el momento')
-          );
+          this.rolConfirmation = 'W';
         }
       } else {
         if (roles.includes(UsersRoles.R)) {
           this.startActivity(activity);
           if (!isMobile) {
-            // this.store.dispatch(
-            //   new SetInfo('La experience de lector esta pensada para dispositivos móviles.')
-            // );
+            this.store.dispatch(
+              new SetInfo('La experience de lector esta pensada para dispositivos móviles. Aun no contamos con su mejor diseño en pantallas grandes ')
+            );
           }
         } else {
           this.rolConfirmation = 'R';
@@ -119,7 +118,7 @@ export class WriteOrReadComponent implements OnInit, OnDestroy {
     }
   }
 
-  goToUpdateUser(){
+  goToUpdateUser() {
     this.router.navigate(['user/settings']);
   }
 }

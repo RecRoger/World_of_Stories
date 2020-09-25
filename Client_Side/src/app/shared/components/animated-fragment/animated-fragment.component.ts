@@ -125,7 +125,7 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
 
 
     function isInViewport(element) {
-
+      if (!element) return false;
       // TODO - mejorar funcionalidad
       const rect = element.getBoundingClientRect();
       let bot = rect.bottom;
