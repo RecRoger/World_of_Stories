@@ -132,7 +132,7 @@
                   {{city.name}} es ...
                 </span>
                 <span *ngIf="citiesTabs.tab == 'travel'">
-                  Viajando a {{city.name}} ...
+                  En {{city.name}} ...
                 </span>
               </div>
               <form [formGroup]="cityForm">
@@ -257,7 +257,7 @@
         </ng-container>
         <!-- Viajes -->
         <ng-container *ngIf="newCityTab.tab == 'travel'">
-          Viajando a {{cityForm.get('name').value}} ...
+          En {{cityForm.get('name').value}} ...
           <form [formGroup]="cityForm">
             <app-write-fragments [tale]="cityForm.get('travel')"></app-write-fragments>
           </form>
