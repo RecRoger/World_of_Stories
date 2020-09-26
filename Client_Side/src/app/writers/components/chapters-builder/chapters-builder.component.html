@@ -70,7 +70,7 @@
 
 
                         <!-- seccion de historia -->
-                        <div class="" *ngIf="chapter.story && chapter.story[0] && chapter.story[0].text ; else noStory">
+                        <div class="col-11" *ngIf="chapter.story && chapter.story[0] && chapter.story[0].text ; else noStory">
                             <app-animated-fragment [tale]="chapter.story" [chapterMode]="true"
                                 (finish)="endStoryAnimation(chapter)"
                                 (setChapterDivision)="addDivision(chapter, $event)">

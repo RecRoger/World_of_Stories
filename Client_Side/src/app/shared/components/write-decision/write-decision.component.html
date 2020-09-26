@@ -22,7 +22,7 @@
         <div class="row my-3 my-md-0">
             <ng-container *ngFor="let opForm of optionsForm.controls; let i = index">
                 <div class="col-12 col-md-6 d-flex flex-column" [formGroup]="opForm">
-                    <div class="">
+                    <div class="pt-2">
                         <label for="">Opcion {{i+1}}</label>
                         <input class="form-control mb-1" type="text" formControlName="name">
                         <div class="form-group form-check" *ngIf="decisionForm.value.decisionType !== 'choose'">
@@ -30,7 +30,7 @@
                             <label class="form-check-label" for="removeItem">Consumir objeto</label>
                         </div>
                     </div>
-                    <div class="px-3">
+                    <div class="pl-3">
                         <label for="">Detalle</label>
                         <textarea autosize [useImportant]="false" class="form-control" formControlName="description" rows="2"></textarea>
                     </div>

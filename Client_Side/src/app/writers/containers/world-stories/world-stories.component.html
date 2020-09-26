@@ -25,14 +25,14 @@
                             <br> <i class="text-muted">La ciudad se publica</i>
                         </li>
                         <li class="mb-2">
-                            <b>Descripciones:</b>
-                            <br> Son cortos estractos que describen la ciudad brevemente. <br>
+                            <b>Extractos:</b>
+                            <br> Son cortas descripciones que hablan de la ciudad brevemente. <br>
                             Los lectores podran leer una descripcion aleatoria cada vez que deban seleccionar una
                             ciudad.
                             <br> <i class="text-muted">Se publican cada una por separado</i>
                         </li>
                         <li class="mb-2">
-                            <b>Entradas y viajes:</b>
+                            <b>Historias:</b>
                             <br> Narraciones de presentacion descriptiva de la ciudad. El jugador puede participar en la
                             historia<br>
                             Los lectores podran leer una presentacion aleatoria cada vez que esten en la ciudad.
@@ -60,12 +60,17 @@
 
     <!-- seccion de lugares -->
     <ng-container *ngIf="selectedCity && !selectedPlace">
-        <h2>
-            <button class="btn btn-link" (click)="getSelectedCity(null)">
-                <fa-icon [icon]="faLeft" size="2x"></fa-icon>
-            </button>
-            Lugares de {{selectedCity.name}}
-        </h2>
+        <div>
+            <h2 class="mb-0">Lugares</h2>
+            <small class="d-flex">
+                <button class="btn btn-link px-1" (click)="getSelectedCity(null)">
+                    <fa-icon [icon]="faLeft" size="lg"></fa-icon>
+                </button>
+                <div class="my-auto">
+                    {{selectedCity.name}}
+                </div>
+            </small>
+        </div>
 
         <div class="row">
             <div class="col-12 d-flex mb-3">
@@ -89,13 +94,13 @@
                             <br> <i class="text-muted">El lugar se publica</i>
                         </li>
                         <li class="mb-2">
-                            <b>Descripciones:</b>
+                            <b>Apariencias:</b>
                             <br> Cortos estractos que describen el lugar brevemente. <br>
                             Los lectores podran leer una descripcion aleatoria cada vez que deban seleccionar un lugar.
                             <br> <i class="text-muted">Se publican cada una por separado</i>
                         </li>
                         <li class="mb-2">
-                            <b>Entradas:</b>
+                            <b>Historias:</b>
                             <br> Narraciones de presentacion descriptiva del lugar. El jugador puede participar en la
                             historia<br>
                             Los lectores podran leer una presentacion aleatoria cada vez que ingresen al lugar.
@@ -121,15 +126,23 @@
 
     <!-- seccion de lugares -->
     <ng-container *ngIf="selectedCity && selectedPlace && !selectedNpc">
-        <h2 class="mb-4">
-            <button class="btn btn-link" (click)="getSelectedCity(null)">
-                <fa-icon [icon]="faLeft" size="2x"></fa-icon>
-            </button>
-            <button class="btn btn-link" (click)="getSelectedPlace(null)">
-                <fa-icon [icon]="faLeft" size="2x"></fa-icon>
-            </button>
-            Personas y eventos de {{selectedPlace.name}} en {{selectedCity.name}}
-        </h2>
+        <div>
+            <h2 class="mb-0">Eventos</h2>
+            <small class="d-flex">
+                <button class="btn btn-link px-1" (click)="getSelectedCity(null)">
+                    <fa-icon [icon]="faLeft" size="lg"></fa-icon>
+                </button>
+                <div class="my-auto">
+                    {{selectedCity.name}}
+                </div>
+                <button class="btn btn-link px-1" (click)="getSelectedPlace(null)">
+                    <fa-icon [icon]="faLeft" size="lg"></fa-icon>
+                </button>
+                <div class="my-auto">
+                    {{selectedPlace.name}}
+                </div>
+            </small>
+        </div>
 
         <div class="row">
             <div class="col-12 d-flex mb-3">
@@ -205,18 +218,29 @@
 
     <!-- seccion de capitulos -->
     <ng-container *ngIf="selectedCity && selectedPlace && selectedNpc">
-        <h2 class="mb-4">
-            <button class="btn btn-link" (click)="getSelectedCity(null)">
-                <fa-icon [icon]="faLeft" size="2x"></fa-icon>
-            </button>
-            <button class="btn btn-link" (click)="getSelectedPlace(null)">
-                <fa-icon [icon]="faLeft" size="2x"></fa-icon>
-            </button>
-            <button class="btn btn-link" (click)="getSelectedNPC(null)">
-                <fa-icon [icon]="faLeft" size="2x"></fa-icon>
-            </button>
-            {{selectedNpc.name}} en {{selectedPlace.name}} ({{selectedCity.name}})
-        </h2>
+        <div>
+            <h2 class="mb-0">Historia</h2>
+            <small class="d-flex">
+                <button class="btn btn-link px-1" (click)="getSelectedCity(null)">
+                    <fa-icon [icon]="faLeft" size="lg"></fa-icon>
+                </button>
+                <div class="my-auto">
+                    {{selectedCity.name}}
+                </div>
+                <button class="btn btn-link px-1" (click)="getSelectedPlace(null)">
+                    <fa-icon [icon]="faLeft" size="lg"></fa-icon>
+                </button>
+                <div class="my-auto">
+                    {{selectedPlace.name}}
+                </div>
+                <button class="btn btn-link px-1" (click)="getSelectedNPC(null)">
+                    <fa-icon [icon]="faLeft" size="lg"></fa-icon>
+                </button>
+                <div class="my-auto">
+                    {{selectedNpc.name}}
+                </div>
+            </small>
+        </div>
 
         <div class="row">
             <div class="col-12 d-flex mb-3">

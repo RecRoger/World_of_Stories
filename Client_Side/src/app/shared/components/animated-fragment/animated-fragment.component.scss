@@ -22,33 +22,18 @@
 }
 
 
+
+
 .chapter-decision{
     // background: red;
-    margin-top: -7px;
+    // margin-top: -7px;
     position: relative;
-    height: 10px;
-    z-index: 2;
+    // height: 10px;
+    // z-index: 2;
 }
-.hide {
+.decision-btn {
     // display: block;
-    display: none;
     position: absolute;
-    top: -15px;
-    left: 99%;
-}
-.new-decision{
-    display: block;
-    // padding: .5em .75em;
-    background: #fff;
-    width: 130px;
-    box-shadow: 1px 1px 1px #00000030
-}
-
-
-.chapter-decision:hover {
-    border-top: 1px solid #dee2e6;
-}
-
-.chapter-decision:hover> .hide {
-    display: block;
+    top: -30px;
+    left: 100%;
 }
