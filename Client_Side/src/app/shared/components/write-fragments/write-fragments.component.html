@@ -1,22 +1,24 @@
 <div class="col-12">
-
     <div class="row" *ngFor="let form of talesForm.controls; let i = index">
-        <!-- seccion de edicion -->
-        <div class="col-8 pb-1">
-            <ng-container>
-                <div class="row h-100" [formGroup]="form">
-                    <div class="col-11 d-flex"
-                        [ngClass]="{'tale-invalid': tale.invalid && tale.touched && i === talesForm.length - 1 }">
-                        <div class="ml-n2 mr-2 pt-2">
-                            P{{i+1}}
-                        </div> 
-                        <textarea [id]="'input-'+i" formControlName="text" class="form-control tale-textarea h-100"
-                            cdkTextareaAutosize rows="3" (keyup.enter)="focusOnFragment(i + 1)">
 
+        <!-- seccion de edicion -->
+        <div class="col-12 col-md-8 pb-1 px-0 px-md-2">
+            <ng-container>
+                <div class="d-flex h-100" [formGroup]="form">
+
+                    <div class="flex-grow-1 d-flex"
+                        [ngClass]="{'tale-invalid': tale.invalid && tale.touched && i === talesForm.length - 1 }">
+                        <div class="d-none d-md-block ml-n2 mr-2 pt-2">
+                            P{{i+1}}
+                        </div>
+                        <textarea autosize [useImportant]="false" [id]="'input-'+i" formControlName="text"
+                            class="form-control tale-textarea" rows="3" (keyup.enter)="focusOnFragment(i + 1)">
                         </textarea>
                     </div>
-                    <div class="col-1">
-                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+
+
+                    <div class="">
+                        <button mat-icon-button [matMenuTriggerFor]="menu">
                             <fa-icon [icon]="faCogs" size="lg"></fa-icon>
                         </button>
                         <mat-menu #menu="matMenu">
@@ -25,22 +27,38 @@
                             </button>
                         </mat-menu>
                         <mat-menu #animations="matMenu">
-                            <button mat-menu-item (click)="selectAnimation(i,animationsTypes.default)">Default</button>
-                            <button mat-menu-item (click)="selectAnimation(i,animationsTypes.chatA)">Conversacion
-                                1</button>
-                            <button mat-menu-item (click)="selectAnimation(i,animationsTypes.chatB)">Conversacion
-                                2</button>
-                            <button mat-menu-item
-                                (click)="selectAnimation(i,animationsTypes.surprise)">Sorpresa</button>
+                            <button mat-menu-item [matMenuTriggerFor]="example" [matMenuTriggerData]="{animation: animationsTypes.default}">
+                                Default
+                            </button>
+                            <button mat-menu-item [matMenuTriggerFor]="example" [matMenuTriggerData]="{animation: animationsTypes.chatA}">
+                                Conversacion 1
+                            </button>
+                            <button mat-menu-item [matMenuTriggerFor]="example" [matMenuTriggerData]="{animation: animationsTypes.chatB}">
+                                Conversacion 2
+                            </button>
+                            <button mat-menu-item [matMenuTriggerFor]="example" [matMenuTriggerData]="{animation: animationsTypes.surprise}">
+                                Sorpresa
+                            </button>
                         </mat-menu>
+                        <mat-menu #example="matMenu">
+                            <ng-template matMenuContent let-animation="animation">
+                                <div mat-menu-item
+                                    (click)="selectAnimation(i,animation)">
+                                    <app-animated-fragment [animations]="true" [tale]="[{text: 'Asi sería la animación', animation: animation}]"></app-animated-fragment>
+                                </div>
+                            </ng-template>
+                        </mat-menu>
+
                     </div>
+
+
                 </div>
             </ng-container>
         </div>
 
         <!-- seccion de prueba -->
-        <div class="col-4">
-            <app-animated-fragment [tale]="[form.value]"></app-animated-fragment>
+        <div class="d-none d-md-block col-md-4">
+            <app-animated-fragment [animations]="true" [tale]="[form.value]"></app-animated-fragment>
         </div>
 
     </div>

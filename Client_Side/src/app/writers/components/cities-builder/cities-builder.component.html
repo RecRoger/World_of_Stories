@@ -1,188 +1,193 @@
 <div class="row" *ngIf="(cities$ | async) as cities">
   <ng-container *ngFor="let city of cities; let i = index">
 
-    <div class="col-6 mb-5"
-      [ngClass]="{'col-6': (!citiesTabs || !citiesTabs.editing || citiesTabs.city !== city.id), 'col-12': (citiesTabs && citiesTabs.city === city.id && citiesTabs.editing)}">
+    <div class="col-12 col-md-6 mb-5"
+      [ngClass]="{'col-md-6': (!citiesTabs || !citiesTabs.editing || citiesTabs.city !== city.id), 'col-md-12': (citiesTabs && citiesTabs.city === city.id && citiesTabs.editing)}">
 
       <!-- card de la ciudad -->
-      <div class="">
-        <div class="card-header d-flex" (click)="toggleCityInfo(city.id)">
-          <fa-icon [icon]="citiesTabs?.city === city.id ? faMapMarkerAlt : faMapMarker" size="lg" class="mr-2">
-          </fa-icon>
-          <h4 class="card-title">
-            {{city.name}}
-          </h4>
-          <small class="text-muted ml-2 my-auto">
-            <span *ngIf="!city.published">Sin Publicar</span>
-            <span *ngIf="city.published">Publicado el {{ city.publishDate | date}}</span>
-          </small>
+      <div class="card-header" (click)="toggleCityInfo(city.id)">
+        <div class="row">
+          <div class="col-1 d-flex">
+            <fa-icon [icon]="citiesTabs?.city === city.id ? faMapMarkerAlt : faMapMarker" size="lg" class="m-auto">
+            </fa-icon>
+          </div>
+          <div class="col-10">
+            <h4 class="card-title mb-0">
+              {{city.name}}
+            </h4>
+            <small class="text-muted ml-2">
+              <span *ngIf="!city.published">Sin Publicar</span>
+              <span *ngIf="city.published">Publicado el {{ city.publishDate | date}}</span>
+            </small>
+          </div>
         </div>
+      </div>
+
+      <!-- card expandida -->
+      <div *ngIf="citiesTabs?.city === city.id">
+
+        <ng-container *ngIf="citiesTabs.loading">
+          <div class="card-body d-flex">
+            <app-loader class="loader mx-auto" size="md"></app-loader>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="!citiesTabs.loading">
+
+          <!-- Tabs de descripcion y viaje -->
+          <ul class="nav nav-tabs pt-3">
+            <li class="nav-item col-6">
+              <a class="nav-link h-100 d-flex" (click)="citiesTabs.page = 0; citiesTabs.tab = 'desc'"
+                [ngClass]="{'active': citiesTabs.tab == 'desc', 'disabled': citiesTabs.editing }">
+                Extractos
+                <span class="ml-2 my-auto badge badge-pill"
+                  [ngClass]="{'badge-primary': !citiesTabs.editing, 'badge-secondary': citiesTabs.editing }">
+                  {{city.description.length}}
+                </span>
+              </a>
+            </li>
+            <li class="nav-item col-6">
+              <a class="nav-link h-100 d-flex" (click)="citiesTabs.page = 0; citiesTabs.tab = 'travel'"
+                [ngClass]="{'active': citiesTabs.tab == 'travel', 'disabled': citiesTabs.editing }">
+                Historias
+                <span class="ml-2 my-auto badge badge-pill"
+                  [ngClass]="{'badge-primary': !citiesTabs.editing, 'badge-secondary': citiesTabs.editing }">
+                  {{city.travel.length}}
+                </span>
+              </a>
+            </li>
 
 
-        <!-- card expandida -->
-        <div *ngIf="citiesTabs?.city === city.id">
+          </ul>
 
-          <ng-container *ngIf="citiesTabs.loading">
-            <div class="card-body d-flex">
-              <app-loader class="loader mx-auto" size="md"></app-loader>
-            </div>
-          </ng-container>
+          <div class="py-2 px-3 border-left d-flex flex-column">
 
-          <ng-container *ngIf="!citiesTabs.loading">
-
-            <!-- Tabs de descripcion y viaje -->
-            <ul class="nav nav-tabs pt-3 px-3">
-              <li class="nav-item ml-2">
-                <a class="nav-link" (click)="citiesTabs.page = 0; citiesTabs.tab = 'desc'"
-                  [ngClass]="{'active': citiesTabs.tab == 'desc', 'disabled': citiesTabs.editing }">
-                  Descripciones
-                  <span class="badge badge-pill"
-                    [ngClass]="{'badge-primary': !citiesTabs.editing, 'badge-secondary': citiesTabs.editing }">
-                    {{city.description.length}}
-                  </span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" (click)="citiesTabs.page = 0; citiesTabs.tab = 'travel'"
-                  [ngClass]="{'active': citiesTabs.tab == 'travel', 'disabled': citiesTabs.editing }">
-                  Viajes y entradas
-                  <span class="badge badge-pill"
-                    [ngClass]="{'badge-primary': !citiesTabs.editing, 'badge-secondary': citiesTabs.editing }">
-                    {{city.travel.length}}
-                  </span>
-                </a>
-              </li>
-
+            
+            <ng-container *ngIf="!citiesTabs.editing">
               <!-- Botones -->
-              <div class="ml-auto" *ngIf="!citiesTabs.editing">
-                <!-- boton de editar descripcion o viaje -->
-                <button class="btn mr-2" (click)="editTale(city.id)">
-                  <fa-icon [icon]="faEdit" size="lg"></fa-icon>
-                </button>
+              <div class="mr-auto mb-2">
                 <!-- boton de nueva descripcion o viaje -->
-                <button class="btn mr-2" (click)="newTale()">
-                  <fa-icon [icon]="faPlus" size="lg"></fa-icon>
+                <button class="btn mr-2" (click)="newTale()" matTooltip="Nueva narración">
+                  <fa-icon [icon]="faPlus" size="sm"></fa-icon>
+                  <span class="ml-2 d-inline d-md-none">Nueva</span>
+                </button>
+                <!-- boton de editar descripcion o viaje -->
+                <button class="btn mr-2" (click)="editTale(city.id)" matTooltip="Editar narración">
+                  <fa-icon [icon]="faEdit" size="sm"></fa-icon>
+                  <span class="ml-2 d-inline d-md-none">Editar</span>
                 </button>
               </div>
 
-            </ul>
-            <div class="card-body border-left d-flex flex-column">
-
-              <ng-container *ngIf="!citiesTabs.editing">
-                <!-- Descripciones -->
-                <ng-container *ngIf="citiesTabs.tab == 'desc'">
-
-                  <div>
-                    <app-animated-fragment [tale]="city.description[citiesTabs.page].tale"></app-animated-fragment>
-                    <p class="text-muted text-right"> - {{city.description[citiesTabs.page].author}}</p>
-                  </div>
-
-
-                  <small class="text-muted ml-auto">
-                    <span *ngIf="!city.description[citiesTabs.page].published">Sin Publicar</span>
-                    <span *ngIf="city.description[citiesTabs.page].published">Publicado el
-                      {{ city.description[citiesTabs.page].publishDate | date}}</span>
-                  </small>
-
-
-                  <div class="text-muted mt-auto text-center">
-                    <button class="btn btn-link" *ngIf="citiesTabs.page!== 0" (click)="changePage(i,false)">
-                      <fa-icon [icon]="faLeft"></fa-icon>
-                    </button>
-                    {{citiesTabs.page + 1}}/{{city.description.length}}
-                    <button class="btn btn-link" *ngIf="citiesTabs.page + 1 !== city.description.length"
-                      (click)="changePage(i,true)">
-                      <fa-icon [icon]="faRight"></fa-icon>
-                    </button>
-                  </div>
-                </ng-container>
-                <!-- Viajes -->
-                <ng-container *ngIf="citiesTabs.tab == 'travel'">
-                  <div>
-                    <app-animated-fragment [tale]="city.travel[citiesTabs.page].tale"></app-animated-fragment>
-                    <p class="text-muted text-right"> - {{city.travel[citiesTabs.page].author}}</p>
-                  </div>
-                  <small class="text-muted ml-auto">
-                    <span *ngIf="!city.travel[citiesTabs.page].published">Sin Publicar</span>
-                    <span *ngIf="city.travel[citiesTabs.page].published">Publicado el
-                      {{ city.travel[citiesTabs.page].publishDate | date}}</span>
-                  </small>
-                  <div class="text-muted mt-auto text-center">
-                    <button class="btn btn-link" *ngIf="citiesTabs.page!== 0" (click)="changePage(i,false)">
-                      <fa-icon [icon]="faLeft"></fa-icon>
-                    </button>
-                    {{citiesTabs.page + 1}}/{{city.travel.length}}
-                    <button class="btn btn-link" *ngIf="citiesTabs.page + 1 !== city.travel.length"
-                      (click)="changePage(i,true)">
-                      <fa-icon [icon]="faRight"></fa-icon>
-                    </button>
-                  </div>
-                </ng-container>
-              </ng-container>
-
-              <!-- formulario de edicion y creacion -->
-              <ng-container *ngIf="citiesTabs.editing">
-                <div class="d-flex">
-                  <div>
-                    <span *ngIf="citiesTabs.tab == 'desc'">
-                      {{city.name}} es ...
-                    </span>
-                    <span *ngIf="citiesTabs.tab == 'travel'">
-                      Viajando a {{city.name}} ...
-                    </span>
-                  </div>
-                  <div class="ml-auto" *ngIf="!citiesTabs.newTale">
-                    <!-- boton de publicar descripcion o viaje -->
-                    <button class="btn mr-2" (click)="publishTale(city.id)">
-                      <span *ngIf="!cityForm.get('published').value">
-                        <fa-icon [icon]="faUpload" size="xl"></fa-icon>
-                      </span>
-                      <span *ngIf="cityForm.get('published').value">
-                        <fa-icon [icon]="faDownload" size="xl"></fa-icon>
-                      </span>
-                    </button>
-                    <!-- boton de eliminar descripcion o viaje -->
-                    <button class="btn mr-2" (click)="deleteTale(city.id)">
-                      <fa-icon [icon]="faTimes" size="xl"></fa-icon>
-                    </button>
-                  </div>
+              <!-- Descripciones -->
+              <ng-container *ngIf="citiesTabs.tab == 'desc'">
+                <div>
+                  <app-animated-fragment [tale]="city.description[citiesTabs.page].tale"></app-animated-fragment>
+                  <p class="text-muted text-right"> - {{city.description[citiesTabs.page].author}}</p>
                 </div>
-                <form [formGroup]="cityForm">
-                  <app-write-fragments [maxSize]="(citiesTabs.tab == 'desc') ? 3 : null" [tale]="cityForm.get('tale')">
-                  </app-write-fragments>
-                </form>
-
+                <small class="text-muted ml-auto">
+                  <span *ngIf="!city.description[citiesTabs.page].published">Sin Publicar</span>
+                  <span *ngIf="city.description[citiesTabs.page].published">Publicado el
+                    {{ city.description[citiesTabs.page].publishDate | date}}</span>
+                </small>
+                <div class="text-muted mt-auto text-center">
+                  <button class="btn btn-link" *ngIf="citiesTabs.page!== 0" (click)="changePage(i,false)">
+                    <fa-icon [icon]="faLeft"></fa-icon>
+                  </button>
+                  {{citiesTabs.page + 1}}/{{city.description.length}}
+                  <button class="btn btn-link" *ngIf="citiesTabs.page + 1 !== city.description.length"
+                    (click)="changePage(i,true)">
+                    <fa-icon [icon]="faRight"></fa-icon>
+                  </button>
+                </div>
               </ng-container>
 
-            </div>
-            <div class="card-footer d-flex">
+              <!-- Viajes -->
+              <ng-container *ngIf="citiesTabs.tab == 'travel'">
+                <div>
+                  <app-animated-fragment [tale]="city.travel[citiesTabs.page].tale"></app-animated-fragment>
+                  <p class="text-muted text-right"> - {{city.travel[citiesTabs.page].author}}</p>
+                </div>
+                <small class="text-muted ml-auto">
+                  <span *ngIf="!city.travel[citiesTabs.page].published">Sin Publicar</span>
+                  <span *ngIf="city.travel[citiesTabs.page].published">Publicado el
+                    {{ city.travel[citiesTabs.page].publishDate | date}}</span>
+                </small>
+                <div class="text-muted mt-auto text-center">
+                  <button class="btn btn-link" *ngIf="citiesTabs.page!== 0" (click)="changePage(i,false)">
+                    <fa-icon [icon]="faLeft"></fa-icon>
+                  </button>
+                  {{citiesTabs.page + 1}}/{{city.travel.length}}
+                  <button class="btn btn-link" *ngIf="citiesTabs.page + 1 !== city.travel.length"
+                    (click)="changePage(i,true)">
+                    <fa-icon [icon]="faRight"></fa-icon>
+                  </button>
+                </div>
+              </ng-container>
+            </ng-container>
 
-              <!-- Acciones de ciudad sin edicion -->
-              <ng-container *ngIf="!citiesTabs.editing">
-                <button class="btn btn-secondary ml-auto" (click)="publishCity(city.id, !city.published)">
-                  <span *ngIf="!city.published">
-                    <fa-icon [icon]="faUpload" size="xl"></fa-icon> Publicar
-                  </span>
-                  <span *ngIf="city.published">
-                    <fa-icon [icon]="faDownload" size="xl"></fa-icon> Quitar publicacion
-                  </span>
+            <!-- formulario de edicion y creacion -->
+            <ng-container *ngIf="citiesTabs.editing">
+              <div>
+                <span *ngIf="citiesTabs.tab == 'desc'">
+                  {{city.name}} es ...
+                </span>
+                <span *ngIf="citiesTabs.tab == 'travel'">
+                  En {{city.name}} ...
+                </span>
+              </div>
+              <form [formGroup]="cityForm">
+                <app-write-fragments [maxSize]="(citiesTabs.tab == 'desc') ? 3 : null" [tale]="cityForm.get('tale')">
+                </app-write-fragments>
+              </form>
+
+              <!-- botones de edicion -->
+              <div class="my-3" *ngIf="!citiesTabs.newTale">
+                <!-- boton de eliminar descripcion o viaje -->
+                <button class="btn mr-2" (click)="deleteTale(city.id)" matTooltip="Eliminar narracíon">
+                  <fa-icon [icon]="faTimes" size="xl"></fa-icon>
+                  <span class="ml-2 d-inline d-md-none">Eliminar</span>
                 </button>
-                <button class="btn btn-primary ml-3" (click)="selectCity(city.id)">Lugares</button>
-              </ng-container>
+                <!-- boton de publicar descripcion o viaje -->
+                <button class="btn mr-2" (click)="publishTale(city.id)" matTooltip="{{ cityForm.get('published').value ? 'Quitar publicacion': 'Publicar'}}">
+                  <span *ngIf="!cityForm.get('published').value">
+                    <fa-icon [icon]="faUpload" size="xl"></fa-icon>
+                  </span>
+                  <span *ngIf="cityForm.get('published').value">
+                    <fa-icon [icon]="faDownload" size="xl"></fa-icon>
+                  </span>
+                  <span class="ml-2 d-inline d-md-none">{{ cityForm.get('published').value ? 'Quitar publicacion': 'Publicar'}}</span>
+                </button>
+              </div>
+              
+            </ng-container>
 
-              <!-- acciones de la edicion -->
-              <ng-container *ngIf="citiesTabs.editing">
-                <button class="btn btn-secondary ml-auto" (click)="saveCityEdition(city.id, true)">Cancelar</button>
-                <button class="btn btn-primary ml-4" (click)="saveCityEdition(city.id)">Guardar</button>
-              </ng-container>
+          </div>
+          <div class="card-footer d-flex">
 
-            </div>
+            <!-- Acciones de ciudad sin edicion -->
+            <ng-container *ngIf="!citiesTabs.editing">
+              <button class="btn btn-secondary ml-auto" (click)="publishCity(city.id, !city.published)">
+                <span *ngIf="!city.published">
+                  <fa-icon [icon]="faUpload" size="xl"></fa-icon> Publicar
+                </span>
+                <span *ngIf="city.published">
+                  <fa-icon [icon]="faDownload" size="xl"></fa-icon> Quitar publicacion
+                </span>
+              </button>
+              <button class="btn btn-primary ml-3" (click)="selectCity(city.id)">Lugares</button>
+            </ng-container>
 
-          </ng-container>
+            <!-- acciones de la edicion -->
+            <ng-container *ngIf="citiesTabs.editing">
+              <button class="btn btn-secondary ml-auto" (click)="saveCityEdition(city.id, true)">Cancelar</button>
+              <button class="btn btn-primary ml-4" (click)="saveCityEdition(city.id)">Guardar</button>
+            </ng-container>
+
+          </div>
+
+        </ng-container>
 
 
-
-        </div>
 
       </div>
 
@@ -190,68 +195,80 @@
   </ng-container>
 
   <!-- Loading de la Nueva Ciudad -->
-  <div class="col-6 mb-5" *ngIf="newCityTab.loading">
-    <div class="">
-      <div class="card-header d-flex">
-        <h4 class="card-title">
-          <app-loader class="loader" size="md"></app-loader>
-        </h4>
-      </div>
+  <div class="col-12 col-md-6 mb-5" *ngIf="newCityTab.loading">
+    <div class="card-header d-flex">
+      <h4 class="card-title">
+        <app-loader class="loader" size="md"></app-loader>
+      </h4>
     </div>
   </div>
 
   <!-- Carta de Nueva Ciudad -->
-  <div class="col-6 mb-5" [ngClass]="{'col-6': !newCityTab.newCity, 'col-12': newCityTab.newCity}">
-    <div class="">
-      <div class="card-header d-flex" (click)="toggleNewCity()">
-        <fa-icon [icon]="newCityTab.newCity ? faMapMarkerAlt: faMapMarker" size="lg" class="mr-2"></fa-icon>
-        <h4 class="card-title">
-          Nueva Ciudad
-        </h4>
+  <div class="col-12 col-md-6 mb-5" [ngClass]="{'col-md-6': !newCityTab.newCity, 'col-md-12': newCityTab.newCity}">
+
+    <div class="card-header" (click)="toggleNewCity()">
+      <div class="row">
+        <div class="col-1 d-flex">
+          <fa-icon [icon]="newCityTab.newCity ? faMapMarkerAlt: faMapMarker" size="lg" class="m-auto"></fa-icon>
+        </div>
+        <div class="col-10">
+          <h4 class="card-title mb-0">
+            Nueva Ciudad
+          </h4>
+          <small class="text-muted ml-2">
+            Crear ciudad
+          </small>
+        </div>
       </div>
-      <div *ngIf="newCityTab.newCity">
-        <ul class="nav nav-tabs pt-3 px-3">
-          <li class="nav-item ml-2 mt-n1">
-            <form [formGroup]="cityForm">
-              <input type="text" class="form-control" formControlName="name" placeholder="Nombre de la ciudad">
-            </form>
-          </li>
-          <li class="nav-item ml-auto mr-2">
-            <a class="nav-link" (click)="newCityTab.tab = 'desc'"
+    </div>
+
+    <div *ngIf="newCityTab.newCity">
+
+      <ul class="nav nav-tabs pt-3 px-3">
+        <li class="col-12 col-md-4 nav-item">
+          <form [formGroup]="cityForm" class="mb-3 mb-md-0">
+            <input type="text" class="form-control" formControlName="name" placeholder="Nombre de la ciudad">
+          </form>
+        </li>
+        <div class="col-12 col-md-8 d-flex">
+          <li class="nav-item ml-auto">
+            <a class="nav-link h-100" (click)="newCityTab.tab = 'desc'"
               [ngClass]="{'active': newCityTab.tab == 'desc', 'errorTab': cityForm?.get('description')?.invalid && cityForm?.get('description')?.touched }">
-              Descripciones
+              Extracto
             </a>
           </li>
-          <li class="nav-item mr-2">
-            <a class="nav-link" (click)="newCityTab.tab = 'travel'"
+          <li class="nav-item">
+            <a class="nav-link h-100" (click)="newCityTab.tab = 'travel'"
               [ngClass]="{'active': newCityTab.tab == 'travel', 'errorTab': cityForm?.get('travel')?.invalid && cityForm?.get('travel')?.touched}">
-              Viajes y entradas
+              Historia
             </a>
           </li>
-        </ul>
-        <div class="card-body border-left d-flex flex-column">
-          <!-- Descripciones -->
-          <ng-container *ngIf="newCityTab.tab == 'desc'">
-            {{cityForm.get('name').value}} es ...
-            <form [formGroup]="cityForm">
-              <app-write-fragments [maxSize]="3" [tale]="cityForm.get('description')"></app-write-fragments>
-            </form>
-          </ng-container>
-          <!-- Viajes -->
-          <ng-container *ngIf="newCityTab.tab == 'travel'">
-            Viajando a {{cityForm.get('name').value}} ...
-            <form [formGroup]="cityForm">
-              <app-write-fragments [tale]="cityForm.get('travel')"></app-write-fragments>
-            </form>
-          </ng-container>
-
         </div>
-        <div class="card-footer d-flex">
+      </ul>
 
-          <button class="btn btn-secondary ml-auto" (click)="addNewCity(true)">Cancelar</button>
-          <button class="btn btn-primary ml-4" (click)="addNewCity()">Guardar</button>
 
-        </div>
+      <div class="card-body border-left d-flex flex-column">
+        <!-- Descripciones -->
+        <ng-container *ngIf="newCityTab.tab == 'desc'">
+          {{cityForm.get('name').value}} es ...
+          <form [formGroup]="cityForm">
+            <app-write-fragments [maxSize]="3" [tale]="cityForm.get('description')"></app-write-fragments>
+          </form>
+        </ng-container>
+        <!-- Viajes -->
+        <ng-container *ngIf="newCityTab.tab == 'travel'">
+          En {{cityForm.get('name').value}} ...
+          <form [formGroup]="cityForm">
+            <app-write-fragments [tale]="cityForm.get('travel')"></app-write-fragments>
+          </form>
+        </ng-container>
+
+      </div>
+      <div class="card-footer d-flex">
+
+        <button class="btn btn-secondary ml-auto" (click)="addNewCity(true)">Cancelar</button>
+        <button class="btn btn-primary ml-4" (click)="addNewCity()">Guardar</button>
+
       </div>
     </div>
   </div>

@@ -1,5 +1,5 @@
 <div class="d-flex flex-column" [formGroup]="decisionForm">
-    <div class="col-4">
+    <div class="col-12 col-md-4">
         <label for="">Tipo de decision</label>
         <select class="form-control" formControlName="decisionType">
             <option value="choose">Elección</option>
@@ -7,22 +7,22 @@
             <option value="item" disabled>Objeto</option>
         </select>
     </div>
-    <div class="col-4" *ngIf="decisionForm.value.decisionType === 'money'">
+    <div class="col-12 col-md-4" *ngIf="decisionForm.value.decisionType === 'money'">
         <label for="">Monto necesario</label>
         <input class="form-control" type="number" formControlName="amount">
     </div>
-    <div class="col-4" *ngIf="decisionForm.value.decisionType === 'item'">
+    <div class="col-12 col-md-4" *ngIf="decisionForm.value.decisionType === 'item'">
         <label for="">Objeto necesario</label>
         <select class="form-control" formControlName="item">
             <option value="">items</option>
         </select>
     </div>
 
-    <div class="col-12 mt-3">
-        <div class="row">
+    <div class="col-12">
+        <div class="row my-3 my-md-0">
             <ng-container *ngFor="let opForm of optionsForm.controls; let i = index">
-                <div class="col-6 d-flex flex-column" [formGroup]="opForm">
-                    <div class="">
+                <div class="col-12 col-md-6 d-flex flex-column" [formGroup]="opForm">
+                    <div class="pt-2">
                         <label for="">Opcion {{i+1}}</label>
                         <input class="form-control mb-1" type="text" formControlName="name">
                         <div class="form-group form-check" *ngIf="decisionForm.value.decisionType !== 'choose'">
@@ -30,9 +30,9 @@
                             <label class="form-check-label" for="removeItem">Consumir objeto</label>
                         </div>
                     </div>
-                    <div class="px-3">
+                    <div class="pl-3">
                         <label for="">Detalle</label>
-                        <textarea class="form-control" formControlName="description" rows="2"></textarea>
+                        <textarea autosize [useImportant]="false" class="form-control" formControlName="description" rows="2"></textarea>
                     </div>
                 </div>
             </ng-container>

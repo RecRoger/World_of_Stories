@@ -11,6 +11,9 @@
     "/users/signin": {
         "$ref": "../services/users/signin.json#/path"
     },
+    "/users/update": {
+        "$ref": "../services/users/update_user.json#/path"
+    },
     "/users/delete": {
         "$ref": "../services/users/delete_user.json#/path"
     },

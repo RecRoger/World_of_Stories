@@ -1,48 +1,67 @@
-<main class="container">
-  <div class="card mt-5 col-10 col-md-6 col-lg-4 col-sm-10  mx-auto position-relative">
-    <app-loader class="loader" size="lg" *ngIf="loading"></app-loader>
-    <div class="card-body">
-      <form class="form-row" [formGroup]="loginForm" (submit)="(!type)?login():signin()">
-        <div class="form-group col-12">
-          <label class="col-12" for="username">Usuario:</label>
-          <input class="form-control" type="text" id="username" formControlName="username">
-        </div>
-        <div class="form-group col-12">
-          <label class="col-12" for="password">Contraseña:</label>
-          <input class="form-control" type="password" id="password" formControlName="password">
-        </div>
-        <div class="form-group col-12" *ngIf="type">
-          <label class="col-12" for="password">Confirmar Contraseña:</label>
-          <input class="form-control" [ngClass]="{'ng-invalid': loginForm.touched && loginForm.errors?.notSame }" type="password" id="confirmation" formControlName="confirmation">
-        </div>
-        <div class="col-12 mb-3">
-          <button type="submit" class="btn btn-primary btn-block">
-            <span *ngIf="!type">
-              Iniciar sesion
-            </span>
-            <span *ngIf="type">
-              Registrarse
-            </span>
-          </button>
-        </div>
-      </form>
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col-12">
-          <button class="btn btn-secondary btn-block" (click)="changeMode(!type)">
-            <span *ngIf="!type">
-              Registrarse
-            </span>
-            <span *ngIf="type">
-              Iniciar sesion
-            </span>
-          </button>
+<main class="h-100 w-100 main pb-5 px-md-5">
+
+  <app-loader class="loader" size="lg" *ngIf="loading"></app-loader>
+
+  <div class="row mx-auto position-relative">
+
+    <div class="col-12 col-md-6 d-flex mt-5">
+      <div class="card w-100">
+        <div class="card-body d-flex flex-column h-100">
+          <h4 class="">Ingresar</h4>
+          <form class="mt-3 d-flex flex-column flex-fill" [formGroup]="loginForm" (submit)="login()">
+            <div class="form-group">
+              <label class="col-12">Email o Usuario:</label>
+              <input class="form-control" type="text" formControlName="username">
+            </div>
+            <div class="form-group mb-5">
+              <label class="col-12">Contraseña:</label>
+              <input class="form-control" type="password" formControlName="password">
+            </div>
+            <div class="mb-3 mt-auto">
+              <button type="submit" class="btn btn-primary btn-block">
+                  Iniciar sesion
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-10 col-md-6 col-lg-4 col-sm-10  mx-auto mt-5">
-    <button class="btn btn-secondary" (click)="back()">Volver</button>
+
+    <div class="col-12 col-md-6 mt-5">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="mb-3">Registrarse</h4>
+          <form class="form-row" [formGroup]="signupForm" (submit)="signin()">
+            <div class="form-group col-12">
+              <label class="col-12" for="username">Email:</label>
+              <input class="form-control" type="email" id="email" formControlName="email">
+            </div>
+            <div class="form-group col-12">
+              <label class="col-12" for="username">Usuario:</label>
+              <input class="form-control" type="text" id="username" formControlName="username">
+            </div>
+            <div class="form-group col-12">
+              <label class="col-12" for="password">Contraseña:</label>
+              <input class="form-control" type="password" id="password" formControlName="password">
+            </div>
+            <div class="form-group col-12 mb-5">
+              <label class="col-12" for="password">Confirmar Contraseña:</label>
+              <input class="form-control" [ngClass]="{'ng-invalid': signupForm.touched && signupForm.errors?.notSame }"
+                type="password" id="confirmation" formControlName="confirmation">
+            </div>
+            <div class="col-12 my-3">
+              <button type="submit" class="btn btn-secondary btn-block">
+                  Registrarse
+              </button>
+            </div>
+          </form>
+  
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-12 mx-auto my-5">
+      <button class="btn btn-outline-secondary" (click)="back()">Volver</button>
+    </div>
   </div>
 </main>

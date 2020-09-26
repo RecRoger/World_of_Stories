@@ -1,4 +1,4 @@
-import { RequestLogin, RequestSignin, RequestSetRol, User, RequestNewCharacter, RequestDeleteCharacter, Character, CharacterLocation } from 'wos-api';
+import { RequestLogin, RequestSignin, RequestUpdateUser, RequestSetRol, User, RequestNewCharacter, RequestDeleteCharacter, Character, CharacterLocation } from 'wos-api';
 // import { RequestSignin, RequestLogin, RequestSetRol } from 'wos-api';
 
 export class LogonUser {
@@ -14,6 +14,10 @@ export class LoginUser {
 export class SigninUser {
     static readonly type = '[User] Signin User';
     constructor(public payload: RequestSignin) { }
+}
+export class UpdateUser {
+    static readonly type = '[User] Update User';
+    constructor(public payload: RequestUpdateUser) { }
 }
 
 export class AddUserRoll {
@@ -44,6 +48,11 @@ export class DeleteCharacter {
 export class SelectCharacter {
     static readonly type = '[User] Select Character';
     constructor(public payload: Character) { }
+}
+
+export class UpdateCharacterAnimations {
+    static readonly type = '[User] Update Character Animations';
+    constructor(public payload: Character ) { }
 }
 
 export class UpdateCharacterLocation {

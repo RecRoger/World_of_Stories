@@ -1,12 +1,11 @@
 import { Component, OnInit, Input, ChangeDetectorRef, OnChanges, ElementRef, ViewChild, Output, EventEmitter, HostListener, OnDestroy } from '@angular/core';
 import { ReadFragment, Decision } from 'wos-api';
 import { TextAnimation } from 'ngx-teximate';
-import { rotateInDownLeft, fadeInDown, bounceInDown, bounceIn, fadeInLeft, fadeInRight, zoomIn } from 'ng-animate';
+import { rotateInDownLeft, fadeInDown, bounceInDown, bounceIn, fadeInLeft, fadeInRight, zoomIn, fadeIn } from 'ng-animate';
 import { trigger, transition, useAnimation, AnimationOptions } from '@angular/animations';
 import { AnimationsTypes } from '../../constants';
-import { ScrollAnimationService } from '../../services/scroll-animation.service';
-import { Subscription } from 'rxjs';
-import { isScrollAtBottom, isValid } from '../../utils/commons';
+import { Subscription, timer } from 'rxjs';
+import { isValid } from '../../utils/commons';
 import { faLongArrowAltLeft } from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder, Validators } from '@angular/forms';
 
@@ -15,17 +14,18 @@ import { FormBuilder, Validators } from '@angular/forms';
   templateUrl: './animated-fragment.component.html',
   styleUrls: ['./animated-fragment.component.scss'],
   animations: [
-    trigger('fadeInLeft', [transition('* => *', useAnimation(fadeInLeft))]),
+    trigger('fadeIn', [transition('* => *', useAnimation(fadeIn))]),
     trigger('fadeInRight', [transition('* => *', useAnimation(fadeInRight))]),
   ],
 })
 export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
 
-  constructor(private cd: ChangeDetectorRef, private scrollService: ScrollAnimationService, private fb: FormBuilder) { }
+  constructor(private cd: ChangeDetectorRef, private fb: FormBuilder) { }
 
   @Input() tale: ReadFragment[];
   @Input() title: string;
   @Input() chapterMode = false;
+  @Input() animations = false;
   @Output() finish: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() setChapterDivision: EventEmitter<ChapterDividerModel> = new EventEmitter<ChapterDividerModel>();
 
@@ -44,13 +44,10 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
 
 
   animationsTypes = AnimationsTypes;
-  skipedParagrafs = [];
+
   pendingIndex = null;
 
-  atBottom = false;
-
   subscription: Subscription[] = [];
-  scrollElement: any;
 
   faLongArrow = faLongArrowAltLeft;
 
@@ -60,31 +57,25 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
 
   optionForm: FormGroup;
 
+  timeCount$: Observable<number> = timer(0, 800);
+  timeSubscription: Subscription;
+
   ngOnInit() {
     this.subscription.push(
-      this.scrollService.scrollAtBottom$.subscribe(bottom => {
-        this.atBottom = bottom;
-        if (bottom) {
-          if (this.pendingIndex) {
-            this.finishAnimation(this.pendingIndex);
-            this.pendingIndex = null;
-          }
-        }
-      }),
-      this.scrollService.scrollElement$.subscribe(element => {
-        this.scrollElement = element;
-      })
     );
   }
 
   ngOnChanges() {
     if (this.tale && this.tale.length > 0) {
       this.startAnimation();
-      this.skipedParagrafs = [];
     }
   }
   ngOnDestroy() {
     this.subscription.forEach(subs => subs.unsubscribe());
+    if (this.timeSubscription) {
+      this.timeSubscription.unsubscribe();
+      this.timeSubscription = null;
+    }
   }
 
   startAnimation() {
@@ -93,16 +84,22 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   finishAnimation(i) {
-    if (!this.scrollElement ||
-      isScrollAtBottom(this.scrollElement)
-    ) {
+
+    let end = document.querySelector('#parragraf' + i);
+    let visibleEnd = isInViewport(end);
+
+    // TODO - validar que el elemento 'parragraf'+i es visible
+    if (visibleEnd) {
+      if (this.timeSubscription) {
+        this.timeSubscription.unsubscribe();
+      }
       if (this.tale[i + 1] && this.tale[i + 1].text) {
-        // this.scrollService.scrollAtBottom$.next(false);
-        this.shownFragments.push({
-          fragment: this.tale[i + 1],
-          options: this.getAnimationOptions(this.tale[i + 1].animation)
+        if (!this.shownFragments.find(frg => frg.fragment.text === this.tale[i + 1].text)) {
+          this.shownFragments.push({
+            fragment: this.tale[i + 1],
+            options: this.getAnimationOptions(this.tale[i + 1].animation)
+          });
         }
-        );
       } else {
         if (!this.completedAnimation) {
           this.completedAnimation = true;
@@ -110,8 +107,44 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     } else {
-      this.pendingIndex = i + 1;
+      // TODO - de no ser visible el id='parragraf'+i, poner en pending
+      if (!this.timeSubscription) {
+
+        this.timeSubscription = this.timeCount$.subscribe(val => {
+          end = document.querySelector('#parragraf' + i);
+          visibleEnd = isInViewport(end);
+          if (visibleEnd) {
+            this.finishAnimation(i);
+            this.timeSubscription.unsubscribe();
+            this.timeSubscription = null;
+          } else {
+          }
+        });
+      }
     }
+
+
+    function isInViewport(element) {
+      if (!element) return false;
+      // TODO - mejorar funcionalidad
+      const rect = element.getBoundingClientRect();
+      let bot = rect.bottom;
+      let top = rect.top;
+      if (rect.bottom < 0 && rect.top < 0) {
+        bot = (rect.bottom + (window.innerHeight || document.documentElement.clientHeight));
+        if (bot < 0) {
+          bot = bot * -1;
+        }
+        top = bot - 1;
+      }
+      return (
+        top >= 0 &&
+        rect.left >= 0 &&
+        bot <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+      );
+    }
+
   }
 
   getAnimationOptions(animation: string): TextAnimation {
@@ -146,14 +179,6 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
 
   }
 
-  skipParagraph() {
-    const lastIndex = this.shownFragments.length - 1;
-    this.skipedParagrafs.push(lastIndex);
-    this.cd.markForCheck();
-
-    this.finishAnimation(lastIndex);
-  }
-
 
   addDecision(fragmentIndex: number) {
     this.newDivision = {
@@ -174,7 +199,7 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
       this.newDivision = null;
       return 0;
     }
-    if(isValid(this.optionForm)) {
+    if (isValid(this.optionForm)) {
       this.newDivision.decision = this.optionForm.get('decision').value;
       this.setChapterDivision.emit(this.newDivision);
     }

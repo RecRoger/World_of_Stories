@@ -8,7 +8,7 @@ import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { isValid } from 'src/app/shared/utils/commons';
 import { UpdateChapter, PublishChapter, GetChapterData, UpdateNpc, GetNpcStory, DivideChapter } from 'src/app/shared/store/stories/stories.actions';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
-import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faPen, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faPen, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { GetAllPlaces } from 'src/app/shared/store/locations/locations.actions';
 import { ChapterDividerModel } from 'src/app/shared/components/animated-fragment/animated-fragment.component';
@@ -50,6 +50,7 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
   faEdit = faEdit;
   faPen = faPen;
   faCheck = faCheck;
+  faTimes = faTimes;
 
   formSubcription: Subscription;
   chapterSubcription: Subscription;
@@ -111,7 +112,7 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
         story: [chapter.story || [], [Validators.required]],
         item: [chapter.items || [], []],
         endLocation: this.fb.group({
-          endChapter: chapter.endLocation && chapter.endLocation.endChapter,
+          endChapter: (chapter.endLocation && chapter.endLocation.endChapter) || false,
           cityId: [chapter.endLocation && chapter.endLocation.cityId || null, []],
           placeId: [chapter.endLocation && chapter.endLocation.placeId || null, []]
         }),
@@ -198,7 +199,13 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
     }
   }
 
-  async editStoryTitle() {
+  async editStoryTitle(cancel?) {
+    if (cancel) {
+      this.chaptersTab.editingTitle = false;
+      this.cd.markForCheck();
+      return;
+    }
+
     if (!this.chaptersTab.editingTitle) {
       this.titleForm = this.fb.group({
         id: [this.npc.id],
@@ -216,6 +223,7 @@ export class ChaptersBuilderComponent implements OnInit, OnDestroy {
         this.cd.markForCheck();
       }
     }
+
   }
 
   async addDivision(chapter: Chapter, divider: ChapterDividerModel) {

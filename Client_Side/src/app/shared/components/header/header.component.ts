@@ -15,8 +15,8 @@ export class HeaderComponent implements OnInit {
     private location: Location
   ) { }
 
-  @Input() backBtn: boolean;
   @Output() menu: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Input() outBtn: boolean;
 
   faBars = faBars;
 
@@ -25,11 +25,10 @@ export class HeaderComponent implements OnInit {
   }
 
   getOut() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/user/write-or-read']);
   }
-  goBack() {
+  openMenu() {
     this.menu.emit(true);
-    // this.location.back();
   }
 
 }

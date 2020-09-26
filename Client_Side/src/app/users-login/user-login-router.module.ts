@@ -2,7 +2,9 @@ import { PresentationComponent } from 'src/app/users-login/containers/presentati
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { UserLoginComponent } from './containers/user-login/user-login.component';
-import { WriteOrReadComponent } from './containers/write-or-read/write-or-read.component';
+import { WriteOrReadComponent } from './components/write-or-read/write-or-read.component';
+import { UserDataComponent } from './components/user-data/user-data.component';
+import { UserContainerComponent } from './containers/user-container/user-container.component';
 
 const routes: Routes = [
   {
@@ -14,9 +16,19 @@ const routes: Routes = [
     component: UserLoginComponent
   },
   {
-    path: 'write-or-read',
-    component: WriteOrReadComponent
-  }
+    path: 'user',
+    component: UserContainerComponent,
+    children: [
+      {
+        path: 'write-or-read',
+        component: WriteOrReadComponent
+      },
+      {
+        path: 'settings',
+        component: UserDataComponent
+      }
+    ]
+  },
   // { path: 'message', component: MessageComponent}
 ];
 

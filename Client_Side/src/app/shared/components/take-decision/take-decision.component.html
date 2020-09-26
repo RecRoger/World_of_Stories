@@ -1,22 +1,17 @@
-<div class="d-flex align-items-stretch" *ngIf="decision">
+<div class="row" *ngIf="decision">
 
     <ng-container *ngIf="decision.options && decision.options.length>0">
-        <div class="col-6 text-center" (click)="takeDecision(decision.options[0].value)">
-            <div class="hide-y border-bottom pb-1">
-                <h6 [@bounceIn]="bounceIn">{{decision.options[0].name}}</h6>
+
+        <ng-container *ngFor="let option of decision.options">
+            <div class="col-12 col-md-6" (click)="takeDecision(option.value)">
+                <div class="border-bottom pb-1">
+                    <h6> <fa-icon [icon]="caretRigh" size="sm"></fa-icon> {{option.name}}</h6>
+                </div>
+                <div class="border-left pl-3 py-2 mb-3">
+                    <p class="mb-0">{{option.description}}</p>
+                </div>
             </div>
-            <div class="hide-y pt-2">
-                <p [@fadeInDown]="fadeInDown" class="align-self-stretch">{{decision.options[0].description}}</p>
-            </div>
-        </div>
-        <div class="col-6 text-center border-left" (click)="takeDecision(decision.options[1].value)">
-            <div class="hide-y border-bottom pb-1">
-                <h6 [@bounceIn]="bounceIn">{{decision.options[1].name}}</h6>
-            </div>
-            <div class="hide-y pt-2">
-                <p [@fadeInDown]="fadeInDown" class="align-self-stretch">{{decision.options[1].description}}</p>
-            </div>
-        </div>
+        </ng-container>
 
     </ng-container>
 </div>

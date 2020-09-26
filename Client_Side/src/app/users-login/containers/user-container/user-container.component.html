@@ -1,0 +1,10 @@
+<mat-sidenav-container class="example-container" (backdropClick)="close('backdrop')">
+    <mat-sidenav #sidenav (keydown.escape)="close('escape')" disableClose>
+        <app-user-nav (close)="close('escape')"></app-user-nav>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="h-100">
+        <app-header [outBtn]="false" (menu)="sidenav.open()"></app-header>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>

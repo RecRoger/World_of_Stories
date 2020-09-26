@@ -2,15 +2,15 @@
   <div class="d-flex px-md-4 py-2">
 
     <div class="col-3 text-left">
-      <button class="btn btn-link" *ngIf="backBtn" (click)="goBack()">
+      <button class="btn btn-link" (click)="openMenu()">
         <fa-icon [icon]="faBars" size="lg"></fa-icon>
       </button>
     </div>
 
-    <div class="main-title col-6">World of Story</div>
+    <div class="my-auto col-6 ">World of Story</div>
 
     <div class="col-3 text-right">
-      <button class="ml-auto btn btn-link" (click)="getOut()">Salir</button>
+      <button class="ml-auto btn btn-link" *ngIf="outBtn" (click)="getOut()">Salir</button>
     </div>
 
   </div>

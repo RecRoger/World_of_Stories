@@ -1,10 +1,10 @@
-<div class="readable-section" *ngIf="shownFragments.length > 0" (click)="skipParagraph()">
+<div class="readable-section" *ngIf="shownFragments.length > 0">
 
     <ng-container *ngFor="let tale of shownFragments; let i = index">
         <!-- <p class="card-text">{{ fragment.text }}</p> -->
         <div class="hide-overflow">
-            <ng-container *ngIf="skipedParagrafs.includes(i); else animatedTemplate">
-                <p>
+            <ng-container *ngIf="!animations; else animatedTemplate">
+                <p [@fadeIn] [@.disabled]="animations" (@fadeIn.done)="finishAnimation(i)">
                     {{tale.fragment.text}}
                 </p>
             </ng-container>
@@ -14,25 +14,29 @@
                     [enter]="tale.options" (finish)="finishAnimation(i)"></teximate>
     
             </ng-template>
+
+            <div style="height: 1px;" [id]="'parragraf'+i"></div>
         </div>
 
+        
+
+        <!-- seccion para añadir decisiones intermedias -->
         <ng-container *ngIf="chapterMode && completedAnimation && i!== shownFragments.length - 1 && !newDivision">
-            <div class="chapter-decision" (click)="addDecision(i)">
-                <div class="hide">
-                    <div class="d-flex">
-                        <fa-icon [icon]="faLongArrow" size="lg"></fa-icon>
-                        <div class="new-decision ml-2">
-                            <button class="btn" (click)="addDecision(i)">
-                                Añadir decision
-                            </button>
-                        </div>
-                    </div>
-                </div>
+
+            <div class="chapter-decision">
+                <button class="decision-btn" mat-icon-button [matMenuTriggerFor]="menu">
+                    <fa-icon [icon]="faLongArrow" size="lg"></fa-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="addDecision(i)">
+                        Añadir decision
+                    </button>
+                </mat-menu>
             </div>
         </ng-container>
-
+        
         <ng-container *ngIf="newDivision && newDivision.splitIndex === i">
-            <div class="pl-3 border-left ml-3 mb-4 " [formGroup]="optionForm">
+            <div class="pl-2 border-left mb-4 mr-n4" [formGroup]="optionForm">
                 <app-write-decision [decision]="optionForm.get('decision')">
                 </app-write-decision>
                 <div class="d-flex mt-3">

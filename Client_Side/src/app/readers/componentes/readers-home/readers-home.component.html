@@ -43,9 +43,17 @@
 
 
                     </div>
-                    <div class="ml-auto mt-4 h5" (click)="selectCharacter(character)">
-                        Continuar
-                        <fa-icon class="ml-3" [icon]="faRight" size="lg"></fa-icon>
+                    <div class="row mt-4 h5">
+                        <button class="col-12 col-md-4 btn mr-auto text-left" (click)="updateAnimations(character)">
+                            <mat-slide-toggle class="example-margin" [color]="'primary'" [checked]="character.animations"
+                                [disabled]="updateingAnimations.includes(character.id)">
+                                {{(character.animations) ? 'Animaciones encendidas': 'Animaciones apagadas'}}
+                            </mat-slide-toggle>
+                        </button>
+                        <button class="col-12 col-md-4 btn ml-auto text-right" [disabled]="updateingAnimations.includes(character.id)" (click)="selectCharacter(character)">
+                            Continuar
+                            <fa-icon class="ml-3" [icon]="faRight" size="lg"></fa-icon>
+                        </button>
                     </div>
                 </div>
             </div>

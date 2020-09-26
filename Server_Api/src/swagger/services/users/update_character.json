@@ -78,6 +78,9 @@
                 "money": {
                     "type": "number"
                 },
+                "animations": {
+                    "type": "boolean"
+                },
                 "items": {
                     "type": "array",
                     "items": {

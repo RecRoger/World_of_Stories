@@ -9,61 +9,21 @@
 
         <ng-container *ngIf="place.entry && titleAnimationEnd">
             <div class="mt-3" *ngIf="(place.entry | getRandom) as entry">
-                <app-animated-fragment [tale]="entry.tale" (finish)="finishEntry(entry.id)">
+                <app-animated-fragment [animations]="character.animations" [tale]="entry.tale" (finish)="finishEntry(entry.id)">
                 </app-animated-fragment>
-                <!-- <p class="text-muted text-right"> - {{travel.author}}</p> -->
             </div>
-        </ng-container>
-
-        <ng-container *ngIf="showNpcs">
-            <app-animated-fragment [tale]="[{text: '¿Qué te gustaria ver?', animation: 'defualt'}]">
-            </app-animated-fragment>
-        </ng-container>
-
-        <ng-container *ngIf="selectedNpc">
-            <div class="mt-2 pt-2 border-left pl-3" *ngIf="(selectedNpc.description) as description">
-                <app-animated-fragment [tale]="description.tale" (finish)="showEnter(description.id)">
-                </app-animated-fragment>
-                <p class="text-muted text-right" *ngIf="visitBtn"> - {{description.author}}</p>
-            </div>
-            <div class="d-flex mb-2" *ngIf="visitBtn">
-                <div class="btn ml-auto" (click)="enterPlace(selectedNpc.id)">
-                    Acercarse
-                    <fa-icon class="ml-3" [icon]="faRight" size="xl"></fa-icon>
-                </div>
-            </div>
-
         </ng-container>
 
     </div>
 
 </ng-container>
-<ng-container *ngIf="showNpcs && atBottom && (!selectedNpc || visitBtn)">
-    <div class="city-selector border-top" *ngIf="(npcs$ |async) as npcs">
-        <ng-container *ngFor="let npc of npcs">
-            <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" (click)="selectNpc(npc.id)">
-                <div class="h5 font-weight-normal">
-                    {{npc.name}}
-                </div>
-                <div class="ml-auto" *ngIf="loading.includes(npc.id)">
-                    <app-loader class="loader" size="md"></app-loader>
-                </div>
-                <div class="ml-auto mt-auto" *ngIf="npc?.description">
-                    <fa-icon [icon]="faUp" size="xl"></fa-icon>
-                </div>
+<ng-container *ngIf="showNpcs">
+    <div class="city-selector border-top">
+        <div class="d-flex py-2 col-12 col-md-4 mx-md-auto" (click)="openSelection()">
+            <div class="h5 mr-auto">
+                ¿Qué te gustaría visitar?
             </div>
-        </ng-container>
-
-        <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" *ngIf="npcs.length <= 0">
-            <div class="h5 font-weight-normal">
-                No mucho para hacer
-            </div>
-        </div>
-        <div class="d-flex py-2 border-bottom col-12 col-md-4 mx-md-auto" (click)="leavPlace()">
-            <div class="h5 font-weight-normal">
-                Dejar Lugar
-            </div>
-            <div class="ml-auto mt-auto">
+            <div class="ml-auto my-auto">
                 <fa-icon [icon]="faDown" size="xl"></fa-icon>
             </div>
         </div>

@@ -15,6 +15,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CityNamePipe } from './pipes/city-name.pipe';
 import { PlaceNamePipe } from './pipes/place-name.pipe';
 import { GetRandomPipe } from './pipes/get-random.pipe';
+import { AutosizeModule } from 'ngx-autosize';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { GetRandomPipe } from './pipes/get-random.pipe';
     FontAwesomeModule,
     FormsModule,
     ReactiveFormsModule,
-    TeximateModule
+    TeximateModule,
+    AutosizeModule
   ],
   declarations: [
     LoaderComponent,

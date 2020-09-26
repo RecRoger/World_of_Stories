@@ -11,7 +11,7 @@ import {
   DeleteCharacter,
   SelectCharacter,
   UpdateCharacterLocation,
-  SetReadFragment
+  SetReadFragment, UpdateUser, UpdateCharacterAnimations
 } from './users.actions';
 import {
   SetError,
@@ -38,13 +38,15 @@ import { patch, updateItem, append, removeItem } from '@ngxs/store/operators';
 export interface UserStateModel {
   activedUser: User;
   character: Character;
+  signupIndicator: boolean;
 }
 
 @State<UserStateModel>({
   name: 'user',
   defaults: {
     activedUser: (localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))) || null,
-    character: (localStorage.getItem('character') && JSON.parse(localStorage.getItem('character'))) || null
+    character: (localStorage.getItem('character') && JSON.parse(localStorage.getItem('character'))) || null,
+    signupIndicator: false
   }
 })
 @Injectable()
@@ -103,6 +105,9 @@ export class UserState {
   async SigninUser(ctx: StateContext<UserStateModel>, action: SigninUser) {
 
     try {
+      ctx.patchState({
+        signupIndicator: false
+      });
       const resp = await this.userService.signin(action.payload).toPromise();
       // if (resp) {
       if (resp && resp.data && resp.data.user) {
@@ -114,12 +119,55 @@ export class UserState {
         user.rol = resp.data.user.rol;
 
         this.store.dispatch(new SetInfo('Usuario añadido. Vuelve para registrarte'));
+
+        ctx.patchState({
+          signupIndicator: true
+        });
       } else {
-        this.store.dispatch(new SetError('Ha ocurrido un creando su usuario. Intente mas tarde'));
+        if (resp && resp.data === 'repeated') {
+          const error = 'El correo o el usuario ya esta registrado.';
+          this.store.dispatch(new SetError(error));
+        } else {
+          const error = 'Ha ocurrido un creando su usuario. Intente mas tarde';
+          this.store.dispatch(new SetError(error));
+        }
       }
     } catch (err) {
       console.log('*** ERROR ***', err);
-      this.store.dispatch(new SetError('Ha ocurrido un creando su usuario. Intente mas tarde'));
+      const error = 'Ha ocurrido un creando su usuario. Intente mas tarde';
+      this.store.dispatch(new SetError(error));
+    }
+
+  }
+  @Action(UpdateUser)
+  async UpdateUser(ctx: StateContext<UserStateModel>, action: UpdateUser) {
+
+    try {
+      const resp = await this.userService.updateUser(action.payload).toPromise();
+      // if (resp) {
+      if (resp && resp.data && resp.data.user) {
+        const user: User = resp.data.user;
+
+        this.store.dispatch(new SetInfo('Datos actualizados'));
+
+        ctx.setState(patch<UserStateModel>({
+          activedUser: patch<User>({
+            ...user
+          })
+        }));
+      } else {
+        if (resp && resp.data === 'repeated') {
+          const error = 'El correo o el usuario ya esta registrado.';
+          this.store.dispatch(new SetError(error));
+        } else {
+          const error = 'Ha ocurrido un actualizando su usuario. Intente mas tarde';
+          this.store.dispatch(new SetError(error));
+        }
+      }
+    } catch (err) {
+      console.log('*** ERROR ***', err);
+      const error = 'Ha ocurrido un actualizando su usuario. Intente mas tarde';
+      this.store.dispatch(new SetError(error));
     }
   }
 
@@ -286,6 +334,44 @@ export class UserState {
     }
   }
 
+  @Action(UpdateCharacterAnimations)
+  async UpdateCharacterAnimations(ctx: StateContext<UserStateModel>, action: UpdateCharacterAnimations) {
+
+    try {
+
+      const { id, animations } = action.payload;
+      // const id = ctx.getState().character.id;
+
+      const req: RequestUpdateCharacter = {
+        character: {
+          id,
+          animations: !animations
+        }
+      };
+
+      const resp = await this.userService.updateCharacter(req).toPromise();
+
+      if (resp.data && resp.data.character) {
+
+        localStorage.setItem('character', JSON.stringify(resp.data.character));
+        ctx.setState(patch<UserStateModel>({
+          activedUser: patch<User>({
+            characters: updateItem(c => c.id === id, patch<Character>({
+              ...resp.data.character
+            }))
+          })
+        }));
+
+      } else {
+        this.store.dispatch(new SetError('error guardando'));
+      }
+
+
+    } catch (err) {
+      console.log('*** ERROR ***', err);
+      this.store.dispatch(new SetError('Ha ocurrido un problema guardando'));
+    }
+  }
   @Action(UpdateCharacterLocation)
   async UpdateCharacterLocation(ctx: StateContext<UserStateModel>, action: UpdateCharacterLocation) {
 

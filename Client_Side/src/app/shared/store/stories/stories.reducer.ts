@@ -213,6 +213,7 @@ export class StoriesState {
                         [placeId]: updateItem<Npc>(n => n.id === req.id, patch<Npc>({
                             items: resp.data.npc.items,
                             decision: resp.data.npc.decision,
+                            description: resp.data.npc.description,
                             meeting: resp.data.npc.meeting,
                             rejected: resp.data.npc.rejected,
                             title: resp.data.npc.title

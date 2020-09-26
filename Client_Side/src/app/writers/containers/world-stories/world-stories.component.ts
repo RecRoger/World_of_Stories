@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
 import { map, take } from 'rxjs/operators';
-import { faChevronLeft, faInfo } from '@fortawesome/free-solid-svg-icons';
+import { faCaretRight, faChevronLeft, faInfo } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-world-stories',
@@ -41,7 +41,7 @@ export class WorldStoriesComponent implements OnInit, OnDestroy {
 
   subscription: Subscription[] = [];
 
-  faLeft = faChevronLeft;
+  faLeft = faCaretRight;
   faInfo = faInfo;
 
   async ngOnInit() {

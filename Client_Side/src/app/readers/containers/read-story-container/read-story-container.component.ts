@@ -4,9 +4,7 @@ import { Character, CharacterLocation, City, Place, Npc, Chapter } from 'wos-api
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ScrollAnimationService } from 'src/app/shared/services/scroll-animation.service';
 import { GetAllCities, GetAllPlaces, GetCityData, GetPlaceData } from 'src/app/shared/store/locations/locations.actions';
-import { isScrollAtBottom } from 'src/app/shared/utils/commons';
 import { UpdateCharacterLocation } from 'src/app/shared/store/users/users.actions';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
@@ -57,9 +55,6 @@ export class ReadStoryContainerComponent implements OnInit, OnDestroy {
   constructor(
     private cd: ChangeDetectorRef,
     private store: Store,
-    private route: ActivatedRoute,
-    private router: Router,
-    private scrollService: ScrollAnimationService,
     private actions$: Actions
   ) { }
 
@@ -157,12 +152,12 @@ export class ReadStoryContainerComponent implements OnInit, OnDestroy {
   }
 
   scrolling($event) {
-    if (this.scrollDiv) {
-      const element = this.scrollDiv.nativeElement;
-      this.atBottom = isScrollAtBottom(element);
-      this.scrollService.scrollElement$.next(element);
-      this.scrollService.scrollAtBottom$.next(this.atBottom);
-    }
+    // if (this.scrollDiv) {
+    //   const element = this.scrollDiv.nativeElement;
+    //   this.atBottom = isScrollAtBottom(element);
+    //   this.scrollService.scrollElement$.next(element);
+    //   this.scrollService.scrollAtBottom$.next(this.atBottom);
+    // }
   }
 
 }

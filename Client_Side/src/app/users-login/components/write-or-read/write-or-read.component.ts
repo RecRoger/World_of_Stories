@@ -35,11 +35,14 @@ export class WriteOrReadComponent implements OnInit, OnDestroy {
 
   writerPass = '';
 
+  needUpdate = false;
+
   subscriptions: Subscription[] = [];
   ngOnInit() {
     this.subscriptions.push(
       this.user$.subscribe(us => {
         this.user = us;
+        this.needUpdate = (!this.user.email || !this.user.username);
       })
     );
   }
@@ -52,36 +55,38 @@ export class WriteOrReadComponent implements OnInit, OnDestroy {
   }
 
   userChooseActivity(activity: boolean) {
-    const isMobile = this.deviceService.isMobile();
-    const isTablet = this.deviceService.isTablet();
-    const isDesktopDevice = this.deviceService.isDesktop();
 
-    // alert(isMobile + '-' + isTablet + '-' + isDesktopDevice);
+    if (!this.needUpdate) {
+      const isMobile = this.deviceService.isMobile();
+      // const isTablet = this.deviceService.isTablet();
+      // const isDesktopDevice = this.deviceService.isDesktop();
 
-    // true para escribir
-    const roles: string[] = [...this.user.rol];
-    if (activity) {
-      if (!isMobile) {
+      // alert(isMobile + '-' + isTablet + '-' + isDesktopDevice);
+
+      // true para escribir
+      const roles: string[] = [...this.user.rol];
+      if (activity) {
         if (roles.includes(UsersRoles.W) || roles.includes(UsersRoles.A)) {
           this.startActivity(activity);
+          if (isMobile) {
+            this.store.dispatch(
+              new SetInfo('El modo escritor puede resultar mucho mas comodo desde una pantalla mas grande.')
+            );
+          }
         } else {
           this.rolConfirmation = 'W';
         }
       } else {
-        this.store.dispatch(
-          new SetInfo('Lo sentimos, pero el modo escritor requiere mejor resolucion y no esta disponible mobile por el momento')
-        );
-      }
-    } else {
-      if (roles.includes(UsersRoles.R)) {
-        this.startActivity(activity);
-        if (!isMobile) {
-          // this.store.dispatch(
-          //   new SetInfo('La experience de lector esta pensada para dispositivos móviles.')
-          // );
+        if (roles.includes(UsersRoles.R)) {
+          this.startActivity(activity);
+          if (!isMobile) {
+            this.store.dispatch(
+              new SetInfo('La experience de lector esta pensada para dispositivos móviles. Aun no contamos con su mejor diseño en pantallas grandes ')
+            );
+          }
+        } else {
+          this.rolConfirmation = 'R';
         }
-      } else {
-        this.rolConfirmation = 'R';
       }
     }
   }
@@ -111,5 +116,9 @@ export class WriteOrReadComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/readers']);
     }
+  }
+
+  goToUpdateUser() {
+    this.router.navigate(['user/settings']);
   }
 }

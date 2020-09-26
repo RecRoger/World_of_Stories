@@ -27,6 +27,9 @@
                 "id": {
                     "type": "string"
                 },
+                "email": {
+                    "type": "string"
+                },
                 "username": {
                     "type": "string"
                 },
@@ -71,6 +74,9 @@
                 },
                 "money": {
                     "type": "number"
+                },
+                "animations": {
+                    "type": "boolean"
                 },
                 "items": {
                     "type": "array",
