@@ -131,11 +131,7 @@ export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
       let bot = rect.bottom;
       let top = rect.top;
       if (rect.bottom < 0 && rect.top < 0) {
-        bot = (rect.bottom + (window.innerHeight || document.documentElement.clientHeight));
-        if (bot < 0) {
-          bot = bot * -1;
-        }
-        top = bot - 1;
+        return true;
       }
       return (
         top >= 0 &&
