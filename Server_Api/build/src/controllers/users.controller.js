@@ -73,8 +73,15 @@ class UsersController {
                 console.log('**************** getOneUser *******************', req.body);
                 const { username, password } = req.body;
                 const user = yield users_model_1.default.findOne({
-                    username: username,
-                    password: password
+                    $and: [
+                        {
+                            $or: [
+                                { username: username },
+                                { email: username },
+                            ]
+                        },
+                        { password: password }
+                    ]
                 }, {
                     _v: 0
                 }).lean();
@@ -101,19 +108,91 @@ class UsersController {
             console.log('________________________________________________');
             console.log('****************** savwUser *******************');
             try {
-                const { username, password } = req.body.user;
-                const newUser = new users_model_1.default({
-                    username,
-                    password,
-                    rol: []
-                });
-                yield newUser.save();
-                const user = yield users_model_1.default.findOne({ "_id": newUser._id }).lean();
-                console.log('> user response:' + ((user) ? user.username : 'not Found'));
+                const { email, username, password } = req.body.user;
+                const exist = yield users_model_1.default.findOne({
+                    $or: [
+                        { username: username },
+                        { email: email },
+                    ]
+                }, {
+                    _v: 0
+                }).lean();
+                if (!exist) {
+                    const newUser = new users_model_1.default({
+                        email,
+                        username,
+                        password,
+                        rol: []
+                    });
+                    yield newUser.save();
+                    const user = yield users_model_1.default.findOne({ "_id": newUser._id }).lean();
+                    console.log('> user response:' + ((user) ? user.username : 'not Found'));
+                    console.log('_____________________________________________________');
+                    res.json({
+                        "data": { "user": Object.assign({}, user, { id: user._id }) }
+                    });
+                }
+                else {
+                    console.log('> user repeated:' + (exist));
+                    console.log('_____________________________________________________');
+                    res.json({
+                        "data": "repeated"
+                    });
+                }
+            }
+            catch (err) {
+                console.log('Error ---->', err);
                 console.log('_____________________________________________________');
                 res.json({
-                    "data": { "user": Object.assign({}, user, { id: user._id }) }
+                    "error": err
                 });
+            }
+        });
+    }
+    // Update
+    updateUser(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log('.');
+            console.log('________________________________________________');
+            console.log('****************** updateUser *******************');
+            try {
+                const { id, email, username, password } = req.body.user;
+                console.log('> userID ' + id);
+                const exist = yield users_model_1.default.findOne({
+                    $and: [
+                        { _id: { $ne: id } },
+                        {
+                            $or: [
+                                { username: username },
+                                { email: email },
+                            ]
+                        }
+                    ]
+                }, {
+                    _v: 0
+                }).lean();
+                if (!exist) {
+                    const edition = yield users_model_1.default.updateOne({ _id: id }, {
+                        $set: {
+                            email: email,
+                            username: username,
+                            password: password,
+                        }
+                    });
+                    const user = yield users_model_1.default.findById({ _id: id }, { _v: 0 }).lean();
+                    console.log('> response:' + ((edition.ok) ? 'OK' : 'not Found'));
+                    console.log('_____________________________________________________');
+                    res.json({
+                        "data": edition.ok ? { user: user && Object.assign({}, user, { id: user._id }) } : null
+                    });
+                }
+                else {
+                    console.log('> user repeated:' + (exist));
+                    console.log('_____________________________________________________');
+                    res.json({
+                        "data": "repeated"
+                    });
+                }
             }
             catch (err) {
                 console.log('Error ---->', err);

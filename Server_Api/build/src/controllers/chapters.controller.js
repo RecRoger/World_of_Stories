@@ -124,6 +124,27 @@ class ChaptersController {
                     setUpdates['chapters.$.usersDecisions.item'] = chapter.usersDecisions.item;
                     // las Decisiones generan otros capitulos 
                     for (const option of (chapter.usersDecisions.options)) {
+                        // si la opcion no tiene valor, debemos crear el capitulo correspondiente
+                        if (!option.value) {
+                            const newChapter = yield npcs_model_1.default.updateOne({ "chapters._id": chapter.id }, {
+                                $push: {
+                                    chapters: [{
+                                            name: option.name,
+                                            story: [],
+                                            endLocation: {
+                                                endChapter: true
+                                            },
+                                            published: false,
+                                            writeDate: new Date() // Fecha de creacion
+                                        }]
+                                }
+                            });
+                            const npc = yield npcs_model_1.default.findOne({ "chapters._id": chapter.id }, { chapters: 1 }).lean();
+                            if (npc && npc.chapters) {
+                                option.value = npc.chapters[npc.chapters.length - 1]._id;
+                            }
+                            console.log('> new chapterId: ', option.value);
+                        }
                         // la edicione tiene id, significa que edito existente.
                         if (option["id"]) {
                             const i = chapter.usersDecisions.options.indexOf(option);
@@ -141,23 +162,6 @@ class ChaptersController {
                         else {
                             console.log('> new option');
                             // la decision no tiene id, agrego nueva decision y capitulo.
-                            if (!option.value) {
-                                const newChapter = yield npcs_model_1.default.updateOne({ "chapters._id": chapter.id }, {
-                                    $push: {
-                                        chapters: [{
-                                                name: '',
-                                                story: '',
-                                                published: false,
-                                                writeDate: new Date() // Fecha de creacion
-                                            }]
-                                    }
-                                });
-                                const npc = yield npcs_model_1.default.findOne({ "chapters._id": chapter.id }, { chapters: 1 }).lean();
-                                if (npc && npc.chapters) {
-                                    option.value = npc.chapters[npc.chapters.length - 1]._id;
-                                }
-                                console.log('> new chapterId: ', option.value);
-                            }
                             if (!pullUpdates['chapters.$.usersDecisions.options']) {
                                 pullUpdates['chapters.$.usersDecisions.options'] = [];
                             }

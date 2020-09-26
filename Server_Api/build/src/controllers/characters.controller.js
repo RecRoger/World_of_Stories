@@ -60,6 +60,7 @@ class CharactersController {
                                 money: 1000,
                                 items: [],
                                 fragmentsRead: [],
+                                animations: true
                             }]
                     }
                 }).lean();
@@ -135,6 +136,9 @@ class CharactersController {
                 }
                 if (character.items) {
                     setUpdates['characters.$.items'] = character.items;
+                }
+                if (character.animations || character.animations === false) {
+                    setUpdates['characters.$.animations'] = character.animations;
                 }
                 const updates = {};
                 if (Object.keys(setUpdates).length > 0)

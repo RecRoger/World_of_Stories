@@ -20,6 +20,7 @@ class UserRouter {
         router.post('/login', cors_1.default(), users_controller_1.usersController.getOneUser);
         router.post('/user', cors_1.default(), users_controller_1.usersController.getUserById);
         router.post('/signin', cors_1.default(), users_controller_1.usersController.saveUser);
+        router.post('/update', cors_1.default(), users_controller_1.usersController.updateUser);
         router.post('/delete', cors_1.default(), users_controller_1.usersController.deleteUser);
         router.post('/set_rol', cors_1.default(), users_controller_1.usersController.setUserRol);
         router.post('/remove_rol', cors_1.default(), users_controller_1.usersController.removeUserRol);

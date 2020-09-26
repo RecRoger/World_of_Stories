@@ -149,8 +149,11 @@ class NpcsController {
                     items: [],
                     title: npc.title,
                     chapters: [{
-                            name: '',
+                            name: 'Inicio',
                             story: [],
+                            endLocation: {
+                                endChapter: true
+                            },
                             published: false,
                             writeDate: new Date() // Fecha de creacion
                         }],
