@@ -24,15 +24,11 @@ class Server {
 
     constructor() {
         this.express = express();
-
         this.config();
-
         this.routes();
-
     }
 
     private config() {
-
         // Parsers for POST data 
         this.express.use(bodyParser.json());
         this.express.use(bodyParser.urlencoded({ extended: false }));
@@ -53,8 +49,8 @@ class Server {
         this.setupDb();
 
         /** 
-         * Create HTTP server. 
-         */
+         * Create HTTP server. 
+         */
         const server = http.createServer(this.express);
 
         /** 
@@ -71,23 +67,14 @@ class Server {
     private routes() {
 
         new UserRouter(this.express);
-
         new CharactersRouter(this.express);
-
-
         new CitiesRouter(this.express);
-
         new PlacesRouter(this.express);
-
-
         new NpcsRouter(this.express);
-
         new ChaptersRouter(this.express);
-
 
         // swagger API
         this.express.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
 
         // Catch all other routes and return the index file 
         this.express.get('*', (req, res) => {
@@ -95,11 +82,9 @@ class Server {
         });
 
     }
-    
 
     public Start = (port: number) => {
         return new Promise((resolve, reject) => {
-
             this.express.listen(port,
                 () => {
                     resolve(port)
@@ -107,7 +92,6 @@ class Server {
                 .on('error', (err: object) => reject(err));
         })
     }
-
 
     private setupDb(): void {
         const mongoDb = mongoKeys.URI;

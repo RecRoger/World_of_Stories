@@ -11,8 +11,7 @@ class UsersController {
             console.log('*************** getAllUsers *******************');
 
             const users: UserInterface[] = await UsersSchema.find({}, { _v: 0 }).lean();
-            // console.log('Users ======>', users);
-            // users.map(user => ({ ...user, id: user._id }))
+
             console.log('_____________________________________________________');
             res.json({
                 "data": { "users": users.map(user => ({ ...user, id: user._id })) }
@@ -126,7 +125,7 @@ class UsersController {
                 console.log('> user response:' + ((user) ? (user as UserInterface).username : 'not Found'));
                 console.log('_____________________________________________________');
                 res.json({
-                    "data": { "user": { ...user, id: user._id } }
+                    "data": { "user": { ...user, id: user?._id } }
                 });
             } else {
                 console.log('> user repeated:' + (exist));
@@ -180,16 +179,16 @@ class UsersController {
                             password: password,
                         }
                     }
-                );
+                ) as any;
                 const user: UserInterface | null = await UsersSchema.findById(
                     { _id: id },
                     { _v: 0 }
                 ).lean();
-    
-                console.log('> response:' + ((edition.ok) ? 'OK' : 'not Found'));
+
+                console.log('> response:' + ((edition?.ok) ? 'OK' : 'not Found'));
                 console.log('_____________________________________________________');
                 res.json({
-                    "data": edition.ok ? { user: user && { ...user, id: user._id } } : null
+                    "data": edition?.ok ? { user: user && { ...user, id: user._id } } : null
                 })
             } else {
                 console.log('> user repeated:' + (exist));
@@ -216,12 +215,12 @@ class UsersController {
             console.log('> userId: ' + req.body.id);
             const user = await UsersSchema.deleteOne({
                 _id: req.body.id
-            });
+            }) as any;
             // console.log('Edition ======>', user);
-            console.log('> response: ' + ((user.ok) ? 'OK' : 'not Found') + ' ======================');
+            console.log('> response: ' + ((user?.ok) ? 'OK' : 'not Found') + ' ======================');
             console.log('_____________________________________________________');
             res.json({
-                "data": user.ok ? 'OK' : 'error'
+                "data": user?.ok ? 'OK' : 'error'
             });
         } catch (err) {
             console.log('Error ---->', err);
@@ -249,16 +248,16 @@ class UsersController {
                         rol: [rol]
                     }
                 }
-            );
+            ) as any;
             const user: UserInterface | null = await UsersSchema.findById(
                 { _id: id },
                 { _v: 0 }
             ).lean();
 
-            console.log('> response:' + ((edition.ok) ? 'OK' : 'not Found'));
+            console.log('> response:' + ((edition?.ok) ? 'OK' : 'not Found'));
             console.log('_____________________________________________________');
             res.json({
-                "data": edition.ok ? { user: user && { ...user, id: user._id } } : null
+                "data": edition?.ok ? { user: user && { ...user, id: user._id } } : null
             });
 
         } catch (err) {
@@ -286,15 +285,15 @@ class UsersController {
                         rol: { $in: [rol] }
                     }
                 }
-            );
+            ) as any;
             const user: UserInterface | null = await UsersSchema.findById(
                 { _id: id },
                 { _v: 0 }
             ).lean();
-            console.log('> response: ' + ((edition.ok) ? 'OK' : 'not Found'));
+            console.log('> response: ' + ((edition?.ok) ? 'OK' : 'not Found'));
             console.log('_____________________________________________________');
             res.json({
-                "data": edition.ok ? { user: user && { ...user, id: user._id } } : null
+                "data": edition?.ok ? { user: user && { ...user, id: user._id } } : null
             });
         } catch (err) {
             console.log('Error ---->', err);
