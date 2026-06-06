@@ -3,7 +3,7 @@ import { userSchemas } from './users/users-schemas.swagger.js';
 import { userPaths } from './users/users-path.swagger.js';
 // A medida que avances, importarás: cityPaths, bookPaths, etc.
 
-export const swaggerDocument: JsonObject = {
+const swaggerDocument: JsonObject = {
   openapi: '3.0.0',
   info: {
     title: 'World of Stories API',
@@ -26,3 +26,5 @@ export const swaggerDocument: JsonObject = {
     }
   }
 };
+
+export default swaggerDocument;

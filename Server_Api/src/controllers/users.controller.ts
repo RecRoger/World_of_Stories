@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import Users, { UserInterface } from '../schemas/users.model.js';
 import { logError } from './common-logs.js';
 import bcrypt from 'bcrypt';
+import Users, { UserInterface } from '../schemas/users.model.js';
 
 
 // Get All Users

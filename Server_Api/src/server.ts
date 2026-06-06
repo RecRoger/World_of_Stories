@@ -3,8 +3,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import mongoose from 'mongoose';
 import swaggerUi from 'swagger-ui-express';
-import * as swaggerDocument from './docs/swagger.js'
-import { mainRouter } from './routes/index.js'; // Tu enrutador central
+import swaggerDocument from './docs/swagger.js'
+import { mainRouter } from './routes/index.js';
 
 class Server {
     private app: Application;
@@ -46,7 +46,7 @@ class Server {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
 
-        this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+        this.app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
     }
 
     private setRoutes(): void {
