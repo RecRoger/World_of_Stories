@@ -1,309 +1,299 @@
 import { Request, Response } from 'express';
-import UsersSchema, { UserInterface } from '../schemas/users.model';
+import Users, { UserInterface } from '../schemas/users.model.js';
+import { logError } from './common-logs.js';
+import bcrypt from 'bcrypt';
 
-class UsersController {
 
-    // Get All Users
-    public async getAllUsers(req: Request, res: Response): Promise<void> {
-        try {
-            console.log('.');
-            console.log('________________________________________________');
-            console.log('*************** getAllUsers *******************');
-
-            const users: UserInterface[] = await UsersSchema.find({}, { _v: 0 }).lean();
-
-            console.log('_____________________________________________________');
-            res.json({
-                "data": { "users": users.map(user => ({ ...user, id: user._id })) }
-            });
-        } catch (err) {
-            console.log('Error ---->', err);
-            console.log('_____________________________________________________');
-            res.json({
-                "error": err
-            })
-
-        }
-    }
-    // Get User by ID
-    public async getUserById(req: Request, res: Response): Promise<void> {
-        try {
-            console.log('.');
-            console.log('________________________________________________');
-            console.log('*************** getUserByID *******************');
-            console.log('> UserId: ' + req.body.id);
-
-            const user: UserInterface | null = await UsersSchema.findById(
-                { _id: req.body.id },
-                {
-                    _v: 0
-                }
-            ).lean();
-            // console.log('User ======>', user);
-            console.log('> Response: ' + ((user) ? (user as UserInterface).username : 'not Found'));
-            console.log('_____________________________________________________');
-            res.json({
-                "data": { "user": (user) ? { ...user, id: user._id } : null }
-            });
-        } catch (err) {
-            console.log('Error ---->', err);
-            console.log('_____________________________________________________');
-            res.json({
-                "error": err
-            })
-        }
-    }
-    // Get User username and password
-    public async getOneUser(req: Request, res: Response): Promise<void> {
-        try {
-
-            console.log('.');
-            console.log('________________________________________________');
-            console.log('**************** getOneUser *******************', req.body);
-
-            const { username, password } = req.body;
-            const user: UserInterface | null = await UsersSchema.findOne(
-                {
-                    $and: [
-                        {
-                            $or: [
-                                { username: username },
-                                { email: username },
-                            ]
-                        },
-                        { password: password }
-                    ]
-                }, {
-                _v: 0
+// Get All Users
+export const getAllUsers = async (req: Request, res: Response): Promise<Response> => {
+    console.log(`[GET] - getAllUsers - ${new Date().toISOString()}`);
+    try {
+        const users = await Users.find({}, { _v: 0 }).lean<UserInterface[]>();
+        return res.status(200).json({
+            ok: true,
+            count: users.length,
+            data: {
+                users: users.map(({ _id, password, ...rest }) => ({
+                    id: _id,
+                    ...rest // Usamos destructuring para no exponer la contraseña en la API por seguridad
+                }))
             }
-            ).lean();
-            console.log('> user response: ' + ((user) ? (user as UserInterface).username : 'not Found'));
-            console.log('_____________________________________________________');
-            // console.log('User ======>', user);
-            res.json({
-                "data": { "user": user && { ...user, id: user._id } }
-            });
-        } catch (err) {
-            console.log('Error ---->', err);
-            console.log('_____________________________________________________');
-            res.json({
-                "error": err
-            })
-        }
-    }
-    // Save new User
-    public async saveUser(req: Request, res: Response): Promise<void> {
-        console.log('.');
-        console.log('________________________________________________');
-        console.log('****************** savwUser *******************');
-        try {
-            const { email, username, password } = req.body.user;
-
-
-            const exist: UserInterface | null = await UsersSchema.findOne(
-                {
-                    $or: [
-                        { username: username },
-                        { email: email },
-                    ]
-                }, {
-                _v: 0
-            }
-            ).lean();
-
-            if (!exist) {
-                const newUser: UserInterface = new UsersSchema({
-                    email,
-                    username,
-                    password,
-                    rol: []
-                });
-                await newUser.save();
-
-                const user = await UsersSchema.findOne({ "_id": newUser._id }).lean();
-
-                console.log('> user response:' + ((user) ? (user as UserInterface).username : 'not Found'));
-                console.log('_____________________________________________________');
-                res.json({
-                    "data": { "user": { ...user, id: user?._id } }
-                });
-            } else {
-                console.log('> user repeated:' + (exist));
-                console.log('_____________________________________________________');
-                res.json({
-                    "data": "repeated"
-                });
-            }
-
-        } catch (err) {
-            console.log('Error ---->', err);
-            console.log('_____________________________________________________');
-            res.json({
-                "error": err
-            })
-        }
-    }
-    // Update
-    public async updateUser(req: Request, res: Response): Promise<void> {
-        console.log('.');
-        console.log('________________________________________________');
-        console.log('****************** updateUser *******************');
-        try {
-            const { id, email, username, password } = req.body.user;
-            console.log('> userID ' + id);
-
-            const exist: UserInterface | null = await UsersSchema.findOne(
-                {
-                    $and: [
-                        { _id: { $ne: id } },
-                        {
-                            $or: [
-                                { username: username },
-                                { email: email },
-                            ]
-                        }
-                    ]
-                }, {
-                _v: 0
-            }
-            ).lean();
-
-
-            if (!exist) {
-                const edition = await UsersSchema.updateOne(
-                    { _id: id },
-                    {
-                        $set: {
-                            email: email,
-                            username: username,
-                            password: password,
-                        }
-                    }
-                ) as any;
-                const user: UserInterface | null = await UsersSchema.findById(
-                    { _id: id },
-                    { _v: 0 }
-                ).lean();
-
-                console.log('> response:' + ((edition?.ok) ? 'OK' : 'not Found'));
-                console.log('_____________________________________________________');
-                res.json({
-                    "data": edition?.ok ? { user: user && { ...user, id: user._id } } : null
-                })
-            } else {
-                console.log('> user repeated:' + (exist));
-                console.log('_____________________________________________________');
-                res.json({
-                    "data": "repeated"
-                });
-            }
-
-        } catch (err) {
-            console.log('Error ---->', err);
-            console.log('_____________________________________________________');
-            res.json({
-                "error": err
-            })
-        }
-    }
-    // delete User
-    public async deleteUser(req: Request, res: Response): Promise<void> {
-        try {
-            console.log('.');
-            console.log('________________________________________________');
-            console.log('**************** deleteUser *******************');
-            console.log('> userId: ' + req.body.id);
-            const user = await UsersSchema.deleteOne({
-                _id: req.body.id
-            }) as any;
-            // console.log('Edition ======>', user);
-            console.log('> response: ' + ((user?.ok) ? 'OK' : 'not Found') + ' ======================');
-            console.log('_____________________________________________________');
-            res.json({
-                "data": user?.ok ? 'OK' : 'error'
-            });
-        } catch (err) {
-            console.log('Error ---->', err);
-            console.log('_____________________________________________________');
-            res.json({
-                "error": err
-            })
-        }
-    }
-
-    public async setUserRol(req: Request, res: Response): Promise<void> {
-        try {
-            console.log('.');
-            console.log('________________________________________________');
-            console.log('************** updateUserRol ******************');
-
-            const { id, rol } = req.body;
-            console.log('> userID ' + id);
-            console.log('> rol: ' + rol);
-
-            const edition = await UsersSchema.updateOne(
-                { _id: id },
-                {
-                    $push: {
-                        rol: [rol]
-                    }
-                }
-            ) as any;
-            const user: UserInterface | null = await UsersSchema.findById(
-                { _id: id },
-                { _v: 0 }
-            ).lean();
-
-            console.log('> response:' + ((edition?.ok) ? 'OK' : 'not Found'));
-            console.log('_____________________________________________________');
-            res.json({
-                "data": edition?.ok ? { user: user && { ...user, id: user._id } } : null
-            });
-
-        } catch (err) {
-            console.log('Error ---->', err);
-            console.log('_____________________________________________________');
-            res.json({
-                "error": err
-            })
-        }
-    }
-    public async removeUserRol(req: Request, res: Response): Promise<void> {
-        console.log('.');
-        console.log('________________________________________________');
-        console.log('*************** removeUserRol *****************');
-        try {
-            const { id, rol } = req.body;
-
-            console.log('> userId: ' + id);
-            console.log('> rol: ' + rol);
-
-            const edition = await UsersSchema.updateOne(
-                { _id: id },
-                {
-                    $pull: {
-                        rol: { $in: [rol] }
-                    }
-                }
-            ) as any;
-            const user: UserInterface | null = await UsersSchema.findById(
-                { _id: id },
-                { _v: 0 }
-            ).lean();
-            console.log('> response: ' + ((edition?.ok) ? 'OK' : 'not Found'));
-            console.log('_____________________________________________________');
-            res.json({
-                "data": edition?.ok ? { user: user && { ...user, id: user._id } } : null
-            });
-        } catch (err) {
-            console.log('Error ---->', err);
-            console.log('_____________________________________________________');
-            res.json({
-                "error": err
-            })
-        }
+        });
+    } catch (err) {
+        console.error('[Error] - getAllUsers', err);
+        return logError(res, err, 'Error interno del servidor al recuperar los usuarios',)
     }
 }
 
+// Get User by ID
+export const getUserById = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params; // Capturamos desde la URL: /users/:id
+    console.log(`[POST] - getUserById para el ID: ${id} - ${new Date().toISOString()}`);
+    try {
+        const user = await Users.findById(id, { _v: 0 })
+            .select('-password')
+            .lean<UserInterface | null>();
 
-export const usersController = new UsersController();
+        if (!user) {
+            console.log(`[POST] - getUserById ${id} NotFound - ${new Date().toISOString()}`);
+            return res.status(404).json({
+                ok: false,
+                message: `No se encontró ningún usuario con el ID: ${id}`
+            });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            data: {
+                user: {
+                    id: user?._id,
+                    ...user
+                }
+            }
+        });
+    } catch (err) {
+        console.error('[Error] - getUserById', err);
+        return logError(res, err, 'Error interno del servidor al recuperar el usuario')
+    }
+}
+
+// Get User username and password
+export const getOneUser = async (req: Request, res: Response): Promise<Response> => {
+    try {
+
+        const { username, password } = req.body;
+        console.log(`[POST] - getOneUser - para: ${username} - ${new Date().toISOString()}`);
+
+        const user = await Users.findOne({ $or: [{ username: username }, { email: username }] }, { _v: 0 })
+            .lean<UserInterface>();
+
+        if (!user) {
+            console.log(`[POST] - getOneUser - ${username} NotFound`);
+            return res.status(404).json({
+                ok: false,
+                message: `No se encontró ningún usuario o correo "${username}"`
+            });
+        }
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            console.log(`[POST] - getOneUser - invalid password`);
+            return res.status(401).json({ // 401 Unauthorized para credenciales inválidas
+                ok: false,
+                message: 'La contraseña ingresada es incorrecta'
+            });
+        }
+
+        const { password: _, ...userWithoutPassword } = user;
+        return res.status(200).json({
+            ok: true,
+            data: {
+                user: {
+                    id: user._id,
+                    ...userWithoutPassword
+                }
+            }
+        });
+    } catch (err) {
+        console.error('[Error] - getOneUser', err);
+        return logError(res, err, 'Error interno del servidor al recuperar el usuario')
+    }
+}
+
+// Save new User
+export const saveUser = async (req: Request, res: Response): Promise<Response> => {
+    const { email, username, password } = req.body.user;
+    console.log(`[POST] - saveUser para: ${username} - ${new Date().toISOString()}`);
+    try {
+        const exist = await Users.findOne({ $or: [{ username }, { email }] }, { _v: 0 })
+            .lean<UserInterface | null>();
+        if (exist) {
+            console.log(`[POST] - saveUser - ${username === exist.username ? 'username' : 'email'} duplicado - ${new Date().toISOString()}`);
+            return res.status(409).json({ // 409 Conflict es ideal para campos únicos duplicados
+                ok: false,
+                message: `${username === exist.username ? 'El username' : 'El email'} ya está registrado`
+            });
+        }
+
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        const newUser = new Users({
+            email,
+            username,
+            password: hashedPassword,
+            rol: []
+        });
+        await newUser.save();
+        const userObject = newUser.toJSON();
+        const { password: _, __v, ...cleanUser } = userObject;
+
+        return res.status(200).json({
+            ok: true,
+            data: { user: cleanUser ? { id: cleanUser?._id, ...cleanUser } : null }
+        });
+    } catch (err) {
+        console.error('[Error] - saveUser', err);
+        return logError(res, err, 'Error interno del servidor al guardar el usuario')
+    }
+}
+
+// Update
+export const updateUser = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+    const { email, username, password } = req.body.user;
+    console.log(`[POST] - updateUser para: ${username || email || id} - ${new Date().toISOString()}`);
+    try {
+        const exist = await Users.findOne({
+            _id: { $ne: id },
+            $or: [{ username: username }, { email: email }],
+        }).lean<UserInterface | null>();
+
+        if (exist) {
+            console.log(`[POST] - updateUser - ${username === exist.username ? 'username' : 'email'} duplicado - ${new Date().toISOString()}`);
+            return res.status(409).json({
+                ok: false,
+                message: `${username === exist.username ? 'El username' : 'El email'} ya está siendo usado`
+            });
+        }
+        const updateData: Record<string, any> = { email, username };
+        if (password && password.trim() !== '') {
+            const saltRounds = 10;
+            updateData.password = await bcrypt.hash(password, saltRounds);
+            console.log('-> Contraseña modificada y encriptada con éxito.');
+        }
+        const updatedUser = await Users.findByIdAndUpdate(
+            id,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        )
+            .select('-password')
+            .lean();
+        if (!updatedUser) {
+            console.log(`[POST] - updateUser - el id ${id} no existe - ${new Date().toISOString()}`);
+            return res.status(404).json({
+                ok: false,
+                message: 'No se encontró el usuario que se intentó actualizar.'
+            });
+        }
+        return res.status(200).json({
+            "ok": true,
+            "data": { user: { id: updatedUser._id, ...updatedUser } }
+        })
+    } catch (err) {
+        console.error('[Error] - updateUser', err);
+        return logError(res, err, 'Error interno del servidor al actualizar el usuario')
+    }
+}
+
+// delete User
+export const deleteUser = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+    console.log(`[DELETE] - deleteUser para el ID: ${id} - ${new Date().toISOString()}`);
+    try {
+        const deletedUser = await Users.findByIdAndDelete(id).lean();
+
+        if (!deletedUser) {
+            console.log(`[DELETE] - deleteUser - Usuario not found - ${new Date().toISOString()}`);
+            return res.status(404).json({
+                ok: false,
+                message: `No se pudo eliminar: No se encontró ningún usuario con el ID "${id}".`
+            });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            message: 'Usuario eliminado correctamente de la base de datos.',
+            data: {
+                user: {
+                    id: deletedUser._id,
+                    username: deletedUser.username,
+                    email: deletedUser.email
+                }
+            }
+        });
+
+    } catch (err) {
+        console.error('[Error] - deleteUser:', err);
+        return logError(res, err, 'Error interno del servidor al intentar eliminar el usuario');
+    }
+};
+
+
+
+export const setUserRol = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params; // ID por parámetro de ruta: /users/:id/roles
+    const { rol } = req.body;  // El rol a añadir viene en el body
+
+    console.log(`[PATCH] - setUserRol para ID: ${id}, Rol: ${rol} - ${new Date().toISOString()}`);
+
+    try {
+        const updatedUser = await Users.findByIdAndUpdate(
+            id,
+            { $addToSet: { rol: rol } },
+            { new: true, runValidators: true }
+        )
+            .select('-password')
+            .lean();
+        if (!updatedUser) {
+            console.log(`[PATCH] - setUserRol - User Not Found`);
+            return res.status(404).json({
+                ok: false,
+                message: 'No se encontró el usuario para asignarle el rol.'
+            });
+        }
+        return res.status(200).json({
+            ok: true,
+            message: `Rol '${rol}' añadido correctamente.`,
+            data: {
+                user: {
+                    id: updatedUser._id,
+                    ...updatedUser
+                }
+            }
+        });
+
+    } catch (err) {
+        console.error('[Error] - setUserRol:', err);
+        return logError(res, err, 'Error interno del servidor al añadir el rol');
+    }
+};
+
+export const removeUserRol = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+    const { rol } = req.body;
+
+    console.log(`[DELETE] - removeUserRol para ID: ${id}, Rol: ${rol} - ${new Date().toISOString()}`);
+
+    try {
+        const updatedUser = await Users.findByIdAndUpdate(
+            id,
+            { $pull: { rol: rol } },
+            { new: true }
+        )
+            .select('-password')
+            .lean();
+
+        if (!updatedUser) {
+            console.log(`[PATCH] - removeUserRol - Not Found`);
+            return res.status(404).json({
+                ok: false,
+                message: 'No se encontró el usuario para removerle el rol.'
+            });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            message: `Rol '${rol}' removido correctamente.`,
+            data: {
+                user: {
+                    id: updatedUser._id,
+                    ...updatedUser
+                }
+            }
+        });
+
+    } catch (err) {
+        console.error('[Error] - removeUserRol:', err);
+        return logError(res, err, 'Error interno del servidor al remover el rol');
+    }
+};

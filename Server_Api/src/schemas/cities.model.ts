@@ -3,10 +3,10 @@ import { publicTale } from './common.model';
 
 export interface CityInterface extends mongoose.Document {
     _id: string
-    name: string,              // nombre de la ciudad
-    description: publicTale[], // descripciones de la ciudad
-    travel: publicTale[],      // narraciones de diferentes viajes hacia la ciudad
-    places: PlaceInterface[],  // ide de los lugares (Places) de esa ciudad
+    name: string,
+    description: publicTale[],
+    travel: publicTale[],
+    places: PlaceInterface[],
     published: boolean,
     publishDate: Date
 }
@@ -23,7 +23,7 @@ export interface PlaceInterface {
 
 
 const CitiesSchema = new Schema({
-    name: String,
+    name: String,   // nombre de la ciudad
     description: [{
         tale: [{
             text: String,
@@ -33,7 +33,7 @@ const CitiesSchema = new Schema({
         published: Boolean,
         writeDate: Date,
         publishDate: Date,
-    }],
+    }],   // descripciones de la ciudad
     travel: [{
         tale: [{
             text: String,
@@ -43,7 +43,7 @@ const CitiesSchema = new Schema({
         published: Boolean,
         writeDate: Date,
         publishDate: Date,
-    }],
+    }],   // narraciones de diferentes viajes hacia la ciudad
     places: [{
         name: String,
         description: [{
@@ -69,9 +69,13 @@ const CitiesSchema = new Schema({
         events: [String],
         published: Boolean,
         publishDate: Date
-    }],
+    }], // ide de los lugares (Places) de esa ciudad
     published: Boolean,
     publishDate: Date
+}, {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 })
 
 export default model<CityInterface>('city', CitiesSchema);

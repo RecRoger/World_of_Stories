@@ -1,106 +1,66 @@
-import express from 'express';
-import mongoose from "mongoose";
-import { mongoKeys } from './keys';
-import UserRouter from './routes/users.routes';
-import * as bodyParser from 'body-parser';
-import CitiesRouter from './routes/cities.routes';
-import PlacesRouter from './routes/places.routes';
-import ChaptersRouter from './routes/chapters.routes';
+import express, { Application } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import mongoose from 'mongoose';
 import swaggerUi from 'swagger-ui-express';
-import * as swaggerDocument from './swagger/swagger.json'
-import NpcsRouter from './routes/npcs.routes';
-import CharactersRouter from './routes/characters.routes';
-import path from 'path';
-import * as http from 'http';
-
+import * as swaggerDocument from './docs/swagger.js'
+import { mainRouter } from './routes/index.js'; // Tu enrutador central
 
 class Server {
-    private express: express.Application
-
-    public static bootstrap(): Server {
-        return new Server();
-    }
+    private app: Application;
+    private port: string | number;
+    private mongoUri: string;
 
     constructor() {
-        this.express = express();
-        this.config();
-        this.routes();
+        this.app = express();
+        this.port = process.env.PORT || 3000;
+        this.mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/world_of_stories';
+
+        this.connectDatabase();
+        this.setMiddlewares();
+        this.setRoutes();
     }
 
-    private config() {
-        // Parsers for POST data 
-        this.express.use(bodyParser.json());
-        this.express.use(bodyParser.urlencoded({ extended: false }));
-        this.express.use(cors());
+    private async connectDatabase(): Promise<void> {
+        try {
+            // Conexión limpia sin flags obsoletos
+            await mongoose.connect(this.mongoUri);
+            console.log('--- Conexión exitosa a MongoDB ---');
+        } catch (error) {
+            console.error('Error al conectar a la base de datos:', error);
+            process.exit(1); // Detiene la app si no hay base de datos
+        }
+    }
 
-        // Point static path to public folder 
-        this.express.use(express.static(path.join(__dirname, 'public')));
+    private setMiddlewares(): void {
+        this.app.use(helmet());
 
-        /** 
-         * Get port from environment and store in Express. 
-         */
-        const port = process.env.PORT || '3000';
-        this.express.set('port', port);
+        // Configuración de CORS centralizada
+        this.app.use(cors({
+            origin: 'http://localhost:4200', // El puerto donde corre tu Angular en desarrollo
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+            allowedHeaders: ['Content-Type', 'Authorization'],
+            credentials: true // Vital si vas a manejar cookies o sesiones con Passport más adelante
+        }));
 
-        /** 
-         * Start Db configurations. 
-         */
-        this.setupDb();
+        this.app.use(express.json());
+        this.app.use(express.urlencoded({ extended: true }));
 
-        /** 
-         * Create HTTP server. 
-         */
-        const server = http.createServer(this.express);
+        this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+    }
 
-        /** 
-         * Listen on provided port, on all network interfaces. 
-         */
-        server.listen(port, () => {
-            console.log(`******* Aplication Start *********`);
-            console.log(`Server listening on port ${port}`);
-            console.log(`**********************************`);
+    private setRoutes(): void {
+        // Prefijo global para la API clean
+        this.app.use('/api/v1', mainRouter);
+    }
+
+    public listen(): void {
+        this.app.listen(this.port, () => {
+            console.log(`Servidor corriendo en el puerto: ${this.port}`);
         });
-
-    }
-
-    private routes() {
-
-        new UserRouter(this.express);
-        new CharactersRouter(this.express);
-        new CitiesRouter(this.express);
-        new PlacesRouter(this.express);
-        new NpcsRouter(this.express);
-        new ChaptersRouter(this.express);
-
-        // swagger API
-        this.express.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-        // Catch all other routes and return the index file 
-        this.express.get('*', (req, res) => {
-            res.sendFile(path.join(__dirname, 'public/index.html'));
-        });
-
-    }
-
-    public Start = (port: number) => {
-        return new Promise((resolve, reject) => {
-            this.express.listen(port,
-                () => {
-                    resolve(port)
-                })
-                .on('error', (err: object) => reject(err));
-        })
-    }
-
-    private setupDb(): void {
-        const mongoDb = mongoKeys.URI;
-        mongoose.connect(mongoDb);
-        const db = mongoose.connection;
-        db.on("error", console.error.bind(console, "MongoDB Connection error"));
     }
 }
 
-Server.bootstrap();
-
-export default Server;
+// Inicialización del servidor
+const server = new Server();
+server.listen();

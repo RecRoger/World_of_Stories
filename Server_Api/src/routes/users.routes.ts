@@ -1,31 +1,23 @@
-import * as express from 'express'
-import { usersController } from './../controllers/users.controller'
-import cors from 'cors'
+import { Router } from 'express';
+import {
+    getAllUsers,
+    getUserById,
+    getOneUser,
+    saveUser,
+    updateUser,
+    deleteUser,
+    setUserRol,
+    removeUserRol
+} from '../controllers/users.controller.js';
 
-class UserRouter {
-    constructor(server: express.Application){
-        const router = express.Router();
+const userRouter = Router();
 
-        router.get('/', cors(), usersController.getAllUsers);
-
-        router.post('/login', cors(), usersController.getOneUser);
-        
-        router.post('/user', cors(), usersController.getUserById);
-        
-        router.post('/signin', cors(), usersController.saveUser);
-
-        router.post('/update', cors(), usersController.updateUser);
-        
-        router.post('/delete', cors(), usersController.deleteUser);
-        
-        router.post('/set_rol', cors(), usersController.setUserRol);
-        
-        router.post('/remove_rol', cors(), usersController.removeUserRol);
-
-        // router.options('*', cors());
-
-        server.use('/users', router)
-    }
-}
-
-export default UserRouter;
+userRouter.get('/', getAllUsers);
+userRouter.get('/:id', getUserById);
+userRouter.post('/login', getOneUser); // Cambiado a POST por seguridad de credenciales
+userRouter.post('/', saveUser);        // 201 Created
+userRouter.put('/:id', updateUser);    // PUT con ID por parámetro
+userRouter.delete('/:id', deleteUser); // DELETE con ID por parámetro
+userRouter.patch('/:id/roles', setUserRol);    // PATCH para modificaciones parciales (añadir)
+userRouter.delete('/:id/roles', removeUserRol); // DELETE semántico para quitar el recurso del rol
+export { userRouter };

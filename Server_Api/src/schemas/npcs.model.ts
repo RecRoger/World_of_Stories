@@ -1,41 +1,9 @@
-import mongoose, { Schema, model } from 'mongoose';
-import { publicTale, decisionOption, readFragment, decisionObject, chapterLocation } from './common.model';
-
-export interface NpcInterface extends mongoose.Document {
-    _id: string,
-    name?: string,		       // nombre aislado del personaje
-    npcType?: string, 		   // lugar de 'historias', 'tienda', 'posta de caballos' etc.
-    description?: publicTale, // descripciones del personaje, presentacion general, corta.
-    meeting?: publicTale,       // presentacion del personaje y su polemica, cierra en pregunta
-    decision?: decisionObject,
-    rejected?: publicTale,      // narracion de rechazo
-    items?: string[]	       // items del npc (tienda);
-    title?: string		       // Titulo de la historia
-    chapters?: ChapterInterface[]
-    author?: string,
-    published?: boolean,
-    writeDate?: Date;     // Fecha de creacion
-    publishDate?: Date
-}
-
-export interface ChapterInterface {
-    _id: string,
-    name?: string
-    story?: readFragment[],	                // narracion previa a batalla o decision.
-    usersDecisions?: decisionObject,
-    endLocation?: chapterLocation
-    items?: string[]		                // Item en caso de victoria
-    published?: boolean,
-    author?: string,
-    writeDate?: Date;     // Fecha de creacion
-    publishDate?: Date;   // Fecha de publicacion
-
-}
+import { Schema, model } from 'mongoose';
 
 
 const NpcsSchema = new Schema({
-    name: String,
-    npcType: String,
+    name: String,            // nombre aislado del personaje
+    npcType: String,         // lugar de 'historias', 'tienda', 'posta de caballos' etc.
     description: {
         tale: [{
             text: String,
@@ -45,7 +13,7 @@ const NpcsSchema = new Schema({
         published: Boolean,
         writeDate: Date,
         publishDate: Date,
-    },
+    },                       // descripciones del personaje, presentacion general, corta.
     meeting: {
         tale: [{
             text: String,
@@ -55,7 +23,7 @@ const NpcsSchema = new Schema({
         published: Boolean,
         writeDate: Date,
         publishDate: Date,
-    },
+    },                      // presentacion del personaje y su polemica, cierra en pregunta
     decision: {
         decisionType: String,
         amount: Number,
@@ -77,15 +45,15 @@ const NpcsSchema = new Schema({
         published: Boolean,
         writeDate: Date,
         publishDate: Date,
-    },
-    items: [String],
-    title: String,
+    },                      // narracion de rechazo
+    items: [String],        // items del npc (tienda);
+    title: String,          // Titulo de la historia
     chapters: [{
         name: String,
         story: [{
             text: String,
             animation: String
-        }],	                // narracion previa a batalla o decision.
+        }],                 // narracion previa a batalla o decision.
         usersDecisions: {
             decisionType: String,
             amount: Number,
@@ -113,6 +81,10 @@ const NpcsSchema = new Schema({
     author: String,
     writeDate: Date,    // Fecha de creacion
     publishDate: Date,   // Fecha de publicacion
+}, {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 })
 
-export default model<NpcInterface>('npcs', NpcsSchema);
+export default model('npcs', NpcsSchema);

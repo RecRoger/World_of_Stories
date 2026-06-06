@@ -3,5 +3,8 @@ Client_Side/node_modules
 
 Server_Api/node_modules
 Server_Api/src/swagger/generator/workspace
+Server_Api/src/keys.ts
+Server_Api/build/src/*
+Server_Api/build/*
 Server_Api/build/src
 Server_Api/build
