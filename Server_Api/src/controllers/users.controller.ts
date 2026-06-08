@@ -35,7 +35,6 @@ export const getUserById = async (req: Request, res: Response): Promise<Response
             .lean<UserInterface | null>();
 
         if (!user) {
-            console.log(`[POST] - getUserById ${id} NotFound - ${new Date().toISOString()}`);
             return res.status(404).json({
                 ok: false,
                 message: `No se encontró ningún usuario con el ID: ${id}`
@@ -67,7 +66,6 @@ export const getOneUser = async (req: Request, res: Response): Promise<Response>
             .lean<UserInterface>();
 
         if (!user) {
-            console.log(`[POST] - getOneUser - ${username} NotFound`);
             return res.status(404).json({
                 ok: false,
                 message: `No se encontró ningún usuario o correo "${username}"`
@@ -168,7 +166,6 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
             .select('-password')
             .lean();
         if (!updatedUser) {
-            console.log(`[POST] - updateUser - el id ${id} no existe - ${new Date().toISOString()}`);
             return res.status(404).json({
                 ok: false,
                 message: 'No se encontró el usuario que se intentó actualizar.'
@@ -192,7 +189,6 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
         const deletedUser = await Users.findByIdAndDelete(id).lean();
 
         if (!deletedUser) {
-            console.log(`[DELETE] - deleteUser - Usuario not found - ${new Date().toISOString()}`);
             return res.status(404).json({
                 ok: false,
                 message: `No se pudo eliminar: No se encontró ningún usuario con el ID "${id}".`
@@ -234,7 +230,6 @@ export const setUserRol = async (req: Request, res: Response): Promise<Response>
             .select('-password')
             .lean();
         if (!updatedUser) {
-            console.log(`[PATCH] - setUserRol - User Not Found`);
             return res.status(404).json({
                 ok: false,
                 message: 'No se encontró el usuario para asignarle el rol.'
@@ -273,7 +268,6 @@ export const removeUserRol = async (req: Request, res: Response): Promise<Respon
             .lean();
 
         if (!updatedUser) {
-            console.log(`[PATCH] - removeUserRol - Not Found`);
             return res.status(404).json({
                 ok: false,
                 message: 'No se encontró el usuario para removerle el rol.'

@@ -179,7 +179,7 @@ class CharactersController {
             ).lean();
 
             // console.log("> capitulos", findCharacter)
-            const castCharacter = (findCharacter && findCharacter.characters) ? findCharacter.characters.find(c => c._id == character.id) : null;
+            const castCharacter = (findCharacter && findCharacter.characters) ? findCharacter.characters.find((c: CharacterInterface) => c._id.toString() == character.id) : null;
             console.log('> response: ', castCharacter && castCharacter.name);
             console.log('_____________________________________________________');
             res.json({

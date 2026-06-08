@@ -78,4 +78,4 @@ const UsersSchema = new Schema<UserInterface>({
     toObject: { virtuals: true }
 });
 
-export default model<UserInterface>('User', UsersSchema);
+export default model<UserInterface>('Users', UsersSchema);

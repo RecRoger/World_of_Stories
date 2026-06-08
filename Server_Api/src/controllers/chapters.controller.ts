@@ -1,335 +1,275 @@
+// src/controllers/chapters.controller.ts
 import { Request, Response } from 'express';
-import NpcsSchema, { NpcInterface, ChapterInterface } from '../schemas/npcs.model';
-import { decisionOption } from '../schemas/common.model';
+import NpcsSchema, { NpcInterface, ChapterInterface } from '../schemas/npcs.model.js';
+import { logError } from './common-logs.js';
 
-class ChaptersController {
+const formatChapter = (chapter: any) => {
+    if (!chapter) return null;
+    return {
+        ...chapter,
+        id: chapter._id,
+        usersDecisions: chapter.usersDecisions ? {
+            ...chapter.usersDecisions,
+            options: chapter.usersDecisions.options
+                ? chapter.usersDecisions.options.map((o: any) => ({ ...o, id: o._id }))
+                : []
+        } : undefined
+    };
+};
 
+// get all chapters of an NPC
+export const getAllChapters = async (req: Request, res: Response): Promise<Response> => {
+    const { npcId } = req.params;
+    const published = req.query.published === 'true';
+    console.log(`[GET] - getAllChapters para el NPC: ${npcId} (filtro de published: ${published}) - ${new Date().toISOString()}`);
 
-    // get all npcs of a places
-    public async getAllChapters(req: Request, res: Response) {
-        try {
-            console.log('.');
-            console.log('________________________________________________');
-            console.log('*************** getAllChapters *******************');
-            const { id, published } = req.body;
-            console.log('> npcId:', id);
-            const npcs: NpcInterface | null = await NpcsSchema.findOne(
-                {
-                    _id: id,
-                },
-                {
-                    title: 1,
-                    chapters: 1
-                }
-            ).lean();
-            let filterChapters = (npcs) ? npcs.chapters : [];
-            console.log('> story name:', npcs && npcs.title);
-            if (published && npcs) {
-                filterChapters = (npcs.chapters) ? npcs.chapters.filter(npc => npc.published == true) : [];
-            }
+    try {
+        const npc: NpcInterface | null = await NpcsSchema.findById(npcId, {
+            title: 1,
+            chapters: 1
+        }).lean<NpcInterface | null>();
 
-            const castChapters = (filterChapters) ? filterChapters.map((c) => ({
-                // ...c,
-                id: c._id,
-                name: c.name,
-                published: c.published,
-                author: c.author,
-                writeDate: c.writeDate,
-                publishDate: c.publishDate,
-                // usersDecisions: {
-                //     ...c.usersDecisions,
-                //     options: c.usersDecisions && c.usersDecisions.options.map(o => ({ ...o, id: o._id }))
-                // }
-            })) : null;
-
-            console.log('_____________________________________________________');
-            res.json({
-                "data": { "chapters": castChapters }
-            })
-        } catch (err) {
-            console.log('Error ---->', err);
-            console.log('_____________________________________________________');
-            res.json({
-                "error": err
-            })
+        if (!npc) {
+            return res.status(404).json({ ok: false, message: 'No se encontró el NPC especificado.' });
         }
+
+        let filterChapters = npc.chapters || [];
+        if (req.query.published !== undefined) {
+            filterChapters = filterChapters.filter(ch => ch.published === published);
+        }
+
+        const castChapters = filterChapters.map(c => ({
+            id: c._id,
+            name: c.name,
+            published: c.published,
+            author: c.author,
+            writeDate: c.writeDate,
+            publishDate: c.publishDate
+        }));
+
+        return res.status(200).json({
+            ok: true,
+            data: { chapters: castChapters }
+        });
+    } catch (err) {
+        console.error('[Error] - getAllChapters:', err);
+        return logError(res, err, 'Error interno del servidor al intentar consultar los capítulos del NPC');
+    }
+};
+
+// get chapters info
+export const getChapter = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+    console.log(`[GET] - getChapter para el ID: ${id} - ${new Date().toISOString()}`);
+
+    try {
+        const npc: NpcInterface | null = await NpcsSchema.findOne(
+            { "chapters._id": id },
+            { title: 1, chapters: 1 }
+        ).lean<NpcInterface | null>();
+
+        if (!npc || !npc.chapters) {
+            return res.status(404).json({ ok: false, message: 'No se encontró el capítulo solicitado.' });
+        }
+
+        const chapter = npc.chapters.find((n: ChapterInterface) => n._id.toString() === id);
+        if (!chapter) {
+            return res.status(404).json({ ok: false, message: 'Capítulo no encontrado dentro del árbol del NPC.' });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            data: { chapter: formatChapter(chapter) }
+        });
+    } catch (err) {
+        console.error('[Error] - getChapter:', err);
+        return logError(res, err, 'Error interno del servidor al intentar consultar el capítulo');
+    }
+};
+
+
+// updates/add Chapters
+export const updateChapter = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+    const { chapter } = req.body;
+    console.log(`[PUT] - updateChapter para el ID: ${id} - ${new Date().toISOString()}`);
+
+    if (!chapter) {
+        return res.status(400).json({ ok: false, message: 'Faltan los datos del capítulo en el cuerpo de la petición.' });
     }
 
-    // get all npcs of a places
-    public async getChapter(req: Request, res: Response) {
-        try {
-            console.log('.');
-            console.log('________________________________________________');
-            console.log('*************** getChapter *******************');
-            const { id } = req.body;
-            console.log('> chapterId:', id);
-            const npcs: NpcInterface | null = await NpcsSchema.findOne(
-                {
-                    "chapters._id": id,
-                },
-                {
-                    title: 1,
-                    chapters: 1
-                }
-            ).lean();
-            console.log('> story name:', npcs && npcs.title);
-            let filterChapters = (npcs) ? npcs.chapters : [];
-            const chapter = filterChapters && filterChapters.find(n => n._id == id);
+    try {
+        let setUpdates: any = {};
+        let pushUpdates: any = {};
+        let arrayFilters: any = null;
 
-            const castChapter = (chapter) ? {
-                ...chapter,
-                id: chapter._id,
-                usersDecisions: {
-                    ...chapter.usersDecisions,
-                    options: chapter.usersDecisions && chapter.usersDecisions.options.map(o => ({ ...o, id: o._id }))
-                }
-            } : null;
+        if (chapter.name) setUpdates['chapters.$.name'] = chapter.name;
+        if (chapter.item) setUpdates['chapters.$.item'] = chapter.item;
+        if (chapter.endLocation) setUpdates['chapters.$.endLocation'] = chapter.endLocation;
 
-            console.log('_____________________________________________________');
-            res.json({
-                "data": { "chapter": castChapter }
-            })
-        } catch (err) {
-            console.log('Error ---->', err);
-            console.log('_____________________________________________________');
-            res.json({
-                "error": err
-            })
+        if (chapter.story) {
+            setUpdates['chapters.$.story'] = chapter.story;
+            if (chapter.author) {
+                setUpdates['chapters.$.author'] = chapter.author;
+                setUpdates['chapters.$.writeDate'] = new Date();
+            }
         }
-    }
 
-    // updates/add Chapters
-    public async updateChapter(req: Request, res: Response): Promise<void> {
-        try {
-            console.log('.');
-            console.log('________________________________________________');
-            console.log('*************** updateChapter *******************');
+        if (chapter.usersDecisions) {
+            setUpdates['chapters.$.usersDecisions.decisionType'] = chapter.usersDecisions.decisionType;
+            setUpdates['chapters.$.usersDecisions.amount'] = chapter.usersDecisions.amount;
+            setUpdates['chapters.$.usersDecisions.item'] = chapter.usersDecisions.item;
 
-            const { chapter } = req.body;
-
-            let setUpdates: any = {};
-            let pullUpdates: any = {};
-            let arrayFilters: any = null;
-
-
-            // **** Modificaciones, opcionales
-
-            if (chapter.name) {
-                setUpdates['chapters.$.name'] = chapter.name;
-            }
-            if (chapter.story) {
-                setUpdates['chapters.$.story'] = chapter.story;
-                if (chapter.author) {
-                    setUpdates['chapters.$.author'] = chapter.author;
-                    setUpdates['chapters.$.writeDate'] = new Date();
-                }
-
-            }
-            if (chapter.item) {
-                setUpdates['chapters.$.item'] = chapter.item;
-            }
-            if (chapter.endLocation) {
-                setUpdates['chapters.$.endLocation'] = chapter.endLocation;
-            }
-            // editar las decisiones
-            if (chapter.usersDecisions) {
-
-                setUpdates['chapters.$.usersDecisions.decisionType'] = chapter.usersDecisions.decisionType;
-                setUpdates['chapters.$.usersDecisions.amount'] = chapter.usersDecisions.amount;
-                setUpdates['chapters.$.usersDecisions.item'] = chapter.usersDecisions.item;
-                // las Decisiones generan otros capitulos 
-                for (const option of (chapter.usersDecisions.options)) {
-
-
-                    // si la opcion no tiene valor, debemos crear el capitulo correspondiente
-                    if (!option.value) {
-                        const newChapter = await NpcsSchema.updateOne(
-                            { "chapters._id": chapter.id },
-                            {
-                                $push: {
-                                    chapters: [{
-                                        name: option.name,
-                                        story: [],	                // narracion previa a batalla o decision.
-                                        endLocation: {
-                                            endChapter: true
-                                        },
-                                        published: false,
-                                        writeDate: new Date()     // Fecha de creacion
-                                    }]
-                                }
+            for (const option of chapter.usersDecisions.options) {
+                // Si la opción elegida carece de valor de destino, creamos la pre-estructura del nuevo capítulo hijo
+                if (!option.value) {
+                    await NpcsSchema.updateOne(
+                        { "chapters._id": id },
+                        {
+                            $push: {
+                                chapters: [{
+                                    name: option.name,
+                                    story: [],
+                                    endLocation: { endChapter: true },
+                                    published: false,
+                                    writeDate: new Date()
+                                }]
                             }
-                        );
-                        const npc: NpcInterface | null = await NpcsSchema.findOne({ "chapters._id": chapter.id }, { chapters: 1 }).lean();
-                        if (npc && npc.chapters) {
-                            option.value = npc.chapters[npc.chapters.length - 1]._id
                         }
-                        console.log('> new chapterId: ', option.value);
+                    );
+
+                    const npc: NpcInterface | null = await NpcsSchema.findOne({ "chapters._id": id }, { chapters: 1 }).lean<NpcInterface | null>();
+                    if (npc && npc.chapters) {
+                        option.value = npc.chapters[npc.chapters.length - 1]._id;
                     }
+                }
 
-                    // la edicione tiene id, significa que edito existente.
-                    if (option["id"]) {
-                        const i = chapter.usersDecisions.options.indexOf(option);
-                        console.log('> option vieja', i);
+                if (option.id) {
+                    const i = chapter.usersDecisions.options.indexOf(option);
+                    setUpdates[`chapters.$.usersDecisions.options.$[elem${i}].description`] = option.description;
+                    setUpdates[`chapters.$.usersDecisions.options.$[elem${i}].name`] = option.name;
+                    setUpdates[`chapters.$.usersDecisions.options.$[elem${i}].value`] = option.value;
 
-                        setUpdates['chapters.$.usersDecisions.options.$[elem' + i + '].description'] = option.description;
-                        setUpdates['chapters.$.usersDecisions.options.$[elem' + i + '].name'] = option.name;
-                        setUpdates['chapters.$.usersDecisions.options.$[elem' + i + '].value'] = option.value;
-
-                        if (!arrayFilters) {
-                            arrayFilters = { arrayFilters: [{ ["elem" + i + "._id"]: option.id }] }
-                        } else {
-                            arrayFilters.arrayFilters.push({ ["elem" + i + "._id"]: option.id });
-                        }
+                    if (!arrayFilters) {
+                        arrayFilters = { arrayFilters: [{ [`elem${i}._id`]: option.id }] };
                     } else {
-                        console.log('> new option');
-                        // la decision no tiene id, agrego nueva decision y capitulo.
-                        if (!pullUpdates['chapters.$.usersDecisions.options']) {
-                            pullUpdates['chapters.$.usersDecisions.options'] = [];
-                        }
-                        pullUpdates['chapters.$.usersDecisions.options'].push({
-                            "description": option.description,
-                            "name": option.name,
-                            "value": option.value,
-                            "published": option.published,
-                            "removeItem": option.removeItem
-                        });
+                        arrayFilters.arrayFilters.push({ [`elem${i}._id`]: option.id });
                     }
+                } else {
+                    if (!pushUpdates['chapters.$.usersDecisions.options']) {
+                        pushUpdates['chapters.$.usersDecisions.options'] = [];
+                    }
+                    pushUpdates['chapters.$.usersDecisions.options'].push({
+                        description: option.description,
+                        name: option.name,
+                        value: option.value,
+                        published: option.published || false,
+                        removeItem: option.removeItem || false
+                    });
                 }
-
             }
-
-            const updates: any = {};
-
-            if (Object.keys(setUpdates).length > 0) updates['$set'] = setUpdates;
-            if (Object.keys(pullUpdates).length > 0) updates['$push'] = pullUpdates;
-
-            const npcs = await NpcsSchema.updateOne(
-                { "chapters._id": chapter.id },
-                updates, arrayFilters
-            ).lean();
-
-            const findChapter: NpcInterface | null = await NpcsSchema.findOne(
-                { "chapters._id": chapter.id },
-                {
-                    "chapters": 1
-                }
-            ).lean();
-
-            // console.log("> capitulos", findChapter)
-            const castChapter = (findChapter && findChapter.chapters) ? findChapter.chapters.find(c => c._id == chapter.id) : null;
-            console.log('> response: ', castChapter && castChapter.name);
-            console.log('_____________________________________________________');
-            res.json({
-                "data": { chapter: castChapter ? { ...castChapter, id: castChapter._id } : null }
-            });
-        } catch (err) {
-            console.log('Error ---->', err);
-            console.log('_____________________________________________________');
-            res.json({
-                "error": err
-            })
         }
-    }
 
-    // delete Chapter
-    public async deleteChapter(req: Request, res: Response): Promise<void> {
-        try {
-            console.log('.');
-            console.log('________________________________________________');
-            console.log('**************** deleteChapter *******************');
-            const { id } = req.body;
-            console.log('> placeId: ' + id);
+        const updates: any = {};
+        if (Object.keys(setUpdates).length > 0) updates['$set'] = setUpdates;
+        if (Object.keys(pushUpdates).length > 0) updates['$push'] = pushUpdates;
 
-            const choices = await NpcsSchema.updateOne(
-                { "chapters._id": id },
-                {
-                    $pull: {
-                        "chapters.$[elem].usersDecisions.options": {
-                            value: id
-                        }
-                    }
-                }
-                , { arrayFilters: [{ "elem._id": { $nin: [id] } }] }
-            ).lean();
-            console.log('> choices edition:', choices)
-            const edition = await NpcsSchema.updateOne(
-                { "chapters._id": id },
-                {
-                    $pull: {
-                        chapters: {
-                            _id: id
-                        }
-                    }
-                }
-            );
-            console.log('===================== ' + ((edition.nModified) ? 'OK' : 'not Found') + ' ======================');
-            console.log('_____________________________________________________');
-            res.json({
-                "data": (edition.nModified) ? 'OK' : 'error'
-            });
-        } catch (err) {
-            console.log('Error ---->', err);
-            console.log('_____________________________________________________');
-            res.json({
-                "error": err
-            })
+        const dbResult = await NpcsSchema.updateOne({ "chapters._id": id }, updates, arrayFilters);
+
+        if (dbResult.matchedCount === 0) {
+            return res.status(404).json({ ok: false, message: 'No se encontró el capítulo solicitado para actualizar.' });
         }
+
+        const findChapter: NpcInterface | null = await NpcsSchema.findOne({ "chapters._id": id }, { chapters: 1 }).lean<NpcInterface | null>();
+        const castChapter = (findChapter && findChapter.chapters) ? findChapter.chapters.find((c: ChapterInterface) => c._id.toString() === id) : null;
+
+        return res.status(200).json({
+            ok: true,
+            data: { chapter: formatChapter(castChapter) }
+        });
+    } catch (err) {
+        console.error('[Error] - updateChapter:', err);
+        return logError(res, err, 'Error interno del servidor al intentar modificar el capítulo');
     }
+};
 
-    // publicar Chapter
-    public async publishChapter(req: Request, res: Response): Promise<void> {
-        try {
-            console.log('.');
-            console.log('________________________________________________');
-            console.log('**************** publishChapter *******************');
-            const { id, published } = req.body;
-            console.log('> chapterId: ' + id);
-            console.log('> Publish Status: ' + published);
-            const chapterEdition = await NpcsSchema.updateOne(
-                { "chapters._id": id },
-                {
-                    $set: {
-                        "chapters.$.published": published,
-                        "chapters.$.publishDate": (published) ? new Date() : null
-                    }
+// delete Chapter
+export const deleteChapter = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+    console.log(`[DELETE] - deleteChapter para el ID: ${id} - ${new Date().toISOString()}`);
+
+    try {
+        await NpcsSchema.updateOne(
+            { "chapters._id": id },
+            {
+                $pull: {
+                    "chapters.$[elem].usersDecisions.options": { value: id }
                 }
-            ).lean();
-            console.log('> chapterEdition: ', chapterEdition)
+            },
+            { arrayFilters: [{ "elem._id": { $nin: [id] } }] }
+        );
 
-            const edition = await NpcsSchema.updateOne(
-                { "chapters._id": id },
-                {
-                    $set: {
-                        "chapters.$[elem].usersDecisions.options.$[choice].published": published
-                    }
-                }, {
+        const edition = await NpcsSchema.updateOne(
+            { "chapters._id": id },
+            {
+                $pull: { chapters: { _id: id } }
+            }
+        );
+
+        if (edition.modifiedCount === 0) {
+            return res.status(404).json({ ok: false, message: 'El capítulo no existía o no pudo ser desvinculado.' });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            message: 'Capítulo eliminado y referencias desvinculadas con éxito.'
+        });
+    } catch (err) {
+        console.error('[Error] - deleteChapter:', err);
+        return logError(res, err, 'Error interno del servidor al intentar borrar el capítulo');
+    }
+};
+
+// publicar Chapter
+export const publishChapter = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+    const { published } = req.body;
+    console.log(`[PATCH] - publishChapter para el ID: ${id} (Estado: ${published}) - ${new Date().toISOString()}`);
+
+    try {
+        const chapterEdition = await NpcsSchema.updateOne(
+            { "chapters._id": id },
+            {
+                $set: {
+                    "chapters.$.published": published,
+                    "chapters.$.publishDate": published ? new Date() : null
+                }
+            }
+        );
+
+        if (chapterEdition.matchedCount === 0) {
+            return res.status(404).json({ ok: false, message: 'Capítulo no encontrado para publicar.' });
+        }
+        await NpcsSchema.updateOne(
+            { "chapters._id": id },
+            {
+                $set: {
+                    "chapters.$[elem].usersDecisions.options.$[choice].published": published
+                }
+            },
+            {
                 arrayFilters: [
-                    {
-                        "elem._id": { $nin: [id] }
-                    },
-                    {
-                        "choice.value": id
-                    }
+                    { "elem._id": { $nin: [id] } },
+                    { "choice.value": id }
                 ]
             }
-            );
-
-            console.log('> option Edition', edition)
-            console.log('> response: ' + ((chapterEdition.nModified) ? 'OK' : 'not Found'));
-            console.log('_____________________________________________________');
-            res.json({
-                "data": (chapterEdition.nModified) ? 'OK' : 'error'
-            });
-        } catch (err) {
-            console.log('Error ---->', err);
-            console.log('_____________________________________________________');
-            res.json({
-                "error": err
-            })
-        }
+        );
+        return res.status(200).json({
+            ok: true,
+            message: published ? 'Capítulo y ramificaciones publicados correctamente.' : 'Capítulo y ramificaciones despublicados correctamente.'
+        });
+    } catch (err) {
+        console.error('[Error] - publishChapter:', err);
+        return logError(res, err, 'Error interno del servidor al intentar cambiar el estado de publicación del capítulo');
     }
-
-}
-
-
-export const chaptersController = new ChaptersController();
+};

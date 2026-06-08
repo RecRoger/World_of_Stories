@@ -5,6 +5,9 @@ import { citiesPaths } from './cities-places/cities-path.swagger.js';
 import { placesPaths } from './cities-places/places-path.swagger.js';
 import { usersPaths } from './users/users-path.swagger.js';
 import { commonSchemas } from './common-schemas.swagger.js';
+import { npcsSchemas } from './npcs-chapters/npcs-schemas.swagger.js';
+import { npcsPaths } from './npcs-chapters/npcs-path.swagger.js';
+import { chaptersPaths } from './npcs-chapters/chapters-path.swagger.js';
 // A medida que avances, importarás: cityPaths, bookPaths, etc.
 
 const swaggerDocument: JsonObject = {
@@ -22,6 +25,8 @@ const swaggerDocument: JsonObject = {
     ...usersPaths,
     ...citiesPaths,
     ...placesPaths,
+    ...npcsPaths,
+    ...chaptersPaths,
   },
   // Fusionamos los componentes/esquemas de la base de datos
   components: {
@@ -29,6 +34,7 @@ const swaggerDocument: JsonObject = {
       ...userSchemas,
       ...commonSchemas,
       ...citiesSchemas,
+      ...npcsSchemas,
     }
   }
 };

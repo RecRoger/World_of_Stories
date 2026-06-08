@@ -1,120 +1,127 @@
-import { Schema, model } from 'mongoose';
+// src/schemas/npcs.model.ts
+import { Document, model, Schema } from 'mongoose';
+import { TaleInterface, ReadableInterface } from './tale.model.js';
 
-export interface NpcInterface extends mongoose.Document {
-    _id: string,
-    name?: string,		       // nombre aislado del personaje
-    npcType?: string, 		   // lugar de 'historias', 'tienda', 'posta de caballos' etc.
-    description?: publicTale, // descripciones del personaje, presentacion general, corta.
-    meeting?: publicTale,       // presentacion del personaje y su polemica, cierra en pregunta
-    decision?: decisionObject,
-    rejected?: publicTale,      // narracion de rechazo
-    items?: string[]	       // items del npc (tienda);
-    title?: string		       // Titulo de la historia
-    chapters?: ChapterInterface[]
-    author?: string,
-    published?: boolean,
-    writeDate?: Date;     // Fecha de creacion
-    publishDate?: Date
+export interface ChapterLocationInterface {
+    endChapter?: boolean;
+    cityId?: string;    // ID de la ciudad de retorno
+    placeId?: string;   // ID del lugar de retorno
+}
+export interface OptionInterface {
+    name: string; // Para identificar la opción internamente en edición
+    description: string; // Opción que lee el jugador en Angular
+    value: string; // ID del capítulo apuntado (Next node ID)
+    published?: boolean;
+    removeItem?: boolean;
+}
+export interface DecisionInterface {
+    decisionType: string; // 'choose', 'item', 'money'
+    amount?: number;
+    item?: string;
+    options: OptionInterface[];
 }
 
-export interface ChapterInterface {
-    _id: string,
-    name?: string
-    story?: ReadableInterface[],	                // narracion previa a batalla o decision.
-    usersDecisions?: decisionObject,
-    endLocation?: chapterLocation
-    items?: string[]		                // Item en caso de victoria
-    published?: boolean,
-    author?: string,
-    writeDate?: Date;     // Fecha de creacion
-    publishDate?: Date;   // Fecha de publicacion
-
+export interface ChapterInterface extends Document {
+    id: string;
+    name?: string;
+    story?: ReadableInterface[];
+    usersDecisions?: DecisionInterface;
+    endLocation?: ChapterLocationInterface;
+    items?: string[];
+    published?: boolean;
+    author?: string;
+    writeDate?: Date;
+    publishDate?: Date;
 }
 
-const NpcsSchema = new Schema({
-    name: String,            // nombre aislado del personaje
-    npcType: String,         // lugar de 'historias', 'tienda', 'posta de caballos' etc.
-    description: {
-        tale: [{
-            text: String,
-            animation: String
-        }],
-        author: String,
-        published: Boolean,
-        writeDate: Date,
-        publishDate: Date,
-    },                       // descripciones del personaje, presentacion general, corta.
-    meeting: {
-        tale: [{
-            text: String,
-            animation: String
-        }],
-        author: String,
-        published: Boolean,
-        writeDate: Date,
-        publishDate: Date,
-    },                      // presentacion del personaje y su polemica, cierra en pregunta
-    decision: {
-        decisionType: String,
-        amount: Number,
-        item: String,
-        options: [{
-            name: String,
-            description: String,
-            value: String,
-            published: Boolean,
-            removeItem: Boolean
-        }]
-    },
-    rejected: {
-        tale: [{
-            text: String,
-            animation: String
-        }],
-        author: String,
-        published: Boolean,
-        writeDate: Date,
-        publishDate: Date,
-    },                      // narracion de rechazo
-    items: [String],        // items del npc (tienda);
-    title: String,          // Titulo de la historia
-    chapters: [{
-        name: String,
-        story: [{
-            text: String,
-            animation: String
-        }],                 // narracion previa a batalla o decision.
-        usersDecisions: {
-            decisionType: String,
-            amount: Number,
-            item: String,
-            options: [{
-                name: String,
-                description: String,
-                value: String,
-                published: Boolean,
-                removeItem: Boolean
-            }]
-        },
-        endLocation: {
-            endChapter: Boolean,    // place or city
-            cityId: String,    // place or city
-            placeId: String       // id del lugar de retorno del capiulo
-        },
-        items: [String],		                // Item en caso de victoria
-        published: Boolean,
-        author: String,
-        writeDate: Date,    // Fecha de creacion
-        publishDate: Date
+export interface NpcInterface extends Document {
+    id: string;
+    name?: string;
+    npcType?: string; // 'historias', 'tienda', 'posta', etc.
+    description?: TaleInterface;
+    meeting?: TaleInterface;
+    decision?: DecisionInterface;
+    rejected?: TaleInterface;
+    items?: string[]; // Inventario en caso de ser tienda
+    title?: string; // Título de su arco narrativo
+    chapters?: ChapterInterface[];
+    author?: string;
+    published?: boolean;
+    writeDate?: Date;
+    publishDate?: Date;
+}
+
+// Sub-esquema reusable de decisiones para NPCs y Capítulos
+export const NpcsSchemaDecision = {
+    decisionType: { type: String },
+    amount: { type: Number },
+    item: { type: String },
+    options: [{
+        name: { type: String },
+        description: { type: String },
+        value: { type: String },
+        published: { type: Boolean },
+        removeItem: { type: Boolean }
+    }]
+};
+
+const ChaptersSchema = new Schema<ChapterInterface>({
+    name: { type: String },
+    story: [{
+        text: { type: String },
+        animation: { type: String }
     }],
-    published: Boolean,
-    author: String,
-    writeDate: Date,    // Fecha de creacion
-    publishDate: Date,   // Fecha de publicacion
+    usersDecisions: NpcsSchemaDecision, // Reutilizamos la subestructura de decisiones
+    endLocation: {
+        endChapter: { type: Boolean },
+        cityId: { type: String },
+        placeId: { type: String }
+    },
+    items: [String],
+    published: { type: Boolean, default: false },
+    author: { type: String },
+    writeDate: { type: Date, default: Date.now },
+    publishDate: { type: Date }
+}, {
+    timestamps: true
+});
+
+const NpcsSchema = new Schema<NpcInterface>({
+    name: { type: String },
+    npcType: { type: String },
+    description: {
+        tale: [{ text: String, animation: String }],
+        author: String,
+        published: Boolean,
+        writeDate: Date,
+        publishDate: Date,
+    },
+    meeting: {
+        tale: [{ text: String, animation: String }],
+        author: String,
+        published: Boolean,
+        writeDate: Date,
+        publishDate: Date,
+    },
+    decision: NpcsSchemaDecision,
+    rejected: {
+        tale: [{ text: String, animation: String }],
+        author: String,
+        published: Boolean,
+        writeDate: Date,
+        publishDate: Date,
+    },
+    items: [String],
+    title: { type: String },
+    chapters: [ChaptersSchema], // Subdocumentos embebidos tipados de forma nativa
+    published: { type: Boolean, default: false },
+    author: { type: String },
+    writeDate: { type: Date, default: Date.now },
+    publishDate: { type: Date }
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
-})
+});
 
-export default model('npcs', NpcsSchema);
+export default model<NpcInterface>('Npcs', NpcsSchema);

@@ -45,7 +45,6 @@ export const getOneCity = async (req: Request, res: Response): Promise<Response>
         const city = await Cities.findById(id).select('-places');
 
         if (!city) {
-            console.log(`[GET] - getOneCity - city ${id} not found`);
             return res.status(404).json({
                 ok: false,
                 message: `No se encontró ninguna ciudad con el ID "${id}".`
@@ -118,7 +117,6 @@ export const deleteCity = async (req: Request, res: Response): Promise<Response>
         const deletedCity = await Cities.findByIdAndDelete(id).lean();
 
         if (!deletedCity) {
-            console.log(`[DELETE] - deleteCity - City not found`);
             return res.status(404).json({
                 ok: false,
                 message: `No se pudo eliminar: No se encontró ninguna ciudad con el ID "${id}".`
@@ -157,7 +155,6 @@ export const publishCity = async (req: Request, res: Response): Promise<Response
             { new: true, runValidators: true }
         );
         if (!updatedCity) {
-            console.log(`[PATCH] - publishCity - City Not Found`);
             return res.status(404).json({
                 ok: false,
                 message: 'No se encontró ciudad para publicar.'
@@ -198,7 +195,6 @@ export const addCityDescription = async (req: Request, res: Response): Promise<R
             }, { new: true, runValidators: true }
         );
         if (!editedCity) {
-            console.log(`[PUT] - addCityDescription - City Not Found`);
             return res.status(404).json({
                 ok: false,
                 message: 'No se encontró ciudad para añadir descripcion.'
@@ -233,7 +229,6 @@ export const removeCityDescription = async (req: Request, res: Response): Promis
 
 
         if (!updatedCity) {
-            console.log(`[DELETE] - removeCityDescription not found ${cityId}, ${taleId}`);
             return res.status(404).json({
                 ok: false,
                 message: 'No se encontró la ciudad especificada para eliminar el relato.'
@@ -277,13 +272,12 @@ export const updateCityDescription = async (req: Request, res: Response): Promis
             }
         );
         if (!updatedCity) {
-            console.log(`[PATCH] - updateCityDescription - City Not Found`);
             return res.status(404).json({
                 ok: false,
                 message: 'No se encontró la ciudad especificada para editar el relato.'
             });
         }
-        const updatedTale = updatedCity.description.find(d => d.id == description.id);
+        const updatedTale = updatedCity.description.find((d: TaleInterface) => d._id.toString() == description.id);
         if (!updatedTale) {
             console.log(`[PATCH] - updateCityDescription - Tale Not Found`);
             return res.status(444).json({
@@ -329,7 +323,6 @@ export const addCityTravel = async (req: Request, res: Response): Promise<Respon
         );
 
         if (!editedCity) {
-            console.log(`[PUT] - addCityTravel not found ${cityId}`);
             return res.status(404).json({
                 ok: false,
                 message: 'No se encontró la ciudad especificada para añadir el relato de viaje.'
@@ -369,7 +362,6 @@ export const removeCityTravel = async (req: Request, res: Response): Promise<Res
         );
 
         if (!updatedCity) {
-            console.log(`[PATCH] - removeCityTravel ciudad not found ID: ${cityId}`);
             return res.status(404).json({
                 ok: false,
                 message: 'No se encontró la ciudad especificada para remover el relato de viaje.'
@@ -414,14 +406,13 @@ export const updateCityTravel = async (req: Request, res: Response): Promise<Res
         );
 
         if (!updatedCity) {
-            console.log(`[PATCH] - updateCityTravel  ciudad not found ${cityId}`);
             return res.status(404).json({
                 ok: false,
                 message: 'No se encontró la ciudad especificada para editar el viaje.'
             });
         }
 
-        const updatedTravel = updatedCity.travel.find(t => t.id === travel.id);
+        const updatedTravel = updatedCity.travel.find((t: TaleInterface) => t._id.toString() === travel.id);
 
         if (!updatedTravel) {
             console.log(`[PATCH] - updateCityTravel travel not found ${cityId}`);

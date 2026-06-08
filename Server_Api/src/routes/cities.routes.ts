@@ -1,21 +1,27 @@
 import { Router } from 'express';
 import { addCityDescription, addCityTravel, deleteCity, getAllCities, getOneCity, publishCity, removeCityDescription, removeCityTravel, saveCity, updateCityDescription, updateCityTravel } from './../controllers/cities.controller.js';
 
-const citiesRouter = Router();
+const CitiesRouter = Router();
 
-citiesRouter.get('/', getAllCities);
-citiesRouter.post('/', saveCity);
+CitiesRouter.route('/')
+  .get(getAllCities)
+  .post(saveCity);
 
-citiesRouter.get('/:id', getOneCity);
-citiesRouter.delete('/:id', deleteCity);
-citiesRouter.patch('/:id/publish', publishCity);
+CitiesRouter.route('/:id')
+  .get(getOneCity)
+  .delete(deleteCity);
+CitiesRouter.patch('/:id/publish', publishCity);
 
-citiesRouter.put('/:cityId/description/', addCityDescription);
-citiesRouter.patch('/:cityId/description/', updateCityDescription);
-citiesRouter.delete('/:cityId/description/:taleId', removeCityDescription);
 
-citiesRouter.put('/:cityId/travel/', addCityTravel);
-citiesRouter.patch('/:cityId/travel/', updateCityTravel);
-citiesRouter.delete('/:cityId/travel/:taleId', removeCityTravel);
+CitiesRouter.route('/:cityId/description/')
+  .put(addCityDescription)
+  .patch(updateCityDescription);
 
-export { citiesRouter };
+CitiesRouter.delete('/:cityId/description/:taleId', removeCityDescription);
+
+CitiesRouter.route('/:cityId/travel/')
+  .put(addCityTravel)
+  .patch(updateCityTravel);
+CitiesRouter.delete('/:cityId/travel/:taleId', removeCityTravel);
+
+export { CitiesRouter };

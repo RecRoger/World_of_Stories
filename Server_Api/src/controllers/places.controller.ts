@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Cities, { CityInterface, PlaceInterface } from '../schemas/cities.model.js';
 import mongoose from 'mongoose';
 import { logError } from './common-logs.js';
+import { TaleInterface } from '../schemas/tale.model.js';
 
 // get all places of a city
 export const getCityPlaces = async (req: Request, res: Response): Promise<Response> => {
@@ -13,7 +14,6 @@ export const getCityPlaces = async (req: Request, res: Response): Promise<Respon
             '-places.description -places.entry -places.events'
         );
         if (!city) {
-            console.log(`[GET] - getCityPlaces notFound: ${cityId}`);
             return res.status(404).json({
                 ok: false,
                 message: 'No se encontró la ciudad especificada para listar sus lugares.'
@@ -59,7 +59,7 @@ export const getOnePlace = async (req: Request, res: Response): Promise<Response
 
         // 2. ¡La magia de Mongoose! Usamos .id() sobre el array instanciado
         // Esto extrae el subdocumento exacto y mantiene vivos sus Virtuals
-        const place = city.places.find(p => p.id === placeId);
+        const place = city.places.find((p: PlaceInterface) => p._id.toString() === placeId);
 
         if (!place) {
             return res.status(404).json({
@@ -117,7 +117,6 @@ export const savePlace = async (req: Request, res: Response): Promise<Response> 
         );
 
         if (!updatedCity) {
-            console.log(`[POST] - savePlace: Ciudad not found ${cityId}`);
             return res.status(404).json({ ok: false, message: 'No se encontró la ciudad para registrar el lugar.' });
         }
 
@@ -145,7 +144,6 @@ export const deletePlace = async (req: Request, res: Response): Promise<Response
         );
 
         if (!updatedCity) {
-            console.log(`[PATCH] - deletePlace Ciudad not found: ${cityId}`);
             return res.status(404).json({ ok: false, message: 'No se encontró la ciudad o el lugar a eliminar.' });
         }
 
@@ -183,14 +181,13 @@ export const publishPlace = async (req: Request, res: Response): Promise<Respons
         );
 
         if (!updatedCity) {
-            console.log(`[PATCH] - publishPlace Lugar no encontrado: ${placeId}`);
             return res.status(404).json({ ok: false, message: 'No se encontró el recurso.' });
         }
 
         return res.status(200).json({
             ok: true,
             message: `Lugar ${published ? 'publicado' : 'despublicado'} correctamente.`,
-            data: { place: updatedCity.places.find(p => p.id === placeId) }
+            data: { place: updatedCity.places.find((p: PlaceInterface) => p._id.toString() === placeId) }
         });
     } catch (err) {
         console.error('[Error] - publishPlace:', err);
@@ -226,11 +223,10 @@ export const addPlaceDescription = async (req: Request, res: Response): Promise<
         );
 
         if (!updatedCity) {
-            console.log(`[PATCH] - addPlaceDescription  Lugar not found: ${placeId}`);
             return res.status(404).json({ ok: false, message: 'No se encontró el lugar especificado para añadir la descripción.' });
         }
 
-        const place = updatedCity.places.find(p => p.id === placeId);
+        const place = updatedCity.places.find((p: PlaceInterface) => p._id.toString() === placeId);
         const newTale = place?.description.at(-1);
 
         return res.status(201).json({
@@ -263,7 +259,6 @@ export const removePlaceDescription = async (req: Request, res: Response): Promi
             }
         );
         if (!updatedCity) {
-            console.log(`[PATCH] - removePlaceDescription Place not found: ${placeId}`);
             return res.status(404).json({ ok: false, message: 'No se encontró el recurso para eliminar la descripción.' });
         }
 
@@ -308,7 +303,7 @@ export const updatePlaceDescription = async (req: Request, res: Response): Promi
             return res.status(404).json({ ok: false, message: 'No se encontró el recurso para actualizar.' });
         }
 
-        const updatedTale = updatedCity.places.find(p => p.id === placeId)?.description.find(d => d.id === description.id);
+        const updatedTale = updatedCity.places.find(p => p.id === placeId)?.description.find((d: TaleInterface) => d._id.toString() === description.id);
 
         return res.status(200).json({
             ok: true,
@@ -350,7 +345,7 @@ export const addPlaceEntry = async (req: Request, res: Response): Promise<Respon
             return res.status(404).json({ ok: false, message: 'No se encontró el lugar para añadir la entrada.' });
         }
 
-        const newEntry = updatedCity.places.find(p => p.id === placeId)?.entry.at(-1);
+        const newEntry = updatedCity.places.find((p: PlaceInterface) => p._id.toString() === placeId)?.entry.at(-1);
 
         return res.status(201).json({
             ok: true,
@@ -419,7 +414,8 @@ export const updatePlaceEntry = async (req: Request, res: Response): Promise<Res
         if (!updatedCity) {
             return res.status(404).json({ ok: false, message: 'No se encontró el recurso para actualizar.' });
         }
-        const updatedEntry = updatedCity.places.find(p => p.id === placeId)?.entry.find(e => e.id === entry.id);
+        const updatedEntry = updatedCity.places.find((p: PlaceInterface) => p._id.toString() === placeId)?.entry
+            .find((e: TaleInterface) => e._id.toString() === entry.id);
         return res.status(200).json({
             ok: true,
             message: 'Cuento de entrada actualizado correctamente.',
