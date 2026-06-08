@@ -60,7 +60,6 @@ export const getUserById = async (req: Request, res: Response): Promise<Response
 // Get User username and password
 export const getOneUser = async (req: Request, res: Response): Promise<Response> => {
     try {
-
         const { username, password } = req.body;
         console.log(`[POST] - getOneUser - para: ${username} - ${new Date().toISOString()}`);
 

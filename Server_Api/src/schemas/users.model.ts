@@ -27,7 +27,7 @@ export interface LocationInterface {
     chapterId?: string
 }
 
-// 2. Subesquema de Ubicación (Location)
+// Subesquema de Ubicación (Location)
 const LocationSchema = new Schema<LocationInterface>({
     cityId: { type: String, required: true },
     placeId: { type: String, required: true },
@@ -35,7 +35,7 @@ const LocationSchema = new Schema<LocationInterface>({
     chapterId: { type: String, default: '' }
 }, { _id: false });
 
-// 3. Subesquema de Personaje (Character)
+// Subesquema de Personaje (Character)
 const CharacterSchema = new Schema<CharacterInterface>({
     name: { type: String, required: [true, 'El nombre del personaje es obligatorio'], trim: true },
     location: { type: LocationSchema, required: true },

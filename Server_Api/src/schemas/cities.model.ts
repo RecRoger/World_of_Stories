@@ -1,75 +1,38 @@
-import mongoose, { Schema, model } from 'mongoose';
-import { publicTale } from './common.model';
+import { Document, Schema, model } from 'mongoose';
+import { TaleInterface, TaleSchema } from './tale.model.js';
 
-export interface CityInterface extends mongoose.Document {
-    _id: string
+export interface PlaceInterface extends Document {
+    name: string;		            // nombre del lugar
+    description: TaleInterface[];		// descripcion del lugar, presentacion general
+    entry: TaleInterface[];	        // cuento de entrada al lugar.
+    events: Schema.Types.ObjectId[];	            // los id's de los NPC's de ese lugar
+    published: boolean
+    publishDate: Date
+}
+
+export interface CityInterface extends Document {
     name: string,
-    description: publicTale[],
-    travel: publicTale[],
+    description: TaleInterface[],
+    travel: TaleInterface[],
     places: PlaceInterface[],
     published: boolean,
     publishDate: Date
 }
 
-export interface PlaceInterface {
-    _id: string
-    name: string;		            // nombre del lugar
-    description: publicTale[];		// descripcion del lugar, presentacion general
-    entry: publicTale[];	        // cuento de entrada al lugar.
-    events: string[];	            // los id's de los NPC's de ese lugar
-    published: boolean
+const PlacesSchema = new Schema({
+    name: String,
+    description: [TaleSchema],
+    entry: [TaleSchema],
+    events: [{ type: Schema.Types.ObjectId, ref: 'Npc' }],
+    published: Boolean,
     publishDate: Date
-}
-
+})
 
 const CitiesSchema = new Schema({
-    name: String,   // nombre de la ciudad
-    description: [{
-        tale: [{
-            text: String,
-            animation: String
-        }],
-        author: String,
-        published: Boolean,
-        writeDate: Date,
-        publishDate: Date,
-    }],   // descripciones de la ciudad
-    travel: [{
-        tale: [{
-            text: String,
-            animation: String
-        }],
-        author: String,
-        published: Boolean,
-        writeDate: Date,
-        publishDate: Date,
-    }],   // narraciones de diferentes viajes hacia la ciudad
-    places: [{
-        name: String,
-        description: [{
-            tale: [{
-                text: String,
-                animation: String
-            }],
-            author: String,
-            published: Boolean,
-            writeDate: Date,
-            publishDate: Date,
-        }],
-        entry: [{
-            tale: [{
-                text: String,
-                animation: String
-            }],
-            author: String,
-            published: Boolean,
-            writeDate: Date,
-            publishDate: Date,
-        }],
-        events: [String],
-        published: Boolean,
-        publishDate: Date
-    }], // ide de los lugares (Places) de esa ciudad
+    name: { type: String, required: true, unique: true, trim: true },   // nombre de la ciudad
+    description: { type: [TaleSchema], default: [] },   // descripciones de la ciudad
+    travel: { type: [TaleSchema], default: [] },   // narraciones de diferentes viajes hacia la ciudad
+    places: [PlacesSchema], // ide de los lugares (Places) de esa ciudad
     published: Boolean,
     publishDate: Date
 }, {
@@ -78,4 +41,4 @@ const CitiesSchema = new Schema({
     toObject: { virtuals: true }
 })
 
-export default model<CityInterface>('city', CitiesSchema);
+export default model<CityInterface>('City', CitiesSchema);

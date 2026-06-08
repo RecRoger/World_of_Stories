@@ -1,15 +1,3 @@
-export interface publicTale {
-    _id: string
-    tale: readFragment[];        // Narrativa
-    author: string;       // nombre del autor
-    published: boolean;   // Estado de publicacion
-    writeDate: Date;     // Fecha de creacion
-    publishDate: Date;   // Fecha de publicacion
-}
-export interface readFragment {
-    text: string;
-    animation?: string;
-}
 export interface chapterLocation {
     endChapter?: boolean,
     cityId?: string,    // place or city

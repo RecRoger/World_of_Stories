@@ -1,27 +1,21 @@
-import * as express from 'express';
-import { placesController } from '../controllers/places.controller';
-import cors from 'cors'
+import { Router } from 'express';
+import { addPlaceDescription, addPlaceEntry, deletePlace, getCityPlaces, getOnePlace, publishPlace, removePlaceDescription, removePlaceEntry, savePlace, updatePlaceDescription, updatePlaceEntry } from '../controllers/places.controller.js';
 
-class PlacesRouter {
-    constructor(server: express.Application) {
-        const router = express.Router();
+const placesRouter = Router();
 
-        router.post('/', cors(), placesController.getCityPlaces);
-        router.post('/place', cors(), placesController.getOnePlace);
-        router.post('/new', cors(), placesController.savePlace);
-        router.post('/delete', cors(), placesController.deletePlace);
-        router.post('/publish', cors(), placesController.publishPlace);
-        
-        router.post('/description/new', cors(), placesController.addPlaceDescription);
-        router.post('/description/remove', cors(), placesController.removePlaceDescription);
-        router.post('/description/update', cors(), placesController.updatePlaceDescription);
-        
-        router.post('/entry/new', cors(), placesController.addPlaceEntry);
-        router.post('/entry/remove', cors(), placesController.removePlaceEntry);
-        router.post('/entry/update', cors(), placesController.updatePlaceEntry);
+placesRouter.get('/city/:cityId', getCityPlaces);
+placesRouter.get('/:placeId', getOnePlace);
 
-        server.use('/places', router)
-    }
-}
+placesRouter.post('/:cityId', savePlace);
+placesRouter.patch('/places/:placeId/publish', publishPlace);
+placesRouter.delete('/places/:placeId', deletePlace);
 
-export default PlacesRouter;
+placesRouter.put('/:placeId/description', addPlaceDescription);
+placesRouter.patch('/:placeId/description', updatePlaceDescription);
+placesRouter.delete('/:placeId/description/:taleId', removePlaceDescription);
+
+placesRouter.put('/:placeId/entry', addPlaceEntry);
+placesRouter.patch('/:placeId/entry', updatePlaceEntry);
+placesRouter.delete('/:placeId/entry/:taleId', removePlaceEntry);
+
+export { placesRouter };

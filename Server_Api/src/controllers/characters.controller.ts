@@ -99,7 +99,7 @@ class CharactersController {
         }
     }
 
-    // Add readFragment to an Character
+    // Add ReadableInterface to an Character
     public async setCharacterFragmentRead(req: Request, res: Response): Promise<void> {
         try {
             console.log('.');

@@ -1,5 +1,35 @@
 import { Schema, model } from 'mongoose';
 
+export interface NpcInterface extends mongoose.Document {
+    _id: string,
+    name?: string,		       // nombre aislado del personaje
+    npcType?: string, 		   // lugar de 'historias', 'tienda', 'posta de caballos' etc.
+    description?: publicTale, // descripciones del personaje, presentacion general, corta.
+    meeting?: publicTale,       // presentacion del personaje y su polemica, cierra en pregunta
+    decision?: decisionObject,
+    rejected?: publicTale,      // narracion de rechazo
+    items?: string[]	       // items del npc (tienda);
+    title?: string		       // Titulo de la historia
+    chapters?: ChapterInterface[]
+    author?: string,
+    published?: boolean,
+    writeDate?: Date;     // Fecha de creacion
+    publishDate?: Date
+}
+
+export interface ChapterInterface {
+    _id: string,
+    name?: string
+    story?: ReadableInterface[],	                // narracion previa a batalla o decision.
+    usersDecisions?: decisionObject,
+    endLocation?: chapterLocation
+    items?: string[]		                // Item en caso de victoria
+    published?: boolean,
+    author?: string,
+    writeDate?: Date;     // Fecha de creacion
+    publishDate?: Date;   // Fecha de publicacion
+
+}
 
 const NpcsSchema = new Schema({
     name: String,            // nombre aislado del personaje
