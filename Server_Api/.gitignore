@@ -1,4 +1,40 @@
-node_modules
-src/swagger/generator/workspace
-src/public
-src/keys.ts
+# ==========================================
+# 1. DEPENDENCIAS Y ENTORNO
+# ==========================================
+node_modules/
+.env
+.env.local
+.env.*.local
+
+# ==========================================
+# 2. COMPILACIÓN Y SALIDA (TypeScript)
+# ==========================================
+# Ignora la carpeta donde TS compila los archivos JS finales
+dist/
+build/
+out/
+tsbuildinfo/
+
+# ==========================================
+# 3. LOGS Y MONITOREO
+# ==========================================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# ==========================================
+# 4. CONFIGURACIONES DE IDE / SITEMA OPERATIVO
+# ==========================================
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+.DS_Store
+Thumbs.db
