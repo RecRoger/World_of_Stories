@@ -4,11 +4,11 @@ import { addPlaceDescription, addPlaceEntry, deletePlace, getCityPlaces, getOneP
 const placesRouter = Router();
 
 placesRouter.get('/city/:cityId', getCityPlaces);
-placesRouter.get('/:placeId', getOnePlace);
+placesRouter.post('/city/:cityId', savePlace);
 
-placesRouter.post('/:cityId', savePlace);
-placesRouter.patch('/places/:placeId/publish', publishPlace);
-placesRouter.delete('/places/:placeId', deletePlace);
+placesRouter.get('/:placeId', getOnePlace);
+placesRouter.delete('/:placeId', deletePlace);
+placesRouter.patch('/:placeId/publish', publishPlace);
 
 placesRouter.put('/:placeId/description', addPlaceDescription);
 placesRouter.patch('/:placeId/description', updatePlaceDescription);

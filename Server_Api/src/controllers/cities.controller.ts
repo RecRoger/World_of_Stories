@@ -129,7 +129,7 @@ export const deleteCity = async (req: Request, res: Response): Promise<Response>
             ok: true,
             message: 'Ciudad eliminada correctamente de la base de datos.',
             data: {
-                user: {
+                city: {
                     id: deletedCity._id,
                     name: deletedCity.name,
                 }
@@ -394,20 +394,20 @@ export const removeCityTravel = async (req: Request, res: Response): Promise<Res
 export const updateCityTravel = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { cityId } = req.params;
-        const { tale } = req.body;
-        console.log(`[PATCH] - updateCityTravel para la ciudad: ${cityId} -> Viaje: ${tale?.id} - ${new Date().toISOString()}`);
+        const { travel } = req.body;
+        console.log(`[PATCH] - updateCityTravel para la ciudad: ${cityId} -> Viaje: ${travel?.id} - ${new Date().toISOString()}`);
 
         const updatedCity = await Cities.findByIdAndUpdate(
             cityId,
             {
                 $set: {
-                    "travel.$[elem].tale": tale.tale,
-                    "travel.$[elem].published": tale.published,
-                    "travel.$[elem].publishDate": tale.published ? new Date() : null
+                    "travel.$[elem].tale": travel.tale,
+                    "travel.$[elem].published": travel.published,
+                    "travel.$[elem].publishDate": travel.published ? new Date() : null
                 }
             },
             {
-                arrayFilters: [{ "elem._id": tale.id }],
+                arrayFilters: [{ "elem._id": travel.id }],
                 new: true,
                 runValidators: true
             }
@@ -421,7 +421,7 @@ export const updateCityTravel = async (req: Request, res: Response): Promise<Res
             });
         }
 
-        const updatedTravel = updatedCity.travel.find(t => t.id === tale.id);
+        const updatedTravel = updatedCity.travel.find(t => t.id === travel.id);
 
         if (!updatedTravel) {
             console.log(`[PATCH] - updateCityTravel travel not found ${cityId}`);

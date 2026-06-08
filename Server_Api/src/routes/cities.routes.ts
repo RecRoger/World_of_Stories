@@ -4,18 +4,18 @@ import { addCityDescription, addCityTravel, deleteCity, getAllCities, getOneCity
 const citiesRouter = Router();
 
 citiesRouter.get('/', getAllCities);
-citiesRouter.get('/:id', getOneCity);
-
 citiesRouter.post('/', saveCity);
-citiesRouter.patch('/:id/publish', publishCity);
+
+citiesRouter.get('/:id', getOneCity);
 citiesRouter.delete('/:id', deleteCity);
+citiesRouter.patch('/:id/publish', publishCity);
 
 citiesRouter.put('/:cityId/description/', addCityDescription);
-citiesRouter.patch('/:cityId/description/:taleId', updateCityDescription);
+citiesRouter.patch('/:cityId/description/', updateCityDescription);
 citiesRouter.delete('/:cityId/description/:taleId', removeCityDescription);
 
 citiesRouter.put('/:cityId/travel/', addCityTravel);
-citiesRouter.patch('/:cityId/travel/:taleId', updateCityTravel);
+citiesRouter.patch('/:cityId/travel/', updateCityTravel);
 citiesRouter.delete('/:cityId/travel/:taleId', removeCityTravel);
 
 export { citiesRouter };

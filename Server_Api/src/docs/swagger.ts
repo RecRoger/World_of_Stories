@@ -1,6 +1,10 @@
 import { JsonObject } from 'swagger-ui-express';
 import { userSchemas } from './users/users-schemas.swagger.js';
-import { userPaths } from './users/users-path.swagger.js';
+import { citiesSchemas } from './cities-places/cities-schemas.swagger.js';
+import { citiesPaths } from './cities-places/cities-path.swagger.js';
+import { placesPaths } from './cities-places/places-path.swagger.js';
+import { usersPaths } from './users/users-path.swagger.js';
+import { commonSchemas } from './common-schemas.swagger.js';
 // A medida que avances, importarás: cityPaths, bookPaths, etc.
 
 const swaggerDocument: JsonObject = {
@@ -15,14 +19,16 @@ const swaggerDocument: JsonObject = {
   ],
   // Fusionamos las rutas de todos los archivos individuales
   paths: {
-    ...userPaths,
-    // ...cityPaths,
+    ...usersPaths,
+    ...citiesPaths,
+    ...placesPaths,
   },
   // Fusionamos los componentes/esquemas de la base de datos
   components: {
     schemas: {
       ...userSchemas,
-      // ...citySchemas
+      ...commonSchemas,
+      ...citiesSchemas,
     }
   }
 };
