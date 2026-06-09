@@ -2,9 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material';
 
 @Component({
-  selector: 'app-user-container',
-  templateUrl: './user-container.component.html',
-  styleUrls: ['./user-container.component.scss']
+    selector: 'app-user-container',
+    templateUrl: './user-container.component.html',
+    styleUrls: ['./user-container.component.scss'],
+    standalone: true
 })
 export class UserContainerComponent implements OnInit {
 

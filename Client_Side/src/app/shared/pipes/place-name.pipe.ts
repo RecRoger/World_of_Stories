@@ -5,7 +5,8 @@ import { LocationState } from '../store/locations/locations.reducer';
 import { City, Place } from 'wos-api';
 
 @Pipe({
-  name: 'placeName'
+    name: 'placeName',
+    standalone: true
 })
 export class PlaceNamePipe implements PipeTransform {
 

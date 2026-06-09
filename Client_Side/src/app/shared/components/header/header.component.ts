@@ -4,9 +4,10 @@ import { Location } from '@angular/common';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+    standalone: true
 })
 export class HeaderComponent implements OnInit {
 

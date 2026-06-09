@@ -4,9 +4,10 @@ import { GeneralState, MessageModel } from '../../store/general/general.reducer'
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-messages',
-  templateUrl: './messages.component.html',
-  styleUrls: ['./messages.component.scss']
+    selector: 'app-messages',
+    templateUrl: './messages.component.html',
+    styleUrls: ['./messages.component.scss'],
+    standalone: true
 })
 export class MessagesComponent implements OnInit {
 

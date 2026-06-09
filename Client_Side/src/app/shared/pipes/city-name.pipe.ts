@@ -5,7 +5,8 @@ import { Observable } from 'rxjs';
 import { GetAllCities } from '../store/locations/locations.actions';
 
 @Pipe({
-  name: 'cityName'
+    name: 'cityName',
+    standalone: true
 })
 export class CityNamePipe implements PipeTransform {
 

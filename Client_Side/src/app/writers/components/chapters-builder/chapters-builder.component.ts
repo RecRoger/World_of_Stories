@@ -14,9 +14,10 @@ import { GetAllPlaces } from 'src/app/shared/store/locations/locations.actions';
 import { ChapterDividerModel } from 'src/app/shared/components/animated-fragment/animated-fragment.component';
 
 @Component({
-  selector: 'app-chapters-builder',
-  templateUrl: './chapters-builder.component.html',
-  styleUrls: ['./chapters-builder.component.scss']
+    selector: 'app-chapters-builder',
+    templateUrl: './chapters-builder.component.html',
+    styleUrls: ['./chapters-builder.component.scss'],
+    standalone: true
 })
 export class ChaptersBuilderComponent implements OnInit, OnDestroy {
 

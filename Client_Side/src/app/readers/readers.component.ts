@@ -9,9 +9,10 @@ import { UserState } from '../shared/store/users/users.reducer';
 import { Character } from 'wos-api';
 
 @Component({
-  selector: 'app-readers',
-  templateUrl: './readers.component.html',
-  styleUrls: ['./readers.component.scss']
+    selector: 'app-readers',
+    templateUrl: './readers.component.html',
+    styleUrls: ['./readers.component.scss'],
+    standalone: true
 })
 export class ReadersComponent implements OnInit, OnDestroy {
 

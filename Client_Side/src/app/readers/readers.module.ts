@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ReadersComponent } from './readers.component';
 import { ReadersRoutingModule } from './readers-router.module';
-import { SharedModule } from '../shared/shared.module';
+import { SharedCommons } from '../shared/shared.module';
 import { ReaderNavComponent } from './componentes/reader-nav/reader-nav.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReadersHomeComponent } from './componentes/readers-home/readers-home.component';
@@ -17,33 +16,30 @@ import { StorySelectorComponent } from './componentes/story-selector/story-selec
 
 
 @NgModule({
-  declarations: [
-    ReadersComponent,
-    ReaderNavComponent,
-    ReadersHomeComponent,
-    SelectCityComponent,
-    CitySelectorComponent,
-    ReadCityComponent,
-    PlaceSelectorComponent,
-    ReadPlaceComponent,
-    ReadStoryContainerComponent,
-    ReadNpcComponent,
-    StorySelectorComponent,
-    NpcSelectorComponent,
-    ReadChaptersComponent
-  ],
-  imports: [
-    CommonModule,
-    ReadersRoutingModule,
-    SharedModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
-  entryComponents: [
-    CitySelectorComponent,
-    PlaceSelectorComponent,
-    NpcSelectorComponent,
-    StorySelectorComponent
-  ]
+    imports: [
+        ReadersRoutingModule,
+        ...SharedCommons,
+        FormsModule,
+        ReactiveFormsModule,
+        ReadersComponent,
+        ReaderNavComponent,
+        ReadersHomeComponent,
+        SelectCityComponent,
+        CitySelectorComponent,
+        ReadCityComponent,
+        PlaceSelectorComponent,
+        ReadPlaceComponent,
+        ReadStoryContainerComponent,
+        ReadNpcComponent,
+        StorySelectorComponent,
+        NpcSelectorComponent,
+        ReadChaptersComponent
+    ],
+    entryComponents: [
+        CitySelectorComponent,
+        PlaceSelectorComponent,
+        NpcSelectorComponent,
+        StorySelectorComponent
+    ]
 })
 export class ReadersModule { }

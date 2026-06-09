@@ -6,9 +6,10 @@ import { AnimationsTypes } from '../../constants';
 import { faCogs } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-write-fragments',
-  templateUrl: './write-fragments.component.html',
-  styleUrls: ['./write-fragments.component.scss']
+    selector: 'app-write-fragments',
+    templateUrl: './write-fragments.component.html',
+    styleUrls: ['./write-fragments.component.scss'],
+    standalone: true
 })
 export class WriteFragmentsComponent implements OnInit, OnDestroy {
 

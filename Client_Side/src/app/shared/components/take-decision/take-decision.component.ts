@@ -5,14 +5,14 @@ import { slideInDown, bounceInUp, bounceIn, fadeInDown } from 'ng-animate';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-take-decision',
-  templateUrl: './take-decision.component.html',
-  styleUrls: ['./take-decision.component.scss'],
-  animations: [
-    trigger('bounceIn', [transition('* => *', useAnimation(bounceIn))]),
-    trigger('fadeInDown', [transition('* => *', useAnimation(fadeInDown))]),
-
-  ],
+    selector: 'app-take-decision',
+    templateUrl: './take-decision.component.html',
+    styleUrls: ['./take-decision.component.scss'],
+    animations: [
+        trigger('bounceIn', [transition('* => *', useAnimation(bounceIn))]),
+        trigger('fadeInDown', [transition('* => *', useAnimation(fadeInDown))]),
+    ],
+    standalone: true,
 })
 export class TakeDecisionComponent implements OnInit {
 

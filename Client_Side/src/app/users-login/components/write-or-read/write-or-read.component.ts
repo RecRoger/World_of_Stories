@@ -13,9 +13,10 @@ import { SetInfo, SetError } from 'src/app/shared/store/general/general.actions'
 const WritersCode = 'am I a Writer?';
 
 @Component({
-  selector: 'app-write-or-read',
-  templateUrl: './write-or-read.component.html',
-  styleUrls: ['./write-or-read.component.scss']
+    selector: 'app-write-or-read',
+    templateUrl: './write-or-read.component.html',
+    styleUrls: ['./write-or-read.component.scss'],
+    standalone: true
 })
 export class WriteOrReadComponent implements OnInit, OnDestroy {
 

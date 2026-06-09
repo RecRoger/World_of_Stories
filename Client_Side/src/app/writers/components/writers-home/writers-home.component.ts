@@ -7,9 +7,10 @@ import { Subscription } from 'rxjs';
 import { faGlobeAmericas, faInfo } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-writers-home',
-  templateUrl: './writers-home.component.html',
-  styleUrls: ['./writers-home.component.scss']
+    selector: 'app-writers-home',
+    templateUrl: './writers-home.component.html',
+    styleUrls: ['./writers-home.component.scss'],
+    standalone: true
 })
 export class WritersHomeComponent implements OnInit, OnDestroy {
   user: User;

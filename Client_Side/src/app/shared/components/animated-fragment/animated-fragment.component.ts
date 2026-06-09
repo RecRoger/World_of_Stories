@@ -10,13 +10,14 @@ import { faLongArrowAltLeft } from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-animated-fragment',
-  templateUrl: './animated-fragment.component.html',
-  styleUrls: ['./animated-fragment.component.scss'],
-  animations: [
-    trigger('fadeIn', [transition('* => *', useAnimation(fadeIn))]),
-    trigger('fadeInRight', [transition('* => *', useAnimation(fadeInRight))]),
-  ],
+    selector: 'app-animated-fragment',
+    templateUrl: './animated-fragment.component.html',
+    styleUrls: ['./animated-fragment.component.scss'],
+    animations: [
+        trigger('fadeIn', [transition('* => *', useAnimation(fadeIn))]),
+        trigger('fadeInRight', [transition('* => *', useAnimation(fadeInRight))]),
+    ],
+    standalone: true,
 })
 export class AnimatedFragmentComponent implements OnInit, OnChanges, OnDestroy {
 

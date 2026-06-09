@@ -10,9 +10,10 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { isValid } from 'src/app/shared/utils/commons';
 
 @Component({
-  selector: 'app-readers-home',
-  templateUrl: './readers-home.component.html',
-  styleUrls: ['./readers-home.component.scss']
+    selector: 'app-readers-home',
+    templateUrl: './readers-home.component.html',
+    styleUrls: ['./readers-home.component.scss'],
+    standalone: true
 })
 export class ReadersHomeComponent implements OnInit, OnDestroy {
 

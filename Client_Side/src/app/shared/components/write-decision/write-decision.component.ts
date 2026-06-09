@@ -6,9 +6,10 @@ import { isValid } from '../../utils/commons';
 import { SubjectSubscriber } from 'rxjs/internal/Subject';
 
 @Component({
-  selector: 'app-write-decision',
-  templateUrl: './write-decision.component.html',
-  styleUrls: ['./write-decision.component.scss']
+    selector: 'app-write-decision',
+    templateUrl: './write-decision.component.html',
+    styleUrls: ['./write-decision.component.scss'],
+    standalone: true
 })
 export class WriteDecisionComponent implements OnInit, OnDestroy {
 

@@ -12,9 +12,10 @@ import { isValid } from 'src/app/shared/utils/commons';
 import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faChevronLeft, faChevronRight, faPlus, faTimes, faCaretRight, faMapMarker, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-places-builder',
-  templateUrl: './places-builder.component.html',
-  styleUrls: ['./places-builder.component.scss']
+    selector: 'app-places-builder',
+    templateUrl: './places-builder.component.html',
+    styleUrls: ['./places-builder.component.scss'],
+    standalone: true
 })
 export class PlacesBuilderComponent implements OnInit {
 

@@ -11,9 +11,10 @@ import { RequestSignin, RequestLogin } from 'wos-api';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-user-login',
-  templateUrl: './user-login.component.html',
-  styleUrls: ['./user-login.component.scss']
+    selector: 'app-user-login',
+    templateUrl: './user-login.component.html',
+    styleUrls: ['./user-login.component.scss'],
+    standalone: true
 })
 export class UserLoginComponent implements OnInit, OnDestroy {
 

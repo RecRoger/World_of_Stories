@@ -13,9 +13,10 @@ import { TaleEdition } from 'wos-api';
 import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faChevronLeft, faChevronRight, faPlus, faTimes, faCaretRight, faCircle, faMapMarker, faMapMarkerAlt, faMapMarked, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-cities-builder',
-  templateUrl: './cities-builder.component.html',
-  styleUrls: ['./cities-builder.component.scss']
+    selector: 'app-cities-builder',
+    templateUrl: './cities-builder.component.html',
+    styleUrls: ['./cities-builder.component.scss'],
+    standalone: true
 })
 export class CitiesBuilderComponent implements OnInit, OnDestroy {
 

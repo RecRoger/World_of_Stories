@@ -13,9 +13,10 @@ import { NewNpc, PublishNpc, UpdateNpc, GetNpcData } from 'src/app/shared/store/
 import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faCaretRight, faComment, faCommentAlt, faCommentDots } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-npc-builder',
-  templateUrl: './npc-builder.component.html',
-  styleUrls: ['./npc-builder.component.scss']
+    selector: 'app-npc-builder',
+    templateUrl: './npc-builder.component.html',
+    styleUrls: ['./npc-builder.component.scss'],
+    standalone: true
 })
 export class NpcBuilderComponent implements OnInit {
 

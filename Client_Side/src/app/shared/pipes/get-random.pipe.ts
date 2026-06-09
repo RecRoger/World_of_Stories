@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'getRandom'
+    name: 'getRandom',
+    standalone: true
 })
 export class GetRandomPipe implements PipeTransform {
 

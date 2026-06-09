@@ -1,9 +1,10 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'app-reader-nav',
-  templateUrl: './reader-nav.component.html',
-  styleUrls: ['./reader-nav.component.scss']
+    selector: 'app-reader-nav',
+    templateUrl: './reader-nav.component.html',
+    styleUrls: ['./reader-nav.component.scss'],
+    standalone: true
 })
 export class ReaderNavComponent implements OnInit {
 

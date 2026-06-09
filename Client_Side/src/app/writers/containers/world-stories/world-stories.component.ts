@@ -11,9 +11,10 @@ import { map, take } from 'rxjs/operators';
 import { faCaretRight, faChevronLeft, faInfo } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-world-stories',
-  templateUrl: './world-stories.component.html',
-  styleUrls: ['./world-stories.component.scss']
+    selector: 'app-world-stories',
+    templateUrl: './world-stories.component.html',
+    styleUrls: ['./world-stories.component.scss'],
+    standalone: true
 })
 export class WorldStoriesComponent implements OnInit, OnDestroy {
 

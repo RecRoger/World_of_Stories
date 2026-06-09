@@ -4,9 +4,10 @@ import { Store } from '@ngxs/store';
 import { LogonUser } from 'src/app/shared/store/users/users.actions';
 
 @Component({
-  selector: 'app-presentation',
-  templateUrl: './presentation.component.html',
-  styleUrls: ['./presentation.component.scss']
+    selector: 'app-presentation',
+    templateUrl: './presentation.component.html',
+    styleUrls: ['./presentation.component.scss'],
+    standalone: true
 })
 export class PresentationComponent implements OnInit {
 

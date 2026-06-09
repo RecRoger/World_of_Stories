@@ -1,9 +1,10 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-user-nav',
-  templateUrl: './user-nav.component.html',
-  styleUrls: ['./user-nav.component.scss']
+    selector: 'app-user-nav',
+    templateUrl: './user-nav.component.html',
+    styleUrls: ['./user-nav.component.scss'],
+    standalone: true
 })
 export class UserNavComponent implements OnInit {
 

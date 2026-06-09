@@ -13,9 +13,10 @@ import { GetNpcData, GetAllNpcs, GetNpcStory, GetChapterData } from 'src/app/sha
 import { ReaderTabs } from 'src/app/shared/constants';
 
 @Component({
-  selector: 'app-read-story-container',
-  templateUrl: './read-story-container.component.html',
-  styleUrls: ['./read-story-container.component.scss']
+    selector: 'app-read-story-container',
+    templateUrl: './read-story-container.component.html',
+    styleUrls: ['./read-story-container.component.scss'],
+    standalone: true
 })
 export class ReadStoryContainerComponent implements OnInit, OnDestroy {
 
