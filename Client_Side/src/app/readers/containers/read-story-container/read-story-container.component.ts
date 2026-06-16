@@ -10,13 +10,13 @@ import { LocationState } from 'src/app/shared/store/locations/locations.reducer'
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
 import { map } from 'rxjs/operators';
 import { GetNpcData, GetAllNpcs, GetNpcStory, GetChapterData } from 'src/app/shared/store/stories/stories.actions';
-import { ReaderTabs } from 'src/app/shared/constants';
+import { ReaderTabs } from 'src/app/models/constants';
 
 @Component({
-    selector: 'app-read-story-container',
-    templateUrl: './read-story-container.component.html',
-    styleUrls: ['./read-story-container.component.scss'],
-    standalone: true
+  selector: 'app-read-story-container',
+  templateUrl: './read-story-container.component.html',
+  styleUrls: ['./read-story-container.component.scss'],
+  standalone: true
 })
 export class ReadStoryContainerComponent implements OnInit, OnDestroy {
 

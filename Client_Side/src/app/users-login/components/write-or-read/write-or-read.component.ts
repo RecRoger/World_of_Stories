@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { UsersRoles } from 'src/app/shared/constants';
+import { UsersRoles } from 'src/app/models/constants';
 import { HttpClient } from '@angular/common/http';
 import { Store, Select } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
@@ -13,10 +13,10 @@ import { SetInfo, SetError } from 'src/app/shared/store/general/general.actions'
 const WritersCode = 'am I a Writer?';
 
 @Component({
-    selector: 'app-write-or-read',
-    templateUrl: './write-or-read.component.html',
-    styleUrls: ['./write-or-read.component.scss'],
-    standalone: true
+  selector: 'app-write-or-read',
+  templateUrl: './write-or-read.component.html',
+  styleUrls: ['./write-or-read.component.scss'],
+  standalone: true
 })
 export class WriteOrReadComponent implements OnInit, OnDestroy {
 

@@ -7,13 +7,13 @@ import { faUser, faUserPlus, faChevronRight, faTimes } from '@fortawesome/free-s
 import { Router } from '@angular/router';
 import { GetCharacters, NewCharacter, DeleteCharacter, SelectCharacter, UpdateCharacterAnimations } from 'src/app/shared/store/users/users.actions';
 import { FormBuilder, Validators } from '@angular/forms';
-import { isValid } from 'src/app/shared/utils/commons';
+import { isValid } from 'src/app/utils/commons';
 
 @Component({
-    selector: 'app-readers-home',
-    templateUrl: './readers-home.component.html',
-    styleUrls: ['./readers-home.component.scss'],
-    standalone: true
+  selector: 'app-readers-home',
+  templateUrl: './readers-home.component.html',
+  styleUrls: ['./readers-home.component.scss'],
+  standalone: true
 })
 export class ReadersHomeComponent implements OnInit, OnDestroy {
 

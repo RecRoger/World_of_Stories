@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { ReadersComponent } from './readers.component';
 import { ReadersRoutingModule } from './readers-router.module';
-import { SharedCommons } from '../shared/shared.module';
+import { SharedCommons } from '../utils/shared.module';
 import { ReaderNavComponent } from './componentes/reader-nav/reader-nav.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReadersHomeComponent } from './componentes/readers-home/readers-home.component';

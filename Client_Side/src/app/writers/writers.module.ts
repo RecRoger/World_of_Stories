@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WritersComponent } from './writers.component';
 import { WritersRoutingModule } from 'src/app/writers/writers-router.module';
-import { SharedCommons } from 'src/app/shared/shared.module';
+import { SharedCommons } from 'src/app/utils/shared.module';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { WriterNavComponent } from './components/writer-nav/writer-nav.component';

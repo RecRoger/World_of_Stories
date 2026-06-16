@@ -1,10 +1,10 @@
 Client_Side/dist
 Client_Side/node_modules
 
-Server_Api/node_modules
-Server_Api/src/swagger/generator/workspace
-Server_Api/src/keys.ts
-Server_Api/build/src/*
-Server_Api/build/*
-Server_Api/build/src
-Server_Api/build
+server/node_modules
+server/src/swagger/generator/workspace
+server/src/keys.ts
+server/build/src/*
+server/build/*
+server/build/src
+server/build

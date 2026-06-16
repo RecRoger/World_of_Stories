@@ -1,5 +1,5 @@
 import { RequestNewNpc, RequestPublishNpc, UpdateNpcStructure, RequestGetChapters, RequestUpdateChapter, RequestPublishChapter, Chapter } from 'wos-api';
-import { ChapterDividerModel } from '../../components/animated-fragment/animated-fragment.component';
+import { ChapterDividerModel } from '../../../components/animated-fragment/animated-fragment.component';
 
 export class GetAllNpcs {
     static readonly type = '[Stories] Get All Npcs';

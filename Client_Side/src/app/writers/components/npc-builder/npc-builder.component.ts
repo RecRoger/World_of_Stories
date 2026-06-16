@@ -7,16 +7,16 @@ import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { User, Place, Npc, RequestNewNpc, ReadFragment, Decision, RequestPublishNpc } from 'wos-api';
 import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
 import { map } from 'rxjs/operators';
-import { NpcTabs } from 'src/app/shared/constants';
-import { isValid } from 'src/app/shared/utils/commons';
+import { NpcTabs } from 'src/app/models/constants';
+import { isValid } from 'src/app/utils/commons';
 import { NewNpc, PublishNpc, UpdateNpc, GetNpcData } from 'src/app/shared/store/stories/stories.actions';
 import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faCaretRight, faComment, faCommentAlt, faCommentDots } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-    selector: 'app-npc-builder',
-    templateUrl: './npc-builder.component.html',
-    styleUrls: ['./npc-builder.component.scss'],
-    standalone: true
+  selector: 'app-npc-builder',
+  templateUrl: './npc-builder.component.html',
+  styleUrls: ['./npc-builder.component.scss'],
+  standalone: true
 })
 export class NpcBuilderComponent implements OnInit {
 

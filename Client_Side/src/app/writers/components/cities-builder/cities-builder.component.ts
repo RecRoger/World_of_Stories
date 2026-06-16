@@ -7,16 +7,16 @@ import { User, City, ReadFragment, RequestNewCity, RequestPublishCity, NewCityTa
 import { GetAllCities, NewCity, PublishCity, EditCityStory, AddCityStory, DeleteCityStory, GetCityData } from 'src/app/shared/store/locations/locations.actions';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { Subscription } from 'rxjs';
-import { isValid } from 'src/app/shared/utils/commons';
-import { CityTabs } from 'src/app/shared/constants';
+import { isValid } from 'src/app/utils/commons';
+import { CityTabs } from 'src/app/models/constants';
 import { TaleEdition } from 'wos-api';
 import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faChevronLeft, faChevronRight, faPlus, faTimes, faCaretRight, faCircle, faMapMarker, faMapMarkerAlt, faMapMarked, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-    selector: 'app-cities-builder',
-    templateUrl: './cities-builder.component.html',
-    styleUrls: ['./cities-builder.component.scss'],
-    standalone: true
+  selector: 'app-cities-builder',
+  templateUrl: './cities-builder.component.html',
+  styleUrls: ['./cities-builder.component.scss'],
+  standalone: true
 })
 export class CitiesBuilderComponent implements OnInit, OnDestroy {
 

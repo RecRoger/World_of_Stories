@@ -1,0 +1,2657 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "World of Stories API",
+    "version": "1.0.0",
+    "description": "Documentación limpia y modularizada"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Obtener todos los usuarios (getAllUsers)",
+        "description": "Retorna el listado completo de los usuarios registrados en el sistema.",
+        "responses": {
+          "200": {
+            "description": "Lista de usuarios recuperada con éxito.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Crear un nuevo usuario (saveUser)",
+        "description": "Registra un usuario en la base de datos. Retorna un código 201 Created al completarse.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "userName",
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "userName": {
+                    "type": "string",
+                    "example": "Kaladin31"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "kaladin@bridgefour.com"
+                  },
+                  "username": {
+                    "type": "string",
+                    "format": "text",
+                    "example": "kaladin"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "Radiant1234"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario creado exitosamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos o faltantes."
+          },
+          "409": {
+            "description": "El nombre de usuario o email ya existen."
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Iniciar sesión (getOneUser)",
+        "description": "Verifica las credenciales enviadas en el body por motivos de seguridad y retorna el usuario autenticado.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "format": "text",
+                    "example": "kaladin@bridgefour.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "Radiant1234"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Autenticación exitosa.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Contraseña incorrecta."
+          },
+          "404": {
+            "description": "El usuario no existe."
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Obtener usuario por ID (getUserById)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID único de MongoDB del usuario",
+            "schema": {
+              "type": "string",
+              "example": "665ed8d5c3f4e567890efabc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no encontrado."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Actualizar un usuario completo (updateUser)",
+        "description": "Reemplaza o actualiza las propiedades modificables del perfil de usuario mediante ID por parámetro.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userName": {
+                    "type": "string",
+                    "example": "Kaladin_BridgeFour"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "kaladin@bridgefour.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "kaladin123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuario actualizado correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontró el usuario para actualizar."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Eliminar un usuario (deleteUser)",
+        "description": "Remueve físicamente el registro del usuario del sistema utilizando el ID por parámetro.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario eliminado del sistema con éxito.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Usuario eliminado correctamente."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no encontrado."
+          }
+        }
+      }
+    },
+    "/users/{id}/roles": {
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Asignar o modificar un rol (setUserRol)",
+        "description": "Aplica modificaciones parciales para establecer el rol del usuario (ej. cambiar a ADMIN_ROLE).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "role"
+                ],
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "example": "ADMIN_ROLE"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rol actualizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no encontrado."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Quitar o revocar un rol (removeUserRol)",
+        "description": "Uso semántico de DELETE para retirar un privilegio o resetear el rol asignado al usuario.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rol revocado con éxito.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Rol del usuario restablecido a los valores por defecto."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no encontrado."
+          }
+        }
+      }
+    },
+    "/cities": {
+      "get": {
+        "tags": [
+          "Cities"
+        ],
+        "summary": "Obtener todas las ciudades (Listado Ligero)",
+        "description": "Retorna todas las ciudades de la base de datos. Excluye automáticamente arrays pesados (description, travel, places) para optimizar el rendimiento de la red.",
+        "parameters": [
+          {
+            "name": "published",
+            "in": "query",
+            "required": false,
+            "description": "Filtrar por estado de publicación (?published=true o ?published=false)",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Listado de ciudades obtenido correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "count": {
+                      "type": "integer",
+                      "example": 5
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "cities": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/City"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Cities"
+        ],
+        "summary": "Crear una nueva ciudad",
+        "description": "Registra una ciudad en la base de datos con validación de nombre único. Inicializa los relatos de descripción y viaje como borradores.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "userName"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "userName": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "Object",
+                    "$ref": "#/components/schemas/Readable"
+                  },
+                  "travel": {
+                    "type": "Object",
+                    "$ref": "#/components/schemas/Readable"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ciudad creada exitosamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Ciudad creada exitosamente."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "city": {
+                          "$ref": "#/components/schemas/City"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto: El nombre de la ciudad ya se encuentra registrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "La ciudad con el nombre \"Luthadel\" ya se encuentra registrada."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error al guardar la ciudad."
+          }
+        }
+      }
+    },
+    "/cities/{id}": {
+      "get": {
+        "tags": [
+          "Cities"
+        ],
+        "summary": "Obtener el detalle profundo de una ciudad",
+        "description": "Recupera una ciudad completa por su ID con todos sus arrays hidratados (descriptions, travels, places). Actúa con los virtuals expuestos.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID único de MongoDB de la ciudad",
+            "schema": {
+              "type": "string",
+              "example": "665ed7c4c3f4e567890defab"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalle de la ciudad recuperado con éxito.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "city": {
+                          "$ref": "#/components/schemas/City"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontró la ciudad especificada."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Cities"
+        ],
+        "summary": "Eliminar una ciudad por completo",
+        "description": "Remueve de forma permanente el documento de la ciudad y todos los subdocumentos anidados (relatos y lugares).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID de la ciudad a destruir",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ciudad eliminada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "La ciudad \"Luthadel\" y todos sus relatos asociados fueron eliminados correctamente."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontró la ciudad para eliminar."
+          }
+        }
+      }
+    },
+    "/cities/{id}/publish": {
+      "patch": {
+        "tags": [
+          "Cities"
+        ],
+        "summary": "Cambiar estado de publicación de una ciudad",
+        "description": "Publica o despublica una ciudad calculando de forma automática la fecha de publicación.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "published"
+                ],
+                "properties": {
+                  "published": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Estado de publicación actualizado correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Ciudad publicada correctamente."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "city": {
+                          "$ref": "#/components/schemas/City"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ciudad no encontrada."
+          }
+        }
+      }
+    },
+    "/cities/{cityId}/description": {
+      "patch": {
+        "tags": [
+          "Cities"
+        ],
+        "summary": "Añadir una descripción al array de la ciudad",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "tale",
+                  "author"
+                ],
+                "properties": {
+                  "tale": {
+                    "type": "Object",
+                    "$ref": "#/components/schemas/Readable"
+                  },
+                  "author": {
+                    "type": "string",
+                    "example": "Sazed"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Relato añadido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Descripción añadida correctamente a la ciudad."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "$ref": "#/components/schemas/Tale"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Cities"
+        ],
+        "summary": "Actualizar un relato de descripción existente",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "description"
+                ],
+                "properties": {
+                  "description": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "tale",
+                      "published"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "665ed1b2c3f4e567890abcde"
+                      },
+                      "tale": {
+                        "type": "Object",
+                        "$ref": "#/components/schemas/Readable"
+                      },
+                      "published": {
+                        "type": "boolean",
+                        "example": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Descripción actualizada de forma atómica.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "$ref": "#/components/schemas/Tale"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cities/{cityId}/description/{taleId}": {
+      "delete": {
+        "tags": [
+          "Cities"
+        ],
+        "summary": "Eliminar una descripción del array",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "taleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Relato removido usando $pull."
+          }
+        }
+      }
+    },
+    "/cities/{cityId}/travel": {
+      "patch": {
+        "tags": [
+          "Cities"
+        ],
+        "summary": "Añadir un viaje al array de la ciudad",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "tale",
+                  "author"
+                ],
+                "properties": {
+                  "tale": {
+                    "type": "Object",
+                    "$ref": "#/components/schemas/Readable"
+                  },
+                  "author": {
+                    "type": "string",
+                    "example": "Vin"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Viaje añadido con éxito.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "travel": {
+                          "$ref": "#/components/schemas/Tale"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Cities"
+        ],
+        "summary": "Actualizar un relato de viaje existente",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "description"
+                ],
+                "properties": {
+                  "description": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "tale",
+                      "published"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "665ed1b2c3f4e567890abcde"
+                      },
+                      "tale": {
+                        "type": "Object",
+                        "$ref": "#/components/schemas/Readable"
+                      },
+                      "published": {
+                        "type": "boolean",
+                        "example": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Viaje actualizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "travel": {
+                          "$ref": "#/components/schemas/Tale"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cities/{cityId}/travel/{taleId}": {
+      "delete": {
+        "tags": [
+          "Cities"
+        ],
+        "summary": "Eliminar un viaje del array",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "taleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Relato de viaje eliminado."
+          }
+        }
+      }
+    },
+    "/places/city/{cityId}": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Obtener todos los lugares de una ciudad (getCityPlaces)",
+        "description": "Retorna los lugares que pertenecen a una ciudad específica. Soporta filtrado por el query param ?published=true.",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "description": "ID de la ciudad a la que pertenecen los lugares",
+            "schema": {
+              "type": "string",
+              "example": "665ed7c4c3f4e567890defab"
+            }
+          },
+          {
+            "name": "published",
+            "in": "query",
+            "required": false,
+            "description": "Filtrar lugares por estado de publicación (?published=true)",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de lugares de la ciudad obtenida correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "count": {
+                      "type": "integer",
+                      "example": 3
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "places": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Place"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontró la ciudad especificada."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Crear y guardar un nuevo lugar en una ciudad (savePlace)",
+        "description": "Inserta un nuevo lugar dentro del array de lugares de la ciudad indicada.",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Palacio de Elendel"
+                  },
+                  "userName": {
+                    "type": "string",
+                    "example": "Palacio de Elendel"
+                  },
+                  "description": {
+                    "type": "Object",
+                    "$ref": "#/components/schemas/Readable"
+                  },
+                  "entry": {
+                    "type": "Object",
+                    "$ref": "#/components/schemas/Readable"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Lugar creado y guardado de forma exitosa.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Lugar guardado correctamente."
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Place"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "La ciudad especificada no existe."
+          }
+        }
+      }
+    },
+    "/places/{placeId}": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Obtener detalle completo de un solo lugar (getOnePlace)",
+        "description": "Busca en toda la base de datos y retorna un único lugar por su ID. Devuelve todos los campos desglosados (events como array de IDs, descriptions y entries formateados).",
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "description": "ID único del lugar a buscar",
+            "schema": {
+              "type": "string",
+              "example": "665ed5a1c3f4e567890bcdef"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalle del lugar recuperado exitosamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "place": {
+                          "$ref": "#/components/schemas/Place"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontró el lugar especificado."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Eliminar un lugar por completo (deletePlace)",
+        "description": "Remueve de forma definitiva el subdocumento del lugar sin requerir el ID de la ciudad.",
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lugar eliminado correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Lugar eliminado correctamente."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Lugar no encontrado."
+          }
+        }
+      }
+    },
+    "/places/{placeId}/publish": {
+      "patch": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Publicar o despublicar un lugar (publishPlace)",
+        "description": "Modifica de manera parcial el estado de publicación y setea automáticamente el campo publishDate.",
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "published"
+                ],
+                "properties": {
+                  "published": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Estado de publicación alterado con éxito."
+          }
+        }
+      }
+    },
+    "/places/:placeId/description": {
+      "put": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Añadir un relato de descripción a un lugar (addPlaceDescription)",
+        "description": "Inserta una nueva descripción en el array del lugar.",
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "tale",
+                  "author"
+                ],
+                "properties": {
+                  "tale": {
+                    "type": "Object",
+                    "$ref": "#/components/schemas/Readable"
+                  },
+                  "author": {
+                    "type": "string",
+                    "example": "Hoid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Descripción guardada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "$ref": "#/components/schemas/Tale"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Actualizar un relato de descripción específico (updatePlaceDescription)",
+        "description": "Actualiza de forma atómica usando arrayFilters el relato interno del lugar.",
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "description"
+                ],
+                "properties": {
+                  "description": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "tale",
+                      "published"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "665ed1b2c3f4e567890abcde"
+                      },
+                      "tale": {
+                        "type": "Object",
+                        "$ref": "#/components/schemas/Readable"
+                      },
+                      "published": {
+                        "type": "boolean",
+                        "example": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Descripción actualizada con éxito."
+          }
+        }
+      }
+    },
+    "/places/{placeId}/description/{taleId}": {
+      "delete": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Eliminar una descripción del lugar (removePlaceDescription)",
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "taleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Descripción removida del array satisfactoriamente."
+          }
+        }
+      }
+    },
+    "/places/:placeId/entry": {
+      "patch": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Añadir un cuento de entrada a un lugar (addPlaceEntry)",
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "tale",
+                  "author"
+                ],
+                "properties": {
+                  "tale": {
+                    "type": "Object",
+                    "$ref": "#/components/schemas/Readable"
+                  },
+                  "author": {
+                    "type": "string",
+                    "example": "Sazed"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Entrada añadida.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "entry": {
+                          "$ref": "#/components/schemas/Tale"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Actualizar un cuento de entrada específico (updatePlaceEntry)",
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "description"
+                ],
+                "properties": {
+                  "description": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "tale",
+                      "published"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "665ed1b2c3f4e567890abcde"
+                      },
+                      "tale": {
+                        "type": "Object",
+                        "$ref": "#/components/schemas/Readable"
+                      },
+                      "published": {
+                        "type": "boolean",
+                        "example": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cuento de entrada guardado correctamente."
+          }
+        }
+      }
+    },
+    "/places/{placeId}/entry/{taleId}": {
+      "delete": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Eliminar un cuento de entrada del lugar (removePlaceEntry)",
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "taleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entrada del lugar eliminada con éxito."
+          }
+        }
+      }
+    },
+    "/npcs/place/{placeId}": {
+      "get": {
+        "tags": [
+          "NPCs"
+        ],
+        "summary": "Obtener todos los NPCs de un lugar",
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del lugar geográfico"
+          },
+          {
+            "name": "published",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filtrar por estado de publicación (?published=true)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Listado de NPCs obtenido con éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "npcs": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Npc"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontró la ciudad o el lugar especificado."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "NPCs"
+        ],
+        "summary": "Crear un nuevo NPC y asociarlo al lugar",
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "npc": {
+                    "type": "object",
+                    "required": [
+                      "name",
+                      "author"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "npcType": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "meeting": {
+                        "type": "string"
+                      },
+                      "rejected": {
+                        "type": "string"
+                      },
+                      "author": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "NPC creado y vinculado exitosamente"
+          },
+          "400": {
+            "description": "Faltan los datos del NPC en el cuerpo de la petición."
+          },
+          "404": {
+            "description": "No se pudo asociar el NPC porque el lugar no existe."
+          }
+        }
+      }
+    },
+    "/npcs/{id}": {
+      "delete": {
+        "tags": [
+          "NPCs"
+        ],
+        "summary": "Eliminar un NPC de forma global",
+        "description": "Borra el NPC y remueve automáticamente su ID de cualquier lista de eventos asociados en ciudades.",
+        "parameters": [
+          {
+            "name": "npcId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "NPC eliminado y desvinculado de su lugar de origen correctamente."
+          },
+          "404": {
+            "description": "El NPC que intentas eliminar no existe."
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "NPCs"
+        ],
+        "summary": "Obtener un NPC por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalle del NPC devuelto con éxito"
+          },
+          "404": {
+            "description": "NPC no encontrado o no publicado."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "NPCs"
+        ],
+        "summary": "Actualizar propiedades de un NPC",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "npc": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "NPC modificado de forma exitosa"
+            },
+            "404": {
+              "description": "No se encontró el NPC para actualizar."
+            }
+          }
+        }
+      }
+    },
+    "/npcs/{id}/publish": {
+      "patch": {
+        "tags": [
+          "NPCs"
+        ],
+        "summary": "Publicar o despublicar un NPC de forma parcial",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "published": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Estado de publicación actualizado con éxito."
+          }
+        }
+      }
+    },
+    "/chapters/npc/{npcId}": {
+      "get": {
+        "tags": [
+          "Chapters"
+        ],
+        "summary": "Obtener el listado simplificado de capítulos de un NPC",
+        "parameters": [
+          {
+            "name": "npcId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del NPC dueño de la historia"
+          },
+          {
+            "name": "published",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filtrar por estado publicado"
+          }
+        ],
+        "responses": {
+          "200": {
+            "404": {
+              "description": "No se encontró el NPC especificado."
+            },
+            "description": "Estructura de capítulos obtenida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "chapters": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "published": {
+                                "type": "boolean"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chapters/{id}": {
+      "get": {
+        "tags": [
+          "Chapters"
+        ],
+        "summary": "Obtener el detalle profundo de un capítulo por su ID propio",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID único del capítulo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datos del capítulo (incluyendo opciones e IDs de grafo)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "chapter": {
+                          "$ref": "#/components/schemas/Chapter"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Capítulo no encontrado dentro del árbol del NPC."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Chapters"
+        ],
+        "summary": "Actualizar un capítulo o inyectar nuevas decisiones en caliente",
+        "description": "Permite modificar la narración de la historia. Si envías opciones dentro de `usersDecisions.options` sin propiedad `value`, el sistema creará pre-capítulos hijos de forma dinámica en la base de datos.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "chapter": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "story": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "author": {
+                        "type": "string"
+                      },
+                      "usersDecisions": {
+                        "$ref": "#/components/schemas/UsersDecisions"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Capítulo y ramificaciones modificados correctamente."
+          },
+          "404": {
+            "description": "No se encontró el capítulo solicitado para actualizar."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Chapters"
+        ],
+        "summary": "Eliminar un capítulo y limpiar referencias de decisiones huérfanas",
+        "description": "Elimina el subdocumento del capítulo y ejecuta una limpieza atómica en cascada quitando cualquier opción de otros capítulos que apuntara a este ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Capítulo eliminado y referencias desvinculadas con éxito."
+          },
+          "404": {
+            "description": "El capítulo no existía o no pudo ser desvinculado."
+          }
+        }
+      }
+    },
+    "/chapters/{id}/publish": {
+      "patch": {
+        "tags": [
+          "Chapters"
+        ],
+        "summary": "Publicar o despublicar un capítulo y sincronizar visibilidad en el grafo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "published": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Estado de visibilidad del capítulo y sus enlaces sincronizado con éxito."
+          },
+          "404": {
+            "description": "Capítulo no encontrado para publicar."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Location": {
+        "type": "object",
+        "description": "Representa la ubicación exacta del personaje dentro del mapa interactivo",
+        "properties": {
+          "cityId": {
+            "type": "string",
+            "nullable": true,
+            "example": "665ed7c4c3f4e567890defab"
+          },
+          "placeId": {
+            "type": "string",
+            "nullable": true,
+            "example": "665ed5a1c3f4e567890bcdef"
+          },
+          "npcId": {
+            "type": "string",
+            "nullable": true,
+            "example": "665edaa3c3f4e567890f1234"
+          },
+          "chapterId": {
+            "type": "string",
+            "nullable": true,
+            "example": "665edcc5c3f4e567890f5678"
+          }
+        }
+      },
+      "Character": {
+        "type": "object",
+        "description": "Entidad de personaje que almacena el estado de la partida y el progreso individual",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Kaladin"
+          },
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "money": {
+            "type": "number",
+            "example": 150
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Lanza de entrenamiento",
+              "Frasco de esferas"
+            ]
+          },
+          "fragmentsRead": {
+            "type": "array",
+            "description": "IDs de relatos o fragmentos del Cosmere que este personaje específico ya leyó",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "665ed1b2c3f4e567890abcde"
+            ]
+          },
+          "animations": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "required": [
+          "email",
+          "username",
+          "password",
+          "rol"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "ID nativo de MongoDB",
+            "example": "665ed8d5c3f4e567890efabc"
+          },
+          "id": {
+            "type": "string",
+            "description": "ID casteado para compatibilidad en Frontend",
+            "example": "665ed8d5c3f4e567890efabc"
+          },
+          "username": {
+            "type": "string",
+            "example": "kaladin31"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "kaladin@bridgefour.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "Hash encriptado",
+            "example": "$2b$10$X7rE8Y3M..."
+          },
+          "rol": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "USER_ROLE"
+            ]
+          },
+          "characters": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Character"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-08T14:22:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-08T15:30:00.000Z"
+          }
+        }
+      },
+      "Readable": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "example": "El aire soplaba frío sobre las llanuras quebradas..."
+          },
+          "animation": {
+            "type": "string",
+            "example": "fade-in-slow"
+          }
+        }
+      },
+      "Tale": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "665ed1b2c3f4e567890abcde"
+          },
+          "tale": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Readable"
+            }
+          },
+          "author": {
+            "type": "string",
+            "example": "Hoid"
+          },
+          "published": {
+            "type": "boolean",
+            "example": false
+          },
+          "writeDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-08T16:24:00.000Z"
+          },
+          "publishDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": null
+          }
+        }
+      },
+      "Place": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "665ed5a1c3f4e567890bcdef"
+          },
+          "name": {
+            "type": "string",
+            "example": "Kholinar"
+          },
+          "published": {
+            "type": "boolean",
+            "example": true
+          },
+          "publishDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-01-15T00:00:00.000Z"
+          },
+          "events": {
+            "type": "array",
+            "description": "IDs de los NPCs vinculados a este lugar",
+            "items": {
+              "type": "string",
+              "example": "665ed6b3c3f4e567890cdefa"
+            }
+          },
+          "description": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tale"
+            }
+          },
+          "entry": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tale"
+            }
+          }
+        }
+      },
+      "City": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "665ed7c4c3f4e567890defab"
+          },
+          "name": {
+            "type": "string",
+            "example": "Alethkar"
+          },
+          "published": {
+            "type": "boolean",
+            "example": false
+          },
+          "publishDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "description": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tale"
+            }
+          },
+          "travel": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tale"
+            }
+          },
+          "places": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Place"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "DecisionOption": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "65aef342b..."
+          },
+          "name": {
+            "type": "string",
+            "example": "Desafiar al guardia"
+          },
+          "description": {
+            "type": "string",
+            "example": "Intentas pasar por la fuerza usando intimidación."
+          },
+          "value": {
+            "type": "string",
+            "description": "ID del capítulo al que redirige esta opción",
+            "example": "65aef999c..."
+          },
+          "published": {
+            "type": "boolean",
+            "example": true
+          },
+          "removeItem": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "UsersDecisions": {
+        "type": "object",
+        "properties": {
+          "decisionType": {
+            "type": "string",
+            "enum": [
+              "choose",
+              "item",
+              "amount"
+            ],
+            "example": "choose"
+          },
+          "amount": {
+            "type": "number",
+            "example": 0
+          },
+          "item": {
+            "type": "string",
+            "example": ""
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DecisionOption"
+            }
+          }
+        }
+      },
+      "Chapter": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "65aef999c..."
+          },
+          "name": {
+            "type": "string",
+            "example": "El Callejón del Mendigo"
+          },
+          "story": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Te adentrás en la oscuridad.",
+              "Un hombre te observa desde las sombras."
+            ]
+          },
+          "endLocation": {
+            "type": "object",
+            "properties": {
+              "endChapter": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          },
+          "published": {
+            "type": "boolean",
+            "example": false
+          },
+          "author": {
+            "type": "string",
+            "example": "Roje"
+          },
+          "writeDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-08T17:30:00.000Z"
+          },
+          "publishDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": null
+          }
+        }
+      },
+      "Npc": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "65aef111a..."
+          },
+          "name": {
+            "type": "string",
+            "example": "Hoid"
+          },
+          "title": {
+            "type": "string",
+            "example": "El Sagaz"
+          },
+          "npcType": {
+            "type": "string",
+            "example": "Storyteller"
+          },
+          "description": {
+            "$ref": "#/components/schemas/Tale"
+          },
+          "meeting": {
+            "$ref": "#/components/schemas/Tale"
+          },
+          "rejected": {
+            "$ref": "#/components/schemas/Tale"
+          },
+          "decision": {
+            "$ref": "#/components/schemas/UsersDecisions"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Flauta de Madera"
+            ]
+          },
+          "author": {
+            "type": "string",
+            "example": "Roje"
+          },
+          "published": {
+            "type": "boolean",
+            "example": false
+          },
+          "writeDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  }
+}

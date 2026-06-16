@@ -4,18 +4,18 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store, Select } from '@ngxs/store';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
 import { User, Place, City, RequestGetPlaces, ReadFragment, RequestNewPlace, RequestPublishPlace, NewPlaceTale, TaleEdition } from 'wos-api';
-import { PlaceTabs } from 'src/app/shared/constants';
+import { PlaceTabs } from 'src/app/models/constants';
 import { GetAllPlaces, NewPlace, PublishPlace, AddPlaceStory, EditPlaceStory, DeletePlaceStory, GetPlaceData } from 'src/app/shared/store/locations/locations.actions';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { map, take } from 'rxjs/operators';
-import { isValid } from 'src/app/shared/utils/commons';
+import { isValid } from 'src/app/utils/commons';
 import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faChevronLeft, faChevronRight, faPlus, faTimes, faCaretRight, faMapMarker, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-    selector: 'app-places-builder',
-    templateUrl: './places-builder.component.html',
-    styleUrls: ['./places-builder.component.scss'],
-    standalone: true
+  selector: 'app-places-builder',
+  templateUrl: './places-builder.component.html',
+  styleUrls: ['./places-builder.component.scss'],
+  standalone: true
 })
 export class PlacesBuilderComponent implements OnInit {
 

@@ -4,7 +4,7 @@ import { SetLoader, SetError, SetInfo } from '../general/general.actions';
 import { City, Place, LocationsService, RequestGetCities, RequestNewCity, RequestPublishCity, RequestUpdateCityDescription, RequestUpdateCityTravel, PublicTale, RequestNewCityDescription, RequestNewCityTravel, RequestRemoveCityDescription, RequestRemoveCityTravel, RequestGetPlaces, RequestNewPlace, RequestPublishPlace, RequestNewPlaceDescription, RequestNewPlaceEntry, RequestUpdatePlaceDescription, RequestUpdatePlaceEntry, RequestRemovePlaceDescription, RequestRemovePlaceEntry, RequestGetCity } from 'wos-api';
 import { GetAllCities, NewCity, PublishCity, EditCityStory, AddCityStory, DeleteCityStory, GetAllPlaces, NewPlace, PublishPlace, AddPlaceStory, EditPlaceStory, DeletePlaceStory, GetCityData, GetPlaceData } from '../locations/locations.actions';
 import { patch, append, updateItem, removeItem } from '@ngxs/store/operators';
-import { CityTabs, PlaceTabs } from '../../constants';
+import { CityTabs, PlaceTabs } from '../../../../../../client/src/app/models/constants';
 
 export interface LocationsStateModel {
   cities: City[];

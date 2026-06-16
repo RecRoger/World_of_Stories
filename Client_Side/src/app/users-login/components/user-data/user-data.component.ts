@@ -5,14 +5,14 @@ import { Store } from '@ngxs/store';
 import { Subscription } from 'rxjs';
 import { UpdateUser } from 'src/app/shared/store/users/users.actions';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
-import { isValid } from 'src/app/shared/utils/commons';
+import { isValid } from 'src/app/utils/commons';
 import { User, RequestUpdateUser } from 'wos-api';
 
 @Component({
-    selector: 'app-user-data',
-    templateUrl: './user-data.component.html',
-    styleUrls: ['./user-data.component.scss'],
-    standalone: true
+  selector: 'app-user-data',
+  templateUrl: './user-data.component.html',
+  styleUrls: ['./user-data.component.scss'],
+  standalone: true
 })
 export class UserDataComponent implements OnInit, OnDestroy {
 

@@ -5,19 +5,19 @@ import { StoriesState } from 'src/app/shared/store/stories/stories.reducer';
 import { map } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserState } from 'src/app/shared/store/users/users.reducer';
-import { isValid } from 'src/app/shared/utils/commons';
+import { isValid } from 'src/app/utils/commons';
 import { UpdateChapter, PublishChapter, GetChapterData, UpdateNpc, GetNpcStory, DivideChapter } from 'src/app/shared/store/stories/stories.actions';
 import { LocationState } from 'src/app/shared/store/locations/locations.reducer';
 import { faCloudUploadAlt, faCloudDownloadAlt, faEdit, faPen, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { GetAllPlaces } from 'src/app/shared/store/locations/locations.actions';
-import { ChapterDividerModel } from 'src/app/shared/components/animated-fragment/animated-fragment.component';
+import { ChapterDividerModel } from 'src/app/components/animated-fragment/animated-fragment.component';
 
 @Component({
-    selector: 'app-chapters-builder',
-    templateUrl: './chapters-builder.component.html',
-    styleUrls: ['./chapters-builder.component.scss'],
-    standalone: true
+  selector: 'app-chapters-builder',
+  templateUrl: './chapters-builder.component.html',
+  styleUrls: ['./chapters-builder.component.scss'],
+  standalone: true
 })
 export class ChaptersBuilderComponent implements OnInit, OnDestroy {
 

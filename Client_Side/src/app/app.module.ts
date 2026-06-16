@@ -5,7 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from 'src/app/app-router.module';
-import { SharedCommons } from 'src/app/shared/shared.module';
+import { SharedCommons } from 'src/app/utils/shared.module';
 import { NgxsModule } from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { UserState } from './shared/store/users/users.reducer';
