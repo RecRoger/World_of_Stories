@@ -1,0 +1,6 @@
+.errorTab{
+    border-color: red red #dee2e6;
+    &.active{
+        border-color: red red #fff;
+    }
+}

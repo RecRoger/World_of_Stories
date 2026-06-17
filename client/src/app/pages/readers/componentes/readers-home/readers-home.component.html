@@ -1,0 +1,92 @@
+<div class="app-main_readers" *ngIf="($user | async) as user">
+    <h2>Bienvenido {{ user.username | titlecase}}!</h2>
+    <p>Este es <b>El Modo Lector</b>. Aca podras disfrutar de las aventuras de este nuevo mundo como un
+        <i>Peregrino</i>.</p>
+    <div class="ml-2 pl-3 border-left">Los peregrinos son conocidos en todos los confines del mundo, personajes errantes
+        que viajan con el fin de documentar
+        toda la historia de la existencia, desde el mas minimo acontecimiento hasta grandes sucesos historicos.</div>
+
+    <div class="row mt-5">
+
+        <div class="col-12 mb-3" *ngFor="let character of user.characters">
+            <div class="card">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex">
+                        <fa-icon [icon]="faUser" size="3x"></fa-icon>
+                        <div class="my-auto ml-4 h4">
+                            {{character.name}}
+                        </div>
+                        <div class="ml-auto mb-auto" (click)="deleteCharacter(character.id)">
+                            <fa-icon class="ml-3" [icon]="faTimes" size="lg"></fa-icon>
+                        </div>
+                    </div>
+                    <div class="my-3 w-100">
+                        <div class="d-flex">
+                            <label for="">Dinero</label>
+                            <div class="ml-auto">
+                                {{character.money}}
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                            <label class="mr-3">Ubicacion</label>
+                            <div class="ml-auto text-right" *ngIf="character.location; else noPlace">
+                                {{character.location.cityId | cityName | async}}
+                                <span *ngIf="character.location.placeId">
+                                    - {{character.location.placeId | placeName: character.location?.cityId | async }}
+                                </span>
+                            </div>
+                            <ng-template #noPlace>
+                                <div class="ml-auto">
+                                    Inicio
+                                </div>
+                            </ng-template>
+
+                        </div>
+
+
+                    </div>
+                    <div class="row mt-4 h5">
+                        <button class="col-12 col-md-4 btn mr-auto text-left" (click)="updateAnimations(character)">
+                            <mat-slide-toggle class="example-margin" [color]="'primary'" [checked]="character.animations"
+                                [disabled]="updateingAnimations.includes(character.id)">
+                                {{(character.animations) ? 'Animaciones encendidas': 'Animaciones apagadas'}}
+                            </mat-slide-toggle>
+                        </button>
+                        <button class="col-12 col-md-4 btn ml-auto text-right" [disabled]="updateingAnimations.includes(character.id)" (click)="selectCharacter(character)">
+                            Continuar
+                            <fa-icon class="ml-3" [icon]="faRight" size="lg"></fa-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 mb-3">
+            <div class="card">
+                <div class="card-body d-flex flex-column" [formGroup]="characterForm">
+                    <div class="d-flex">
+                        <fa-icon [icon]="faUserPlus" size="3x"></fa-icon>
+                        <div class="my-auto ml-4 h4">
+                            Nuevo personaje:
+                        </div>
+                    </div>
+                    <div class="my-3 ml-4 py-3">
+                        <input class="form-control" type="text" formControlName="name"
+                            placeholder="Nombre del personaje">
+                    </div>
+                    <div class="ml-auto mt-4h5" (click)="createCharacter()">
+                        Crear
+                        <fa-icon class="ml-3" [icon]="faRight" size="lg"></fa-icon>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+    </div>
+</div>

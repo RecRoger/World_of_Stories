@@ -1,0 +1,31 @@
+<ng-container *ngIf="place">
+    <div class="description-tale">
+        <div>
+            <h2>
+                <app-animated-fragment [tale]="[{text: place.name, animation: 'title'}]"
+                    (finish)="titleAnimationEnd = true;"></app-animated-fragment>
+            </h2>
+        </div>
+
+        <ng-container *ngIf="place.entry && titleAnimationEnd">
+            <div class="mt-3" *ngIf="(place.entry | getRandom) as entry">
+                <app-animated-fragment [animations]="character.animations" [tale]="entry.tale" (finish)="finishEntry(entry.id)">
+                </app-animated-fragment>
+            </div>
+        </ng-container>
+
+    </div>
+
+</ng-container>
+<ng-container *ngIf="showNpcs">
+    <div class="city-selector border-top">
+        <div class="d-flex py-2 col-12 col-md-4 mx-md-auto" (click)="openSelection()">
+            <div class="h5 mr-auto">
+                ¿Qué te gustaría visitar?
+            </div>
+            <div class="ml-auto my-auto">
+                <fa-icon [icon]="faDown" size="xl"></fa-icon>
+            </div>
+        </div>
+    </div>
+</ng-container>
