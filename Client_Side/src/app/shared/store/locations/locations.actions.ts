@@ -1,5 +1,5 @@
 import { RequestNewCity, RequestPublishCity, TaleEdition, NewCityTale, RequestGetPlaces, RequestNewPlace, RequestPublishPlace, NewPlaceTale, RequestGetPlace } from 'wos-api';
-import { CityTabs, PlaceTabs } from '../../../../../../client/src/app/models/constants';
+import { CityTabs, PlaceTabs } from '../../../../../../client/src/app/core/models/constants';
 
 export class GetAllCities {
     static readonly type = '[Locations] Get All Cities';

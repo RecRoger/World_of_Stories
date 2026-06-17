@@ -6,6 +6,7 @@ export const citiesPaths = {
   // ==========================================
   '/cities': {
     get: {
+      operationId: 'getCities',
       tags: ['Cities'],
       summary: 'Obtener todas las ciudades (Listado Ligero)',
       description: 'Retorna todas las ciudades de la base de datos. Excluye automáticamente arrays pesados (description, travel, places) para optimizar el rendimiento de la red.',
@@ -49,6 +50,7 @@ export const citiesPaths = {
       }
     },
     post: {
+      operationId: 'createCity',
       tags: ['Cities'],
       summary: 'Crear una nueva ciudad',
       description: 'Registra una ciudad en la base de datos con validación de nombre único. Inicializa los relatos de descripción y viaje como borradores.',
@@ -110,6 +112,7 @@ export const citiesPaths = {
   },
   '/cities/{id}': {
     get: {
+      operationId: 'getCity',
       tags: ['Cities'],
       summary: 'Obtener el detalle profundo de una ciudad',
       description: 'Recupera una ciudad completa por su ID con todos sus arrays hidratados (descriptions, travels, places). Actúa con los virtuals expuestos.',
@@ -145,7 +148,60 @@ export const citiesPaths = {
         404: { description: 'No se encontró la ciudad especificada.' }
       }
     },
+    patch: {
+      operationId: 'updateCity',
+      tags: ['Cities'],
+      summary: 'Cambiar estado de publicación de una ciudad',
+      description: 'Publica o despublica una ciudad calculando de forma automática la fecha de publicación.',
+      parameters: [
+        {
+          name: 'id',
+          in: 'path',
+          required: true,
+          schema: { type: 'string' }
+        }
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              required: ['name'],
+              properties: {
+                name: { type: 'string' },
+                userName: { type: 'string' },
+              }
+            }
+          }
+        }
+      },
+      responses: {
+        200: {
+          description: 'Estado de publicación actualizado correctamente.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  ok: { type: 'boolean', example: true },
+                  message: { type: 'string', example: 'Ciudad publicada correctamente.' },
+                  data: {
+                    type: 'object',
+                    properties: {
+                      city: { $ref: '#/components/schemas/City' }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        404: { description: 'Ciudad no encontrada.' }
+      }
+    },
     delete: {
+      operationId: 'deleteCity',
       tags: ['Cities'],
       summary: 'Eliminar una ciudad por completo',
       description: 'Remueve de forma permanente el documento de la ciudad y todos los subdocumentos anidados (relatos y lugares).',
@@ -179,6 +235,7 @@ export const citiesPaths = {
   },
   '/cities/{id}/publish': {
     patch: {
+      operationId: 'publishCity',
       tags: ['Cities'],
       summary: 'Cambiar estado de publicación de una ciudad',
       description: 'Publica o despublica una ciudad calculando de forma automática la fecha de publicación.',
@@ -229,8 +286,13 @@ export const citiesPaths = {
       }
     }
   },
+
+  // ------------------------------------------
+  // Sub-CRUD: Descripcion de la Ciudad (City -> Description)
+  // ------------------------------------------
   '/cities/{cityId}/description': {
     patch: {
+      operationId: 'addCityDescription',
       tags: ['Cities'],
       summary: 'Añadir una descripción al array de la ciudad',
       parameters: [{ name: 'cityId', in: 'path', required: true, schema: { type: 'string' } }],
@@ -273,6 +335,7 @@ export const citiesPaths = {
       }
     },
     put: {
+      operationId: 'updateCityDescription',
       tags: ['Cities'],
       summary: 'Actualizar un relato de descripción existente',
       parameters: [{ name: 'cityId', in: 'path', required: true, schema: { type: 'string' } }],
@@ -321,9 +384,9 @@ export const citiesPaths = {
       }
     }
   },
-
   '/cities/{cityId}/description/{taleId}': {
     delete: {
+      operationId: 'removeCityDescription',
       tags: ['Cities'],
       summary: 'Eliminar una descripción del array',
       parameters: [
@@ -336,8 +399,12 @@ export const citiesPaths = {
     }
   },
 
+  // ------------------------------------------
+  // Sub-CRUD: Cuentos de viaje a la Ciudad (City -> Travel)
+  // ------------------------------------------
   '/cities/{cityId}/travel': {
     patch: {
+      operationId: 'addCityTravel',
       tags: ['Cities'],
       summary: 'Añadir un viaje al array de la ciudad',
       parameters: [{ name: 'cityId', in: 'path', required: true, schema: { type: 'string' } }],
@@ -379,6 +446,7 @@ export const citiesPaths = {
       }
     },
     put: {
+      operationId: 'updateCityTravel',
       tags: ['Cities'],
       summary: 'Actualizar un relato de viaje existente',
       parameters: [{ name: 'cityId', in: 'path', required: true, schema: { type: 'string' } }],
@@ -427,9 +495,9 @@ export const citiesPaths = {
       }
     }
   },
-
   '/cities/{cityId}/travel/{taleId}': {
     delete: {
+      operationId: 'removeCityTravel',
       tags: ['Cities'],
       summary: 'Eliminar un viaje del array',
       parameters: [

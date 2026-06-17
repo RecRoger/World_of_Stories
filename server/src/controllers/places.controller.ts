@@ -159,6 +159,54 @@ export const deletePlace = async (req: Request, res: Response): Promise<Response
 };
 
 
+// update Place
+export const updatePlace = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { placeId } = req.params;
+        const { place } = req.body;
+        console.log(`[PATCH] - updatePlace para Lugar: ${placeId}`);
+        if (!mongoose.Types.ObjectId.isValid(placeId)) {
+            return res.status(400).json({ ok: false, message: 'El ID del lugar provisto no es válido.' });
+        }
+        if (!place || Object.keys(place).length === 0) {
+            return res.status(400).json({ ok: false, message: 'No se enviaron datos para actualizar.' });
+        }
+
+        const updateFields: Record<string, any> = {};
+        for (const [key, value] of Object.entries(place)) {
+            if (key !== '_id') {
+                updateFields[`places.$[placeElem].${key}`] = value;
+            }
+        }
+
+        const updatedCity = await Cities.findOneAndUpdate(
+            { "places._id": placeId },
+            { $set: updateFields },
+            {
+                arrayFilters: [{ "placeElem._id": placeId }],
+                new: true,
+                runValidators: true
+            }
+        );
+        if (!updatedCity) {
+            return res.status(404).json({ ok: false, message: 'No se encontró la ciudad o el lugar solicitado.' });
+        }
+        const targetPlace = updatedCity.places.find((p: any) => p._id.toString() === placeId);
+        return res.status(200).json({
+            ok: true,
+            message: 'Lugar editado correctamente.',
+            data: {
+                place: targetPlace
+            }
+        });
+
+    } catch (err) {
+        console.error('[Error] - updatePlace:', err);
+        // Mantenemos tu logger personalizado para fallos internos
+        return logError(res, err, 'Error al actualizar el estado de publicación del lugar');
+    }
+};
+
 // publicar Place
 export const publishPlace = async (req: Request, res: Response): Promise<Response> => {
     try {

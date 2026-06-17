@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoaderComponent } from '../components/loader/loader.component';
 import { HeaderComponent } from '../components/header/header.component';
 import { AngularMaterials } from 'src/app/utils/material-modules';
 import { MessagesComponent } from '../components/messages/messages.component';
@@ -9,7 +8,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WriteDecisionComponent } from '../components/write-decision/write-decision.component';
 import { AnimatedFragmentComponent } from '../components/animated-fragment/animated-fragment.component';
 import { TeximateModule } from 'ngx-teximate';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TakeDecisionComponent } from '../components/take-decision/take-decision.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CityNamePipe } from './pipes/city-name.pipe';
@@ -25,7 +23,6 @@ export const SharedCommons = [
     ReactiveFormsModule,
     TeximateModule,
     AutosizeModule,
-    LoaderComponent,
     HeaderComponent,
     MessagesComponent,
     WriteFragmentsComponent,

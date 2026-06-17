@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, Input, OnDestroy } from '@angular
 import { FormBuilder, Validators } from '@angular/forms';
 import { Decision, DeciosionOption, Chapter } from 'wos-api';
 import { Subscription } from 'rxjs';
-import { isValid } from '../../utils/commons';
+import { isValid } from '../../../../../client/src/app/core/commons';
 import { SubjectSubscriber } from 'rxjs/internal/Subject';
 
 @Component({

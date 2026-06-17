@@ -156,6 +156,61 @@ export const saveNPC = async (req: Request, res: Response): Promise<Response> =>
 
 }
 
+// updates NPC
+export const updateNPC = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { npcId } = req.params;
+        const { npc } = req.body;
+        console.log(`[PATCH] - updateNPC ${npcId} - ${new Date().toISOString()}`);
+
+        if (!npc) {
+            return res.status(400).json({ ok: false, message: 'Faltan los datos de actualización.' });
+        }
+
+        let updates: any = {};
+        if (npc.name) updates.name = npc.name;
+        if (npc.title) updates.title = npc.title;
+        if (npc.npcType) updates.npcType = npc.npcType;
+        if (npc.items) updates.items = npc.items;
+
+        if (npc.description) {
+            updates['description.tale'] = npc.description;
+            updates['description.author'] = npc.author;
+        }
+        if (npc.meeting) {
+            updates['meeting.tale'] = npc.meeting;
+            updates['meeting.author'] = npc.author;
+        }
+        if (npc.rejected) {
+            updates['rejected.tale'] = npc.rejected;
+            updates['rejected.author'] = npc.author;
+        }
+
+        if (npc.decision) {
+            updates['decision.decisionType'] = npc.decision.decisionType;
+            updates['decision.amount'] = npc.decision.amount;
+            updates['decision.item'] = npc.decision.item;
+            updates['decision.options'] = npc.decision.options || [];
+        }
+
+        const edition = await Npcs.updateOne({ _id: npcId }, { $set: updates });
+
+        if (edition.matchedCount === 0) {
+            return res.status(404).json({ ok: false, message: 'No se encontró el NPC para actualizar.' });
+        }
+
+        const editedNpc = await Npcs.findById(npcId, { chapters: 0 }).lean();
+
+        return res.status(200).json({
+            ok: true,
+            data: { npc: formatNpc(editedNpc) }
+        });
+    } catch (err) {
+        console.error('[Error] - updateNPC:', err);
+        return logError(res, err, 'Error interno del servidor al intentar modificar el npcs');
+    }
+};
+
 // delete NPCs
 export const deleteNPCs = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -213,60 +268,5 @@ export const publishNPC = async (req: Request, res: Response): Promise<Response>
     } catch (err) {
         console.error('[Error] - publishNPC:', err);
         return logError(res, err, 'Error interno del servidor al intentar publicar el npcs');
-    }
-};
-
-// updates NPC
-export const updateNPC = async (req: Request, res: Response): Promise<Response> => {
-    try {
-        const { npcId } = req.params;
-        const { npc } = req.body;
-        console.log(`[PATCH] - updateNPC ${npcId} - ${new Date().toISOString()}`);
-
-        if (!npc) {
-            return res.status(400).json({ ok: false, message: 'Faltan los datos de actualización.' });
-        }
-
-        let updates: any = {};
-        if (npc.name) updates.name = npc.name;
-        if (npc.title) updates.title = npc.title;
-        if (npc.npcType) updates.npcType = npc.npcType;
-        if (npc.items) updates.items = npc.items;
-
-        if (npc.description) {
-            updates['description.tale'] = npc.description;
-            updates['description.author'] = npc.author;
-        }
-        if (npc.meeting) {
-            updates['meeting.tale'] = npc.meeting;
-            updates['meeting.author'] = npc.author;
-        }
-        if (npc.rejected) {
-            updates['rejected.tale'] = npc.rejected;
-            updates['rejected.author'] = npc.author;
-        }
-
-        if (npc.decision) {
-            updates['decision.decisionType'] = npc.decision.decisionType;
-            updates['decision.amount'] = npc.decision.amount;
-            updates['decision.item'] = npc.decision.item;
-            updates['decision.options'] = npc.decision.options || [];
-        }
-
-        const edition = await Npcs.updateOne({ _id: npcId }, { $set: updates });
-
-        if (edition.matchedCount === 0) {
-            return res.status(404).json({ ok: false, message: 'No se encontró el NPC para actualizar.' });
-        }
-
-        const editedNpc = await Npcs.findById(npcId, { chapters: 0 }).lean();
-
-        return res.status(200).json({
-            ok: true,
-            data: { npc: formatNpc(editedNpc) }
-        });
-    } catch (err) {
-        console.error('[Error] - updateNPC:', err);
-        return logError(res, err, 'Error interno del servidor al intentar modificar el npcs');
     }
 };

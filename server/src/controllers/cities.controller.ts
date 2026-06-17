@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Cities, { CityInterface } from '../schemas/cities.model.js';
 import { logError } from './common-logs.js';
 import { TaleInterface } from '../schemas/tale.model.js';
+import mongoose from 'mongoose';
 
 
 // get all cities without places
@@ -136,6 +137,51 @@ export const deleteCity = async (req: Request, res: Response): Promise<Response>
     } catch (err) {
         console.error('[Error] - deleteCity:', err);
         return logError(res, err, 'Error interno del servidor al intentar eliminar la ciudad');
+    }
+}
+
+// actualizar City
+export const updateCity = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { id } = req.params;
+        const { city } = req.body;
+        console.log(`[PATCH] - updateCity para el ID: ${id} - ${new Date().toISOString()}`);
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ ok: false, message: 'El ID de la ciudad provisto no es válido.' });
+        }
+        if (!city || Object.keys(city).length === 0) {
+            return res.status(400).json({ ok: false, message: 'No se enviaron datos válidos para actualizar.' });
+        }
+        const updateFields: Record<string, any> = {};
+        for (const [key, value] of Object.entries(city)) {
+            if (key !== '_id' && key !== 'places') {
+                updateFields[key] = value;
+            }
+        }
+        const updatedCity = await Cities.findByIdAndUpdate(
+            id,
+            { $set: updateFields },
+            {
+                new: true,
+                runValidators: true,
+            }
+        );
+        if (!updatedCity) {
+            return res.status(404).json({
+                ok: false,
+                message: 'No se encontró la ciudad para actualizar.'
+            });
+        }
+        return res.status(200).json({
+            ok: true,
+            message: 'Ciudad actualizada correctamente.',
+            data: {
+                city: updatedCity
+            }
+        });
+    } catch (err) {
+        console.error('[Error] - updateCity:', err);
+        return logError(res, err, 'Error interno del servidor al intentar actualizar la ciudad');
     }
 }
 

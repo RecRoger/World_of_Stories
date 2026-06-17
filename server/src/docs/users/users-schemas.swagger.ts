@@ -34,7 +34,7 @@ export const userSchemas = {
   },
   User: {
     type: 'object',
-    required: ['email', 'username', 'password', 'rol'],
+    required: ['email', 'username', 'password'],
     properties: {
       _id: {
         type: 'string',

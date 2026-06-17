@@ -2,7 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectorRef, OnDe
 import { FormBuilder, Validators } from '@angular/forms';
 import { ReadFragment } from 'wos-api';
 import { Subscription, timer } from 'rxjs';
-import { AnimationsTypes } from '../../../../../client/src/app/models/constants';
+import { AnimationsTypes } from '../../../../../client/src/app/core/models/constants';
 import { faCogs } from '@fortawesome/free-solid-svg-icons';
 
 @Component({

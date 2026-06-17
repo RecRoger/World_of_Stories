@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { addPlaceDescription, addPlaceEntry, deletePlace, getCityPlaces, getOnePlace, publishPlace, removePlaceDescription, removePlaceEntry, savePlace, updatePlaceDescription, updatePlaceEntry } from '../controllers/places.controller.js';
+import { addPlaceDescription, addPlaceEntry, deletePlace, getCityPlaces, getOnePlace, publishPlace, removePlaceDescription, removePlaceEntry, savePlace, updatePlace, updatePlaceDescription, updatePlaceEntry } from '../controllers/places.controller.js';
 
 const PlacesRouter = Router();
 
@@ -9,6 +9,7 @@ PlacesRouter.route('/city/:cityId')
 
 PlacesRouter.route('/:placeId')
   .get(getOnePlace)
+  .patch(updatePlace)
   .delete(deletePlace);
 PlacesRouter.patch('/:placeId/publish', publishPlace);
 

@@ -3,6 +3,7 @@
 export const chaptersPaths = {
   '/chapters/npc/{npcId}': {
     get: {
+      operationId: 'getNpcChapters',
       tags: ['Chapters'],
       summary: 'Obtener el listado simplificado de capítulos de un NPC',
       parameters: [
@@ -22,6 +23,7 @@ export const chaptersPaths = {
   },
   '/chapters/{id}': {
     get: {
+      operationId: 'gteChapter',
       tags: ['Chapters'],
       summary: 'Obtener el detalle profundo de un capítulo por su ID propio',
       parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' }, description: 'ID único del capítulo' }],
@@ -31,6 +33,7 @@ export const chaptersPaths = {
       }
     },
     put: {
+      operationId: 'updateChapters',
       tags: ['Chapters'],
       summary: 'Actualizar un capítulo o inyectar nuevas decisiones en caliente',
       description: 'Permite modificar la narración de la historia. Si envías opciones dentro de `usersDecisions.options` sin propiedad `value`, el sistema creará pre-capítulos hijos de forma dinámica en la base de datos.',
@@ -62,6 +65,7 @@ export const chaptersPaths = {
       }
     },
     delete: {
+      operationId: 'deleteChapters',
       tags: ['Chapters'],
       summary: 'Eliminar un capítulo y limpiar referencias de decisiones huérfanas',
       description: 'Elimina el subdocumento del capítulo y ejecuta una limpieza atómica en cascada quitando cualquier opción de otros capítulos que apuntara a este ID.',
@@ -74,6 +78,7 @@ export const chaptersPaths = {
   },
   '/chapters/{id}/publish': {
     patch: {
+      operationId: 'publishChapters',
       tags: ['Chapters'],
       summary: 'Publicar o despublicar un capítulo y sincronizar visibilidad en el grafo',
       parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],

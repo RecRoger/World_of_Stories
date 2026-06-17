@@ -7,8 +7,6 @@ NpcsRouter.route('/place/:placeId')
     .get(getAllNPCs)
     .post(saveNPC);
 
-NpcsRouter
-
 NpcsRouter.route('/:npcId')
     .delete(deleteNPCs)
     .get(getOneNPC)

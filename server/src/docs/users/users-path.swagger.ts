@@ -3,6 +3,7 @@
 export const usersPaths = {
   '/users': {
     get: {
+      operationId: 'getUsers',
       tags: ['Users'],
       summary: 'Obtener todos los usuarios (getAllUsers)',
       description: 'Retorna el listado completo de los usuarios registrados en el sistema.',
@@ -15,9 +16,14 @@ export const usersPaths = {
                 type: 'object',
                 properties: {
                   ok: { type: 'boolean', example: true },
-                  users: {
-                    type: 'array',
-                    items: { $ref: '#/components/schemas/User' }
+                  data: {
+                    type: 'object',
+                    properties: {
+                      users: {
+                        type: 'array',
+                        items: { $ref: '#/components/schemas/User' }
+                      }
+                    },
                   }
                 }
               }
@@ -28,6 +34,7 @@ export const usersPaths = {
       }
     },
     post: {
+      operationId: 'createUser',
       tags: ['Users'],
       summary: 'Crear un nuevo usuario (saveUser)',
       description: 'Registra un usuario en la base de datos. Retorna un código 201 Created al completarse.',
@@ -39,7 +46,6 @@ export const usersPaths = {
               type: 'object',
               required: ['userName', 'email', 'password'],
               properties: {
-                userName: { type: 'string', example: 'Kaladin31' },
                 email: { type: 'string', format: 'email', example: 'kaladin@bridgefour.com' },
                 username: { type: 'string', format: 'text', example: 'kaladin' },
                 password: { type: 'string', format: 'password', example: 'Radiant1234' }
@@ -57,7 +63,12 @@ export const usersPaths = {
                 type: 'object',
                 properties: {
                   ok: { type: 'boolean', example: true },
-                  user: { $ref: '#/components/schemas/User' }
+                  data: {
+                    type: 'object',
+                    properties: {
+                      user: { $ref: '#/components/schemas/User' }
+                    },
+                  }
                 }
               }
             }
@@ -70,6 +81,7 @@ export const usersPaths = {
   },
   '/users/login': {
     post: {
+      operationId: 'login',
       tags: ['Users'],
       summary: 'Iniciar sesión (getOneUser)',
       description: 'Verifica las credenciales enviadas en el body por motivos de seguridad y retorna el usuario autenticado.',
@@ -97,7 +109,12 @@ export const usersPaths = {
                 type: 'object',
                 properties: {
                   ok: { type: 'boolean', example: true },
-                  user: { $ref: '#/components/schemas/User' }
+                  data: {
+                    type: 'object',
+                    properties: {
+                      user: { $ref: '#/components/schemas/User' }
+                    },
+                  }
                 }
               }
             }
@@ -114,6 +131,7 @@ export const usersPaths = {
   // ==========================================
   '/users/{id}': {
     get: {
+      operationId: 'getUser',
       tags: ['Users'],
       summary: 'Obtener usuario por ID (getUserById)',
       parameters: [
@@ -134,7 +152,12 @@ export const usersPaths = {
                 type: 'object',
                 properties: {
                   ok: { type: 'boolean', example: true },
-                  user: { $ref: '#/components/schemas/User' }
+                  data: {
+                    type: 'object',
+                    properties: {
+                      user: { $ref: '#/components/schemas/User' }
+                    },
+                  }
                 }
               }
             }
@@ -144,6 +167,7 @@ export const usersPaths = {
       }
     },
     put: {
+      operationId: 'updateUser',
       tags: ['Users'],
       summary: 'Actualizar un usuario completo (updateUser)',
       description: 'Reemplaza o actualiza las propiedades modificables del perfil de usuario mediante ID por parámetro.',
@@ -179,7 +203,12 @@ export const usersPaths = {
                 type: 'object',
                 properties: {
                   ok: { type: 'boolean', example: true },
-                  user: { $ref: '#/components/schemas/User' }
+                  data: {
+                    type: 'object',
+                    properties: {
+                      user: { $ref: '#/components/schemas/User' }
+                    },
+                  }
                 }
               }
             }
@@ -189,6 +218,7 @@ export const usersPaths = {
       }
     },
     delete: {
+      operationId: 'deleteUser',
       tags: ['Users'],
       summary: 'Eliminar un usuario (deleteUser)',
       description: 'Remueve físicamente el registro del usuario del sistema utilizando el ID por parámetro.',
@@ -225,6 +255,7 @@ export const usersPaths = {
   // ==========================================
   '/users/{id}/roles': {
     patch: {
+      operationId: 'setRole',
       tags: ['Users'],
       summary: 'Asignar o modificar un rol (setUserRol)',
       description: 'Aplica modificaciones parciales para establecer el rol del usuario (ej. cambiar a ADMIN_ROLE).',
@@ -259,7 +290,12 @@ export const usersPaths = {
                 type: 'object',
                 properties: {
                   ok: { type: 'boolean', example: true },
-                  user: { $ref: '#/components/schemas/User' }
+                  data: {
+                    type: 'object',
+                    properties: {
+                      user: { $ref: '#/components/schemas/User' }
+                    },
+                  }
                 }
               }
             }
@@ -269,6 +305,7 @@ export const usersPaths = {
       }
     },
     delete: {
+      operationId: 'removeRole',
       tags: ['Users'],
       summary: 'Quitar o revocar un rol (removeUserRol)',
       description: 'Uso semántico de DELETE para retirar un privilegio o resetear el rol asignado al usuario.',

@@ -98,7 +98,7 @@ export const getOneUser = async (req: Request, res: Response): Promise<Response>
 
 // Save new User
 export const saveUser = async (req: Request, res: Response): Promise<Response> => {
-    const { email, username, password } = req.body.user;
+    const { email, username, password } = req.body;
     console.log(`[POST] - saveUser para: ${username} - ${new Date().toISOString()}`);
     try {
         const exist = await Users.findOne({ $or: [{ username }, { email }] }, { _v: 0 })

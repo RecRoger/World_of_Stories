@@ -3,9 +3,9 @@ import { ReadFragment, Decision } from 'wos-api';
 import { TextAnimation } from 'ngx-teximate';
 import { rotateInDownLeft, fadeInDown, bounceInDown, bounceIn, fadeInLeft, fadeInRight, zoomIn, fadeIn } from 'ng-animate';
 import { trigger, transition, useAnimation, AnimationOptions } from '@angular/animations';
-import { AnimationsTypes } from '../../../../../client/src/app/models/constants';
+import { AnimationsTypes } from '../../../../../client/src/app/core/models/constants';
 import { Subscription, timer } from 'rxjs';
-import { isValid } from '../../utils/commons';
+import { isValid } from '../../../../../client/src/app/core/commons';
 import { faLongArrowAltLeft } from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder, Validators } from '@angular/forms';
 

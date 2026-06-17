@@ -3,6 +3,7 @@
 export const npcsPaths = {
   '/npcs/place/{placeId}': {
     get: {
+      operationId: 'getPlaceNpcs',
       tags: ['NPCs'],
       summary: 'Obtener todos los NPCs de un lugar',
       parameters: [
@@ -18,6 +19,7 @@ export const npcsPaths = {
       }
     },
     post: {
+      operationId: 'createNpc',
       tags: ['NPCs'],
       summary: 'Crear un nuevo NPC y asociarlo al lugar',
       parameters: [{ name: 'placeId', in: 'path', required: true, schema: { type: 'string' } }],
@@ -33,17 +35,8 @@ export const npcsPaths = {
     }
   },
   '/npcs/{id}': {
-    delete: {
-      tags: ['NPCs'],
-      summary: 'Eliminar un NPC de forma global',
-      description: 'Borra el NPC y remueve automáticamente su ID de cualquier lista de eventos asociados en ciudades.',
-      parameters: [{ name: 'npcId', in: 'path', required: true, schema: { type: 'string' } }],
-      responses: {
-        200: { description: 'NPC eliminado y desvinculado de su lugar de origen correctamente.' },
-        404: { description: 'El NPC que intentas eliminar no existe.' }
-      }
-    },
     get: {
+      operationId: 'getNpc',
       tags: ['NPCs'],
       summary: 'Obtener un NPC por ID',
       parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
@@ -53,6 +46,7 @@ export const npcsPaths = {
       }
     },
     put: {
+      operationId: 'updateNpc',
       tags: ['NPCs'],
       summary: 'Actualizar propiedades de un NPC',
       parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
@@ -66,10 +60,22 @@ export const npcsPaths = {
           404: { description: 'No se encontró el NPC para actualizar.' }
         }
       }
+    },
+    delete: {
+      operationId: 'deleteNpc',
+      tags: ['NPCs'],
+      summary: 'Eliminar un NPC de forma global',
+      description: 'Borra el NPC y remueve automáticamente su ID de cualquier lista de eventos asociados en ciudades.',
+      parameters: [{ name: 'npcId', in: 'path', required: true, schema: { type: 'string' } }],
+      responses: {
+        200: { description: 'NPC eliminado y desvinculado de su lugar de origen correctamente.' },
+        404: { description: 'El NPC que intentas eliminar no existe.' }
+      }
     }
   },
   '/npcs/{id}/publish': {
     patch: {
+      operationId: 'publishNpc',
       tags: ['NPCs'],
       summary: 'Publicar o despublicar un NPC de forma parcial',
       parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],

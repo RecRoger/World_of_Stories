@@ -13,6 +13,7 @@
   "paths": {
     "/users": {
       "get": {
+        "operationId": "getUsers",
         "tags": [
           "Users"
         ],
@@ -30,10 +31,15 @@
                       "type": "boolean",
                       "example": true
                     },
-                    "users": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/User"
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "users": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/User"
+                          }
+                        }
                       }
                     }
                   }
@@ -47,6 +53,7 @@
         }
       },
       "post": {
+        "operationId": "createUser",
         "tags": [
           "Users"
         ],
@@ -64,10 +71,6 @@
                   "password"
                 ],
                 "properties": {
-                  "userName": {
-                    "type": "string",
-                    "example": "Kaladin31"
-                  },
                   "email": {
                     "type": "string",
                     "format": "email",
@@ -100,8 +103,13 @@
                       "type": "boolean",
                       "example": true
                     },
-                    "user": {
-                      "$ref": "#/components/schemas/User"
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user": {
+                          "$ref": "#/components/schemas/User"
+                        }
+                      }
                     }
                   }
                 }
@@ -119,6 +127,7 @@
     },
     "/users/login": {
       "post": {
+        "operationId": "login",
         "tags": [
           "Users"
         ],
@@ -162,8 +171,13 @@
                       "type": "boolean",
                       "example": true
                     },
-                    "user": {
-                      "$ref": "#/components/schemas/User"
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user": {
+                          "$ref": "#/components/schemas/User"
+                        }
+                      }
                     }
                   }
                 }
@@ -181,6 +195,7 @@
     },
     "/users/{id}": {
       "get": {
+        "operationId": "getUser",
         "tags": [
           "Users"
         ],
@@ -209,8 +224,13 @@
                       "type": "boolean",
                       "example": true
                     },
-                    "user": {
-                      "$ref": "#/components/schemas/User"
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user": {
+                          "$ref": "#/components/schemas/User"
+                        }
+                      }
                     }
                   }
                 }
@@ -223,6 +243,7 @@
         }
       },
       "put": {
+        "operationId": "updateUser",
         "tags": [
           "Users"
         ],
@@ -276,8 +297,13 @@
                       "type": "boolean",
                       "example": true
                     },
-                    "user": {
-                      "$ref": "#/components/schemas/User"
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user": {
+                          "$ref": "#/components/schemas/User"
+                        }
+                      }
                     }
                   }
                 }
@@ -290,6 +316,7 @@
         }
       },
       "delete": {
+        "operationId": "deleteUser",
         "tags": [
           "Users"
         ],
@@ -334,6 +361,7 @@
     },
     "/users/{id}/roles": {
       "patch": {
+        "operationId": "setRole",
         "tags": [
           "Users"
         ],
@@ -380,8 +408,13 @@
                       "type": "boolean",
                       "example": true
                     },
-                    "user": {
-                      "$ref": "#/components/schemas/User"
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user": {
+                          "$ref": "#/components/schemas/User"
+                        }
+                      }
                     }
                   }
                 }
@@ -394,6 +427,7 @@
         }
       },
       "delete": {
+        "operationId": "removeRole",
         "tags": [
           "Users"
         ],
@@ -438,6 +472,7 @@
     },
     "/cities": {
       "get": {
+        "operationId": "getCities",
         "tags": [
           "Cities"
         ],
@@ -496,6 +531,7 @@
         }
       },
       "post": {
+        "operationId": "createCity",
         "tags": [
           "Cities"
         ],
@@ -588,6 +624,7 @@
     },
     "/cities/{id}": {
       "get": {
+        "operationId": "getCity",
         "tags": [
           "Cities"
         ],
@@ -635,7 +672,80 @@
           }
         }
       },
+      "patch": {
+        "operationId": "updateCity",
+        "tags": [
+          "Cities"
+        ],
+        "summary": "Cambiar estado de publicación de una ciudad",
+        "description": "Publica o despublica una ciudad calculando de forma automática la fecha de publicación.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "userName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Estado de publicación actualizado correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Ciudad publicada correctamente."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "city": {
+                          "$ref": "#/components/schemas/City"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ciudad no encontrada."
+          }
+        }
+      },
       "delete": {
+        "operationId": "deleteCity",
         "tags": [
           "Cities"
         ],
@@ -681,6 +791,7 @@
     },
     "/cities/{id}/publish": {
       "patch": {
+        "operationId": "publishCity",
         "tags": [
           "Cities"
         ],
@@ -752,6 +863,7 @@
     },
     "/cities/{cityId}/description": {
       "patch": {
+        "operationId": "addCityDescription",
         "tags": [
           "Cities"
         ],
@@ -822,6 +934,7 @@
         }
       },
       "put": {
+        "operationId": "updateCityDescription",
         "tags": [
           "Cities"
         ],
@@ -903,6 +1016,7 @@
     },
     "/cities/{cityId}/description/{taleId}": {
       "delete": {
+        "operationId": "removeCityDescription",
         "tags": [
           "Cities"
         ],
@@ -934,6 +1048,7 @@
     },
     "/cities/{cityId}/travel": {
       "patch": {
+        "operationId": "addCityTravel",
         "tags": [
           "Cities"
         ],
@@ -1000,6 +1115,7 @@
         }
       },
       "put": {
+        "operationId": "updateCityTravel",
         "tags": [
           "Cities"
         ],
@@ -1081,6 +1197,7 @@
     },
     "/cities/{cityId}/travel/{taleId}": {
       "delete": {
+        "operationId": "removeCityTravel",
         "tags": [
           "Cities"
         ],
@@ -1112,6 +1229,7 @@
     },
     "/places/city/{cityId}": {
       "get": {
+        "operationId": "getCityPlaces",
         "tags": [
           "Places"
         ],
@@ -1180,6 +1298,7 @@
         }
       },
       "post": {
+        "operationId": "createPlace",
         "tags": [
           "Places"
         ],
@@ -1258,6 +1377,7 @@
     },
     "/places/{placeId}": {
       "get": {
+        "operationId": "getPlace",
         "tags": [
           "Places"
         ],
@@ -1305,7 +1425,49 @@
           }
         }
       },
+      "patch": {
+        "operationId": "updatePlace",
+        "tags": [
+          "Places"
+        ],
+        "summary": "Actualizar un lugar (updatePlace)",
+        "description": "Modifica de manera parcial el estado de publicación y setea automáticamente el campo publishDate.",
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "place"
+                ],
+                "properties": {
+                  "place": {
+                    "$ref": "#/components/schemas/Place"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Estado de publicación alterado con éxito."
+          }
+        }
+      },
       "delete": {
+        "operationId": "deletePlace",
         "tags": [
           "Places"
         ],
@@ -1350,6 +1512,7 @@
     },
     "/places/{placeId}/publish": {
       "patch": {
+        "operationId": "publishPlace",
         "tags": [
           "Places"
         ],
@@ -1391,8 +1554,9 @@
         }
       }
     },
-    "/places/:placeId/description": {
+    "/places/{placeId}/description": {
       "put": {
+        "operationId": "addPlaceDescription",
         "tags": [
           "Places"
         ],
@@ -1460,6 +1624,7 @@
         }
       },
       "patch": {
+        "operationId": "updatePlaceDescription",
         "tags": [
           "Places"
         ],
@@ -1521,6 +1686,7 @@
     },
     "/places/{placeId}/description/{taleId}": {
       "delete": {
+        "operationId": "removePlaceDescription",
         "tags": [
           "Places"
         ],
@@ -1550,8 +1716,9 @@
         }
       }
     },
-    "/places/:placeId/entry": {
+    "/places/{placeId}/entry": {
       "patch": {
+        "operationId": "addPlaceDesEntry",
         "tags": [
           "Places"
         ],
@@ -1618,6 +1785,7 @@
         }
       },
       "put": {
+        "operationId": "updatePlaceEntry",
         "tags": [
           "Places"
         ],
@@ -1678,6 +1846,7 @@
     },
     "/places/{placeId}/entry/{taleId}": {
       "delete": {
+        "operationId": "removePlaceEntry",
         "tags": [
           "Places"
         ],
@@ -1709,6 +1878,7 @@
     },
     "/npcs/place/{placeId}": {
       "get": {
+        "operationId": "getPlaceNpcs",
         "tags": [
           "NPCs"
         ],
@@ -1767,6 +1937,7 @@
         }
       },
       "post": {
+        "operationId": "createNpc",
         "tags": [
           "NPCs"
         ],
@@ -1837,32 +2008,8 @@
       }
     },
     "/npcs/{id}": {
-      "delete": {
-        "tags": [
-          "NPCs"
-        ],
-        "summary": "Eliminar un NPC de forma global",
-        "description": "Borra el NPC y remueve automáticamente su ID de cualquier lista de eventos asociados en ciudades.",
-        "parameters": [
-          {
-            "name": "npcId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "NPC eliminado y desvinculado de su lugar de origen correctamente."
-          },
-          "404": {
-            "description": "El NPC que intentas eliminar no existe."
-          }
-        }
-      },
       "get": {
+        "operationId": "getNpc",
         "tags": [
           "NPCs"
         ],
@@ -1887,6 +2034,7 @@
         }
       },
       "put": {
+        "operationId": "updateNpc",
         "tags": [
           "NPCs"
         ],
@@ -1938,10 +2086,37 @@
             }
           }
         }
+      },
+      "delete": {
+        "operationId": "deleteNpc",
+        "tags": [
+          "NPCs"
+        ],
+        "summary": "Eliminar un NPC de forma global",
+        "description": "Borra el NPC y remueve automáticamente su ID de cualquier lista de eventos asociados en ciudades.",
+        "parameters": [
+          {
+            "name": "npcId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "NPC eliminado y desvinculado de su lugar de origen correctamente."
+          },
+          "404": {
+            "description": "El NPC que intentas eliminar no existe."
+          }
+        }
       }
     },
     "/npcs/{id}/publish": {
       "patch": {
+        "operationId": "publishNpc",
         "tags": [
           "NPCs"
         ],
@@ -1981,6 +2156,7 @@
     },
     "/chapters/npc/{npcId}": {
       "get": {
+        "operationId": "getNpcChapters",
         "tags": [
           "Chapters"
         ],
@@ -2052,6 +2228,7 @@
     },
     "/chapters/{id}": {
       "get": {
+        "operationId": "gteChapter",
         "tags": [
           "Chapters"
         ],
@@ -2097,6 +2274,7 @@
         }
       },
       "put": {
+        "operationId": "updateChapters",
         "tags": [
           "Chapters"
         ],
@@ -2154,6 +2332,7 @@
         }
       },
       "delete": {
+        "operationId": "deleteChapters",
         "tags": [
           "Chapters"
         ],
@@ -2181,6 +2360,7 @@
     },
     "/chapters/{id}/publish": {
       "patch": {
+        "operationId": "publishChapters",
         "tags": [
           "Chapters"
         ],
@@ -2296,8 +2476,7 @@
         "required": [
           "email",
           "username",
-          "password",
-          "rol"
+          "password"
         ],
         "properties": {
           "_id": {

@@ -1,6 +1,7 @@
 export const placesPaths = {
   '/places/city/{cityId}': {
     get: {
+      operationId: 'getCityPlaces',
       tags: ['Places'],
       summary: 'Obtener todos los lugares de una ciudad (getCityPlaces)',
       description: 'Retorna los lugares que pertenecen a una ciudad específica. Soporta filtrado por el query param ?published=true.',
@@ -45,6 +46,7 @@ export const placesPaths = {
       }
     },
     post: {
+      operationId: 'createPlace',
       tags: ['Places'],
       summary: 'Crear y guardar un nuevo lugar en una ciudad (savePlace)',
       description: 'Inserta un nuevo lugar dentro del array de lugares de la ciudad indicada.',
@@ -95,6 +97,7 @@ export const placesPaths = {
   },
   '/places/{placeId}': {
     get: {
+      operationId: 'getPlace',
       tags: ['Places'],
       summary: 'Obtener detalle completo de un solo lugar (getOnePlace)',
       description: 'Busca en toda la base de datos y retorna un único lugar por su ID. Devuelve todos los campos desglosados (events como array de IDs, descriptions y entries formateados).',
@@ -130,7 +133,41 @@ export const placesPaths = {
         404: { description: 'No se encontró el lugar especificado.' }
       }
     },
+    patch: {
+      operationId: 'updatePlace',
+      tags: ['Places'],
+      summary: 'Actualizar un lugar (updatePlace)',
+      description: 'Modifica de manera parcial el estado de publicación y setea automáticamente el campo publishDate.',
+      parameters: [
+        {
+          name: 'placeId',
+          in: 'path',
+          required: true,
+          schema: { type: 'string' }
+        }
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              required: ['place'],
+              properties: {
+                place: { type: Object, $ref: '#/components/schemas/Place' }
+              }
+            }
+          }
+        }
+      },
+      responses: {
+        200: {
+          description: 'Estado de publicación alterado con éxito.'
+        }
+      }
+    },
     delete: {
+      operationId: 'deletePlace',
       tags: ['Places'],
       summary: 'Eliminar un lugar por completo (deletePlace)',
       description: 'Remueve de forma definitiva el subdocumento del lugar sin requerir el ID de la ciudad.',
@@ -159,10 +196,11 @@ export const placesPaths = {
         },
         404: { description: 'Lugar no encontrado.' }
       }
-    }
+    },
   },
   '/places/{placeId}/publish': {
     patch: {
+      operationId: 'publishPlace',
       tags: ['Places'],
       summary: 'Publicar o despublicar un lugar (publishPlace)',
       description: 'Modifica de manera parcial el estado de publicación y setea automáticamente el campo publishDate.',
@@ -195,8 +233,13 @@ export const placesPaths = {
       }
     }
   },
-  '/places/:placeId/description': {
+
+  // ------------------------------------------
+  // Sub-CRUD: Descripciones del Lugar (Places -> Description)
+  // ------------------------------------------
+  '/places/{placeId}/description': {
     put: {
+      operationId: 'addPlaceDescription',
       tags: ['Places'],
       summary: 'Añadir un relato de descripción a un lugar (addPlaceDescription)',
       description: 'Inserta una nueva descripción en el array del lugar.',
@@ -239,6 +282,7 @@ export const placesPaths = {
       }
     },
     patch: {
+      operationId: 'updatePlaceDescription',
       tags: ['Places'],
       summary: 'Actualizar un relato de descripción específico (updatePlaceDescription)',
       description: 'Actualiza de forma atómica usando arrayFilters el relato interno del lugar.',
@@ -272,6 +316,7 @@ export const placesPaths = {
   },
   '/places/{placeId}/description/{taleId}': {
     delete: {
+      operationId: 'removePlaceDescription',
       tags: ['Places'],
       summary: 'Eliminar una descripción del lugar (removePlaceDescription)',
       parameters: [
@@ -287,8 +332,9 @@ export const placesPaths = {
   // ------------------------------------------
   // Sub-CRUD: Cuentos de Entrada del Lugar (Places -> Entry)
   // ------------------------------------------
-  '/places/:placeId/entry': {
+  '/places/{placeId}/entry': {
     patch: {
+      operationId: 'addPlaceDesEntry',
       tags: ['Places'],
       summary: 'Añadir un cuento de entrada a un lugar (addPlaceEntry)',
       parameters: [{ name: 'placeId', in: 'path', required: true, schema: { type: 'string' } }],
@@ -330,6 +376,7 @@ export const placesPaths = {
       }
     },
     put: {
+      operationId: 'updatePlaceEntry',
       tags: ['Places'],
       summary: 'Actualizar un cuento de entrada específico (updatePlaceEntry)',
       parameters: [{ name: 'placeId', in: 'path', required: true, schema: { type: 'string' } }],
@@ -360,9 +407,9 @@ export const placesPaths = {
       }
     }
   },
-
   '/places/{placeId}/entry/{taleId}': {
     delete: {
+      operationId: 'removePlaceEntry',
       tags: ['Places'],
       summary: 'Eliminar un cuento de entrada del lugar (removePlaceEntry)',
       parameters: [
