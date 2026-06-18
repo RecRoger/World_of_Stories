@@ -1,80 +1,99 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { AfterViewInit, Component, DestroyRef, inject } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Store } from '@ngxs/store';
-import { Subscription } from 'rxjs';
-import { UpdateUser } from 'src/app/shared/store/users/users.actions';
-import { UserState } from 'src/app/shared/store/users/users.reducer';
-import { isValid } from 'src/app/utils/commons';
-import { User, RequestUpdateUser } from 'wos-api';
+import { User } from '@core/api';
+import { isValid } from '@core/commons';
+import { AuthService } from '@core/services/auth.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, tap } from 'rxjs';
+import { AlertService } from '@core/services/alert.service';
+import { AlertTypes } from '@core/models/constants';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { LoaderComponent } from '@components/loader/loader.component';
+import { MatIconModule } from '@angular/material/icon';
+import { AsyncPipe, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-user-data',
   templateUrl: './user-data.component.html',
   styleUrls: ['./user-data.component.scss'],
-  standalone: true
+  imports: [AsyncPipe, MatInputModule, MatButtonModule, MatFormFieldModule, MatIconModule, ReactiveFormsModule, LoaderComponent]
 })
-export class UserDataComponent implements OnInit, OnDestroy {
+export class UserDataComponent implements AfterViewInit {
 
-  constructor(private fb: FormBuilder, private store: Store, private router: Router) { }
+  private readonly fb = inject(FormBuilder)
+  private readonly router = inject(Router)
+  private readonly authService = inject(AuthService)
+  private readonly alertService = inject(AlertService)
+  private readonly destroyRef = inject(DestroyRef);
 
-  userForm: FormGroup;
-  passwordChangeIndicator = false;
+  public user$ = this.authService.user$.pipe(tap(user => {
+    this.userForm.patchValue({ ...user })
+  }))
 
-  subscriptions: Subscription[] = [];
+  public userForm: FormGroup = this.fb.group({
+    id: [null, [Validators.required]],
+    email: [null, [Validators.required]],
+    username: [null, [Validators.required]],
+    password: [null, []],
+    confirmation: [null, []],
+  });;
 
-  async ngOnInit() {
-    const user: User = this.store.selectSnapshot(UserState.getUser);
+  public passwordChangeIndicator = false;
+  public loading = false;
 
-    this.userForm = this.fb.group({
-      id: [user.id, [Validators.required]],
-      email: [user.email, [Validators.required]],
-      username: [user.username, [Validators.required]],
-      password: [user.password, [Validators.required]],
-      confirmation: [user.password, [Validators.required]],
-      // rol: [user.rol, []]
-    });
-    // this.userForm.get('confirmation').disable();
+  public get confirmationFormErrors(): ValidationErrors {
+    return this.userForm.get('confirmation')?.errors as ValidationErrors || {}
+  }
 
-    this.subscriptions.push(
-      this.userForm.get('password').valueChanges.subscribe(val => {
-        const confirm = this.userForm.get('confirmation');
-        if (val !== user.password) {
-          // confirm.setValidators([Validators.required]);
-          // confirm.setValue(null);
-          // confirm.enable();
+  public ngAfterViewInit(): void {
+    this.userForm.get('password')?.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(val => {
+        const passControl = this.userForm.get('password');
+        const confirmControl = this.userForm.get('confirmation');
+        if (val && passControl?.dirty) {
+          confirmControl?.setValidators([Validators.required]);
+          confirmControl?.setValue(null);
+          // confirmControl.enable();
           this.passwordChangeIndicator = true;
         } else {
-          // confirm.disable();
+          // confirmControl.disable();
           this.passwordChangeIndicator = false;
-          // confirm.setValidators([]);
-          // confirm.setValue(user.password);
+          confirmControl?.setValidators([]);
+          confirmControl?.setValue('');
         }
       })
-    )
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.forEach(subs => subs.unsubscribe());
   }
 
 
-  async saveEdition() {
+
+  public saveEdition(): void {
     if (isValid(this.userForm)) {
       if (!this.checkPasswords(this.userForm)) {
-        const updateReq: RequestUpdateUser = {
-          user: {
-            id: this.userForm.get('id').value,
-            email: this.userForm.get('email').value,
-            username: this.userForm.get('username').value,
-            password: this.userForm.get('password').value
-          }
+        this.loading = true
+        const updatedUser: User = {
+          id: this.userForm.get('id')?.value,
+          email: this.userForm.get('email')?.value,
+          username: this.userForm.get('username')?.value,
+          password: this.userForm.get('password')?.value || undefined
         };
-        const state = await this.store.dispatch(new UpdateUser(updateReq)).toPromise();
-
-
+        this.authService.updateUser(updatedUser)
+          .pipe(catchError(err => {
+            this.alertService.setError(err)
+            this.loading = false
+            throw err
+          }))
+          .subscribe(response => {
+            if (response) {
+              this.loading = false
+              this.alertService.setAlert('Modificacion exitosa', AlertTypes.success)
+            }
+          })
       } else {
-        this.userForm.get('confirmation').setErrors({ notSame: true });
+        this.userForm.get('confirmation')?.setErrors({ notSame: true });
       }
     }
   }
@@ -85,10 +104,12 @@ export class UserDataComponent implements OnInit, OnDestroy {
 
 
   checkPasswords(group: AbstractControl) {
-    const pass = group.get('password').value;
-    const confirmPass = group.get('confirmation').value;
+    const pass = group.get('password')?.value;
+    const confirmPass = group.get('confirmation')?.value;
 
     return pass === confirmPass ? null : true;
   }
 
 }
+
+

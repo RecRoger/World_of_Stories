@@ -44,7 +44,7 @@ export const usersPaths = {
           'application/json': {
             schema: {
               type: 'object',
-              required: ['userName', 'email', 'password'],
+              required: ['username', 'email', 'password'],
               properties: {
                 email: { type: 'string', format: 'email', example: 'kaladin@bridgefour.com' },
                 username: { type: 'string', format: 'text', example: 'kaladin' },
@@ -186,7 +186,7 @@ export const usersPaths = {
             schema: {
               type: 'object',
               properties: {
-                userName: { type: 'string', example: 'Kaladin_BridgeFour' },
+                username: { type: 'string', example: 'Kaladin_BridgeFour' },
                 email: { type: 'string', format: 'email', example: 'kaladin@bridgefour.com' },
                 password: { type: 'string', format: 'password', example: 'kaladin123' }
               }

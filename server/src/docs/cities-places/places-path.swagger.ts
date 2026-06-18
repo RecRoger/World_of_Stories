@@ -67,7 +67,7 @@ export const placesPaths = {
               required: ['name'],
               properties: {
                 name: { type: 'string', example: 'Palacio de Elendel' },
-                userName: { type: 'string', example: 'Palacio de Elendel' },
+                username: { type: 'string', example: 'Palacio de Elendel' },
                 description: { type: 'Object', $ref: '#/components/schemas/Readable' },
                 entry: { type: 'Object', $ref: '#/components/schemas/Readable' }
               }

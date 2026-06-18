@@ -60,10 +60,10 @@ export const citiesPaths = {
           'application/json': {
             schema: {
               type: 'object',
-              required: ['name', 'userName'],
+              required: ['name', 'username'],
               properties: {
                 name: { type: 'string' },
-                userName: { type: 'string' },
+                username: { type: 'string' },
                 description: { type: 'Object', $ref: '#/components/schemas/Readable' },
                 travel: { type: 'Object', $ref: '#/components/schemas/Readable' }
               }
@@ -170,7 +170,7 @@ export const citiesPaths = {
               required: ['name'],
               properties: {
                 name: { type: 'string' },
-                userName: { type: 'string' },
+                username: { type: 'string' },
               }
             }
           }

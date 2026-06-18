@@ -87,7 +87,7 @@ export const getOnePlace = async (req: Request, res: Response): Promise<Response
 export const savePlace = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { cityId } = req.params;
-        const { userName, name, description, entry } = req.body;
+        const { usermame, name, description, entry } = req.body;
         console.log(`[POST] - savePlace: ${name} en Ciudad: ${cityId}`);
 
         const updatedCity = await Cities.findByIdAndUpdate(
@@ -98,13 +98,13 @@ export const savePlace = async (req: Request, res: Response): Promise<Response> 
                         name: name,
                         description: [{
                             tale: description,
-                            author: userName,
+                            author: usermame,
                             published: false,
                             writeDate: new Date()
                         }],
                         entry: [{
                             tale: entry,
-                            author: userName,
+                            author: usermame,
                             published: false,
                             writeDate: new Date()
                         }],	// cuento de entrada al lugar.

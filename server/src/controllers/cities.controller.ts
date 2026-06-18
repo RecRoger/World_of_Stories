@@ -67,8 +67,8 @@ export const getOneCity = async (req: Request, res: Response): Promise<Response>
 // save new City
 export const saveCity = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const { userName, name, description, travel } = req.body;
-        console.log(`[POST] - saveCity para: ${name} by ${userName} - ${new Date().toISOString()}`);
+        const { username, name, description, travel } = req.body;
+        console.log(`[POST] - saveCity para: ${name} by ${username} - ${new Date().toISOString()}`);
 
         const cityExists = await Cities.findOne({ name }).lean();
         if (cityExists) {
@@ -83,12 +83,12 @@ export const saveCity = async (req: Request, res: Response): Promise<Response> =
             name,
             description: [{
                 tale: description,
-                author: userName,
+                author: username,
                 published: false
             }],
             travel: [{
                 tale: travel,
-                author: userName,
+                author: username,
                 published: false
             }],
             places: [],

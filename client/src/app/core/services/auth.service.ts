@@ -26,6 +26,8 @@ export class AuthService {
     map(state => state.user)
   );
 
+  public userSnaphot: User | null = this.state$.value.user;
+
   public currentUser = signal<User | null>(null);
   public isAuthenticated = computed(() => !!this.currentUser());
   public isLoading = signal<boolean>(false);
@@ -71,6 +73,24 @@ export class AuthService {
       catchError((err) => {
         const errMsg = err.error?.message || 'Error al registrar usuario';
         this.updateState({ user: null, error: errMsg });
+        this.currentUser.set(null);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  public updateUser(user: User): Observable<User | null> {
+    const { id, email, username, password } = user
+    return this.userService.updateUser({ id: id || '', requestBody: { email, username, password } }).pipe(
+      map((response) => {
+        const user = response.data?.user || null;
+        this.updateState({ user, error: null });
+        localStorage.setItem('wos_user', JSON.stringify(user));
+        return user
+      }),
+      catchError((err) => {
+        const errMsg = err.error?.message || 'Error al registrar usuario';
+        this.updateState({ error: errMsg });
         this.currentUser.set(null);
         return throwError(() => err);
       })

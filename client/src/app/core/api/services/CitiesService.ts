@@ -57,7 +57,7 @@ export class CitiesService {
     }: {
         requestBody: {
             name: string;
-            userName: string;
+            username: string;
             description?: Readable;
             travel?: Readable;
         },
@@ -122,7 +122,7 @@ export class CitiesService {
         id: string,
         requestBody: {
             name: string;
-            userName?: string;
+            username?: string;
         },
     }): Observable<{
         ok?: boolean;

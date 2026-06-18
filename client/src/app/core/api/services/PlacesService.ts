@@ -67,7 +67,7 @@ export class PlacesService {
         cityId: string,
         requestBody: {
             name: string;
-            userName?: string;
+            username?: string;
             description?: Readable;
             entry?: Readable;
         },

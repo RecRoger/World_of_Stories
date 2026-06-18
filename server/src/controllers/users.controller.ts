@@ -137,7 +137,7 @@ export const saveUser = async (req: Request, res: Response): Promise<Response> =
 // Update
 export const updateUser = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
-    const { email, username, password } = req.body.user;
+    const { email, username, password } = req.body;
     console.log(`[POST] - updateUser para: ${username || email || id} - ${new Date().toISOString()}`);
     try {
         const exist = await Users.findOne({

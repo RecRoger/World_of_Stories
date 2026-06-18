@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import {
   MatBottomSheet,
 } from '@angular/material/bottom-sheet';
-import { filter, map } from 'rxjs';
+import { filter, map, Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { MainRoutes } from '@core/models/constants';
 import { UserNavComponent } from '@pages/user/components/user-nav/user-nav.component';
@@ -23,21 +23,26 @@ export class HeaderComponent {
 
   public readonly mainRoutes = MainRoutes
 
-  public baseRoute$ = this.router.events.pipe(
+  public readonly homeRoute = 'user/write-or-read'
+
+  public baseRoute$: Observable<string | null> = this.router.events.pipe(
     filter(event => event instanceof NavigationEnd),
-    map((event: NavigationEnd) => event.urlAfterRedirects?.split('/')[1] || MainRoutes.WELCOME),
+    map((event: NavigationEnd) => event.urlAfterRedirects?.slice(1)),
     map((baseRoute: string) => !([MainRoutes.LOGIN, MainRoutes.WELCOME] as string[]).includes(baseRoute) ? baseRoute : null)
   )
 
   private _bottomSheet = inject(MatBottomSheet);
 
   public getOut(): void {
-    this.router.navigate(['/user/write-or-read']);
+    this.router.navigate([`/${this.homeRoute}`]);
   }
 
   public openMenu(route: string): void {
+
     let navComponent
-    switch (route) {
+
+    const baseRoute = route?.split('/')[1] || MainRoutes.WELCOME
+    switch (baseRoute) {
       // case MainRoutes.USER:
       default:
         navComponent = UserNavComponent

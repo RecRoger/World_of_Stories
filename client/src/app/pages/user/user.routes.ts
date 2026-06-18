@@ -10,9 +10,9 @@ export const USER_ROUTES: Routes = [
     path: 'write-or-read', pathMatch: 'full',
     loadComponent: () => import('./components/write-or-read/write-or-read.component').then(c => c.WriteOrReadComponent)
   },
-  // {
-  //   path: 'settings',
-  //   loadComponent: () => import('./pages/user/components/user-login/user-login.component').then(c => c.UserLoginComponent)
-  // },
+  {
+    path: 'settings',
+    loadComponent: () => import('./components/user-data/user-data.component').then(c => c.UserDataComponent)
+  },
 
 ];

@@ -66,7 +66,7 @@
               "schema": {
                 "type": "object",
                 "required": [
-                  "userName",
+                  "username",
                   "email",
                   "password"
                 ],
@@ -266,7 +266,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "userName": {
+                  "username": {
                     "type": "string",
                     "example": "Kaladin_BridgeFour"
                   },
@@ -545,13 +545,13 @@
                 "type": "object",
                 "required": [
                   "name",
-                  "userName"
+                  "username"
                 ],
                 "properties": {
                   "name": {
                     "type": "string"
                   },
-                  "userName": {
+                  "username": {
                     "type": "string"
                   },
                   "description": {
@@ -702,7 +702,7 @@
                   "name": {
                     "type": "string"
                   },
-                  "userName": {
+                  "username": {
                     "type": "string"
                   }
                 }
@@ -1328,7 +1328,7 @@
                     "type": "string",
                     "example": "Palacio de Elendel"
                   },
-                  "userName": {
+                  "username": {
                     "type": "string",
                     "example": "Palacio de Elendel"
                   },

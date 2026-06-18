@@ -4,7 +4,6 @@ import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validatio
 import { Validators } from '@angular/forms';
 import { AuthService } from '@core/services/auth.service';
 import { isValid } from '@core/commons';
-import { NgClass } from '@angular/common';
 import { LoaderComponent } from '@components/loader/loader.component';
 import { catchError, delay } from 'rxjs';
 import { AlertService } from '@core/services/alert.service';
@@ -19,7 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   selector: 'app-user-login',
   templateUrl: './user-login.component.html',
   styleUrls: ['./user-login.component.scss'],
-  imports: [MatInputModule, MatButtonModule, MatFormFieldModule, ReactiveFormsModule, LoaderComponent, NgClass],
+  imports: [MatInputModule, MatButtonModule, MatFormFieldModule, ReactiveFormsModule, LoaderComponent],
 })
 export class UserLoginComponent {
 

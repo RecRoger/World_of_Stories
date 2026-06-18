@@ -44,7 +44,7 @@ export class UsersService {
     }: {
         requestBody: {
             email: string;
-            username?: string;
+            username: string;
             password: string;
         },
     }): Observable<{
@@ -135,7 +135,7 @@ export class UsersService {
     }: {
         id: string,
         requestBody: {
-            userName?: string;
+            username?: string;
             email?: string;
             password?: string;
         },

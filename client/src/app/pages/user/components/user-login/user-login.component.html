@@ -50,8 +50,7 @@
             </mat-form-field>
             <mat-form-field appearance="outline" class="mb-4">
               <mat-label>Confirmar Contraseña:</mat-label>
-              <input matInput [ngClass]="{'ng-invalid': signupForm.touched && signupForm.errors && signupForm.errors['notSame'] }"
-                type="password" id="confirmation" formControlName="confirmation">
+              <input matInput type="password" id="confirmation" formControlName="confirmation">
               @if (confirmationFormErrors['notSame']) {
                 <mat-error>Ojo que las contraseñas no son iguales</mat-error>
               }
