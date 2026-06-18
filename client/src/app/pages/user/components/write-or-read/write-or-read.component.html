@@ -1,0 +1,75 @@
+@if (user$ | async) {
+  <main class="container app-main">
+    <div class="mt-5 col-10 col-md-8 mx-auto position-relative">
+  
+      <div class="row">
+        <h4 class="col-12 mb-5">Que deseas hacer?</h4>
+  
+        @if (needUpdate) {
+          <div class="card col-12 mb-5" >
+            <div class="row card-body">
+              <div class="col-12 col-md-8">
+                  Hacen falta algunos datos de tu usaurio necesarios para continuar.
+              </div>
+              <div class="col-12 col-md-4 text-center d-flex mt-4 mt-lg-0">
+                <button mat-raised-button class="my-auto btn-block h4" (click)="goToUpdateUser()">
+                  Actualizar datos
+                </button>
+              </div>
+            </div>
+    
+          </div>
+        }
+  
+        <div class="col-6">
+          <button mat-fab extended class="fs-4 w-100" [disabled]="needUpdate" (click)="userChooseActivity(true)">
+            Escribir
+          </button>
+        </div>
+        <div class="col-6">
+          <button mat-fab extended class="fs-4 w-100" [disabled]="needUpdate" (click)="userChooseActivity(false)">
+            Leer
+          </button>
+        </div>
+      </div>
+  
+      @if (rolConfirmation) {
+        <div class="card my-5 position-relative">
+          @if (loading) {
+            <app-loader class="loader" size="lg"></app-loader>
+          }
+          <div class="row card-body">
+            <div class="col-12 col-md-8">
+              <p >
+                No posees el rol de
+                @if (rolConfirmation=='R') {
+                  <span>Lector,</span> pero lo obtendras si deseas continuar. ¿Seguimos?
+                }
+                @if (rolConfirmation=='W') {
+                  <span>Escritor,</span> deseas obtenerlo y continuar?
+                }
+              </p>
+              <div class="col-12">
+                @if (rolConfirmation=='W') {
+                  <div class="row mb-4">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Confirma el codigo de escritor:</mat-label>
+                      <input matInput type="text" [formControl]="writerControl">
+                    </mat-form-field>
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="col-12 col-md-4 text-center d-flex">
+              <button mat-raised-button class="my-auto mx-auto" (click)="addRole(rolConfirmation)">
+                Aceptar
+              </button>
+            </div>
+          </div>
+    
+        </div>
+      }
+    </div>
+  </main>
+}
+

@@ -18,7 +18,7 @@ export type User = {
      * Hash encriptado
      */
     password: string;
-    rol?: Array<string>;
+    role?: Array<string>;
     characters?: Array<Character> | null;
     createdAt?: string;
     updatedAt?: string;

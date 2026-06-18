@@ -5,7 +5,7 @@ export interface UserInterface extends Document {
     email: string,
     username: string,
     password: string,
-    rol: string[],
+    role: string[],
     characters?: CharacterInterface[]
     createdAt: Date;
     updatedAt: Date;
@@ -64,7 +64,7 @@ const UsersSchema = new Schema<UserInterface>({
         type: String,
         required: [true, 'La contraseña es obligatoria']
     },
-    rol: {
+    role: {
         type: [String],
         default: ['Reader']
     },

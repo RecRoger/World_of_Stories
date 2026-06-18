@@ -49,7 +49,7 @@ export const userSchemas = {
       username: { type: 'string', example: 'kaladin31' },
       email: { type: 'string', format: 'email', example: 'kaladin@bridgefour.com' },
       password: { type: 'string', description: 'Hash encriptado', example: '$2b$10$X7rE8Y3M...' },
-      rol: {
+      role: {
         type: 'array',
         items: { type: 'string' },
         example: ['USER_ROLE']

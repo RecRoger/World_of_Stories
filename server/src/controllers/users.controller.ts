@@ -217,14 +217,21 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
 
 export const setUserRol = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params; // ID por parámetro de ruta: /users/:id/roles
-    const { rol } = req.body;  // El rol a añadir viene en el body
+    const { role } = req.body;  // El rol a añadir viene en el body
 
-    console.log(`[PATCH] - setUserRol para ID: ${id}, Rol: ${rol} - ${new Date().toISOString()}`);
+    console.log(`[PATCH] - setUserRol para ID: ${id}, Rol: ${role} - ${new Date().toISOString()}`);
 
     try {
+        if (!role) {
+            return res.status(404).json({
+                ok: false,
+                message: 'No rol definido para asignarle al usuario.'
+            });
+        }
+
         const updatedUser = await Users.findByIdAndUpdate(
             id,
-            { $addToSet: { rol: rol } },
+            { $addToSet: { role: role } },
             { new: true, runValidators: true }
         )
             .select('-password')
@@ -237,7 +244,7 @@ export const setUserRol = async (req: Request, res: Response): Promise<Response>
         }
         return res.status(200).json({
             ok: true,
-            message: `Rol '${rol}' añadido correctamente.`,
+            message: `Rol '${role}' añadido correctamente.`,
             data: {
                 user: {
                     id: updatedUser._id,
@@ -254,14 +261,14 @@ export const setUserRol = async (req: Request, res: Response): Promise<Response>
 
 export const removeUserRol = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
-    const { rol } = req.body;
+    const { role } = req.body;
 
-    console.log(`[DELETE] - removeUserRol para ID: ${id}, Rol: ${rol} - ${new Date().toISOString()}`);
+    console.log(`[DELETE] - removeUserRol para ID: ${id}, Rol: ${role} - ${new Date().toISOString()}`);
 
     try {
         const updatedUser = await Users.findByIdAndUpdate(
             id,
-            { $pull: { rol: rol } },
+            { $pull: { role: role } },
             { new: true }
         )
             .select('-password')
@@ -276,7 +283,7 @@ export const removeUserRol = async (req: Request, res: Response): Promise<Respon
 
         return res.status(200).json({
             ok: true,
-            message: `Rol '${rol}' removido correctamente.`,
+            message: `Rol '${role}' removido correctamente.`,
             data: {
                 user: {
                     id: updatedUser._id,

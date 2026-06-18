@@ -1,7 +1,21 @@
+export enum MainRoutes {
+    WELCOME = 'welcome',
+    LOGIN = 'login',
+    USER = 'user',
+    WRITERS = 'writers',
+    READERS = 'readers',
+}
+
 export enum UsersRoles {
     W = 'Writer',
     R = 'Reader',
     A = 'Admin'
+}
+
+export enum AlertTypes {
+    success = 'success',
+    error = 'error',
+    info = 'info',
 }
 
 export enum CityTabs {

@@ -2503,7 +2503,7 @@
             "description": "Hash encriptado",
             "example": "$2b$10$X7rE8Y3M..."
           },
-          "rol": {
+          "role": {
             "type": "array",
             "items": {
               "type": "string"

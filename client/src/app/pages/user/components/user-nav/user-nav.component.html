@@ -1,0 +1,14 @@
+<div class="menu-main d-flex flex-column">
+    <a mat-button class="fs-6" routerLink="/user/write-or-read" (click)="openLink($event)">
+        <mat-icon aria-hidden="false" aria-label="home" fontIcon="home"></mat-icon>
+        Home
+    </a>
+    <a mat-button class="fs-6 mt-5" routerLink="/user/settings" (click)="openLink($event)">
+        <mat-icon aria-hidden="false" aria-label="settings" fontIcon="settings"></mat-icon>
+        Configuración
+    </a>
+    <a mat-button class="fs-6" routerLink="/" (click)="openLink($event)">
+        <mat-icon aria-hidden="false" aria-label="logout" fontIcon="logout"></mat-icon>
+        Cerrar Sesion
+    </a>
+</div>

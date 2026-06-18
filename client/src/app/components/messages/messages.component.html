@@ -1,0 +1,11 @@
+@if (alerts$ | async; as message) {
+    <div class="messages d-flex">
+        <div class="col-12 col-md-6 d-flex mx-auto">
+            <div class="alert w-100" role="alert" (click)="hardClose()"
+                [ngClass]="{'alert-success': message.alertType===alertTypes.success,'alert-danger': message.alertType===alertTypes.error,'alert-primary': message.alertType===alertTypes.info}">
+                {{message.text}}
+            </div>
+    
+        </div>
+    </div>
+}

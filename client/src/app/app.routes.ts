@@ -1,16 +1,23 @@
 import { Routes } from '@angular/router';
+import { MainRoutes } from '@core/models/constants';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'users',
+    redirectTo: MainRoutes.WELCOME,
     pathMatch: 'full'
   },
-
-  // Módulo Users (Carga perezosa de sus rutas internas)
   {
-    path: 'users',
-    loadChildren: () => import('./pages/users-login/user-login.routes').then(m => m.USER_LOGIN_ROUTES)
+    path: MainRoutes.WELCOME, pathMatch: 'full',
+    loadComponent: () => import('./pages/presentation/presentation.component').then(c => c.PresentationComponent)
+  },
+  {
+    path: MainRoutes.LOGIN,
+    loadComponent: () => import('./pages/user/components/user-login/user-login.component').then(c => c.UserLoginComponent)
+  },
+  {
+    path: MainRoutes.USER,
+    loadChildren: () => import('./pages/user/user.routes').then(m => m.USER_ROUTES)
   },
 
   // Módulo Writers (Escritores/Creadores)
@@ -27,9 +34,9 @@ export const routes: Routes = [
   // },
 
   // Ruta comodín para el 404
-  {
-    path: '**',
-    redirectTo: 'users'
-  }
+  // {
+  //   path: '**',
+  //   redirectTo: 'welcome'
+  // }
 
 ];
