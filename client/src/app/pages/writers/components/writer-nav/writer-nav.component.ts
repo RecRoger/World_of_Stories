@@ -1,22 +1,32 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
 
 @Component({
-    selector: 'app-writer-nav',
-    templateUrl: './writer-nav.component.html',
-    styleUrls: ['./writer-nav.component.scss'],
-    standalone: true
+  selector: 'app-writer-nav',
+  templateUrl: './writer-nav.component.html',
+  styleUrls: ['./writer-nav.component.scss'],
+  imports: [RouterLink, MatButtonModule, MatIconModule]
 })
-export class WriterNavComponent implements OnInit {
+export class WriterNavComponent {
 
-  @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
+  private _bottomSheetRef = inject<MatBottomSheetRef<WriterNavComponent>>(MatBottomSheetRef);
 
-  constructor() { }
+  private authService = inject(AuthService)
 
-  ngOnInit() {
+  public logout(
+    event: MouseEvent
+  ): void {
+    this.authService.logout()
+    this.openLink(event)
   }
 
-  closeEmit() {
-    this.close.emit(true);
+  openLink(event: MouseEvent): void {
+    this._bottomSheetRef.dismiss();
+    event.preventDefault();
   }
 
 }

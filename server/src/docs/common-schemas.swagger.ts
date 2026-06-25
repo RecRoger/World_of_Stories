@@ -2,6 +2,7 @@ export const commonSchemas = {
   Readable: {
     type: 'object',
     properties: {
+      _id: { type: 'string' },
       text: { type: 'string', example: 'El aire soplaba frío sobre las llanuras quebradas...' },
       animation: { type: 'string', example: 'fade-in-slow' }
     }

@@ -24,7 +24,7 @@ export const ReadableSchema = new Schema<ReadableInterface>({
 // Subesquema de Ubicación (Location)
 export const TaleSchema = new Schema<TaleInterface>({
   tale: { type: [ReadableSchema], required: true },        // Narrativa
-  author: { type: Schema.Types.ObjectId, ref: 'User', required: true },       // nombre del autor
+  author: String,       // nombre del autor
   published: Boolean,   // Estado de publicacion
   writeDate: Date,     // Fecha de creacion
   publishDate: Date,   // Fecha de publicacion

@@ -6,7 +6,7 @@ import { MessagesComponent } from '../../../../client/src/app/components/message
 import { WriteFragmentsComponent } from '../components/write-fragments/write-fragments.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WriteDecisionComponent } from '../components/write-decision/write-decision.component';
-import { AnimatedFragmentComponent } from '../components/animated-fragment/animated-fragment.component';
+import { AnimatedFragmentComponent } from '../../../../client/src/app/components/animated-fragment/animated-fragment.component';
 import { TeximateModule } from 'ngx-teximate';
 import { TakeDecisionComponent } from '../components/take-decision/take-decision.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';

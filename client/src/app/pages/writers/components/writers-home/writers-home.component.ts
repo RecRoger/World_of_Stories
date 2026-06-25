@@ -1,45 +1,19 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { Store, Select } from '@ngxs/store';
-import { UserState } from 'src/app/shared/store/users/users.reducer';
-import { User } from 'wos-api';
-import { Subscription } from 'rxjs';
-import { faGlobeAmericas, faInfo } from '@fortawesome/free-solid-svg-icons';
+import { AsyncPipe, TitleCasePipe } from '@angular/common';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { Router, RouterLink } from '@angular/router';
+import { User } from '@core/api';
+import { AuthService } from '@core/services/auth.service';
+import { Observable } from 'rxjs';
 
 @Component({
-    selector: 'app-writers-home',
-    templateUrl: './writers-home.component.html',
-    styleUrls: ['./writers-home.component.scss'],
-    standalone: true
+  selector: 'app-writers-home',
+  templateUrl: './writers-home.component.html',
+  styleUrls: ['./writers-home.component.scss'],
+  imports: [AsyncPipe, TitleCasePipe, MatIconModule, MatButtonModule, RouterLink]
 })
-export class WritersHomeComponent implements OnInit, OnDestroy {
-  user: User;
-
-  subscription: Subscription;
-  @Select(UserState.getUser) $user: Observable<User>;
-
-  faGlobeAmericas = faGlobeAmericas;
-
+export class WritersHomeComponent {
+  public user$: Observable<User | null> = inject(AuthService).user$
   mainInfo = false;
-
-  faInfo = faInfo;
-
-  constructor(
-    private store: Store,
-    private router: Router) { }
-
-  ngOnInit() {
-    this.subscription = this.$user.subscribe(val => {
-      this.user = val;
-    });
-  }
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-
-  redirectTo(url: string) {
-    this.router.navigate([url]);
-  }
-
-
 }

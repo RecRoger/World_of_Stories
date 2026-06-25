@@ -1,0 +1,24 @@
+<div 
+    class="text-animator-container" 
+    [class.animation-forced-end]="isAnimationSkipped"
+    (dblclick)="skipAnimation()">
+    
+    @if (config.type === 'paragraph') {
+    <p class="anim-target" [class]="config.animation" [style.--delay]="'0ms'">
+        {{ text }}
+    </p>
+    } @else {
+    @for (node of renderNodes; track $index) {
+        @if (node.isSpace) {
+        <span class="anim-space">&nbsp;</span>
+        } @else {
+        <span 
+            class="anim-target" 
+            [class]="config.animation" 
+            [style.--delay]="node.delay">
+            {{ node.text }}
+        </span>
+        }
+    }
+    }
+</div>

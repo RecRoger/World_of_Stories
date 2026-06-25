@@ -9,6 +9,7 @@ import { AsyncPipe } from '@angular/common';
 import { MainRoutes } from '@core/models/constants';
 import { UserNavComponent } from '@pages/user/components/user-nav/user-nav.component';
 import { MatButtonModule } from '@angular/material/button';
+import { WriterNavComponent } from '@pages/writers/components/writer-nav/writer-nav.component';
 
 
 @Component({
@@ -27,7 +28,10 @@ export class HeaderComponent {
 
   public baseRoute$: Observable<string | null> = this.router.events.pipe(
     filter(event => event instanceof NavigationEnd),
-    map((event: NavigationEnd) => event.urlAfterRedirects?.slice(1)),
+    map((event: NavigationEnd) => {
+      const noQueryUrl = event.urlAfterRedirects.split('?')[0]
+      return noQueryUrl?.slice(1)
+    }),
     map((baseRoute: string) => !([MainRoutes.LOGIN, MainRoutes.WELCOME] as string[]).includes(baseRoute) ? baseRoute : null)
   )
 
@@ -39,16 +43,15 @@ export class HeaderComponent {
 
   public openMenu(route: string): void {
 
-    let navComponent
-
-    const baseRoute = route?.split('/')[1] || MainRoutes.WELCOME
+    const baseRoute = route?.split('/')[0] || MainRoutes.WELCOME
     switch (baseRoute) {
-      // case MainRoutes.USER:
+      case MainRoutes.WRITERS:
+        this._bottomSheet.open(WriterNavComponent);
+        break;
       default:
-        navComponent = UserNavComponent
+        this._bottomSheet.open(UserNavComponent);
         break;
     }
-    this._bottomSheet.open(navComponent);
     // this.menu.emit(true);
   }
 

@@ -15,8 +15,6 @@ interface AuthState {
 export class AuthService {
   private userService = inject(UsersService);
 
-  private router = inject(Router);
-
   private state$ = new BehaviorSubject<AuthState>({
     user: null,
     error: null
@@ -28,10 +26,6 @@ export class AuthService {
 
   public userSnaphot: User | null = this.state$.value.user;
 
-  public currentUser = signal<User | null>(null);
-  public isAuthenticated = computed(() => !!this.currentUser());
-  public isLoading = signal<boolean>(false);
-
   constructor() {
     this.initializeAuth();
   }
@@ -42,15 +36,12 @@ export class AuthService {
       map((response) => {
         const user = response.data?.user || null;
         this.updateState({ user });
-        this.currentUser.set(user);
         localStorage.setItem('wos_user', JSON.stringify(user));
         return true
       }),
       catchError((err) => {
         const errMsg = err.error?.message || 'Error al iniciar sesión';
-
         this.updateState({ user: null, error: errMsg });
-        this.currentUser.set(null);
         throw (err);
       })
     );
@@ -58,7 +49,6 @@ export class AuthService {
 
   public logout(): void {
     this.updateState({ user: null, error: null });
-    this.currentUser.set(null);
     localStorage.removeItem('wos_user');
   }
 
@@ -73,7 +63,6 @@ export class AuthService {
       catchError((err) => {
         const errMsg = err.error?.message || 'Error al registrar usuario';
         this.updateState({ user: null, error: errMsg });
-        this.currentUser.set(null);
         return throwError(() => err);
       })
     );
@@ -91,7 +80,6 @@ export class AuthService {
       catchError((err) => {
         const errMsg = err.error?.message || 'Error al registrar usuario';
         this.updateState({ error: errMsg });
-        this.currentUser.set(null);
         return throwError(() => err);
       })
     );
@@ -110,7 +98,6 @@ export class AuthService {
       try {
         const user = JSON.parse(savedUser);
         this.updateState({ user });
-        this.currentUser.set(user);
       } catch {
         this.logout();
       }

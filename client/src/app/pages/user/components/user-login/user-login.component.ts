@@ -42,7 +42,6 @@ export class UserLoginComponent {
     ]],
     username: ['', [
       Validators.required,
-      // Validators.email
     ]],
     password: ['', [
       Validators.required

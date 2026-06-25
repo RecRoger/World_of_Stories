@@ -17,8 +17,7 @@ export const citiesPaths = {
           required: false,
           description: 'Filtrar por estado de publicación (?published=true o ?published=false)',
           schema: {
-            type: 'string',
-            enum: ['true', 'false']
+            type: 'boolean',
           }
         }
       ],

@@ -1,7 +1,14 @@
-<div class="menu-main d-flex border-right">
-  <nav class="menu-navbar nav flex-column h-100" (click)="closeEmit()">
-    <a class="nav-link" routerLink="/writers">Home</a>
-    <a class="nav-link" routerLink="/writers/world">Historias</a>
-    <a class="nav-link mt-auto" routerLink="/">Cerrar Sesion</a>
-  </nav>
+<div class="menu-main d-flex flex-column">
+  <a mat-button class="fs-6" routerLink="/writers" (click)="openLink($event)">
+    <mat-icon aria-hidden="false" aria-label="home" fontIcon="home"></mat-icon>
+    Home
+  </a>
+  <a mat-button class="fs-6" routerLink="world" (click)="openLink($event)">
+        <mat-icon aria-hidden="false" aria-label="settings" fontIcon="public"></mat-icon>
+        Historias
+    </a>
+    <a mat-button class="fs-6 mt-5" routerLink="/" (click)="logout($event)">
+        <mat-icon aria-hidden="false" aria-label="logout" fontIcon="logout"></mat-icon>
+        Cerrar Sesion
+    </a>
 </div>

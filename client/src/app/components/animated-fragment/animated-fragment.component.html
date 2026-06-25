@@ -1,0 +1,51 @@
+@if (shownFragments.length > 0) {
+    <div class="readable-section">
+    
+        @for (tale of shownFragments; track tale.fragment._id; let i = $index) {
+            <!-- <p class="card-text">{{ fragment.text }}</p> -->
+            <div class="hide-overflow">
+                @if (!animations) {
+                    <p [@fadeIn] [@.disabled]="animations" (@fadeIn.done)="finishAnimation(i)">
+                        {{tale.fragment.text}}
+                    </p>
+                } @else {
+                    <app-text-animator 
+                        [text]="tale.fragment.text || ''" 
+                        [config]="tale.options"
+                        (animationComplete)="finishAnimation(i)">
+                    </app-text-animator>
+                }
+    
+                <div style="height: 1px;" [id]="'parragraf'+i"></div>
+            </div>
+    
+            <!-- seccion para añadir decisiones intermedias -->
+             @if (chapterMode && completedAnimation && i!== shownFragments.length - 1 && !newDivision) {
+                 <div class="chapter-decision">
+                     <button mat-icon-button class="d-flex decision-btn" mat-icon-button [matMenuTriggerFor]="menu">
+                         <mat-icon fontIcon="arrow_insert"></mat-icon>
+                     </button>
+                     <mat-menu #menu="matMenu">
+                         <button mat-menu-item (click)="addDecision(i)">
+                             Añadir decision
+                         </button>
+                     </mat-menu>
+                 </div>
+             }
+            
+             @if (newDivision && newDivision.splitIndex === i && optionForm) {
+                 <div class="pl-2 border-left mb-4 mr-n4" [formGroup]="optionForm">
+                     <!-- <app-write-decision [decision]="optionForm.get('decision')"> 
+                    </app-write-decision>
+                    -->
+                     <div class="d-flex mt-3">
+                         <button mat-button class="ml-auto" (click)="saveChapterDivicion(true)">Cancelar</button>
+                         <button mat-button class="ml-3" (click)="saveChapterDivicion()">Guardar</button>
+                     </div>
+                 </div>
+             }
+            
+        }
+    
+    </div>
+}

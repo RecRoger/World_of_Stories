@@ -27,7 +27,7 @@ export class CitiesService {
         /**
          * Filtrar por estado de publicación (?published=true o ?published=false)
          */
-        published?: 'true' | 'false',
+        published?: boolean,
     }): Observable<{
         ok?: boolean;
         count?: number;

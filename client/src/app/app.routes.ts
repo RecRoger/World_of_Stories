@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from '@core/guards/auth.guard';
 import { MainRoutes } from '@core/models/constants';
 
 export const routes: Routes = [
@@ -21,11 +22,12 @@ export const routes: Routes = [
   },
 
   // Módulo Writers (Escritores/Creadores)
-  // {
-  //   path: 'writers',
-  //   loadChildren: () => import('./modules/writers/writers.routes').then(m => m.WRITERS_ROUTES)
-  //   // Acá más adelante podés clavarle un Guard: canActivate: [AuthGuard]
-  // },
+  {
+    path: MainRoutes.WRITERS,
+    canActivate: [authGuard],
+    loadChildren: () => import('./pages/writers/writers.routes').then(m => m.WRITERS_ROUTES)
+    // Acá más adelante podés clavarle un Guard: canActivate: [AuthGuard]
+  },
 
   // // Módulo Readers (Lectores)
   // {

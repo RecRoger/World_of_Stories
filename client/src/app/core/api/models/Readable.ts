@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type Readable = {
+    _id?: string;
     text?: string;
     animation?: string;
 };

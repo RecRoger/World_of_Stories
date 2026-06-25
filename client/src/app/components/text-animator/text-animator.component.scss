@@ -1,0 +1,30 @@
+/* ... Todos tus keyframes anteriores se mantienen igual ... */
+
+.anim-target {
+  display: inline-block;
+  opacity: 0;
+  animation-duration: var(--duration, 400ms);
+  animation-delay: var(--delay, 0ms);
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-origin: center center;
+
+  &.fadeInRight { animation-name: fadeInRight; }
+  &.fadeInLeft  { animation-name: fadeInLeft; }
+  &.zoomIn      { animation-name: zoomIn; }
+  &.bounceIn    { animation-name: bounceIn; animation-timing-function: linear; }
+}
+
+/* --- NUEVA REGLA PARA FORZAR EL FINAL --- */
+.animation-forced-end {
+  .anim-target {
+    // Quitamos la animación, los retrasos y forzamos la visibilidad total inmediata
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+.anim-space {
+  display: inline-block;
+}

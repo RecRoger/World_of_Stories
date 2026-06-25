@@ -1,7 +1,7 @@
 <div class="app-main_writers">
 
     <!-- seccion de ciudades -->
-    <ng-container *ngIf="!selectedCity">
+    @if (!selectedCity) {
         <h2>Ciudades</h2>
 
         <div class="row">
@@ -9,57 +9,66 @@
                 <div class="my-auto">
                     Aca puedes crear las ciudades de este mundo.
                 </div>
-                <button class="btn btn-link" (click)="displayCityInfo = !displayCityInfo">
-                    <fa-icon [icon]="faInfo" size="md"></fa-icon>
+                <button mat-icon-button class="d-flex" (click)="displayCityInfo = !displayCityInfo">
+                    <mat-icon>info</mat-icon>
                 </button>
             </div>
-            <div class="col-12 text-justify" *ngIf="displayCityInfo">
-                <div class="mb-5 border-left pl-3">
-                    <p>Las ciudades son la mayor estructura de localización de este mundo. Solo las a publicadas tendrán
-                        acceso los lectores. <br> Cada ciudad cuenta con:
-                    </p>
-                    <ul class="pl-3">
-                        <li class="mb-2">
-                            <b>Nombre:</b>
-                            <br> El nombre de la ciudad y titulo de la narración de presentacion
-                            <br> <i class="text-muted">La ciudad se publica</i>
-                        </li>
-                        <li class="mb-2">
-                            <b>Extractos:</b>
-                            <br> Son cortas descripciones que hablan de la ciudad brevemente. <br>
-                            Los lectores podran leer una descripcion aleatoria cada vez que deban seleccionar una
-                            ciudad.
-                            <br> <i class="text-muted">Se publican cada una por separado</i>
-                        </li>
-                        <li class="mb-2">
-                            <b>Historias:</b>
-                            <br> Narraciones de presentacion descriptiva de la ciudad. El jugador puede participar en la
-                            historia<br>
-                            Los lectores podran leer una presentacion aleatoria cada vez que esten en la ciudad.
-                            <br> <i class="text-muted">Se publican cada una por separado</i>
-                        </li>
-                        <li class="mb-2">
-                            <b>Lugares</b>
-                            <br> Conjunto de locaciones internas de la ciudad.<br>
-                            Luego de la narracion de presentación de la ciudad, se les presentará la lista de lugares
-                            publicados al lector.
-                        </li>
-                    </ul>
+            @if(displayCityInfo) {
+                <div class="col-12 text-justify">
+                    <div class="mb-5 border-left pl-3">
+                        <p>Las ciudades son la mayor estructura de localización de este mundo. Solo las a publicadas tendrán
+                            acceso los lectores. <br> Cada ciudad cuenta con:
+                        </p>
+                        <ul class="pl-3">
+                            <li class="mb-2">
+                                <b>Nombre:</b>
+                                <br> El nombre de la ciudad y titulo de la narración de presentacion
+                                <br> <i class="text-muted">La ciudad se publica</i>
+                            </li>
+                            <li class="mb-2">
+                                <b>Extractos:</b>
+                                <br> Son cortas descripciones que hablan de la ciudad brevemente. <br>
+                                Los lectores podran leer una descripcion aleatoria cada vez que deban seleccionar una
+                                ciudad.
+                                <br> <i class="text-muted">Se publican cada una por separado</i>
+                            </li>
+                            <li class="mb-2">
+                                <b>Historias:</b>
+                                <br> Narraciones de presentacion descriptiva de la ciudad. El jugador puede participar en la
+                                historia<br>
+                                Los lectores podran leer una presentacion aleatoria cada vez que esten en la ciudad.
+                                <br> <i class="text-muted">Se publican cada una por separado</i>
+                            </li>
+                            <li class="mb-2">
+                                <b>Lugares</b>
+                                <br> Conjunto de locaciones internas de la ciudad.<br>
+                                Luego de la narracion de presentación de la ciudad, se les presentará la lista de lugares
+                                publicados al lector.
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
 
-        <div class="row text center" *ngIf="citiesloading">
-            <app-loader class="mx-auto" size="lg"></app-loader>
-        </div>
-        <ng-container *ngIf="!citiesloading">
-            <app-cities-builder (citySelect)="getSelectedCity($event)"></app-cities-builder>
-        </ng-container>
-    </ng-container>
+        @if (citiesloading) {
+            <div class="row text center">
+                <app-loader class="mx-auto" size="lg"></app-loader>
+            </div>
+        }
+
+        @if(!citiesloading){
+            <ng-container>
+                <!-- TODO - add city builder component -->
+                <app-cities-builder (citySelect)="getSelectedCity($event)"></app-cities-builder>
+            </ng-container>
+            
+        }
+    }
 
 
     <!-- seccion de lugares -->
-    <ng-container *ngIf="selectedCity && !selectedPlace">
+    <!-- <ng-container *ngIf="selectedCity && !selectedPlace">
         <div>
             <h2 class="mb-0">Lugares</h2>
             <small class="d-flex">
@@ -122,10 +131,10 @@
         <ng-container *ngIf="!placesloading">
             <app-places-builder [city]="selectedCity" (placeSelect)="getSelectedPlace($event)"></app-places-builder>
         </ng-container>
-    </ng-container>
+    </ng-container> -->
 
     <!-- seccion de lugares -->
-    <ng-container *ngIf="selectedCity && selectedPlace && !selectedNpc">
+    <!-- <ng-container *ngIf="selectedCity && selectedPlace && !selectedNpc">
         <div>
             <h2 class="mb-0">Eventos</h2>
             <small class="d-flex">
@@ -214,10 +223,10 @@
         <ng-container *ngIf="!npcsloading">
             <app-npc-builder [place]="selectedPlace" (npcSelect)="getSelectedNPC($event)"></app-npc-builder>
         </ng-container>
-    </ng-container>
+    </ng-container> -->
 
     <!-- seccion de capitulos -->
-    <ng-container *ngIf="selectedCity && selectedPlace && selectedNpc">
+    <!-- <ng-container *ngIf="selectedCity && selectedPlace && selectedNpc">
         <div>
             <h2 class="mb-0">Historia</h2>
             <small class="d-flex">
@@ -302,7 +311,7 @@
         <ng-container *ngIf="!npcsloading">
             <app-chapters-builder [place]="selectedPlace" [npc]="selectedNpc"></app-chapters-builder>
         </ng-container>
-    </ng-container>
+    </ng-container> -->
 
 
 
@@ -313,68 +322,70 @@
             <h4 class="my-auto">
                 Lineamientos narrativos.
             </h4>
-            <button class="btn btn-link" (click)="displayWriteGuideline = !displayWriteGuideline">
-                <fa-icon [icon]="faInfo" size="md"></fa-icon>
+            <button mat-icon-button class="d-flex" (click)="displayWriteGuideline = !displayWriteGuideline">
+                <mat-icon fontIcon="info"></mat-icon>
             </button>
         </div>
         <div class="col-12">
-            <div class="mb-5 border-left pl-3" *ngIf="displayWriteGuideline">
-                <p>Aunque puedes crear la historia que te plazca en este mundo, me parece adecuado colocar ciertos
-                    lineamientos para poder mantener el mismo esquema narrativo en cada historia.</p>
-                <!-- <p>La  historia cuenta con un <b>Titulo principal</b> y luego cada capitulo cuenta con:</p> -->
-                <ul class="pl-3">
-                    <li class="mb-2">
-                        El narrador siempre es omnisciente, salvo por las decisiones de los jugadores.
-                    </li>
-                    <li class="mb-2">
-                        Las descripciones de ciudades y lugares deben ser generales y ajenas a historias específicas.
-                    </li>
-                    <li class="mb-2">
-                        Todas las historias deben contarse en presente, ya que se supone son eventos que el jugador va
-                        experimentando a medida transcurre la historia.
-                    </li>
-                    <li class="mb-2">
-                        Aunque las narrativas de ciudades y lugares puede relacionarse de alguna forma con las historias
-                        particulares, debe considerarse que son lecturas recurrentes en la accion del jugador, asi que
-                        hay que considerar que son eventos que se repiten normalmente.
-                    </li>
-                    <li class="mb-2">
-                        Los jugadores tienen el rol de <i>El Peregrino</i> en la historia, asi que el narrador debe
-                        referirse a ellos en 2da persona.
-                        <span class="text-muted">(Quizas esta es la mas compleja de implementar)</span>
-                    </li>
-                    <li class="mb-2">
-                        <b class="mb-2">Evitemos</b>
-                        <ul class="pl-3">
-                            <li class="mb-2">
-                                Dialogos especificos del Peregrino en la historia, deben ser dialogos generas. <br>
-                                <i>Ejm: 'Dices estar de acuerdo con entusiasmo', 'Hablas un rato de tus experiencias en
-                                    el campo', etc..</i>
-                            </li>
-                            <li class="mb-2">
-                                Referencias con cosas existentes solo en nuestro mundo.
-                                <i>Por el momento es complejo y esta en consideracion desarrollo tramas con loops de
-                                    historia.</i>
-                            </li>
-                            <li class="mb-2">
-                                Tramas relacionadas con viajes en el tiempo y problemas temporales. <br>
-                                <i>Por el momento es complejo y esta en consideracion desarrollo tramas con loops de
-                                    historia.</i>
-                            </li>
-                            <li class="mb-2">
-                                Animales que hablan. <br>
-                                <i>Si bien se puede inventar cualquier criatura, los animales existentes son los
-                                    existentes de nuestro mundo</i>
-                            </li>
-                            <li class="mb-2">
-                                Inventar idiomas. <br>
-                                <i>Se puede hacer mencion de idiomas extranjeros, mas no tratar de escribirlo.</i>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <div class="text-right text-muted">- RecRoger</div>
-            </div>
+            @if (displayWriteGuideline) {
+                <div class="mb-5 border-left pl-3">
+                    <p>Aunque puedes crear la historia que te plazca en este mundo, me parece adecuado colocar ciertos
+                        lineamientos para poder mantener el mismo esquema narrativo en cada historia.</p>
+                    <!-- <p>La  historia cuenta con un <b>Titulo principal</b> y luego cada capitulo cuenta con:</p> -->
+                    <ul class="pl-3">
+                        <li class="mb-2">
+                            El narrador siempre es omnisciente, salvo por las decisiones de los jugadores.
+                        </li>
+                        <li class="mb-2">
+                            Las descripciones de ciudades y lugares deben ser generales y ajenas a historias específicas.
+                        </li>
+                        <li class="mb-2">
+                            Todas las historias deben contarse en presente, ya que se supone son eventos que el jugador va
+                            experimentando a medida transcurre la historia.
+                        </li>
+                        <li class="mb-2">
+                            Aunque las narrativas de ciudades y lugares puede relacionarse de alguna forma con las historias
+                            particulares, debe considerarse que son lecturas recurrentes en la accion del jugador, asi que
+                            hay que considerar que son eventos que se repiten normalmente.
+                        </li>
+                        <li class="mb-2">
+                            Los jugadores tienen el rol de <i>El Peregrino</i> en la historia, asi que el narrador debe
+                            referirse a ellos en 2da persona.
+                            <span class="text-muted">(Quizas esta es la mas compleja de implementar)</span>
+                        </li>
+                        <li class="mb-2">
+                            <b class="mb-2">Evitemos</b>
+                            <ul class="pl-3">
+                                <li class="mb-2">
+                                    Dialogos especificos del Peregrino en la historia, deben ser dialogos generas. <br>
+                                    <i>Ejm: 'Dices estar de acuerdo con entusiasmo', 'Hablas un rato de tus experiencias en
+                                        el campo', etc..</i>
+                                </li>
+                                <li class="mb-2">
+                                    Referencias con cosas existentes solo en nuestro mundo.
+                                    <i>Por el momento es complejo y esta en consideracion desarrollo tramas con loops de
+                                        historia.</i>
+                                </li>
+                                <li class="mb-2">
+                                    Tramas relacionadas con viajes en el tiempo y problemas temporales. <br>
+                                    <i>Por el momento es complejo y esta en consideracion desarrollo tramas con loops de
+                                        historia.</i>
+                                </li>
+                                <li class="mb-2">
+                                    Animales que hablan. <br>
+                                    <i>Si bien se puede inventar cualquier criatura, los animales existentes son los
+                                        existentes de nuestro mundo</i>
+                                </li>
+                                <li class="mb-2">
+                                    Inventar idiomas. <br>
+                                    <i>Se puede hacer mencion de idiomas extranjeros, mas no tratar de escribirlo.</i>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="text-right text-muted">- RecRoger</div>
+                </div>
+            }
         </div>
     </div>
 

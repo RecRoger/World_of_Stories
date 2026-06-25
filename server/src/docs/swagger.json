@@ -485,11 +485,7 @@
             "required": false,
             "description": "Filtrar por estado de publicación (?published=true o ?published=false)",
             "schema": {
-              "type": "string",
-              "enum": [
-                "true",
-                "false"
-              ]
+              "type": "boolean"
             }
           }
         ],
@@ -2534,6 +2530,9 @@
       "Readable": {
         "type": "object",
         "properties": {
+          "_id": {
+            "type": "string"
+          },
           "text": {
             "type": "string",
             "example": "El aire soplaba frío sobre las llanuras quebradas..."
