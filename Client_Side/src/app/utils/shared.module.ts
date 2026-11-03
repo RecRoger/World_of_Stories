@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../../../client/src/app/components/header/header.component';
 import { AngularMaterials } from 'src/app/utils/material-modules';
 import { MessagesComponent } from '../../../../client/src/app/components/messages/messages.component';
-import { WriteFragmentsComponent } from '../components/write-fragments/write-fragments.component';
+import { WriteFragmentsComponent } from '../../../../client/src/app/components/write-fragments/write-fragments.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WriteDecisionComponent } from '../components/write-decision/write-decision.component';
 import { AnimatedFragmentComponent } from '../../../../client/src/app/components/animated-fragment/animated-fragment.component';

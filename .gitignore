@@ -1,10 +1,27 @@
-Client_Side/dist
-Client_Side/node_modules
+# Dependencias
+node_modules/
 
-server/node_modules
-server/src/swagger/generator/workspace
-server/src/keys.ts
-server/build/src/*
-server/build/*
-server/build/src
-server/build
+# Entorno
+.env
+.env.local
+.env.*.local
+
+# Builds
+dist/
+build/
+*.tsbuildinfo
+
+# Logs
+*.log
+
+# IDE / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Legado (Angular)
+Client_Side/dist
+
+# Generado con npm run openapi
+server/openapi.json

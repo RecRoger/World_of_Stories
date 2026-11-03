@@ -1,0 +1,16 @@
+{
+  "name": "@wos/shared",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Esquemas zod y tipos compartidos entre server y front",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  }
+}

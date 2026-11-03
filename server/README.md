@@ -1,33 +1,52 @@
-# World_of_Stories BackEnd.
+# World of Stories — API
 
-This project is the server api for World of Stories app, created with NodeJs, MongoDb and Swagger documentation
+Express 5 + Mongoose 8 + zod 4, en TypeScript (ESM). Los esquemas de entrada/salida viven en
+[`@wos/shared`](../packages/shared) y se usan a la vez para validar, tipar y generar la documentación.
 
-## Development server
+## Puesta en marcha
 
-Run `./start-swagger.sh` for generate swagger.json documentation file and run de server.
-Run `npm run dev` for start server with last changes
+```bash
+cp .env.example .env        # y pon un JWT_SECRET propio
+npm install                 # desde la raíz del monorepo
+npm run dev                 # http://localhost:3000/api/v1 · docs en /docs
+```
 
-. localhost:3000/ server path
-. localhost:3000/api/ for swagger documentation
+| Script | Qué hace |
+| --- | --- |
+| `npm run dev` | Servidor con recarga (tsx watch) |
+| `npm run build` / `npm start` | Bundle de producción en `dist/` y arranque |
+| `npm test` | Tests de integración contra `world_of_stories_test` en tu Mongo local (`TEST_MONGODB_URI` para otra) |
+| `npm run typecheck` | Comprobación de tipos |
+| `npm run openapi` | Exporta `openapi.json` (también se sirve en `/openapi.json`) |
+| `npm run set-roles -- <usuario> Admin Writer` | Asigna roles desde la terminal (p. ej. tu primer admin) |
 
-### To create a Service.
-    . Add the route in src/routes/ 'section'.routes.ts
-    . Create controller in src/controllers/ 'section'.controller.ts 
-    . If is new section, add the section Route to src/app.ts
+## Estructura
 
-## Models and Swagger
+```
+src/
+  app.ts               middlewares y montaje de routers
+  server.ts            conexión a Mongo, arranque y apagado limpio
+  config/env.ts        variables de entorno validadas con zod
+  lib/route.ts         ApiRouter: valida params/query/body, controla el acceso y registra la ruta en OpenAPI
+  lib/openapi.ts       genera el documento OpenAPI 3.1 a partir de los esquemas zod
+  middleware/          sesión (cookie JWT) y manejo de errores
+  models/              esquemas de Mongoose (compatibles con los datos existentes)
+  modules/             rutas por recurso: auth, me, users, cities, places, npcs, chapters
+```
 
-In src/swagger/ you will find de swagger documentation directory
-You can run `./generate.sh` to create WoS_Angular_Librery in generator/dist/wos-api
+Para añadir un endpoint, declara la ruta con `api.route({ method, path, access, params, query, body, response }, handler)`:
+el handler recibe los datos ya validados y tipados, y lo que devuelva se envía como JSON.
 
-### To create Service and Model in api
-    . Create service path at src/swagger/services/<section>/<serviceName>.json
-    . Create service models definitions at src/swagger/services/<section>/<serviceName>.json
-    . Create shared models definitions at src/swagger/commons/models.json
-    . Add all definitions (hared and services) to src/swagger/commons/definitions.json
-    . Add path to src/swagger/commons/paths.json
+## Autenticación y roles
 
+- `POST /auth/register` y `POST /auth/login` dejan la sesión en la cookie httpOnly `wos_token`; `POST /auth/logout` la borra.
+- **Reader** (por defecto): lee lo publicado y gestiona sus personajes en `/me/characters`.
+- **Writer**: crea y edita el mundo; ve borradores. Se obtiene con `POST /me/become-writer` y el `WRITER_INVITE_CODE`.
+- **Admin**: puede con todo, incluida la gestión de usuarios en `/users`.
+- Cada versión de un relato solo la edita su autor (o un admin). El contenido sin autor (datos antiguos) lo puede editar cualquier escritor.
 
-## MongoDB
+## Formato de errores
 
-. localhost:27017
+```json
+{ "error": { "code": "BAD_REQUEST", "message": "Datos inválidos en el body", "details": { "fieldErrors": { "name": ["..."] } } } }
+```
