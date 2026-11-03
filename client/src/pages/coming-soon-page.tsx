@@ -1,0 +1,23 @@
+import { Link } from 'react-router';
+import { headerLinkClass, SiteLayout } from '@/components/layout/site-layout';
+import { Paper } from '@/components/ui/paper';
+
+/** Marcador para las secciones que aún no están diseñadas. */
+export function ComingSoonPage({ title }: { title: string }) {
+  return (
+    <SiteLayout
+      action={
+        <Link to="/inicio" className={headerLinkClass}>
+          Volver
+        </Link>
+      }
+      className="items-center justify-center py-10"
+    >
+      <Paper className="flex w-[min(100%,520px)] flex-col items-center gap-4 px-10 py-14 text-center">
+        <p className="text-sm tracking-[0.22em] text-ink-muted uppercase">Próximamente</p>
+        <h1 className="font-display text-[52px] leading-none font-semibold">{title}</h1>
+        <p className="text-xl text-ink-soft">Este capítulo aún se está escribiendo.</p>
+      </Paper>
+    </SiteLayout>
+  );
+}

@@ -1,0 +1,45 @@
+@import 'tailwindcss';
+
+/* Tokens del diseño "World of Stories" (Claude Design): pergamino, tinta y papel */
+@theme {
+  --color-parchment: #f3ead6;
+  --color-paper: #fbf5e6;
+  --color-paper-edge: #ece2c9;
+  --color-paper-edge-deep: #e2d6b6;
+  --color-ink: #1b1915;
+  --color-ink-soft: #3b362c;
+  --color-ink-muted: #4d473a;
+  --color-ink-shadow: #6b6354;
+  --color-danger: #8a2a1c;
+
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-serif: 'EB Garamond', Georgia, serif;
+
+  /* Hoja con dos páginas apiladas debajo */
+  --shadow-paper:
+    0 1px 2px rgb(27 25 21 / 0.25), 0 8px 0 -3px var(--color-paper-edge), 0 8px 1px -3px rgb(27 25 21 / 0.3),
+    0 16px 0 -6px var(--color-paper-edge-deep), 0 16px 1px -6px rgb(27 25 21 / 0.28), 0 38px 44px -18px rgb(27 25 21 / 0.4);
+  /* Botón con canto inferior */
+  --shadow-press: 0 5px 0 -1px var(--color-ink-shadow);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-parchment text-ink font-serif;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-4 outline-ink;
+  }
+}
+
+@utility link-underline {
+  text-decoration-line: underline;
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1px;
+  &:hover {
+    text-decoration-thickness: 2px;
+  }
+}
