@@ -12,13 +12,27 @@ import { errorHandler, notFound } from './middleware/error-handler.js';
 import { authApi } from './modules/auth.routes.js';
 import { meApi } from './modules/me.routes.js';
 import { usersApi } from './modules/users.routes.js';
-import { citiesApi } from './modules/cities.routes.js';
-import { cityPlacesApi, placesApi } from './modules/places.routes.js';
-import { npcsApi, placeNpcsApi } from './modules/npcs.routes.js';
+import { citiesApi, writerCitiesApi } from './modules/cities.routes.js';
+import { cityPlacesApi, placesApi, writerCityPlacesApi } from './modules/places.routes.js';
+import { npcsApi, placeNpcsApi, writerPlaceNpcsApi } from './modules/npcs.routes.js';
 import { chaptersApi, npcChaptersApi } from './modules/chapters.routes.js';
 
 export const API_PREFIX = '/api/v1';
-const apis = [authApi, meApi, usersApi, citiesApi, cityPlacesApi, placesApi, placeNpcsApi, npcsApi, npcChaptersApi, chaptersApi];
+const apis = [
+  authApi,
+  meApi,
+  usersApi,
+  citiesApi,
+  cityPlacesApi,
+  placesApi,
+  writerCitiesApi,
+  writerCityPlacesApi,
+  writerPlaceNpcsApi,
+  placeNpcsApi,
+  npcsApi,
+  npcChaptersApi,
+  chaptersApi,
+];
 
 export function createApp(): Express {
   const app = express();

@@ -2,7 +2,14 @@ import { z } from 'zod';
 import { isoDate, narrativeSchema, objectId, readableInputSchema, readableSchema, taleSchema } from './common.js';
 
 export const DECISION_TYPES = ['choose', 'item', 'money'] as const;
-export const NPC_TYPES = ['historias', 'tienda', 'posta'] as const;
+export const NPC_TYPES = ['story', 'store', 'travel'] as const;
+export type NpcType = (typeof NPC_TYPES)[number];
+
+/**
+ * Un NPC de tipo `story` con decisión `choose` tiene exactamente dos opciones:
+ * la primera acepta (empieza la historia) y la segunda la rechaza.
+ */
+export const STORY_OPTIONS = 2;
 
 export const decisionOptionSchema = z
   .object({
@@ -77,7 +84,7 @@ export type Npc = z.infer<typeof npcSchema>;
 export const createNpcInputSchema = z
   .object({
     name: z.string().trim().min(1).max(80),
-    npcType: z.enum(NPC_TYPES).default('historias'),
+    npcType: z.enum(NPC_TYPES).default('story'),
     title: z.string().trim().max(120).optional(),
     description: narrativeSchema,
     meeting: narrativeSchema,

@@ -17,6 +17,12 @@ beforeEach(async () => {
   admin = (await signUp('admin', ['Admin'])).agent;
 });
 
+/** Decisión válida de un NPC de tipo story: aceptar y rechazar */
+const STORY_DECISION = [
+  { name: 'Aceptar', description: 'Escuchar su historia' },
+  { name: 'Rechazar', description: 'Seguir tu camino' },
+];
+
 const createCity = async (name = 'Vel Aran') =>
   (await writer.post(api('/cities')).send({ name, description: story('Una ciudad de niebla'), travel: story('El camino') }).expect(201))
     .body;
@@ -38,7 +44,9 @@ describe('ciudades', () => {
   it('los lectores solo ven ciudades y versiones publicadas', async () => {
     const city = await createCity();
     await reader.get(api(`/cities/${city.id}`)).expect(404);
+    // el modo lector es igual para todos: sin publicar no aparece ni para su autora
     expect((await reader.get(api('/cities')).expect(200)).body).toEqual([]);
+    expect((await writer.get(api('/cities')).expect(200)).body).toEqual([]);
 
     await writer.patch(api(`/cities/${city.id}/publish`)).send({ published: true }).expect(200);
     const extra = (await otherWriter.post(api(`/cities/${city.id}/description`)).send({ tale: story('Otra versión') }).expect(201)).body;
@@ -48,10 +56,51 @@ describe('ciudades', () => {
     expect(seen.description.map((t: { id: string }) => t.id)).toEqual([extra.id]);
     expect(seen.travel).toEqual([]);
 
-    // los escritores ven todo y pueden filtrar
+    // listado de lectura: una sola versión publicada de cada relato (null si no hay ninguna)
+    const [reading] = (await reader.get(api('/cities')).expect(200)).body;
+    expect(reading).toMatchObject({ id: city.id, name: 'Vel Aran', description: { id: extra.id, published: true }, travel: null });
+    expect(reading).not.toHaveProperty('published');
+
+    // los escritores ven todo en su detalle
     expect((await writer.get(api(`/cities/${city.id}`)).expect(200)).body.description).toHaveLength(2);
-    expect((await writer.get(api('/cities?published=false')).expect(200)).body).toEqual([]);
-    expect((await reader.get(api('/cities?published=false')).expect(200)).body).toHaveLength(1);
+  });
+
+  it('el modo escritor lista las ciudades con todas sus versiones', async () => {
+    const city = await createCity();
+    await request(app).get(api('/writer/cities')).expect(401);
+    await reader.get(api('/writer/cities')).expect(403);
+
+    const extra = (await otherWriter.post(api(`/cities/${city.id}/travel`)).send({ tale: story('Otro camino') }).expect(201)).body;
+    const [full] = (await otherWriter.get(api('/writer/cities')).expect(200)).body;
+    expect(full).toMatchObject({ id: city.id, createdBy: 'escritora', published: false });
+    expect(full.description).toHaveLength(1);
+    expect(full.travel.map((t: { id: string; published: boolean }) => [t.id, t.published])).toEqual([
+      [city.travel[0].id, false],
+      [extra.id, false],
+    ]);
+    expect(full).not.toHaveProperty('places');
+
+    expect((await writer.get(api('/writer/cities?published=true')).expect(200)).body).toEqual([]);
+    expect((await writer.get(api('/writer/cities?published=false')).expect(200)).body).toHaveLength(1);
+  });
+
+  it('el modo lector elige al azar entre las versiones publicadas', async () => {
+    const city = await createCity();
+    await writer.patch(api(`/cities/${city.id}/publish`)).send({ published: true }).expect(200);
+    const published = [city.description[0].id];
+    for (const text of ['Segunda', 'Tercera']) {
+      const tale = (await writer.post(api(`/cities/${city.id}/description`)).send({ tale: story(text) }).expect(201)).body;
+      if (text === 'Segunda') {
+        await writer.patch(api(`/cities/${city.id}/description/${tale.id}/publish`)).send({ published: true }).expect(200);
+        published.push(tale.id);
+      }
+    }
+    await writer.patch(api(`/cities/${city.id}/description/${city.description[0].id}/publish`)).send({ published: true }).expect(200);
+
+    const seen = new Set<string>();
+    for (let i = 0; i < 30; i++) seen.add((await reader.get(api('/cities')).expect(200)).body[0].description.id);
+    // nunca la tercera (sin publicar), y con 30 lecturas salen las dos publicadas
+    expect([...seen].sort()).toEqual([...published].sort());
   });
 
   it('cada autor edita sus versiones; un admin puede con todas', async () => {
@@ -95,22 +144,54 @@ describe('lugares, NPCs y capítulos', () => {
           description: story('Un bardo'),
           meeting: story('Te saluda'),
           rejected: story('Se va'),
-          decision: { options: [{ name: 'Aceptar', description: 'Escuchar su historia' }] },
+          decision: { options: STORY_DECISION },
         })
         .expect(201)
     ).body;
     return { city, place, npc };
   }
 
+  it('un NPC de tipo story tiene exactamente dos opciones: aceptar y rechazar', async () => {
+    const { place, npc } = await createWorld();
+    const base = { name: 'Otro', description: story('d'), meeting: story('m'), rejected: story('r') };
+    const create = (body: object) => writer.post(api(`/places/${place.id}/npcs`)).send({ ...base, ...body });
+
+    await create({ decision: { options: [STORY_DECISION[0]] } }).expect(400);
+    await create({ decision: { options: [...STORY_DECISION, { name: 'Tres', description: 'Una más' }] } }).expect(400);
+    await create({}).expect(400); // sin decisión
+    // con dinero o ítem no hay opciones que elegir; las tiendas y postas pueden tener las que quieran
+    await create({ decision: { decisionType: 'money', amount: 5 } }).expect(201);
+    await create({ npcType: 'store', decision: { options: [STORY_DECISION[0]] } }).expect(201);
+
+    // al editar se valida el resultado: quitar una opción, o pasar a story con tres, no se puede
+    await writer.patch(api(`/npcs/${npc.id}`)).send({ decision: { options: [STORY_DECISION[0]] } }).expect(400);
+    const store = (await create({ npcType: 'store', decision: { options: [...STORY_DECISION, { name: 'Tres', description: 'x' }] } }).expect(201))
+      .body;
+    await writer.patch(api(`/npcs/${store.id}`)).send({ npcType: 'story' }).expect(400);
+  });
+
+  it('el modo escritor lista los NPCs de un lugar completos', async () => {
+    const { place, npc } = await createWorld();
+    await reader.get(api(`/writer/places/${place.id}/npcs`)).expect(403);
+    const [full] = (await otherWriter.get(api(`/writer/places/${place.id}/npcs`)).expect(200)).body;
+    expect(full).toMatchObject({ id: npc.id, npcType: 'story', published: false, meeting: { tale: story('Te saluda') } });
+    expect(full.decision.options.map((o: { name: string }) => o.name)).toEqual(['Aceptar', 'Rechazar']);
+    expect(full).not.toHaveProperty('chapters');
+  });
+
   it('crea lugar y NPC con su capítulo inicial', async () => {
     const { city, place, npc } = await createWorld();
     expect(place).toMatchObject({ cityId: city.id, name: 'Taberna', npcIds: [] });
-    expect(npc).toMatchObject({ name: 'Bardo', npcType: 'historias', placeId: place.id, author: 'escritora' });
+    expect(npc).toMatchObject({ name: 'Bardo', npcType: 'story', placeId: place.id, author: 'escritora' });
     expect(npc).not.toHaveProperty('chapters');
     expect(npc.decision.options[0]).toMatchObject({ name: 'Aceptar', published: true });
 
     expect((await writer.get(api(`/places/${place.id}`)).expect(200)).body.npcIds).toEqual([npc.id]);
-    expect((await writer.get(api(`/cities/${city.id}/places`)).expect(200)).body).toHaveLength(1);
+    // modo escritor: el lugar completo, con todas sus versiones
+    const [full] = (await writer.get(api(`/writer/cities/${city.id}/places`)).expect(200)).body;
+    expect(full).toMatchObject({ id: place.id, name: 'Taberna', createdBy: 'escritora', npcIds: [npc.id] });
+    expect(full.description[0]).toMatchObject({ tale: story('Huele a cerveza'), published: false });
+    await reader.get(api(`/writer/cities/${city.id}/places`)).expect(403);
 
     const chapters = (await writer.get(api(`/npcs/${npc.id}/chapters`)).expect(200)).body;
     expect(chapters).toMatchObject([{ name: 'Inicio', published: false }]);
@@ -118,12 +199,22 @@ describe('lugares, NPCs y capítulos', () => {
 
   it('los lectores no ven lugares ni NPCs sin publicar', async () => {
     const { city, place, npc } = await createWorld();
+    // ciudad sin publicar: su listado de lectura no existe, tampoco para escritores
+    await writer.get(api(`/cities/${city.id}/places`)).expect(404);
     await writer.patch(api(`/cities/${city.id}/publish`)).send({ published: true }).expect(200);
 
     expect((await reader.get(api(`/cities/${city.id}/places`)).expect(200)).body).toEqual([]);
     await reader.get(api(`/places/${place.id}`)).expect(404);
 
     await writer.patch(api(`/places/${place.id}/publish`)).send({ published: true }).expect(200);
+    // publicado el lugar pero no su descripción: aparece sin versión
+    expect((await reader.get(api(`/cities/${city.id}/places`)).expect(200)).body).toEqual([
+      expect.objectContaining({ id: place.id, name: 'Taberna', description: null, entry: null }),
+    ]);
+    await writer.patch(api(`/places/${place.id}/description/${place.description[0].id}/publish`)).send({ published: true }).expect(200);
+    expect((await reader.get(api(`/cities/${city.id}/places`)).expect(200)).body[0].description).toMatchObject({
+      tale: story('Huele a cerveza'),
+    });
     expect((await reader.get(api(`/places/${place.id}/npcs`)).expect(200)).body).toEqual([]);
     await reader.get(api(`/npcs/${npc.id}`)).expect(404);
 

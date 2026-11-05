@@ -107,3 +107,9 @@ export function registerTaleRoutes<P extends ZodObject>(api: ApiRouter, opts: Ta
 export function visibleTales<T extends { published: boolean }>(tales: T[], canSeeDrafts: boolean): T[] {
   return canSeeDrafts ? tales : tales.filter((t) => t.published);
 }
+
+/** Modo lector: una versión publicada al azar (cada lectura puede mostrar una distinta), o `null` si no hay */
+export function randomPublished<T extends { published: boolean }>(tales: T[]): T | null {
+  const published = tales.filter((t) => t.published);
+  return published[Math.floor(Math.random() * published.length)] ?? null;
+}

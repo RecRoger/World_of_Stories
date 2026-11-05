@@ -6,7 +6,7 @@ y estilos con Tailwind 4 + componentes estilo shadcn/ui adaptados al diseño de 
 
 ```bash
 npm run dev -w server   # la API tiene que estar levantada (puerto 3000)
-npm run dev -w client   # http://localhost:5173
+npm run dev -w client   # http://localhost:4200
 ```
 
 En desarrollo, Vite redirige `/api` a `localhost:3000`, así la cookie de sesión es del mismo origen.
@@ -30,6 +30,20 @@ src/
 | Ruta | Pantalla | Acceso |
 | --- | --- | --- |
 | `/` | Landing | pública |
-| `/acceso` (`?modo=registro`) | Iniciar sesión / Registrarse | solo sin sesión |
-| `/inicio` | Leer o escribir | con sesión |
-| `/leer`, `/escribir` | Próximamente | con sesión |
+| `/access` (`?mode=register`) | Iniciar sesión / Registrarse | solo sin sesión |
+| `/home` | Leer o escribir | con sesión |
+| `/read` | Próximamente | con sesión |
+| `/write/join` | Entrada para escritores (código de invitación) | con sesión |
+| `/write/cities` (`/write` redirige aquí) | Ciudades | Writer o Admin |
+| `/write/cities/:cityId/places` | Lugares de una ciudad | Writer o Admin |
+| `/write/cities/:cityId/places/:placeId/events` | Eventos y NPCs de un lugar | Writer o Admin |
+| `/write/cities/:cityId/places/:placeId/npcs/:npcId/chapters` | Próximamente (Capítulos) | Writer o Admin |
+
+Ciudades y Lugares funcionan igual y comparten componentes (`features/locations/`): la creación es un modal y
+cada tarjeta gestiona en el sitio el nombre y sus extractos (descripciones y viajes/entradas, en pestañas con
+carrusel). Lo que cambia entre ambas se describe en `resource.ts`. Cualquier escritor añade extractos; editar, publicar y
+eliminar un extracto o la ciudad es solo para su autor o un admin.
+
+Todas las rutas de `/write/*` comparten `WriterLayout`, con el acceso a **Sugerencias de escritura** bajo el logo.
+Las acciones de editar, publicar y eliminar solo aparecen para el autor (`createdBy`) o un admin (`canManage` en
+`features/auth/roles.ts`); el server vuelve a comprobar los permisos en cada petición.

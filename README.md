@@ -15,6 +15,6 @@ Monorepo con npm workspaces:
 ```bash
 npm install
 npm run dev          # arranca la API (http://localhost:3000, docs en /docs)
-npm run dev:client   # arranca el front (http://localhost:5173), en otra terminal
+npm run dev:client   # arranca el front (http://localhost:4200), en otra terminal
 npm test             # tests de la API
 ```

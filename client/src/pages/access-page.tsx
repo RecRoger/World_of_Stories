@@ -14,13 +14,13 @@ import { cn } from '@/lib/utils';
 type Mode = 'login' | 'register';
 
 /**
- * 2 · Iniciar sesión / Registrarse. La pestaña activa vive en la URL (`?modo=registro`) para poder enlazarla.
+ * 2 · Iniciar sesión / Registrarse. La pestaña activa vive en la URL (`?mode=register`) para poder enlazarla.
  * Al entrar, `GuestOnly` detecta la sesión nueva y redirige; esta página no navega por su cuenta.
  */
 export function AccessPage() {
   const [params, setParams] = useSearchParams();
-  const mode: Mode = params.get('modo') === 'registro' ? 'register' : 'login';
-  const setMode = (next: Mode) => setParams(next === 'register' ? { modo: 'registro' } : {}, { replace: true });
+  const mode: Mode = params.get('mode') === 'register' ? 'register' : 'login';
+  const setMode = (next: Mode) => setParams(next === 'register' ? { mode: 'register' } : {}, { replace: true });
 
   return (
     <SiteLayout
@@ -117,8 +117,8 @@ function LoginForm() {
           {...register('password')}
         />
       </div>
-      <Button type="submit" disabled={formState.isSubmitting}>
-        {formState.isSubmitting ? 'Entrando…' : 'Entrar'}
+      <Button type="submit" loading={formState.isSubmitting}>
+        {formState.isSubmitting ? 'Entrando' : 'Entrar'}
       </Button>
     </form>
   );
@@ -156,8 +156,8 @@ function RegisterForm() {
           {...register('password')}
         />
       </div>
-      <Button type="submit" disabled={formState.isSubmitting}>
-        {formState.isSubmitting ? 'Creando cuenta…' : 'Crear cuenta'}
+      <Button type="submit" loading={formState.isSubmitting}>
+        {formState.isSubmitting ? 'Creando cuenta' : 'Crear cuenta'}
       </Button>
     </form>
   );

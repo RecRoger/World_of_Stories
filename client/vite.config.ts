@@ -9,7 +9,8 @@ export default defineConfig({
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
   server: {
-    port: 5173,
+    port: 4200,
+    strictPort: true,
     // La API va por el mismo origen: la cookie de sesión funciona sin CORS ni SameSite=None
     proxy: { '/api': 'http://localhost:3000' },
   },

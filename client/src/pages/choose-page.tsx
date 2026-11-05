@@ -1,27 +1,14 @@
 import type { ComponentType, SVGProps } from 'react';
-import { Link, useNavigate } from 'react-router';
-import { headerLinkClass, SiteLayout } from '@/components/layout/site-layout';
+import { Link } from 'react-router';
+import { SiteLayout } from '@/components/layout/site-layout';
 import { ArrowRightIcon, BookIcon, QuillIcon } from '@/components/icons';
-import { useLogout } from '@/features/auth/api';
+import { LogoutButton } from '@/features/auth/logout-button';
 
 /** 3 · Leer o escribir: el reparto tras iniciar sesión. */
 export function ChoosePage() {
-  const logout = useLogout();
-  const navigate = useNavigate();
-
-  // Primero se sale de la ruta protegida; si no, `RequireAuth` mandaría a /acceso al borrarse la sesión
-  const onLogout = () => {
-    navigate('/', { replace: true });
-    logout.mutate();
-  };
-
   return (
     <SiteLayout
-      action={
-        <button type="button" onClick={onLogout} disabled={logout.isPending} className={headerLinkClass}>
-          Salir
-        </button>
-      }
+      action={<LogoutButton />}
       className="items-center justify-center gap-14 pt-10 pb-8"
     >
       <div className="flex flex-col items-center gap-3 text-center">
@@ -31,13 +18,13 @@ export function ChoosePage() {
 
       <div className="grid w-full max-w-[900px] grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-x-12 gap-y-14">
         <ChoiceCard
-          to="/leer"
+          to="/read"
           icon={BookIcon}
           title="Leer"
           description="Descubre historias de fantasía escritas por otros aficionados."
         />
         <ChoiceCard
-          to="/escribir"
+          to="/write"
           icon={QuillIcon}
           title="Escribir"
           description="Crea tu propio mundo y dale vida, capítulo a capítulo."

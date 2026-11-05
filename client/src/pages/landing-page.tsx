@@ -8,7 +8,7 @@ import { useMe } from '@/features/auth/api';
 /** 1 · Landing: presentación y entrada. Con sesión, los enlaces llevan directo a elegir. */
 export function LandingPage() {
   const { data: user } = useMe();
-  const next = user ? '/inicio' : '/acceso';
+  const next = user ? '/home' : '/access';
 
   return (
     <SiteLayout

@@ -13,7 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "openapi": "tsx src/scripts/export-openapi.ts",
-    "set-roles": "tsx src/scripts/set-roles.ts"
+    "set-roles": "tsx src/scripts/set-roles.ts",
+    "seed:example": "tsx src/scripts/seed-example.ts"
   },
   "dependencies": {
     "@wos/shared": "*",

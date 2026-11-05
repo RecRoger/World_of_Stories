@@ -6,6 +6,7 @@ import {
   objectId,
   publishedQuerySchema,
   publishInputSchema,
+  STORY_OPTIONS,
   updateNpcInputSchema,
   type Decision,
   type Npc as NpcDto,
@@ -21,6 +22,8 @@ import { loadPlace } from './places.routes.js';
 
 export const placeNpcsApi = new ApiRouter('/places', 'NPCs');
 export const npcsApi = new ApiRouter('/npcs', 'NPCs');
+/** Modo escritor: /writer/places/:placeId/npcs con la información completa */
+export const writerPlaceNpcsApi = new ApiRouter('/writer/places', 'Modo escritor');
 
 const placeParams = z.object({ placeId: objectId });
 const npcParams = z.object({ npcId: objectId });
@@ -51,6 +54,15 @@ function npcDecision(input: NonNullable<DecisionInput>, previous?: IDecision | n
   };
 }
 
+/** Un NPC de historia con decisión de elegir debe ofrecer exactamente aceptar y rechazar */
+function assertStoryDecision(npcType: string, decision: { decisionType?: string | null; options: unknown[] } | null | undefined) {
+  if (npcType !== 'story') return;
+  if (!decision) throw HttpError.badRequest('Un NPC de tipo story necesita una decisión');
+  if ((decision.decisionType ?? 'choose') === 'choose' && decision.options.length !== STORY_OPTIONS) {
+    throw HttpError.badRequest(`Un NPC de tipo story tiene exactamente ${STORY_OPTIONS} opciones: aceptar y rechazar`);
+  }
+}
+
 const newTale = (tale: Readable[], author: string) => ({ tale, author, published: false, writeDate: new Date() });
 
 const toSummary = (n: NpcDoc): NpcSummary => ({
@@ -74,6 +86,26 @@ function toDto(npc: NpcDoc): NpcDto {
     decision: (json.decision as Decision | undefined) ?? null,
   };
 }
+
+writerPlaceNpcsApi.route(
+  {
+    method: 'get',
+    path: '/:placeId/npcs',
+    summary: 'Listar NPCs de un lugar con toda su información (modo escritor)',
+    description: 'Incluye los NPCs sin publicar, con sus textos y su decisión. Filtrable con `published`.',
+    access: 'writer',
+    params: placeParams,
+    query: publishedQuerySchema,
+    response: z.array(npcSchema),
+  },
+  async ({ params, query, user }) => {
+    const { place } = await loadPlace(params.placeId, user);
+    const filter = { _id: { $in: place.events }, ...(query.published === undefined ? {} : { published: query.published }) };
+    // En orden de creación, como los lugares (el ObjectId lleva la fecha)
+    const npcs = await Npc.find(filter, { chapters: 0 }).sort({ _id: 1 });
+    return npcs.map(toDto);
+  },
+);
 
 placeNpcsApi
   .route(
@@ -108,6 +140,7 @@ placeNpcsApi
       status: 201,
     },
     async ({ params, body, user }) => {
+      assertStoryDecision(body.npcType, body.decision);
       const { city, place } = await loadPlace(params.placeId, user);
       const npc = await Npc.create({
         name: body.name,
@@ -159,6 +192,8 @@ npcsApi
         }
       }
       if (decision) npc.set('decision', npcDecision(decision, npc.decision));
+      // Se valida el resultado: cambiar el tipo a story también exige su decisión de dos opciones
+      assertStoryDecision(npc.npcType, npc.decision);
       await npc.save();
       return toDto(npc);
     },

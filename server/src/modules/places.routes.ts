@@ -2,25 +2,27 @@ import { z } from 'zod';
 import {
   createPlaceInputSchema,
   objectId,
+  placeReadingSchema,
   placeSchema,
-  placeSummarySchema,
   publishedQuerySchema,
   publishInputSchema,
   updatePlaceInputSchema,
   type Place as PlaceDto,
-  type PlaceSummary,
+  type PlaceReading,
 } from '@wos/shared';
 import { ApiRouter, isWriter, type AuthUser } from '../lib/route.js';
 import { HttpError, found } from '../lib/http-error.js';
 import { City, type CityDoc, type PlaceDoc } from '../models/city.model.js';
 import { Npc } from '../models/npc.model.js';
 import { assertCanDelete, assertCanEdit, setPublished } from './permissions.js';
-import { registerTaleRoutes, visibleTales } from './tales.js';
+import { randomPublished, registerTaleRoutes, visibleTales } from './tales.js';
 import { loadCity } from './cities.routes.js';
 
 /** Rutas anidadas bajo la ciudad: /cities/:cityId/places */
 export const cityPlacesApi = new ApiRouter('/cities', 'Lugares');
 export const placesApi = new ApiRouter('/places', 'Lugares');
+/** Modo escritor: /writer/cities/:cityId/places con la información completa */
+export const writerCityPlacesApi = new ApiRouter('/writer/cities', 'Modo escritor');
 
 const cityParams = z.object({ cityId: objectId });
 const placeParams = z.object({ placeId: objectId });
@@ -35,13 +37,17 @@ export async function loadPlace(placeId: string, user?: AuthUser): Promise<{ cit
   return { city, place };
 }
 
-const toSummary = (city: CityDoc, p: PlaceDoc): PlaceSummary => ({
-  id: p.id,
-  cityId: city.id,
-  name: p.name,
-  published: p.published,
-  publishDate: p.publishDate?.toISOString() ?? null,
-});
+function toReading(city: CityDoc, place: PlaceDoc): PlaceReading {
+  const { description, entry } = place.toJSON() as unknown as PlaceDto;
+  return {
+    id: place.id,
+    cityId: city.id,
+    name: place.name,
+    publishDate: place.publishDate?.toISOString() ?? null,
+    description: randomPublished(description),
+    entry: randomPublished(entry),
+  };
+}
 
 function toDto(city: CityDoc, place: PlaceDoc, user?: AuthUser): PlaceDto {
   const json = place.toJSON() as unknown as Omit<PlaceDto, 'cityId'>;
@@ -54,20 +60,40 @@ function toDto(city: CityDoc, place: PlaceDoc, user?: AuthUser): PlaceDto {
   };
 }
 
+writerCityPlacesApi.route(
+  {
+    method: 'get',
+    path: '/:cityId/places',
+    summary: 'Listar lugares de una ciudad con toda su información (modo escritor)',
+    description: 'Incluye todas las versiones de descripción y entrada, también las sin publicar. Filtrable con `published`.',
+    access: 'writer',
+    params: cityParams,
+    query: publishedQuerySchema,
+    response: z.array(placeSchema),
+  },
+  async ({ params, query, user }) => {
+    const city = await loadCity(params.cityId, user);
+    return city.places
+      .filter((p) => query.published === undefined || p.published === query.published)
+      .map((p) => toDto(city, p, user));
+  },
+);
+
 cityPlacesApi
   .route(
     {
       method: 'get',
       path: '/:cityId/places',
-      summary: 'Listar lugares de una ciudad',
+      summary: 'Listar lugares de una ciudad (modo lector)',
+      description:
+        'Lugares publicados de una ciudad publicada, cada uno con una versión publicada de su descripción y de su entrada ' +
+        'elegida al azar. Es igual para todos los usuarios; el listado completo está en `GET /writer/cities/:cityId/places`.',
       params: cityParams,
-      query: publishedQuerySchema,
-      response: z.array(placeSummarySchema),
+      response: z.array(placeReadingSchema),
     },
-    async ({ params, query, user }) => {
-      const city = await loadCity(params.cityId, user);
-      const published = isWriter(user) ? query.published : true;
-      return city.places.filter((p) => published === undefined || p.published === published).map((p) => toSummary(city, p));
+    async ({ params }) => {
+      const city = found(await City.findOne({ _id: params.cityId, published: true }), 'Ciudad no encontrada');
+      return city.places.filter((p) => p.published).map((p) => toReading(city, p));
     },
   )
   .route(

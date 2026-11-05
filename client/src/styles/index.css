@@ -4,6 +4,8 @@
 @theme {
   --color-parchment: #f3ead6;
   --color-paper: #fbf5e6;
+  --color-paper-blank: #f7efdb;
+  --color-paper-line: #d6c9a8;
   --color-paper-edge: #ece2c9;
   --color-paper-edge-deep: #e2d6b6;
   --color-ink: #1b1915;
@@ -21,6 +23,38 @@
     0 16px 0 -6px var(--color-paper-edge-deep), 0 16px 1px -6px rgb(27 25 21 / 0.28), 0 38px 44px -18px rgb(27 25 21 / 0.4);
   /* Botón con canto inferior */
   --shadow-press: 0 5px 0 -1px var(--color-ink-shadow);
+
+  /*
+   * Puntos suspensivos que se escriben uno a uno: 0 → 1 → 2 → 3 puntos y vuelta a empezar.
+   * Se anima el ancho (no un recorte) para que el cursor, que va detrás, avance con cada punto.
+   */
+  --animate-write-dots: write-dots 1.6s steps(4, jump-none) infinite;
+  /* Cursor de campo de texto: visible/oculto sin transición, como el de un input */
+  --animate-caret-blink: caret-blink 0.8s steps(1, end) infinite;
+  /* Aparición diferida: las esperas cortas no llegan a mostrar el loader (evita parpadeos) */
+  --animate-appear-late: appear 150ms ease-out 300ms both;
+
+  @keyframes write-dots {
+    from {
+      width: 0;
+    }
+    to {
+      width: var(--dots-width);
+    }
+  }
+  @keyframes caret-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  @keyframes appear {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }
 
 @layer base {

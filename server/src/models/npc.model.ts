@@ -109,7 +109,7 @@ const ChapterSchema = new Schema<IChapter>(
 const NpcSchema = new Schema<INpc, NpcModel>(
   {
     name: { type: String, required: true, trim: true },
-    npcType: { type: String, default: 'historias' },
+    npcType: { type: String, default: 'story' },
     title: String,
     placeId: { type: Schema.Types.ObjectId, index: true },
     description: { type: TaleSchema, default: null },

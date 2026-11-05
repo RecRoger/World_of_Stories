@@ -1,8 +1,10 @@
+import { WritingDots } from '@/components/ui/writing-dots';
+
 /** Pantalla de espera mientras se comprueba la sesión. */
 export function PageLoader() {
   return (
-    <div role="status" className="flex min-h-dvh items-center justify-center">
-      <span className="animate-pulse font-display text-2xl italic text-ink-muted">Pasando página…</span>
+    <div className="flex min-h-dvh items-center justify-center">
+      <WritingDots label="Cargando" className="text-6xl text-ink-muted" />
     </div>
   );
 }

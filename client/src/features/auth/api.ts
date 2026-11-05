@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { userSchema, type LoginInput, type RegisterInput, type User } from '@wos/shared';
+import { userSchema, type BecomeWriterInput, type LoginInput, type RegisterInput, type User } from '@wos/shared';
 import { api, ApiError } from '@/lib/api';
 
 export const meQueryKey = ['me'] as const;
@@ -32,6 +32,15 @@ export function useRegister() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: RegisterInput) => api('/auth/register', { method: 'POST', body, schema: userSchema }),
+    onSuccess: (user) => queryClient.setQueryData(meQueryKey, user),
+  });
+}
+
+/** Canjea el código de invitación por el rol Writer; el usuario actualizado pasa a la caché de la sesión. */
+export function useBecomeWriter() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: BecomeWriterInput) => api('/me/become-writer', { method: 'POST', body, schema: userSchema }),
     onSuccess: (user) => queryClient.setQueryData(meQueryKey, user),
   });
 }

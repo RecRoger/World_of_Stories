@@ -1,14 +1,22 @@
 import { Navigate, Outlet, useLocation } from 'react-router';
 import { PageLoader } from '@/components/layout/page-loader';
 import { useMe } from './api';
+import { isWriter } from './roles';
 
-/** Rutas que requieren sesión: sin ella, manda a /acceso y recuerda a dónde quería ir. */
+/** Rutas que requieren sesión: sin ella, manda a /access y recuerda a dónde quería ir. */
 export function RequireAuth() {
   const { data: user, isPending } = useMe();
   const location = useLocation();
 
   if (isPending) return <PageLoader />;
-  if (!user) return <Navigate to="/acceso" replace state={{ from: location.pathname }} />;
+  if (!user) return <Navigate to="/access" replace state={{ from: location.pathname }} />;
+  return <Outlet />;
+}
+
+/** Sección de escritor (dentro de `RequireAuth`): sin el rol, pasa por la solicitud con código de invitación. */
+export function RequireWriter() {
+  const { data: user } = useMe();
+  if (!isWriter(user)) return <Navigate to="/write/join" replace />;
   return <Outlet />;
 }
 
@@ -27,5 +35,5 @@ export function GuestOnly() {
 
 function redirectTarget(state: unknown) {
   const from = (state as { from?: unknown } | null)?.from;
-  return typeof from === 'string' && from.startsWith('/') ? from : '/inicio';
+  return typeof from === 'string' && from.startsWith('/') ? from : '/home';
 }

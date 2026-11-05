@@ -19,6 +19,7 @@ npm run dev                 # http://localhost:3000/api/v1 · docs en /docs
 | `npm run typecheck` | Comprobación de tipos |
 | `npm run openapi` | Exporta `openapi.json` (también se sirve en `/openapi.json`) |
 | `npm run set-roles -- <usuario> Admin Writer` | Asigna roles desde la terminal (p. ej. tu primer admin) |
+| `npm run seed:example -- <usuario> --yes` | **Borra todas las ciudades, lugares y NPCs** y crea un mundo de ejemplo a nombre de `<usuario>` |
 
 ## Estructura
 
@@ -44,6 +45,18 @@ el handler recibe los datos ya validados y tipados, y lo que devuelva se envía 
 - **Writer**: crea y edita el mundo; ve borradores. Se obtiene con `POST /me/become-writer` y el `WRITER_INVITE_CODE`.
 - **Admin**: puede con todo, incluida la gestión de usuarios en `/users`.
 - Cada versión de un relato solo la edita su autor (o un admin). El contenido sin autor (datos antiguos) lo puede editar cualquier escritor.
+
+## Modo lector y modo escritor
+
+Ciudades y lugares se listan de dos formas, con respuestas distintas (y documentadas por separado en `/docs`):
+
+| Modo | Rutas | Respuesta |
+| --- | --- | --- |
+| Lector (público) | `GET /cities`, `GET /cities/:cityId/places` | Solo lo publicado, con **una versión publicada al azar** de cada relato (`CityReading`, `PlaceReading`). Igual para todos los usuarios. |
+| Escritor | `GET /writer/cities`, `GET /writer/cities/:cityId/places`, `GET /writer/places/:placeId/npcs` | La información completa: todas las versiones, también las sin publicar (`City`, `Place`). Filtrable con `?published`. |
+
+Los NPCs son de tipo `story`, `store` o `travel`. Uno de tipo `story` con decisión `choose` tiene **exactamente dos
+opciones**: la primera acepta la historia y la segunda la rechaza (la API lo valida al crear y al editar).
 
 ## Formato de errores
 

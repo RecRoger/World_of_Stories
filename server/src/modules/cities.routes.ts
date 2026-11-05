@@ -1,23 +1,25 @@
 import { z } from 'zod';
 import {
+  cityReadingSchema,
   citySchema,
-  citySummarySchema,
   createCityInputSchema,
   objectId,
   publishedQuerySchema,
   publishInputSchema,
   updateCityInputSchema,
   type City as CityDto,
-  type CitySummary,
+  type CityReading,
 } from '@wos/shared';
 import { ApiRouter, isWriter, type AuthUser } from '../lib/route.js';
 import { found } from '../lib/http-error.js';
 import { City, type CityDoc } from '../models/city.model.js';
 import { Npc } from '../models/npc.model.js';
 import { assertCanDelete, assertCanEdit, setPublished } from './permissions.js';
-import { registerTaleRoutes, visibleTales } from './tales.js';
+import { randomPublished, registerTaleRoutes, visibleTales } from './tales.js';
 
 export const citiesApi = new ApiRouter('/cities', 'Ciudades');
+/** Modo escritor: listados con la información completa, para mostrarla y editarla */
+export const writerCitiesApi = new ApiRouter('/writer/cities', 'Modo escritor');
 
 const cityParams = z.object({ cityId: objectId });
 
@@ -27,35 +29,59 @@ export async function loadCity(cityId: string, user?: AuthUser): Promise<CityDoc
   return found(city && (city.published || isWriter(user)) ? city : null, 'Ciudad no encontrada');
 }
 
-const toSummary = (c: CityDoc): CitySummary => ({
-  id: c.id,
-  name: c.name,
-  published: c.published,
-  publishDate: c.publishDate?.toISOString() ?? null,
-});
-
 function toDto(city: CityDoc, user?: AuthUser): CityDto {
   const { places: _places, ...json } = city.toJSON() as unknown as CityDto & { places?: unknown };
   const drafts = isWriter(user);
   return { ...json, description: visibleTales(json.description, drafts), travel: visibleTales(json.travel, drafts) };
 }
 
+function toReading(city: CityDoc): CityReading {
+  const { description, travel } = city.toJSON() as unknown as CityDto;
+  return {
+    id: city.id,
+    name: city.name,
+    publishDate: city.publishDate?.toISOString() ?? null,
+    description: randomPublished(description),
+    travel: randomPublished(travel),
+  };
+}
+
+const LIST_FIELDS = '-places'; // los lugares tienen su propio listado
+
+citiesApi.route(
+  {
+    method: 'get',
+    path: '/',
+    summary: 'Listar ciudades (modo lector)',
+    description:
+      'Ciudades publicadas, cada una con una versión publicada de su descripción y de su viaje elegida al azar. ' +
+      'Es igual para todos los usuarios; el listado completo de escritores está en `GET /writer/cities`.',
+    response: z.array(cityReadingSchema),
+  },
+  async () => {
+    const cities = await City.find({ published: true }, LIST_FIELDS).sort({ name: 1 });
+    return cities.map(toReading);
+  },
+);
+
+writerCitiesApi.route(
+  {
+    method: 'get',
+    path: '/',
+    summary: 'Listar ciudades con toda su información (modo escritor)',
+    description: 'Incluye todas las versiones de descripción y viaje, también las sin publicar. Filtrable con `published`.',
+    access: 'writer',
+    query: publishedQuerySchema,
+    response: z.array(citySchema),
+  },
+  async ({ query, user }) => {
+    const filter = query.published === undefined ? {} : { published: query.published };
+    const cities = await City.find(filter, LIST_FIELDS).sort({ name: 1 });
+    return cities.map((c) => toDto(c, user));
+  },
+);
+
 citiesApi
-  .route(
-    {
-      method: 'get',
-      path: '/',
-      summary: 'Listar ciudades',
-      description: 'Los lectores solo reciben ciudades publicadas; los escritores pueden filtrar con `published`.',
-      query: publishedQuerySchema,
-      response: z.array(citySummarySchema),
-    },
-    async ({ query, user }) => {
-      const published = isWriter(user) ? query.published : true;
-      const cities = await City.find(published === undefined ? {} : { published }, 'name published publishDate').sort({ name: 1 });
-      return cities.map(toSummary);
-    },
-  )
   .route(
     {
       method: 'post',
