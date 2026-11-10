@@ -148,7 +148,8 @@ function NpcForm({
             <div className="flex flex-col gap-5">
               {isStory && (
                 <p className="text-[17px] text-ink-muted">
-                  Un NPC de tipo story tiene exactamente dos opciones: una para aceptar y otra para rechazar.
+                  Un NPC de tipo story tiene exactamente dos opciones: aceptar empieza la historia en su capítulo
+                  inicial{npc ? '' : ' («Inicio», que se crea vacío con el evento)'} y rechazar muestra el texto de rechazo.
                 </p>
               )}
               {errors.options?.message && <p className="text-base text-danger">{errors.options.message}</p>}

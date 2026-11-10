@@ -15,7 +15,7 @@ import { usersApi } from './modules/users.routes.js';
 import { citiesApi, writerCitiesApi } from './modules/cities.routes.js';
 import { cityPlacesApi, placesApi, writerCityPlacesApi } from './modules/places.routes.js';
 import { npcsApi, placeNpcsApi, writerPlaceNpcsApi } from './modules/npcs.routes.js';
-import { chaptersApi, npcChaptersApi } from './modules/chapters.routes.js';
+import { chaptersApi, npcChaptersApi, writerNpcChaptersApi } from './modules/chapters.routes.js';
 
 export const API_PREFIX = '/api/v1';
 const apis = [
@@ -28,6 +28,7 @@ const apis = [
   writerCitiesApi,
   writerCityPlacesApi,
   writerPlaceNpcsApi,
+  writerNpcChaptersApi,
   placeNpcsApi,
   npcsApi,
   npcChaptersApi,

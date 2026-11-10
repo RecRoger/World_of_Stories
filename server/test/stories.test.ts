@@ -195,6 +195,23 @@ describe('lugares, NPCs y capítulos', () => {
 
     const chapters = (await writer.get(api(`/npcs/${npc.id}/chapters`)).expect(200)).body;
     expect(chapters).toMatchObject([{ name: 'Inicio', published: false }]);
+    // aceptar lleva al capítulo inicial; rechazar, a ninguno
+    expect(npc.decision.options.map((o: { value: string }) => o.value)).toEqual([chapters[0].id, '']);
+  });
+
+  it('el modo escritor lista los capítulos completos de un NPC', async () => {
+    const { npc } = await createWorld();
+    await reader.get(api(`/writer/npcs/${npc.id}/chapters`)).expect(403);
+    const [root] = (await writer.get(api(`/writer/npcs/${npc.id}/chapters`)).expect(200)).body;
+    await writer
+      .patch(api(`/chapters/${root.id}`))
+      .send({ story: [{ text: 'Hace mucho', animation: 'chatA' }], decision: { options: [{ name: 'Seguir', description: 'Seguir' }] } })
+      .expect(200);
+    const full = (await otherWriter.get(api(`/writer/npcs/${npc.id}/chapters`)).expect(200)).body;
+    expect(full).toMatchObject([
+      { id: root.id, npcId: npc.id, story: [{ text: 'Hace mucho', animation: 'chatA' }], decision: { options: [{ name: 'Seguir' }] } },
+      { name: 'Seguir', story: [], decision: null },
+    ]);
   });
 
   it('los lectores no ven lugares ni NPCs sin publicar', async () => {
@@ -218,6 +235,10 @@ describe('lugares, NPCs y capítulos', () => {
     expect((await reader.get(api(`/places/${place.id}/npcs`)).expect(200)).body).toEqual([]);
     await reader.get(api(`/npcs/${npc.id}`)).expect(404);
 
+    // un NPC de tipo story necesita sus capítulos publicados
+    await writer.patch(api(`/npcs/${npc.id}/publish`)).send({ published: true }).expect(409);
+    const [root] = (await writer.get(api(`/npcs/${npc.id}/chapters`))).body;
+    await writer.patch(api(`/chapters/${root.id}/publish`)).send({ published: true }).expect(200);
     await writer.patch(api(`/npcs/${npc.id}/publish`)).send({ published: true }).expect(200);
     const seen = (await reader.get(api(`/npcs/${npc.id}`)).expect(200)).body;
     expect(seen.meeting).toMatchObject({ published: true, tale: story('Te saluda') });
@@ -265,15 +286,22 @@ describe('lugares, NPCs y capítulos', () => {
       .send({ decision: { options: [{ name: 'X', description: 'x', value: '64b7f0c2a1b2c3d4e5f60718' }] } })
       .expect(400);
 
-    // publicar un capítulo hace visibles las opciones que llevan a él
-    await writer.patch(api(`/npcs/${npc.id}/publish`)).send({ published: true }).expect(200);
+    // publicar un capítulo publica en cadena los capítulos a los que llevan sus decisiones
     await writer.patch(api(`/chapters/${root.id}/publish`)).send({ published: true }).expect(200);
-    expect((await reader.get(api(`/chapters/${root.id}`)).expect(200)).body.decision.options).toEqual([]);
+    chapters = (await writer.get(api(`/npcs/${npc.id}/chapters`))).body;
+    expect(chapters.map((c: { published: boolean }) => c.published)).toEqual([true, true, false]);
 
-    await writer.patch(api(`/chapters/${toForest.value}/publish`)).send({ published: true }).expect(200);
-    const seen = (await reader.get(api(`/chapters/${root.id}`)).expect(200)).body;
-    expect(seen.decision.options.map((o: { name: string }) => o.name)).toEqual(['Bosque', 'Río']);
-    await reader.get(api(`/chapters/${toRiver.value}`)).expect(404);
+    // Río quedó sin decisión que lleve a él: el NPC no se publica hasta publicarlo también
+    const conflict = await writer.patch(api(`/npcs/${npc.id}/publish`)).send({ published: true }).expect(409);
+    expect(conflict.body.error.message).toContain('«Río»');
+    await writer.patch(api(`/chapters/${toRiver.value}/publish`)).send({ published: true }).expect(200);
+    await writer.patch(api(`/npcs/${npc.id}/publish`)).send({ published: true }).expect(200);
+    expect((await reader.get(api(`/chapters/${root.id}`)).expect(200)).body.decision.options).toHaveLength(2);
+
+    // despublicar un capítulo oculta a los lectores las opciones que llevan a él
+    await writer.patch(api(`/chapters/${toForest.value}/publish`)).send({ published: false }).expect(200);
+    expect((await reader.get(api(`/chapters/${root.id}`)).expect(200)).body.decision.options).toEqual([]);
+    await reader.get(api(`/chapters/${toForest.value}`)).expect(404);
 
     // borrar un capítulo quita las opciones que apuntaban a él; el inicial no se borra
     await writer.delete(api(`/chapters/${root.id}`)).expect(409);
@@ -297,6 +325,13 @@ describe('lugares, NPCs y capítulos', () => {
     await otherWriter.patch(api(`/chapters/${root.id}`)).send({ name: 'Mío' }).expect(403);
     const child = (await otherWriter.patch(api(`/chapters/${childId}`)).send({ story: story('Continúo yo') }).expect(200)).body;
     expect(child.author).toBe('otro');
+
+    // la cadena de publicación pasa por el capítulo ajeno: hay que poder publicarlos todos
+    const denied = await writer.patch(api(`/chapters/${root.id}/publish`)).send({ published: true }).expect(403);
+    expect(denied.body.error.message).toContain('Seguir');
+    expect((await writer.get(api(`/chapters/${root.id}`))).body.published).toBe(false);
+    await admin.patch(api(`/chapters/${root.id}/publish`)).send({ published: true }).expect(200);
+    expect((await writer.get(api(`/chapters/${childId}`))).body.published).toBe(true);
   });
 
   it('borrar una ciudad borra sus lugares y NPCs', async () => {

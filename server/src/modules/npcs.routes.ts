@@ -37,7 +37,7 @@ export async function loadNpc(npcId: string, user?: AuthUser): Promise<NpcDoc> {
   return npc;
 }
 
-/** Las opciones de la decisión del NPC no apuntan a capítulos, así que siempre son visibles */
+/** Las opciones de la decisión del NPC siempre son visibles (las de una historia se enlazan con `linkStoryDecision`) */
 function npcDecision(input: NonNullable<DecisionInput>, previous?: IDecision | null): DecisionData {
   return {
     decisionType: input.decisionType,
@@ -52,6 +52,18 @@ function npcDecision(input: NonNullable<DecisionInput>, previous?: IDecision | n
       published: true,
     })),
   };
+}
+
+/**
+ * En un NPC de historia, aceptar lleva siempre al capítulo inicial (el primero) y rechazar no lleva a ninguno:
+ * se muestra su texto de rechazo.
+ */
+function linkStoryDecision(npc: NpcDoc) {
+  const options = npc.decision?.options;
+  if (npc.npcType !== 'story' || !options?.length || (npc.decision?.decisionType ?? 'choose') !== 'choose') return;
+  options.forEach((option, i) => {
+    option.value = i === 0 ? (npc.chapters[0]?.id ?? '') : '';
+  });
 }
 
 /** Un NPC de historia con decisión de elegir debe ofrecer exactamente aceptar y rechazar */
@@ -142,7 +154,8 @@ placeNpcsApi
     async ({ params, body, user }) => {
       assertStoryDecision(body.npcType, body.decision);
       const { city, place } = await loadPlace(params.placeId, user);
-      const npc = await Npc.create({
+      // Un NPC nace con su capítulo inicial vacío ("Inicio"), desde el que se ramifica la historia
+      const npc = new Npc({
         name: body.name,
         npcType: body.npcType,
         title: body.title,
@@ -155,6 +168,8 @@ placeNpcsApi
         chapters: [{ name: 'Inicio', story: [], endLocation: { endChapter: true } }],
         author: user.username,
       });
+      linkStoryDecision(npc);
+      await npc.save();
       place.events.push(npc._id);
       await city.save();
       return toDto(npc);
@@ -194,6 +209,7 @@ npcsApi
       if (decision) npc.set('decision', npcDecision(decision, npc.decision));
       // Se valida el resultado: cambiar el tipo a story también exige su decisión de dos opciones
       assertStoryDecision(npc.npcType, npc.decision);
+      linkStoryDecision(npc);
       await npc.save();
       return toDto(npc);
     },
@@ -203,6 +219,7 @@ npcsApi
       method: 'patch',
       path: '/:npcId/publish',
       summary: 'Publicar o despublicar NPC',
+      description: 'Publica también sus textos. Un NPC de tipo story solo se publica con todos sus capítulos publicados.',
       access: 'writer',
       params: npcParams,
       body: publishInputSchema,
@@ -211,6 +228,11 @@ npcsApi
     async ({ params, body, user }) => {
       const npc = await loadNpc(params.npcId, user);
       assertCanEdit(user, npc.author);
+      const drafts = npc.npcType === 'story' && body.published ? npc.chapters.filter((c) => !c.published) : [];
+      if (drafts.length) {
+        const names = drafts.map((c) => `«${c.name}»`).join(', ');
+        throw HttpError.conflict(`Para publicar este NPC, publica antes sus capítulos: ${names}`);
+      }
       setPublished(npc, body.published);
       for (const tale of [npc.description, npc.meeting, npc.rejected]) {
         if (tale) setPublished(tale, body.published);

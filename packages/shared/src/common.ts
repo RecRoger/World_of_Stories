@@ -7,7 +7,7 @@ export const objectId = z
 
 export const isoDate = z.string().meta({ format: 'date-time' });
 
-export const ANIMATIONS = ['default', 'chatA', 'chatB', 'surprise', 'title'] as const;
+export const ANIMATIONS = ['default', 'chatA', 'chatB', 'surprise', 'title', 'paragraph'] as const;
 
 /*
  * Convención: los esquemas *Input* validan lo que envía el cliente (estrictos);

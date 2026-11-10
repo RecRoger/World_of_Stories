@@ -149,6 +149,27 @@ export const chapterSchema = chapterSummarySchema
   .meta({ id: 'Chapter' });
 export type Chapter = z.infer<typeof chapterSchema>;
 
+type ChainChapter = { id: string; name: string; published: boolean; decision?: { options: { value: string }[] } | null };
+
+/**
+ * Capítulos que se publican al publicar `startId`: él y todos los que se alcanzan desde sus decisiones,
+ * los que aún no estén publicados. Así ninguna decisión publicada lleva a un capítulo sin publicar.
+ */
+export function publishChain<C extends ChainChapter>(chapters: C[], startId: string): C[] {
+  const byId = new Map(chapters.map((c) => [c.id, c]));
+  const seen = new Set<string>();
+  const pending = [startId];
+  const chain: C[] = [];
+  while (pending.length) {
+    const chapter = byId.get(pending.pop()!);
+    if (!chapter || seen.has(chapter.id)) continue;
+    seen.add(chapter.id);
+    if (!chapter.published) chain.push(chapter);
+    for (const option of chapter.decision?.options ?? []) pending.push(option.value);
+  }
+  return chain;
+}
+
 export const updateChapterInputSchema = z
   .object({
     name: z.string().trim().min(1).max(80).optional(),

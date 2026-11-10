@@ -65,6 +65,39 @@ const city = await City.create({
 });
 
 const place = city.places[0]!;
+// Capítulos publicados con su autor: el inicio se ramifica en dos finales, uno en la ciudad y otro en el lugar
+const chapter = (name: string, story: { text: string; animation: string }[]) => ({
+  _id: new mongoose.Types.ObjectId(),
+  name,
+  story,
+  items: [],
+  author,
+  published: true,
+  writeDate: now,
+  publishDate: now,
+});
+const map = chapter('El mapa en blanco', [
+  { text: 'Te tiende un pergamino vacío y te pide que le describas el camino que te trajo hasta aquí.', animation: 'default' },
+  { text: '«Cada viajero dibuja una ciudad distinta», murmura mientras la pluma corre sola.', animation: 'chatA' },
+]);
+const door = chapter('La puerta del muelle', [
+  { text: 'Cuando terminas, el cartógrafo señala el puerto: allí te espera una puerta que nadie dibujó.', animation: 'default' },
+  { text: 'La puerta se abre.', animation: 'surprise' },
+]);
+const start = {
+  ...chapter('Inicio', [
+    { text: 'El cartógrafo deja la pluma y gira hacia ti sus ojos blancos.', animation: 'default' },
+    { text: '«Hace años que nadie me pide una historia», dice, y sonríe.', animation: 'chatA' },
+  ]),
+  usersDecisions: {
+    decisionType: 'choose',
+    options: [
+      { name: 'Describir el camino', description: 'Le cuentas cómo llegaste a Valdoria.', value: map._id.toString(), published: true },
+      { name: 'Preguntar por el mapa', description: 'Le preguntas qué dibuja con tanto cuidado.', value: door._id.toString(), published: true },
+    ],
+  },
+};
+
 const npc = await Npc.create({
   name: 'El cartógrafo ciego',
   npcType: 'story',
@@ -75,20 +108,24 @@ const npc = await Npc.create({
   description: version('Un hombre de barba blanca que dibuja ciudades de memoria, con los ojos cerrados.'),
   meeting: version('Al pasar junto a su mesa, él inclina la cabeza como si te hubiera reconocido por los pasos.'),
   rejected: version('El cartógrafo vuelve a su dibujo y el rasgueo de la pluma llena el silencio.'),
-  // Un NPC de tipo story: decisión de elegir con dos opciones, aceptar y rechazar
+  // Un NPC de tipo story: aceptar lleva al capítulo inicial; rechazar, a su texto de rechazo
   decision: {
     decisionType: 'choose',
     options: [
-      { name: 'Escuchar su historia', description: 'Te sientas junto a él y dejas que el relato llene el silencio.', value: '', published: true },
+      { name: 'Escuchar su historia', description: 'Te sientas junto a él y dejas que el relato llene el silencio.', value: start._id.toString(), published: true },
       { name: 'Marcharte', description: 'Das media vuelta antes de que termine la primera frase.', value: '', published: true },
     ],
   },
   items: [],
-  chapters: [{ name: 'Inicio', story: [], endLocation: { endChapter: true } }],
+  chapters: [
+    start,
+    { ...map, endLocation: { endChapter: true, cityId: city.id, placeId: place.id } },
+    { ...door, endLocation: { endChapter: true, cityId: city.id } },
+  ],
 });
 place.events.push(npc._id);
 await city.save();
 
 console.log(`🗑️  Borradas ${deletedCities.deletedCount} ciudades y ${deletedNpcs.deletedCount} NPCs`);
-console.log(`✅ Creada "${city.name}" → lugar "${place.name}" → NPC "${npc.name}" (autor: ${author})`);
+console.log(`✅ Creada "${city.name}" → lugar "${place.name}" → NPC "${npc.name}" con ${npc.chapters.length} capítulos (autor: ${author})`);
 await mongoose.disconnect();

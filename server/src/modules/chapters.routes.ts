@@ -4,6 +4,7 @@ import {
   chapterSummarySchema,
   objectId,
   publishedQuerySchema,
+  publishChain,
   publishInputSchema,
   updateChapterInputSchema,
   type Chapter as ChapterDto,
@@ -18,6 +19,8 @@ import { loadNpc } from './npcs.routes.js';
 
 export const npcChaptersApi = new ApiRouter('/npcs', 'Capítulos');
 export const chaptersApi = new ApiRouter('/chapters', 'Capítulos');
+/** Modo escritor: /writer/npcs/:npcId/chapters con los capítulos completos */
+export const writerNpcChaptersApi = new ApiRouter('/writer/npcs', 'Modo escritor');
 
 const npcParams = z.object({ npcId: objectId });
 const chapterParams = z.object({ chapterId: objectId });
@@ -33,6 +36,25 @@ async function loadChapter(chapterId: string, user?: AuthUser): Promise<{ npc: N
 }
 
 const isRoot = (npc: NpcDoc, chapter: ChapterDoc) => npc.chapters[0]?._id.equals(chapter._id) ?? false;
+
+/** Publicar o borrar un capítulo: su autor, o el del NPC si el capítulo aún no tiene autor */
+const chapterOwner = (npc: NpcDoc, chapter: ChapterDoc) => chapter.author || npc.author;
+
+/** Cada opción es visible para los lectores solo si su capítulo destino está publicado */
+function syncOptionVisibility(npc: NpcDoc) {
+  for (const c of npc.chapters) {
+    for (const option of c.usersDecisions?.options ?? []) {
+      option.published = npc.chapters.id(option.value)?.published ?? false;
+    }
+  }
+}
+
+const asChainChapter = (c: ChapterDoc) => ({
+  id: c.id as string,
+  name: c.name,
+  published: c.published,
+  decision: c.usersDecisions ? { options: c.usersDecisions.options.map((o) => ({ value: o.value })) } : null,
+});
 
 const toSummary = (c: ChapterDoc): ChapterSummary => ({
   id: c.id,
@@ -82,6 +104,25 @@ function buildDecision(npc: NpcDoc, chapter: ChapterDoc, input: DecisionInput): 
   });
   return { decisionType: input.decisionType, amount: input.amount, item: input.item, options };
 }
+
+writerNpcChaptersApi.route(
+  {
+    method: 'get',
+    path: '/:npcId/chapters',
+    summary: 'Listar los capítulos de un NPC completos (modo escritor)',
+    description: 'Con sus fragmentos, decisiones y lugar de finalización, también los sin publicar. El primero es el inicio.',
+    access: 'writer',
+    params: npcParams,
+    query: publishedQuerySchema,
+    response: z.array(chapterSchema),
+  },
+  async ({ params, query, user }) => {
+    const npc = await loadNpc(params.npcId, user);
+    return npc.chapters
+      .filter((c) => query.published === undefined || c.published === query.published)
+      .map((c) => toDto(npc, c, user));
+  },
+);
 
 npcChaptersApi.route(
   {
@@ -144,7 +185,10 @@ chaptersApi
       method: 'patch',
       path: '/:chapterId/publish',
       summary: 'Publicar o despublicar capítulo',
-      description: 'También muestra u oculta a los lectores las opciones que llevan a este capítulo.',
+      description:
+        'Publicar un capítulo publica en cadena los capítulos sin publicar a los que llevan sus decisiones (y los que ' +
+        'siguen a esos), así ninguna decisión publicada lleva a un capítulo sin publicar. Hay que poder publicarlos todos. ' +
+        'Las opciones que llevan a un capítulo sin publicar quedan ocultas para los lectores.',
       access: 'writer',
       params: chapterParams,
       body: publishInputSchema,
@@ -152,13 +196,19 @@ chaptersApi
     },
     async ({ params, body, user }) => {
       const { npc, chapter } = await loadChapter(params.chapterId, user);
-      assertCanEdit(user, chapter.author);
-      setPublished(chapter, body.published);
-      for (const c of npc.chapters) {
-        for (const option of c.usersDecisions?.options ?? []) {
-          if (option.value === chapter.id) option.published = body.published;
+      const chain = body.published
+        ? publishChain(npc.chapters.map(asChainChapter), chapter.id).map((c) => npc.chapters.id(c.id)!)
+        : [chapter];
+      assertCanEdit(user, chapterOwner(npc, chapter));
+      for (const c of chain) {
+        try {
+          assertCanEdit(user, chapterOwner(npc, c));
+        } catch {
+          throw HttpError.forbidden(`No puedes publicar «${c.name}», al que lleva una decisión: es de ${chapterOwner(npc, c)}`);
         }
       }
+      for (const c of chain) setPublished(c, body.published);
+      syncOptionVisibility(npc);
       await npc.save();
       return toDto(npc, chapter, user);
     },
@@ -175,7 +225,7 @@ chaptersApi
     async ({ params, user }) => {
       const { npc, chapter } = await loadChapter(params.chapterId, user);
       if (isRoot(npc, chapter)) throw HttpError.conflict('El capítulo inicial no se puede borrar');
-      assertCanDelete(user, chapter.author || npc.author);
+      assertCanDelete(user, chapterOwner(npc, chapter));
       for (const c of npc.chapters) {
         const options = c.usersDecisions?.options;
         if (options?.some((o) => o.value === chapter.id)) {

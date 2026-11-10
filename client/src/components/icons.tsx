@@ -101,3 +101,19 @@ export function ArrowLeftIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function ChevronDownIcon(props: IconProps) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" {...stroke} {...props}>
+      <path d="M5 9l7 7 7-7" />
+    </svg>
+  );
+}
+
+export function ChevronUpIcon(props: IconProps) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" {...stroke} {...props}>
+      <path d="M5 15l7-7 7 7" />
+    </svg>
+  );
+}

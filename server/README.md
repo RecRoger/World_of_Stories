@@ -53,10 +53,21 @@ Ciudades y lugares se listan de dos formas, con respuestas distintas (y document
 | Modo | Rutas | Respuesta |
 | --- | --- | --- |
 | Lector (público) | `GET /cities`, `GET /cities/:cityId/places` | Solo lo publicado, con **una versión publicada al azar** de cada relato (`CityReading`, `PlaceReading`). Igual para todos los usuarios. |
-| Escritor | `GET /writer/cities`, `GET /writer/cities/:cityId/places`, `GET /writer/places/:placeId/npcs` | La información completa: todas las versiones, también las sin publicar (`City`, `Place`). Filtrable con `?published`. |
+| Escritor | `GET /writer/cities`, `GET /writer/cities/:cityId/places`, `GET /writer/places/:placeId/npcs`, `GET /writer/npcs/:npcId/chapters` | La información completa: todas las versiones, también las sin publicar (`City`, `Place`). Filtrable con `?published`. |
 
 Los NPCs son de tipo `story`, `store` o `travel`. Uno de tipo `story` con decisión `choose` tiene **exactamente dos
 opciones**: la primera acepta la historia y la segunda la rechaza (la API lo valida al crear y al editar).
+Aceptar lleva siempre al capítulo inicial, que se crea vacío («Inicio») junto con el NPC; rechazar no lleva a ninguno.
+
+### Capítulos
+
+- Se crean desde las decisiones: al editar un capítulo, una opción sin `value` crea un capítulo nuevo y vacío con su nombre;
+  con `value` apunta a un capítulo existente del mismo NPC. Un capítulo sin decisiones es final y termina en `endLocation`.
+- **Publicar** un capítulo publica en cadena los capítulos sin publicar a los que llevan sus decisiones (y los siguientes).
+  Hay que tener permiso sobre todos; si no, no se publica ninguno (403).
+- **Borrar** un capítulo quita las opciones que llevaban a él. El capítulo inicial no se borra.
+- Un NPC de tipo `story` **solo se publica con todos sus capítulos publicados** (409 con los que faltan).
+- Para los lectores, las opciones que llevan a un capítulo sin publicar quedan ocultas.
 
 ## Formato de errores
 

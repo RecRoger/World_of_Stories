@@ -37,7 +37,7 @@ src/
 | `/write/cities` (`/write` redirige aquí) | Ciudades | Writer o Admin |
 | `/write/cities/:cityId/places` | Lugares de una ciudad | Writer o Admin |
 | `/write/cities/:cityId/places/:placeId/events` | Eventos y NPCs de un lugar | Writer o Admin |
-| `/write/cities/:cityId/places/:placeId/npcs/:npcId/chapters` | Próximamente (Capítulos) | Writer o Admin |
+| `/write/cities/:cityId/places/:placeId/npcs/:npcId/chapters` | Capítulos de un NPC de tipo story | Writer o Admin |
 
 Ciudades y Lugares funcionan igual y comparten componentes (`features/locations/`): la creación es un modal y
 cada tarjeta gestiona en el sitio el nombre y sus extractos (descripciones y viajes/entradas, en pestañas con
@@ -47,3 +47,8 @@ eliminar un extracto o la ciudad es solo para su autor o un admin.
 Todas las rutas de `/write/*` comparten `WriterLayout`, con el acceso a **Sugerencias de escritura** bajo el logo.
 Las acciones de editar, publicar y eliminar solo aparecen para el autor (`createdBy`) o un admin (`canManage` en
 `features/auth/roles.ts`); el server vuelve a comprobar los permisos en cada petición.
+
+Los **capítulos** (`features/chapters/`) se muestran como un acordeón: el primero es el inicio y cada decisión lleva a
+otro capítulo. Se crean desde las decisiones, al editar un capítulo (destino «+ Crear un capítulo nuevo»). Publicar un
+capítulo avisa antes de publicar en cadena los capítulos a los que llevan sus decisiones (`publishChain` de `@wos/shared`,
+la misma regla que aplica el server).

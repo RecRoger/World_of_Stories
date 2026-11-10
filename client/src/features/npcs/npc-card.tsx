@@ -188,7 +188,7 @@ function DecisionView({ npc }: { npc: Npc }) {
       {type === 'choose' &&
         d.options.map((o, i) => (
           <div key={o.id}>
-            {isStory && <p className={small}>{i === 0 ? 'Aceptar' : 'Rechazar'}</p>}
+            {isStory && <p className={small}>{i === 0 ? 'Aceptar · empieza el capítulo inicial' : 'Rechazar · muestra el rechazo'}</p>}
             <p className="font-medium text-ink">{o.name}</p>
             <p>{o.description}</p>
           </div>
