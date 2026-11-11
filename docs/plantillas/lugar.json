@@ -1,0 +1,16 @@
+{
+  "city": "Valdoria",
+  "name": "Nombre del lugar",
+  "descriptions": [
+    "[Descripción visual o histórica: un párrafo, ≤ 300 caracteres]"
+  ],
+  "entries": [
+    [
+      "[Entrada: llegada del Peregrino, imágenes visuales y sensoriales, lo que encuentra (3–6 párrafos, 900–3000 caracteres): párrafo 1 de 4]",
+      "[Entrada: llegada del Peregrino, imágenes visuales y sensoriales, lo que encuentra (3–6 párrafos, 900–3000 caracteres): párrafo 2 de 4]",
+      "[Entrada: llegada del Peregrino, imágenes visuales y sensoriales, lo que encuentra (3–6 párrafos, 900–3000 caracteres): párrafo 3 de 4]",
+      "[Entrada: llegada del Peregrino, imágenes visuales y sensoriales, lo que encuentra (3–6 párrafos, 900–3000 caracteres): párrafo 4 de 4]"
+    ]
+  ],
+  "npcs": []
+}

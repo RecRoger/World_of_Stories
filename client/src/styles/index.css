@@ -36,9 +36,21 @@
   /* Vista previa de las animaciones de los fragmentos de capítulo */
   --animate-fragment-fade: appear 1.4s ease both;
   --animate-fragment-shake: shake 0.7s ease both;
+  /* Panel de opciones de la lectura, que sube desde abajo */
+  --animate-sheet-rise: rise 0.5s ease both;
   --animate-fragment-slide-left: slide-from-left 1.1s cubic-bezier(0.2, 0.8, 0.3, 1) both;
   --animate-fragment-slide-right: slide-from-right 1.1s cubic-bezier(0.2, 0.8, 0.3, 1) both;
 
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
   @keyframes slide-from-left {
     from {
       transform: translateX(-110%);

@@ -14,9 +14,14 @@
     "test:watch": "vitest",
     "openapi": "tsx src/scripts/export-openapi.ts",
     "set-roles": "tsx src/scripts/set-roles.ts",
-    "seed:example": "tsx src/scripts/seed-example.ts"
+    "seed:example": "tsx src/scripts/seed-example.ts",
+    "import:world": "tsx src/scripts/import-world.ts world",
+    "import:city": "tsx src/scripts/import-world.ts city",
+    "import:place": "tsx src/scripts/import-world.ts place",
+    "import:npc": "tsx src/scripts/import-world.ts npc"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.8.0",
     "@wos/shared": "*",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",

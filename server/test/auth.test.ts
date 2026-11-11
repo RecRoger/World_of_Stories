@@ -89,6 +89,11 @@ describe('personajes', () => {
     const read = await agent.post(api(`/me/characters/${created.id}/read`)).send({ fragmentId: 'f1' }).expect(200);
     expect(read.body.fragmentsRead).toEqual(['f1']);
 
+    // el nombre es opcional: por ahora se distinguen por su ubicación
+    const unnamed = (await agent.post(api('/me/characters')).send({}).expect(201)).body;
+    expect(unnamed).toMatchObject({ name: '', location: null, whereabouts: null });
+    await agent.delete(api(`/me/characters/${unnamed.id}`)).expect(204);
+
     expect((await agent.get(api('/me/characters')).expect(200)).body).toHaveLength(1);
     await agent.delete(api(`/me/characters/${created.id}`)).expect(204);
     await agent.delete(api(`/me/characters/${created.id}`)).expect(404);

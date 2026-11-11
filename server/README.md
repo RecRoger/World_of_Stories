@@ -20,6 +20,8 @@ npm run dev                 # http://localhost:3000/api/v1 · docs en /docs
 | `npm run openapi` | Exporta `openapi.json` (también se sirve en `/openapi.json`) |
 | `npm run set-roles -- <usuario> Admin Writer` | Asigna roles desde la terminal (p. ej. tu primer admin) |
 | `npm run seed:example -- <usuario> --yes` | **Borra todas las ciudades, lugares y NPCs** y crea un mundo de ejemplo a nombre de `<usuario>` |
+| `npm run import:<world\|city\|place\|npc> -- <archivo.json> [--publish] [--dry-run] [--strict] [--author=<usuario>]` | Valida contenido generado con la [guía de escritura automática](../docs/guia-escritura-automatica.md) (un mundo, una ciudad, un lugar o un NPC con sus capítulos) y lo añade sin borrar nada, firmado por TellerIA |
+| `npm run import:<place\|npc> -- --city=<ciudad> [--place=<lugar>] [--idea=<texto>]` | Sin archivo: Claude escribe el lugar o el NPC a partir de la ciudad y el lugar de destino, lo valida (pidiendo correcciones), lo guarda en `docs/mundos/generados/` y lo importa. Necesita `ANTHROPIC_API_KEY` |
 
 ## Estructura
 
@@ -52,7 +54,7 @@ Ciudades y lugares se listan de dos formas, con respuestas distintas (y document
 
 | Modo | Rutas | Respuesta |
 | --- | --- | --- |
-| Lector (público) | `GET /cities`, `GET /cities/:cityId/places` | Solo lo publicado, con **una versión publicada al azar** de cada relato (`CityReading`, `PlaceReading`). Igual para todos los usuarios. |
+| Lector (público) | `GET /cities`, `GET /cities/:cityId/places`, `GET /places/:placeId/npcs`, `GET /chapters/:chapterId` | Solo lo publicado, con **una versión publicada al azar** de cada relato (`CityReading`, `PlaceReading`), los NPCs con sus textos (`NpcReading`) y los capítulos sin las opciones que llevan a capítulos sin publicar. Igual para todos los usuarios, también para escritores. |
 | Escritor | `GET /writer/cities`, `GET /writer/cities/:cityId/places`, `GET /writer/places/:placeId/npcs`, `GET /writer/npcs/:npcId/chapters` | La información completa: todas las versiones, también las sin publicar (`City`, `Place`). Filtrable con `?published`. |
 
 Los NPCs son de tipo `story`, `store` o `travel`. Uno de tipo `story` con decisión `choose` tiene **exactamente dos
@@ -68,6 +70,12 @@ Aceptar lleva siempre al capítulo inicial, que se crea vacío («Inicio») junt
 - **Borrar** un capítulo quita las opciones que llevaban a él. El capítulo inicial no se borra.
 - Un NPC de tipo `story` **solo se publica con todos sus capítulos publicados** (409 con los que faltan).
 - Para los lectores, las opciones que llevan a un capítulo sin publicar quedan ocultas.
+
+### Personajes
+
+`GET /me/characters` devuelve cada personaje con `whereabouts`: los nombres de la ciudad, lugar, NPC y capítulo donde
+está (`kind` dice cuál es lo más concreto), o `null` si aún no ha viajado. La lectura avanza con
+`PATCH /me/characters/:characterId` y su `location`.
 
 ## Formato de errores
 

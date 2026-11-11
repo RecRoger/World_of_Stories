@@ -35,7 +35,7 @@ const LocationSchema = new Schema<Location>(
 
 const CharacterSchema = new Schema<ICharacter>(
   {
-    name: { type: String, required: true, trim: true },
+    name: { type: String, default: '', trim: true },
     location: { type: LocationSchema, default: null },
     money: { type: Number, default: 1000 },
     items: { type: [String], default: [] },

@@ -1,0 +1,188 @@
+{
+  "cities": [
+    {
+      "name": "Vado Ámbar",
+      "descriptions": [
+        "Una ciudad levantada junto al único vado del río Lento, con casas de piedra rojiza y ventanas de ámbar que tiñen de miel la luz de cada calle. Sus resineros sangran los pinos del valle desde hace siglos.",
+        "Nació como una posada de carreteros junto al vado y creció a fuerza de resina: cada muro guarda un trozo de ámbar, y en los dinteles se leen los nombres de los gremios que la fundaron."
+      ],
+      "travels": [
+        [
+          "El camino baja entre pinos altos, con las cortezas marcadas por cortes en forma de espiga. De cada herida cuelga un cuenco de barro que se llena despacio de resina dorada, y el aire huele a savia, a humo dulce y a madera recién partida.",
+          "Al salir del bosque aparece el río Lento, ancho y quieto, con el agua del color del té. En su único vado, una hilera de piedras planas lo cruza de orilla a orilla, y sobre ellas se levanta la ciudad: tejados escalonados, chimeneas finas y ventanas que brillan como gotas de miel.",
+          "Cruzas por la calle de los Cuencos, donde los resineros cuelgan sus calderos frente a las puertas. Una mujer remueve la resina hirviendo con una pala larga y, sin levantar la vista, te señala el camino hacia la plaza con la barbilla. Nadie aquí tiene prisa: en Vado Ámbar todo se hace al ritmo en que gotea un pino.",
+          "En la plaza del Gremio, la fuente es un bloque de ámbar tallado del tamaño de un carro. Dentro, atrapados desde antes de que existiera la ciudad, se ven insectos, semillas y una pluma entera. Los niños apoyan la frente en la piedra para mirarlos, y los viejos dicen que quien la toca al llegar siempre encuentra el camino de vuelta.",
+          "Cuando el sol baja, las ventanas de ámbar se encienden desde dentro y la ciudad entera cambia de color. Sobre el río, el largo puente de piedra empieza a llenarse de pequeñas luces, una tras otra, y el olor a resina quemada se mezcla con el de la cena. Te detienes un momento a mirar: es fácil entender por qué los carreteros nunca quisieron irse."
+        ],
+        [
+          "Llegas con la niebla de la mañana todavía pegada al río. Primero se oye la ciudad y después se ve: el golpe de las hachas en el bosque, el chapoteo de los barqueros, una campana pequeña que llama a los resineros al trabajo.",
+          "Las piedras del vado asoman entre la bruma como lomos de animales dormidos. Los carros las cruzan despacio, con el agua hasta los ejes, cargados de toneles sellados con cera. Un carretero te deja subir al pescante y cruzas con él, oyendo cómo el río empuja las ruedas sin ganas.",
+          "En la otra orilla, las casas parecen hechas del mismo río: piedra rojiza abajo, madera oscura arriba y ventanas de ámbar en todos los pisos. Sobre cada puerta hay un sello del gremio que la construyó, y algunos están tan gastados que solo se adivina la forma de un pino o de un cuenco.",
+          "Subes por la calle de los Cuencos entre calderos humeantes. El olor dulce de la resina se te mete en la ropa y en el pelo, y una niña te ofrece por una moneda un trocito de ámbar con una hormiga dentro. «Lleva cien años quieta», dice, muy seria, como si le hablara a la hormiga.",
+          "Desde la plaza del Gremio se ve el puente largo que cruza el río aguas abajo del vado, con sus faroles todavía apagados. La ciudad se despierta del todo a tu alrededor, sin ruido y sin prisa, y sientes que aquí cualquier camino termina, tarde o temprano, junto al agua."
+        ]
+      ],
+      "places": [
+        {
+          "name": "Puente de los faroleros",
+          "descriptions": [
+            "Un puente de once arcos sobre el río Lento, con un farol de resina en cada pilar. Al caer la tarde, los faroleros los encienden uno a uno con largas pértigas.",
+            "Lo construyeron los resineros para no depender del vado en las crecidas. Sus faroles arden con la peor resina de la ciudad, la que no se vende, y se ven desde el bosque."
+          ],
+          "entries": [
+            [
+              "El puente empieza donde terminan las casas, con una rampa de piedra gastada por siglos de ruedas. Once arcos lo sostienen sobre el agua oscura, y en cada pilar se levanta un poste de hierro con un farol de cristal ahumado, todavía apagado.",
+              "Caminas sobre losas pulidas, tan lisas que reflejan el cielo de la tarde. El río pasa por debajo sin ruido, y solo se le oye cuando choca contra los tajamares, con un murmullo largo que sube por la piedra y se te mete en los pies.",
+              "A medida que cae el sol, aparecen los faroleros. Llevan pértigas con una mecha encendida en la punta y un cubo de resina colgado del cinturón. Van de farol en farol sin hablar, y cada luz que prenden deja en el aire un olor dulce y un hilo de humo amarillo.",
+              "Desde el centro del puente se ve toda la ciudad encendida detrás de ti, con sus ventanas de ámbar, y delante el río que se pierde entre los pinos. Las barcas pasan bajo los arcos con un farol en la proa, y los barqueros saludan hacia arriba sin mirar a quién."
+            ],
+            [
+              "Llegas al puente cuando ya es casi de noche. La mitad de los faroles arden y la otra mitad esperan, y el puente parece un collar al que todavía le faltan cuentas.",
+              "La piedra guarda el calor del día y huele a musgo y a resina vieja. En los pretiles hay nombres grabados a cuchillo, fechas de bodas y de crecidas, y en uno de ellos, una raya profunda marca hasta dónde llegó el agua el año en que el río se llevó el vado.",
+              "Los faroleros trabajan en silencio, cada uno con su tramo. Uno silba bajito mientras sube la mecha; otra se apoya en el pretil a mirar las barcas antes de seguir. Nadie te pregunta qué haces allí: el puente es de todos y, de noche, sobre todo de quien no tiene prisa.",
+              "Bajo tus pies, el río Lento brilla con los reflejos de cada farol, como si debajo del agua hubiera otro puente igual, encendido al revés. Te quedas quieto un momento y la ciudad entera parece contener la respiración contigo."
+            ]
+          ],
+          "npcs": [
+            {
+              "name": "Anciana con pértiga y farol",
+              "title": "Los faroles que se apagan",
+              "description": "En el arco del medio, una anciana encorvada sostiene una pértiga encendida frente a un farol apagado. Lo mira como si el farol le debiera algo.",
+              "meeting": [
+                "Te acercas al centro del puente. Es el único tramo a oscuras: tres faroles seguidos sin luz, y frente a ellos una mujer muy vieja, con un pañuelo gris atado a la cabeza y una pértiga más alta que ella, cuya mecha chisporrotea en la punta.",
+                "La anciana sube la pértiga, toca la mecha del farol y la llama prende. Durante un instante, el arco se ilumina y ves el agua debajo, negra y lisa. Después, sin viento, sin ruido, la llama se encoge y se apaga, y el farol vuelve a quedar ciego.",
+                "«Cada noche lo mismo», dice la mujer sin volverse. «Treinta años encendiendo este puente y nunca se me apagó un farol. Ahora se me apagan tres, siempre los mismos, siempre en cuanto me doy la vuelta.» Tiene las manos manchadas de resina y la voz cansada de quien ya lo ha contado a otros que no la creyeron.",
+                "Se llama Maela, te explica, y los demás faroleros dicen que es el viento del río, o la resina mala, o sus años. Ella cree otra cosa. Se acerca al pretil y señala hacia abajo, hacia la sombra del arco, donde el agua da vueltas sobre sí misma.",
+                "«Alguien los apaga», murmura. «Y esta noche pienso quedarme hasta saber quién. Pero estos ojos ya no ven en la oscuridad.» Te mira por primera vez, de arriba abajo, con una mezcla de desconfianza y de esperanza. «Tú tienes pinta de no tener prisa, Peregrino. ¿Te quedas a vigilar conmigo?»"
+              ],
+              "accept": {
+                "name": "Quedarte a vigilar",
+                "description": "Te quedas con Maela en el arco del medio. Si alguien apaga sus faroles, esta noche lo vais a ver."
+              },
+              "reject": {
+                "name": "Seguir tu camino",
+                "description": "Le dices que no puedes quedarte. Los faroles son cosa de los faroleros, y la noche es larga."
+              },
+              "rejected": [
+                "Le explicas a Maela que tienes que seguir tu camino. Ella asiente despacio, sin sorpresa, como si ya contara con esa respuesta, y vuelve a levantar la pértiga hacia el farol apagado.",
+                "«Nadie se queda», dice, más para sí que para ti. «Ni los jóvenes del gremio ni el guardia del puente. Será que de verdad es el viento.» La llama prende otra vez y otra vez se apaga, y la anciana suspira con un sonido corto, como una puerta que se cierra.",
+                "Te alejas por el puente hacia la ciudad. A tu espalda, cada pocos pasos, el arco del medio se ilumina un instante y vuelve a oscurecerse, con la paciencia de alguien que no piensa rendirse.",
+                "Cuando llegas a la rampa te giras una última vez. Desde allí, el puente es un collar de luces con un hueco negro en el centro, y en ese hueco, diminuta, una chispa sube y baja sin descanso."
+              ],
+              "chapters": [
+                {
+                  "id": "inicio",
+                  "name": "El arco del medio",
+                  "text": [
+                    "Maela te da una manta áspera que huele a humo y se sienta en un cajón junto al pretil, con la pértiga sobre las rodillas. Tú te apoyas en la piedra fría. El resto del puente arde tranquilo; solo vuestro arco sigue a oscuras.",
+                    { "text": "«Los enciendo y me siento», explica. «Si se apagan mientras miro, es el viento. Si se apagan cuando no miro, es alguien.»", "animation": "chatA" },
+                    "Prende los tres faroles, uno tras otro. Esta vez no se apagan enseguida. Pasan los minutos y la ciudad se va callando a vuestra espalda: se cierran las últimas contraventanas, se apagan las ventanas de ámbar de los pisos altos, un perro ladra lejos y luego deja de ladrar.",
+                    "Maela te cuenta en voz baja que empezó a encender faroles cuando todavía no le llegaba la pértiga, ayudando a su padre. Que conoce cada farol por el ruido que hace su mecha. Que el del medio, el más viejo, lo forjó su abuelo, y que nunca, ni en la peor tormenta, se le había apagado.",
+                    "Entonces lo notas. No es viento: el aire está quieto y el humo de los faroles sube recto. Pero desde abajo, desde el agua, llega un frío húmedo que te sube por las piernas, y con él un ruido muy leve, como de madera que roza contra piedra.",
+                    { "text": "Los tres faroles se apagan a la vez.", "animation": "surprise" },
+                    "Maela se levanta de golpe, con una agilidad que no esperabas. Te agarra del brazo y señala por encima del pretil. Bajo el arco, apenas visible contra el agua negra, se mueve una forma alargada: una barca sin farol que avanza muy despacio, pegada al pilar, como si no quisiera que la vieran.",
+                    "A tu derecha, en el extremo del puente, una escalera de piedra baja hasta la orilla. Maela no aparta los ojos del arco. «Si bajas, la verás de cerca», susurra. «Si te quedas, veremos quién vuelve a apagarlos.» ¿Te quedas en el puente con ella o bajas a la orilla?"
+                  ],
+                  "options": [
+                    { "name": "Quedarte en el puente", "description": "La barca es solo la mitad del misterio. Alguien tiene que estar arriba para apagar los faroles, y Maela no debería esperarlo sola.", "to": "vela" },
+                    { "name": "Bajar a la orilla", "description": "Bajas la escalera sin hacer ruido para ver de cerca la barca que pasa a oscuras bajo el arco.", "to": "barca" }
+                  ]
+                },
+                {
+                  "id": "vela",
+                  "name": "La noche en vela",
+                  "text": [
+                    "Te quedas junto a Maela. Ella vuelve a encender los tres faroles con mano firme y, esta vez, en lugar de sentarse, se esconde contigo detrás del poste más grueso, envueltos los dos en la misma manta, como dos sacos olvidados.",
+                    "Abajo, la barca se ha detenido. La oyes golpear suavemente contra el pilar, una y otra vez, como si esperara una señal. Arriba, el puente está vacío. Solo el río habla, y muy bajito.",
+                    "Entonces aparece. Es un muchacho flaco, de unos doce años, que sube por el pretil desde el lado del río con la soltura de quien lo ha hecho cien veces. Lleva en la mano un capuchón de cuero en la punta de una vara, y lo deja caer sobre el primer farol con un gesto rápido. La llama se ahoga sin humo.",
+                    "Maela sale de detrás del poste antes de que llegue al segundo. El muchacho se queda helado, con la vara en alto, y la luz de la pértiga le ilumina la cara: una cara redonda, manchada de resina, que reconoces del gremio porque lleva el mismo sello cosido en la manga.",
+                    { "text": "«¡Tobén!», exclama la anciana. «¿El hijo de la barquera? ¿Tú me apagas los faroles?»", "animation": "chatA" },
+                    { "text": "«Solo un rato, abuela Maela», dice el chico, con la voz rota. «Solo mientras pasa mi hermana.»", "animation": "chatB" },
+                    "Lo explica deprisa, mirando hacia el agua. Su hermana Ruda lleva resina río abajo sin pagar el sello del gremio, porque el gremio le cobra la mitad de lo que gana y en casa no alcanza. El guardia del puente vigila desde la torre del arco del medio, y solo ve las barcas cuando los faroles están encendidos.",
+                    "Abajo, la barca sigue esperando, quieta. En la torre, una ventana se ilumina: el guardia se ha despertado con las voces. Tobén os mira a los dos, temblando, con el capuchón todavía en la mano. Maela no dice nada; te mira a ti, como si la decisión fuera tuya. ¿Llamas al guardia o guardas el secreto del muchacho?"
+                  ],
+                  "options": [
+                    { "name": "Llamar al guardia", "description": "Lo que hacen los hermanos es un robo al gremio, y los faroles de Maela no tienen la culpa. Que el guardia decida.", "to": "guardia" },
+                    { "name": "Guardar el secreto", "description": "Te pones delante del muchacho para que el guardia no lo vea, y dejas que la barca de Ruda pase a oscuras una última vez.", "to": "luz" }
+                  ]
+                },
+                {
+                  "id": "barca",
+                  "name": "La barca bajo el arco",
+                  "text": [
+                    "Bajas la escalera con la mano en la pared, sintiendo cada peldaño resbaladizo de musgo. Abajo, la orilla es una franja estrecha de piedras y barro, y el olor del río es más fuerte: algas, madera mojada y, por encima de todo, resina, mucha resina.",
+                    "La barca está a pocos pasos, pegada al pilar del arco del medio. Es larga y baja, cargada hasta el borde de toneles sellados con cera, y en la popa hay una mujer joven con el pelo recogido bajo un gorro de lana, que sostiene una pértiga con la que se aparta de la piedra.",
+                    "Te ve antes de que digas nada. Por un momento piensas que va a huir, pero no hay dónde: el arco es estrecho y la corriente, aunque lenta, la empuja contra el pilar. Se lleva un dedo a los labios y mira hacia arriba, hacia la torre del puente.",
+                    { "text": "«No grites», susurra. «Si el guardia ve esta barca, la pierdo, y con ella todo lo que tenemos.»", "animation": "chatB" },
+                    "Se llama Ruda, te cuenta en voz muy baja, mientras empuja la barca. Lleva la resina de su familia río abajo, hasta los puertos del sur, sin pagar el sello del gremio. Su hermano pequeño le apaga los faroles del arco para que el guardia no la vea pasar. No le gusta engañar a la vieja Maela, dice, pero no tiene otra manera.",
+                    "La barca se ha enganchado en una argolla oxidada del pilar. Ruda tira de la pértiga sin conseguir soltarla, y cada golpe de madera contra piedra suena demasiado fuerte en el silencio de la noche. Arriba, oyes los pasos de Maela, que se asoma al pretil.",
+                    "Ruda te tiende el extremo de un garfio largo. «Ayúdame a soltarla y vente conmigo si quieres», dice. «Río abajo hay ciudades que no has visto. Pero si prefieres avisar a la vieja, hazlo ya: no pienso pelearme contigo.» ¿La ayudas a pasar o avisas a Maela?"
+                  ],
+                  "options": [
+                    { "name": "Ayudar a Ruda", "description": "Tomas el garfio, sueltas la barca y subes a bordo. Río abajo hay un viaje y una deuda que no es tuya, pero que entiendes.", "to": "rio" },
+                    { "name": "Avisar a Maela", "description": "Subes la escalera para contarle a la anciana lo que pasa. Es su puente y merece saber la verdad.", "to": "farol" }
+                  ]
+                },
+                {
+                  "id": "guardia",
+                  "name": "La guardia del amanecer",
+                  "text": [
+                    "Levantas la mano hacia la torre y llamas al guardia. Tobén suelta la vara, que cae al río con un chapoteo, y no intenta huir. Se queda muy quieto junto al farol apagado, mirando el agua, mientras unos pasos pesados bajan por la escalera de la torre.",
+                    "El guardia es un hombre grande, con el sueño todavía en la cara y un farol de mano. Escucha lo que le cuentas, mira al muchacho y luego se asoma al pretil. Abajo, la barca ya no está: Ruda ha oído las voces y se ha dejado llevar por la corriente, sin luz, hasta perderse entre los pinos.",
+                    { "text": "«Al hermano no lo pillaré», gruñe el guardia. «Pero a ti, chico, te espera el maestre del gremio por la mañana.»", "animation": "chatB" },
+                    "Maela vuelve a encender los tres faroles mientras se llevan a Tobén. Esta vez arden sin problema, firmes y amarillos, y el arco del medio vuelve a parecerse a los demás. Pero la anciana no sonríe. Se queda mirando la llama del farol de su abuelo como si ya no le diera el mismo calor.",
+                    { "text": "«Treinta años encendiendo para que todos vean», dice al fin. «Y nunca pensé a quién podía hacerle daño tanta luz.»", "animation": "chatA" },
+                    "El cielo empieza a clarear detrás de los pinos. Uno a uno, los faroleros del alba van apagando el puente, y el humo dulce se queda flotando sobre el río. Maela recoge su pértiga y te devuelve la manta doblada, con un gesto que no es de enfado, pero tampoco de agradecimiento.",
+                    "Te quedas solo en el arco del medio, con los faroles apagándose a tu alrededor y la ciudad despertando a tu espalda. Abajo, el río sigue su camino sin prisa, como si nada hubiera pasado. Has resuelto el misterio de Maela, y aun así el puente te parece, por primera vez, un poco más oscuro."
+                  ]
+                },
+                {
+                  "id": "luz",
+                  "name": "Luz para dos",
+                  "text": [
+                    "Te pones delante del muchacho, de espaldas a la torre, y Maela, tras un instante, hace lo mismo a tu lado. La ventana del guardia se abre; una cabeza despeinada se asoma, os ve a los dos junto al pretil y, convencido de que sois faroleros charlando, vuelve a cerrarla.",
+                    "Abajo, la barca se suelta del pilar y se desliza río abajo, sin luz y sin ruido. Tobén la sigue con la mirada hasta que se pierde entre los reflejos, y solo entonces respira. Tiene los ojos húmedos y las manos todavía tiemblan alrededor del capuchón.",
+                    { "text": "«Dile a tu hermana que esta ha sido la última», dice Maela. «Y que el gremio también me debe a mí treinta años de resina mala.»", "animation": "chatA" },
+                    "El chico se va corriendo por el puente. Maela se queda mirando los tres faroles apagados y, sin decir nada, te pone la pértiga en las manos. Pesa más de lo que parece, y la mecha encendida tiembla en la punta, muy lejos de tus dedos.",
+                    "Te enseña a sostenerla: el peso en la cadera, no en los brazos; la mecha justo debajo del pico del farol; un toque breve, como quien llama a una puerta. Fallas la primera vez y la segunda. A la tercera, la llama prende con un pequeño soplido y el farol del abuelo de Maela se enciende.",
+                    "Encendéis juntos los otros dos. El arco del medio vuelve a brillar, y debajo del agua, en el reflejo, también. Maela se sienta en su cajón, satisfecha, y se queda dormida al cabo de un rato con la cabeza apoyada en el poste.",
+                    "Al amanecer, la despiertas con cuidado y la acompañas hasta la rampa del puente. Ella te da las gracias con un gesto seco y una palmada en el hombro, y se aleja hacia la calle de los Cuencos. Tú te quedas mirando la ciudad, que empieza a brillar con la primera luz en sus ventanas de ámbar, y echas a andar hacia la plaza."
+                  ],
+                  "end": { "city": "Vado Ámbar" }
+                },
+                {
+                  "id": "rio",
+                  "name": "Río abajo",
+                  "text": [
+                    "Tomas el garfio, lo encajas en la argolla y tiras con todo tu peso. El hierro chirría, cede, y la barca se suelta de golpe. Ruda te agarra del brazo y te sube a bordo antes de que pienses en otra cosa, y de pronto estás sentado entre toneles que huelen a pino, deslizándote bajo el puente.",
+                    "Al pasar por debajo del arco ves a Tobén asomado arriba, con el capuchón de cuero en la mano, y a su lado una sombra con pañuelo que no se mueve. Maela os mira pasar. No grita, no llama a nadie. Solo levanta la pértiga, y la mecha brilla un momento en la oscuridad, como una despedida o como un aviso.",
+                    "La corriente os lleva despacio fuera de la ciudad. Las ventanas de ámbar quedan atrás, luego los últimos faroles del puente, y el río se mete entre los pinos, tan negro que solo sabes que avanzáis por el ruido del agua contra el casco.",
+                    { "text": "«Tres días hasta el mar», dice Ruda, ya más tranquila. «Allí la resina vale el doble, y nadie pregunta por sellos.»", "animation": "chatB" },
+                    "Los días siguientes son de río y de silencio. Duermes sobre los toneles, comes pan seco y pescado ahumado, y aprendes a empujar con la pértiga cuando el fondo se acerca. Ruda habla poco, pero por las noches te cuenta historias del gremio y de su padre, que también fue barquero.",
+                    "Al tercer amanecer, el agua cambia de color y de olor. Se vuelve salada, inquieta, y en la orilla aparecen muelles de madera, redes tendidas y gaviotas. Ruda amarra en un puerto de casas bajas y te señala una taberna con un ancla partida colgada sobre la puerta.",
+                    "Te despides de ella en el muelle, con las manos llenas de resina y los ojos llenos de pinos. Ella ya está regateando con un comerciante cuando entras en la taberna. Dentro huele a sal y a vino, y por primera vez en tres días oyes voces que no son las del río."
+                  ],
+                  "end": { "city": "Valdoria", "place": "La taberna del ancla rota" }
+                },
+                {
+                  "id": "farol",
+                  "name": "El farol de Maela",
+                  "text": [
+                    "Le dices a Ruda que lo sientes y subes la escalera deprisa, resbalando en el musgo. Ella no te detiene. Cuando llegas arriba, sin aliento, Maela te espera junto al pretil con la pértiga en alto, y a su lado hay un muchacho flaco con un capuchón de cuero en la mano.",
+                    "Le cuentas a la anciana lo que has visto: la barca, los toneles sin sello, la joven barquera que no quiere engañarla pero no sabe hacerlo de otra manera. Maela escucha sin interrumpir, mirando de vez en cuando al muchacho, que no levanta la vista del suelo.",
+                    { "text": "«Tobén», dice al fin. «El hijo de la barquera. Te he visto crecer en este puente.»", "animation": "chatA" },
+                    { "text": "«No queríamos hacerte daño, abuela Maela», murmura el chico. «Solo que no nos vieran.»", "animation": "chatB" },
+                    "Maela se queda callada un largo rato. Abajo se oye el golpe de la barca contra el pilar, cada vez más débil: Ruda ha conseguido soltarse y la corriente se la lleva. La anciana mira hacia el agua, luego hacia la torre del guardia, donde no se ha encendido ninguna luz.",
+                    "Por fin, deja la pértiga apoyada en el poste y saca de su bolsa un farol de mano, pequeño y abollado. Lo enciende con su mecha y se lo da a Tobén. «La próxima vez que tu hermana pase, que lleve esto en la proa», le dice. «Desde la torre, una barca con luz no llama la atención. Una a oscuras, sí.»",
+                    "El muchacho la mira sin entender y después se echa a reír, con una risa nerviosa y aliviada. Sale corriendo por el puente con el farol en la mano, y Maela vuelve a encender los tres faroles del arco del medio, que esta vez arden tranquilos.",
+                    "Te quedas con ella hasta que amanece, sentados en el cajón, sin hablar mucho. Cuando los faroleros del alba empiezan a apagar el puente, Maela se levanta, se estira y te da una palmada en el brazo. «Buen ojo, Peregrino», dice. «Para ser alguien sin prisa.» Y se aleja despacio, con la pértiga al hombro."
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

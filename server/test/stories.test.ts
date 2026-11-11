@@ -242,6 +242,39 @@ describe('lugares, NPCs y capítulos', () => {
     await writer.patch(api(`/npcs/${npc.id}/publish`)).send({ published: true }).expect(200);
     const seen = (await reader.get(api(`/npcs/${npc.id}`)).expect(200)).body;
     expect(seen.meeting).toMatchObject({ published: true, tale: story('Te saluda') });
+
+    // modo lector: el NPC con sus textos y su decisión (igual para escritores)
+    const [reading] = (await writer.get(api(`/places/${place.id}/npcs`)).expect(200)).body;
+    expect(reading).toMatchObject({ id: npc.id, name: 'Bardo', description: { tale: story('Un bardo') }, rejected: { tale: story('Se va') } });
+    expect(reading.decision.options.map((o: { value: string }) => o.value)).toEqual([root.id, '']);
+  });
+
+  it('el modo lector muestra lo publicado también a los escritores', async () => {
+    const { npc } = await createWorld();
+    const [root] = (await writer.get(api(`/writer/npcs/${npc.id}/chapters`))).body;
+    await writer.get(api(`/chapters/${root.id}`)).expect(404);
+  });
+
+  it('los personajes saben dónde están', async () => {
+    const { city, place, npc } = await createWorld();
+    const [root] = (await writer.get(api(`/writer/npcs/${npc.id}/chapters`))).body;
+    const character = (await reader.post(api('/me/characters')).send({ name: 'Elara' }).expect(201)).body;
+    expect(character.whereabouts).toBeNull();
+
+    const at = async (location: object) =>
+      (await reader.patch(api(`/me/characters/${character.id}`)).send({ location }).expect(200)).body.whereabouts;
+    expect(await at({ cityId: city.id })).toEqual({ kind: 'city', city: 'Vel Aran', place: null, npc: null, chapter: null });
+    expect(await at({ cityId: city.id, placeId: place.id })).toMatchObject({ kind: 'place', place: 'Taberna' });
+    expect(await at({ cityId: city.id, placeId: place.id, npcId: npc.id })).toMatchObject({ kind: 'npc', npc: 'Bardo' });
+    expect(await at({ cityId: city.id, placeId: place.id, npcId: npc.id, chapterId: root.id })).toEqual({
+      kind: 'chapter',
+      city: 'Vel Aran',
+      place: 'Taberna',
+      npc: 'Bardo',
+      chapter: 'Inicio',
+    });
+    expect((await reader.get(api('/me/characters')).expect(200)).body[0].whereabouts.kind).toBe('chapter');
+    expect(await at(null as unknown as object)).toBeNull();
   });
 
   it('las decisiones ramifican la historia en capítulos', async () => {
@@ -329,9 +362,11 @@ describe('lugares, NPCs y capítulos', () => {
     // la cadena de publicación pasa por el capítulo ajeno: hay que poder publicarlos todos
     const denied = await writer.patch(api(`/chapters/${root.id}/publish`)).send({ published: true }).expect(403);
     expect(denied.body.error.message).toContain('Seguir');
-    expect((await writer.get(api(`/chapters/${root.id}`))).body.published).toBe(false);
+    const published = async () =>
+      (await writer.get(api(`/writer/npcs/${npc.id}/chapters`))).body.map((c: { published: boolean }) => c.published);
+    expect(await published()).toEqual([false, false]);
     await admin.patch(api(`/chapters/${root.id}/publish`)).send({ published: true }).expect(200);
-    expect((await writer.get(api(`/chapters/${childId}`))).body.published).toBe(true);
+    expect(await published()).toEqual([true, true]);
   });
 
   it('borrar una ciudad borra sus lugares y NPCs', async () => {

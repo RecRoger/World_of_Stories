@@ -143,10 +143,19 @@ npcChaptersApi.route(
 
 chaptersApi
   .route(
-    { method: 'get', path: '/:chapterId', summary: 'Ver capítulo', params: chapterParams, response: chapterSchema },
-    async ({ params, user }) => {
-      const { npc, chapter } = await loadChapter(params.chapterId, user);
-      return toDto(npc, chapter, user);
+    {
+      method: 'get',
+      path: '/:chapterId',
+      summary: 'Leer capítulo (modo lector)',
+      description:
+        'Solo capítulos publicados de NPCs publicados, sin las opciones que lleven a capítulos sin publicar. ' +
+        'Es igual para todos los usuarios; los capítulos completos están en `GET /writer/npcs/:npcId/chapters`.',
+      params: chapterParams,
+      response: chapterSchema,
+    },
+    async ({ params }) => {
+      const { npc, chapter } = await loadChapter(params.chapterId);
+      return toDto(npc, chapter);
     },
   )
   .route(

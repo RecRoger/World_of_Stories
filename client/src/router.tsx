@@ -7,7 +7,8 @@ import { ChoosePage } from '@/pages/choose-page';
 import { WriterJoinPage } from '@/pages/writer-join-page';
 import { CitiesPage } from '@/pages/cities-page';
 import { CityPlacesPage } from '@/pages/city-places-page';
-import { ComingSoonPage } from '@/pages/coming-soon-page';
+import { CharactersPage } from '@/pages/characters-page';
+import { ReadingPage } from '@/pages/reading-page';
 import { PlaceEventsPage } from '@/pages/place-events-page';
 import { NpcChaptersPage } from '@/pages/npc-chapters-page';
 import { NotFoundPage } from '@/pages/not-found-page';
@@ -22,7 +23,8 @@ export const router = createBrowserRouter([
     element: <RequireAuth />,
     children: [
       { path: '/home', element: <ChoosePage /> },
-      { path: '/read', element: <ComingSoonPage title="Leer" /> },
+      { path: '/read', element: <CharactersPage /> },
+      { path: '/read/:characterId', element: <ReadingPage /> },
       { path: '/write/join', element: <WriterJoinPage /> },
       {
         path: '/write',

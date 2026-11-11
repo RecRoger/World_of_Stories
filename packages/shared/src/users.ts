@@ -33,11 +33,26 @@ export const locationInputSchema = z
   })
   .meta({ id: 'LocationInput' });
 
+export const WHEREABOUTS_KINDS = ['city', 'place', 'npc', 'chapter'] as const;
+
+/** Nombres de dónde está un personaje, para listarlo sin cargar cada ciudad, lugar, NPC o capítulo */
+export const whereaboutsSchema = z
+  .object({
+    kind: z.enum(WHEREABOUTS_KINDS).meta({ description: 'Lo más concreto de su ubicación' }),
+    city: z.string().nullish(),
+    place: z.string().nullish(),
+    npc: z.string().nullish(),
+    chapter: z.string().nullish(),
+  })
+  .meta({ id: 'Whereabouts' });
+export type Whereabouts = z.infer<typeof whereaboutsSchema>;
+
 export const characterSchema = z
   .object({
     id: objectId,
     name: z.string(),
-    location: locationSchema.optional(),
+    location: locationSchema.nullish(),
+    whereabouts: whereaboutsSchema.nullish().meta({ description: 'Nombres de su ubicación (null si aún no ha viajado)' }),
     money: z.number(),
     items: z.array(z.string()),
     fragmentsRead: z.array(z.string()),
@@ -89,8 +104,9 @@ export const setRolesInputSchema = z
   .meta({ id: 'SetRolesInput' });
 export type SetRolesInput = z.infer<typeof setRolesInputSchema>;
 
+/** Por ahora un personaje se distingue por su ubicación: el nombre es opcional */
 export const createCharacterInputSchema = z
-  .object({ name: z.string().trim().min(1).max(40) })
+  .object({ name: z.string().trim().max(40).optional() })
   .meta({ id: 'CreateCharacterInput' });
 export type CreateCharacterInput = z.infer<typeof createCharacterInputSchema>;
 

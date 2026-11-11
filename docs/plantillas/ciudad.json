@@ -1,0 +1,17 @@
+{
+  "name": "Nombre de ciudad",
+  "descriptions": [
+    "[Descripción arquitectónica o histórica: un párrafo, ≤ 300 caracteres]",
+    "[Otra versión de la descripción]"
+  ],
+  "travels": [
+    [
+      "[Viaje: llegada a la ciudad, imágenes visuales, lugares característicos, historia y cultura (4–8 párrafos, 1000–4000 caracteres): párrafo 1 de 5]",
+      "[Viaje: llegada a la ciudad, imágenes visuales, lugares característicos, historia y cultura (4–8 párrafos, 1000–4000 caracteres): párrafo 2 de 5]",
+      "[Viaje: llegada a la ciudad, imágenes visuales, lugares característicos, historia y cultura (4–8 párrafos, 1000–4000 caracteres): párrafo 3 de 5]",
+      "[Viaje: llegada a la ciudad, imágenes visuales, lugares característicos, historia y cultura (4–8 párrafos, 1000–4000 caracteres): párrafo 4 de 5]",
+      "[Viaje: llegada a la ciudad, imágenes visuales, lugares característicos, historia y cultura (4–8 párrafos, 1000–4000 caracteres): párrafo 5 de 5]"
+    ]
+  ],
+  "places": []
+}

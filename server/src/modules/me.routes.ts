@@ -10,12 +10,15 @@ import {
   userSchema,
   type Character,
   type User as UserDto,
+  type Whereabouts,
 } from '@wos/shared';
 import { ApiRouter } from '../lib/route.js';
 import { HttpError, found } from '../lib/http-error.js';
 import { checkPassword, clearAuthCookie, hashPassword } from '../lib/auth.js';
 import { env } from '../config/env.js';
-import { User } from '../models/user.model.js';
+import { City } from '../models/city.model.js';
+import { Npc } from '../models/npc.model.js';
+import { User, type ICharacter } from '../models/user.model.js';
 import { renameAuthor } from './authors.js';
 
 export const meApi = new ApiRouter('/me', 'Mi cuenta');
@@ -25,6 +28,31 @@ const loadMe = async (id: string, withPassword = false) =>
 
 const characterParams = z.object({ characterId: objectId });
 const MAX_CHARACTERS = 10;
+
+/** Nombres de la ciudad, lugar, NPC y capítulo donde está el personaje (null si aún no ha viajado) */
+async function whereabouts(location: ICharacter['location']): Promise<Whereabouts | null> {
+  if (!location?.cityId) return null;
+  const [city, npc] = await Promise.all([
+    City.findById(location.cityId, 'name places._id places.name').catch(() => null),
+    location.npcId ? Npc.findById(location.npcId, 'name chapters._id chapters.name').catch(() => null) : null,
+  ]);
+  if (!city) return null;
+  const place = location.placeId ? city.places.id(location.placeId) : null;
+  const chapter = npc && location.chapterId ? npc.chapters.id(location.chapterId) : null;
+  return {
+    kind: chapter ? 'chapter' : npc ? 'npc' : place ? 'place' : 'city',
+    city: city.name,
+    place: place?.name ?? null,
+    npc: npc?.name ?? null,
+    chapter: chapter?.name ?? null,
+  };
+}
+
+/** Personaje con los nombres de su ubicación */
+async function toCharacter(character: ICharacter & { toJSON(): unknown }): Promise<Character> {
+  const json = character.toJSON() as Character;
+  return { ...json, whereabouts: await whereabouts(character.location) };
+}
 
 meApi
   .route(
@@ -93,7 +121,7 @@ meApi
       access: 'user',
       response: z.array(characterSchema),
     },
-    async ({ user }) => (await loadMe(user.id)).characters.map((c) => c.toJSON() as unknown as Character),
+    async ({ user }) => Promise.all((await loadMe(user.id)).characters.map(toCharacter)),
   )
   .route(
     {
@@ -110,9 +138,9 @@ meApi
       if (me.characters.length >= MAX_CHARACTERS) {
         throw HttpError.conflict(`Máximo ${MAX_CHARACTERS} personajes por cuenta`);
       }
-      me.characters.push({ name: body.name });
+      me.characters.push({ name: body.name ?? '' });
       await me.save();
-      return me.characters.at(-1)!.toJSON() as unknown as Character;
+      return toCharacter(me.characters.at(-1)!);
     },
   )
   .route(
@@ -130,7 +158,7 @@ meApi
       const character = found(me.characters.id(params.characterId), 'Personaje no encontrado');
       character.set(body);
       await me.save();
-      return character.toJSON() as unknown as Character;
+      return toCharacter(character);
     },
   )
   .route(
@@ -148,7 +176,7 @@ meApi
       const character = found(me.characters.id(params.characterId), 'Personaje no encontrado');
       if (!character.fragmentsRead.includes(body.fragmentId)) character.fragmentsRead.push(body.fragmentId);
       await me.save();
-      return character.toJSON() as unknown as Character;
+      return toCharacter(character);
     },
   )
   .route(

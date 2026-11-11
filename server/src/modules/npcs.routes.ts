@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import {
   createNpcInputSchema,
+  npcReadingSchema,
   npcSchema,
-  npcSummarySchema,
   objectId,
   publishedQuerySchema,
   publishInputSchema,
@@ -10,7 +10,7 @@ import {
   updateNpcInputSchema,
   type Decision,
   type Npc as NpcDto,
-  type NpcSummary,
+  type NpcReading,
   type Readable,
 } from '@wos/shared';
 import { ApiRouter, isWriter, type AuthUser } from '../lib/route.js';
@@ -77,16 +77,6 @@ function assertStoryDecision(npcType: string, decision: { decisionType?: string 
 
 const newTale = (tale: Readable[], author: string) => ({ tale, author, published: false, writeDate: new Date() });
 
-const toSummary = (n: NpcDoc): NpcSummary => ({
-  id: n.id,
-  name: n.name,
-  npcType: n.npcType,
-  title: n.title,
-  author: n.author,
-  published: n.published,
-  publishDate: n.publishDate?.toISOString() ?? null,
-});
-
 function toDto(npc: NpcDoc): NpcDto {
   const { chapters: _chapters, ...json } = npc.toJSON() as unknown as NpcDto & { chapters?: unknown };
   return {
@@ -96,6 +86,23 @@ function toDto(npc: NpcDoc): NpcDto {
     meeting: json.meeting ?? null,
     rejected: json.rejected ?? null,
     decision: (json.decision as Decision | undefined) ?? null,
+  };
+}
+
+/** Modo lector: el NPC con sus textos y solo las opciones visibles de su decisión */
+function toReading(npc: NpcDoc): NpcReading {
+  const { id, placeId, name, npcType, title, author, description, meeting, rejected, decision } = toDto(npc);
+  return {
+    id,
+    placeId: placeId ?? '',
+    name,
+    npcType,
+    title,
+    author,
+    description,
+    meeting,
+    rejected,
+    decision: decision && { ...decision, options: decision.options.filter((o) => o.published) },
   };
 }
 
@@ -124,19 +131,17 @@ placeNpcsApi
     {
       method: 'get',
       path: '/:placeId/npcs',
-      summary: 'Listar NPCs de un lugar',
+      summary: 'Listar NPCs de un lugar (modo lector)',
+      description:
+        'NPCs publicados de un lugar publicado, con su descripción, encuentro, rechazo y decisión. ' +
+        'Es igual para todos los usuarios; el listado completo de escritores está en `GET /writer/places/:placeId/npcs`.',
       params: placeParams,
-      query: publishedQuerySchema,
-      response: z.array(npcSummarySchema),
+      response: z.array(npcReadingSchema),
     },
-    async ({ params, query, user }) => {
-      const { place } = await loadPlace(params.placeId, user);
-      const published = isWriter(user) ? query.published : true;
-      const npcs = await Npc.find(
-        { _id: { $in: place.events }, ...(published === undefined ? {} : { published }) },
-        { chapters: 0 },
-      ).sort({ name: 1 });
-      return npcs.map(toSummary);
+    async ({ params }) => {
+      const { place } = await loadPlace(params.placeId);
+      const npcs = await Npc.find({ _id: { $in: place.events }, published: true }, { chapters: 0 }).sort({ _id: 1 });
+      return npcs.map(toReading);
     },
   )
   .route(

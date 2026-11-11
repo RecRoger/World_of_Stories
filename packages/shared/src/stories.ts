@@ -81,6 +81,26 @@ export const npcSchema = npcSummarySchema
   .meta({ id: 'Npc' });
 export type Npc = z.infer<typeof npcSchema>;
 
+/**
+ * NPC en modo lector: solo NPCs publicados, con sus textos (descripción, encuentro y rechazo) y las opciones
+ * visibles de su decisión. Es igual para todos los usuarios.
+ */
+export const npcReadingSchema = z
+  .object({
+    id: objectId,
+    placeId: objectId,
+    name: z.string(),
+    npcType: z.string(),
+    title: z.string().optional(),
+    author: z.string(),
+    description: taleSchema.nullable(),
+    meeting: taleSchema.nullable(),
+    rejected: taleSchema.nullable(),
+    decision: decisionSchema.nullable(),
+  })
+  .meta({ id: 'NpcReading' });
+export type NpcReading = z.infer<typeof npcReadingSchema>;
+
 export const createNpcInputSchema = z
   .object({
     name: z.string().trim().min(1).max(80),

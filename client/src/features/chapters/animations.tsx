@@ -17,10 +17,38 @@ export const ANIMATION_LABELS: Record<Animation, string> = {
 export const asAnimation = (value: string | null | undefined): Animation =>
   (ANIMATIONS as readonly string[]).includes(value ?? '') ? (value as Animation) : 'default';
 
-const PLACEHOLDER = 'El texto del fragmento aparecerá aquí.';
+/** Se escriben letra a letra ("Sorpresa" además tiembla al terminar). */
+export const isTyped = (animation: Animation) => animation === 'default' || animation === 'surprise';
 
-/** Las que se escriben letra a letra. */
-const TYPED: Animation[] = ['default', 'surprise'];
+/** Duración (ms) de las entradas con CSS; deben coincidir con `--animate-fragment-*` de index.css. */
+export const ENTRANCE_MS: Record<Animation, number> = {
+  default: 0,
+  surprise: 700, // el temblor final
+  chatA: 1100,
+  chatB: 1100,
+  title: 1400,
+  paragraph: 1400,
+};
+
+/**
+ * Clases de un fragmento según su animación: la forma (bocadillo, título) y, mientras entra, su animación.
+ * `entering` reproduce la entrada; `shaking`, el temblor final de "Sorpresa".
+ */
+export function fragmentClass(animation: Animation, { entering = false, shaking = false } = {}) {
+  const chat = animation === 'chatA' || animation === 'chatB';
+  return cn(
+    'm-0 whitespace-pre-wrap motion-reduce:animate-none',
+    entering && (animation === 'paragraph' || animation === 'title') && 'animate-fragment-fade',
+    entering && animation === 'chatA' && 'animate-fragment-slide-left',
+    entering && animation === 'chatB' && 'animate-fragment-slide-right',
+    shaking && 'animate-fragment-shake',
+    chat && 'w-fit max-w-[85%] rounded-[14px] border border-paper-line bg-parchment px-4 py-2.5',
+    animation === 'chatB' && 'ml-auto',
+    animation === 'title' && 'text-center font-display text-[1.5em] leading-tight font-semibold text-ink',
+  );
+}
+
+const PLACEHOLDER = 'El texto del fragmento aparecerá aquí.';
 
 /**
  * Vista previa de un fragmento con su animación. `play` es un contador: cada vez que cambia, se reproduce.
@@ -35,7 +63,7 @@ export function FragmentPreview({ text, animation, play }: { text: string; anima
 
   useEffect(() => {
     setShaking(false);
-    if (!play || !TYPED.includes(animation)) return setLength(null);
+    if (!play || !isTyped(animation)) return setLength(null);
     const finish = () => {
       setLength(null);
       if (animation === 'surprise') setShaking(true);
@@ -56,8 +84,6 @@ export function FragmentPreview({ text, animation, play }: { text: string; anima
 
   const typed = length === null ? shown : shown.slice(0, length);
   const rest = length === null ? '' : shown.slice(length);
-  const chat = animation === 'chatA' || animation === 'chatB';
-  const playing = play > 0;
 
   return (
     <div
@@ -68,15 +94,9 @@ export function FragmentPreview({ text, animation, play }: { text: string; anima
         // la clave reinicia la animación CSS en cada reproducción
         key={`${play}-${shaking}`}
         className={cn(
-          'm-0 text-[21px] leading-[1.55] whitespace-pre-wrap text-ink-soft motion-reduce:animate-none',
+          'text-[21px] leading-[1.55] text-ink-soft',
+          fragmentClass(animation, { entering: play > 0, shaking }),
           !text.trim() && 'text-ink-muted italic',
-          playing && (animation === 'paragraph' || animation === 'title') && 'animate-fragment-fade',
-          playing && animation === 'chatA' && 'animate-fragment-slide-left',
-          playing && animation === 'chatB' && 'animate-fragment-slide-right',
-          shaking && 'animate-fragment-shake',
-          chat && 'w-fit max-w-[85%] rounded-[14px] border border-paper-line bg-parchment px-4 py-2.5',
-          animation === 'chatB' && 'ml-auto',
-          animation === 'title' && 'text-center font-display text-[32px] leading-tight font-semibold text-ink',
         )}
       >
         {typed}
