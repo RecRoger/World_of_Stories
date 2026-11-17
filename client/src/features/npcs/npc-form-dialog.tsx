@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DECISION_TYPES, NPC_TYPES, type Npc, type NpcType } from '@wos/shared';
@@ -12,6 +13,7 @@ import { applyServerErrors } from '@/components/form/server-errors';
 import { linkButtonClass } from '@/features/locations/inline-editor';
 import { useCreateNpc, useUpdateNpc } from './api';
 import { DECISION_HELP, emptyNpcForm, fitOptions, formToBody, npcFormSchema, npcToForm, type NpcFormValues } from './npc-form';
+import './npc-form-dialog.scss';
 
 type NpcFormDialogProps = {
   placeId: string;
@@ -29,7 +31,7 @@ export function NpcFormDialog({ placeId, npc, open, onOpenChange }: NpcFormDialo
 
   return (
     <Dialog open={open} onOpenChange={change}>
-      <DialogContent aria-describedby={undefined} className="px-[clamp(24px,6vw,52px)] pt-12 pb-11">
+      <DialogContent aria-describedby={undefined} className="npc-form">
         {/* Se monta al abrir, así cada apertura parte de los datos actuales */}
         {open && <NpcForm placeId={placeId} npc={npc} onSavingChange={setSaving} onDone={() => onOpenChange(false)} />}
       </DialogContent>
@@ -37,7 +39,7 @@ export function NpcFormDialog({ placeId, npc, open, onOpenChange }: NpcFormDialo
   );
 }
 
-const subLabel = 'font-serif text-[17px] font-normal';
+const subLabel = 'npc-form__sublabel';
 
 function NpcForm({
   placeId,
@@ -83,18 +85,18 @@ function NpcForm({
   });
 
   return (
-    <form onSubmit={onSubmit} noValidate aria-busy={saving} className="flex flex-col gap-7">
+    <form onSubmit={onSubmit} noValidate aria-busy={saving} className="npc-form__form">
       <DialogTitle>{npc ? 'Editar evento' : 'Nuevo evento'}</DialogTitle>
 
       {formError && (
-        <p role="alert" className="bg-danger/8 px-3.5 py-2.5 text-[17px] text-danger">
+        <p role="alert" className="npc-form__error">
           {formError}
         </p>
       )}
 
-      <fieldset disabled={saving} className="m-0 flex min-w-0 flex-col gap-7 border-0 p-0">
+      <fieldset disabled={saving} className="npc-form__fields">
         <FormField id={id('name')} label="Nombre" error={errors.name?.message}>
-          {(a11y) => <Input id={id('name')} autoComplete="off" className="min-h-13 text-xl" {...a11y} {...register('name')} />}
+          {(a11y) => <Input id={id('name')} autoComplete="off" className="npc-form__control" {...a11y} {...register('name')} />}
         </FormField>
         <FormField id={id('type')} label="Tipo de NPC">
           {(a11y) => (
@@ -108,17 +110,17 @@ function NpcForm({
           )}
         </FormField>
         <FormField id={id('description')} label="Descripción" error={errors.description?.message}>
-          {(a11y) => <Textarea id={id('description')} rows={3} className="min-h-24" {...a11y} {...register('description')} />}
+          {(a11y) => <Textarea id={id('description')} rows={3} className="npc-form__textarea" {...a11y} {...register('description')} />}
         </FormField>
         <FormField id={id('meeting')} label="Encuentro" error={errors.meeting?.message}>
-          {(a11y) => <Textarea id={id('meeting')} rows={3} className="min-h-24" {...a11y} {...register('meeting')} />}
+          {(a11y) => <Textarea id={id('meeting')} rows={3} className="npc-form__textarea" {...a11y} {...register('meeting')} />}
         </FormField>
         <FormField id={id('rejected')} label="Rechazo" error={errors.rejected?.message}>
-          {(a11y) => <Textarea id={id('rejected')} rows={3} className="min-h-24" {...a11y} {...register('rejected')} />}
+          {(a11y) => <Textarea id={id('rejected')} rows={3} className="npc-form__textarea" {...a11y} {...register('rejected')} />}
         </FormField>
 
-        <div role="group" aria-labelledby={id('decision')} className="flex min-w-0 flex-col gap-5 border-t border-ink pt-6">
-          <h3 id={id('decision')} className="font-display text-[32px] leading-none font-semibold">
+        <div role="group" aria-labelledby={id('decision')} className="npc-form__group">
+          <h3 id={id('decision')} className="npc-form__group-title">
             Decisión
           </h3>
           <FormField id={id('decision-type')} label="Tipo de decisión" hint={DECISION_HELP[decisionType]} labelClassName={subLabel}>
@@ -145,19 +147,19 @@ function NpcForm({
           )}
 
           {decisionType === 'choose' && (
-            <div className="flex flex-col gap-5">
+            <div className="npc-form__options">
               {isStory && (
-                <p className="text-[17px] text-ink-muted">
+                <p className="npc-form__note">
                   Un NPC de tipo story tiene exactamente dos opciones: aceptar empieza la historia en su capítulo
                   inicial{npc ? '' : ' («Inicio», que se crea vacío con el evento)'} y rechazar muestra el texto de rechazo.
                 </p>
               )}
-              {errors.options?.message && <p className="text-base text-danger">{errors.options.message}</p>}
-              <ol className="flex flex-col gap-5">
+              {errors.options?.message && <p className="npc-form__field-error">{errors.options.message}</p>}
+              <ol className="npc-form__options">
                 {fields.map((field, i) => (
-                  <li key={field.id} className="flex flex-col gap-3 border border-paper-line bg-parchment/60 p-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="font-display text-xl font-bold">
+                  <li key={field.id} className="npc-form__option">
+                    <div className="npc-form__option-header">
+                      <span className="npc-form__option-title">
                         {isStory ? (i === 0 ? 'Opción para aceptar' : 'Opción para rechazar') : `Opción ${i + 1}`}
                       </span>
                       {!isStory && fields.length > 1 && (
@@ -179,7 +181,7 @@ function NpcForm({
                         <Textarea
                           id={id(`option-${i}-description`)}
                           rows={2}
-                          className="min-h-20 bg-paper"
+                          className="npc-form__option-description"
                           {...a11y}
                           {...register(`options.${i}.description`)}
                         />
@@ -191,7 +193,7 @@ function NpcForm({
               {!isStory && fields.length < 10 && (
                 <button
                   type="button"
-                  className={`${linkButtonClass} self-start px-1 text-lg`}
+                  className={cn(linkButtonClass, 'npc-form__add')}
                   onClick={() => append({ name: '', description: '' })}
                 >
                   + Añadir opción
@@ -202,14 +204,14 @@ function NpcForm({
         </div>
       </fieldset>
 
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-ink pt-7">
-        <Button type="submit" size="md" className="min-h-13 px-9 text-xl" loading={saving} disabled={!canSave}>
+      <div className="npc-form__actions">
+        <Button type="submit" size="md" className="npc-form__submit" loading={saving} disabled={!canSave}>
           {saving ? 'Guardando' : 'Guardar evento'}
         </Button>
         <button type="button" className={linkButtonClass} disabled={saving} onClick={onDone}>
           Cancelar
         </button>
-        <span role="status" className="sr-only">
+        <span role="status" className="visually-hidden">
           {saving ? 'Guardando el evento…' : ''}
         </span>
       </div>

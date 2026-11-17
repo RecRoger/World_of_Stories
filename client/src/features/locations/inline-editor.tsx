@@ -4,6 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ApiError } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import '@/components/ui/link-button.scss';
+import './inline-editor.scss';
 
 type InlineEditorProps = {
   /** Nombre accesible del campo (no hay etiqueta visible, como en el diseño). */
@@ -22,8 +24,8 @@ type InlineEditorProps = {
   className?: string;
 };
 
-export const linkButtonClass =
-  'min-h-11 cursor-pointer border-0 bg-transparent px-1.5 font-serif text-[17px] text-ink underline underline-offset-4 hover:decoration-2 disabled:cursor-default disabled:no-underline disabled:opacity-40';
+/** Botón con aspecto de enlace subrayado (Cancelar, Quitar, + Añadir…), compartido por las vistas de escritor. */
+export const linkButtonClass = 'link-button';
 
 /** Edición en el sitio (nombre de ciudad, extractos): campo + Aceptar / Cancelar. Escape cancela. */
 export function InlineEditor({
@@ -75,7 +77,7 @@ export function InlineEditor({
     <form
       noValidate
       aria-busy={saving}
-      className={cn('flex flex-col gap-2.5', fill && 'h-full min-h-0', className)}
+      className={cn('inline-editor', fill && 'inline-editor--fill', className)}
       onSubmit={(e) => {
         e.preventDefault();
         void submit();
@@ -84,20 +86,20 @@ export function InlineEditor({
       {multiline ? (
         <Textarea
           rows={4}
-          className={cn('min-h-28 bg-paper', fill && 'min-h-0 flex-1 resize-none field-sizing-fixed')}
+          className={cn('inline-editor__textarea', fill && 'inline-editor__textarea--fill')}
           onChange={(e) => setValue(e.target.value)}
           {...fieldProps}
         />
       ) : (
-        <Input className="min-h-13 font-display text-2xl font-semibold" onChange={(e) => setValue(e.target.value)} {...fieldProps} />
+        <Input className="inline-editor__input" onChange={(e) => setValue(e.target.value)} {...fieldProps} />
       )}
       {error && (
-        <p id={errorId} role="alert" className="text-base text-danger">
+        <p id={errorId} role="alert" className="inline-editor__error">
           {error}
         </p>
       )}
-      <div className="flex shrink-0 items-center gap-3">
-        <Button type="submit" size="md" className="min-h-11 text-lg" loading={saving} disabled={empty}>
+      <div className="inline-editor__actions">
+        <Button type="submit" size="md" className="inline-editor__submit" loading={saving} disabled={empty}>
           {saving ? 'Guardando' : submitLabel}
         </Button>
         <button type="button" className={linkButtonClass} disabled={saving} onClick={onCancel}>

@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { useDeleteNpc, usePublishNpc } from "./api";
 import { DECISION_HELP } from "./npc-form";
 import { NpcFormDialog } from "./npc-form-dialog";
+import './npc-card.scss';
 
 const TABS = [
   ["description", "Descripción"],
@@ -30,8 +31,7 @@ const TABS = [
 ] as const;
 
 // Misma caja de altura fija que los extractos de ciudades y lugares: lo que no cabe se desplaza dentro
-const boxClass =
-  "box-border h-[280px] overflow-y-auto border border-paper-line bg-parchment px-5 py-4 [scrollbar-color:var(--color-ink-shadow)_transparent] [scrollbar-width:thin] focus-visible:outline-offset-2";
+const boxClass = "npc-card__box";
 
 type NpcCardProps = {
   placeId: string;
@@ -60,21 +60,21 @@ export function NpcCard({ placeId, npc, chaptersTo }: NpcCardProps) {
     <Paper
       aria-busy={busy}
       className={cn(
-        "flex flex-col gap-4.5 p-8 transition-opacity",
-        remove.isPending && "opacity-60",
+        "npc-card",
+        remove.isPending && "npc-card--busy",
       )}
     >
-      <header className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
-        <h2 className="min-w-0 flex-[1_1_200px] font-display text-[38px] leading-[1.05] font-semibold">
+      <header className="npc-card__header">
+        <h2 className="npc-card__name">
           {npc.name}
         </h2>
 
         {manageable && !confirming && (
-          <div className="-mt-0.5 -mr-2.5 ml-auto flex items-center gap-0.5">
+          <div className="npc-card__tools">
             {busy && (
               <WritingDots
                 label={`${remove.isPending ? "Eliminando" : npc.published ? "Despublicando" : "Publicando"} ${npc.name}`}
-                className="mr-2 text-3xl text-ink-muted"
+                className="npc-card__dots"
               />
             )}
             <IconButton
@@ -109,7 +109,7 @@ export function NpcCard({ placeId, npc, chaptersTo }: NpcCardProps) {
         )}
 
         {manageable && confirming && (
-          <div className="ml-auto flex flex-wrap items-center justify-end gap-x-2.5 text-[17px]">
+          <div className="npc-card__confirm">
             <span>¿Eliminar este evento?</span>
             <button
               type="button"
@@ -133,28 +133,28 @@ export function NpcCard({ placeId, npc, chaptersTo }: NpcCardProps) {
         )}
       </header>
 
-      <span className="-mt-2 self-start border border-ink px-2.5 py-0.5 text-[15px] tracking-[0.08em] text-ink-muted">
+      <span className="npc-card__type">
         {npc.npcType}
       </span>
 
       {error && (
-        <p role="alert" className="text-base text-danger">
+        <p role="alert" className="npc-card__error">
           {error instanceof ApiError
             ? error.message
             : "No se pudo completar la acción"}
         </p>
       )}
 
-      <Tabs.Root defaultValue="description" className="flex flex-col gap-4">
+      <Tabs.Root defaultValue="description" className="npc-card__tabs">
         <Tabs.List
           aria-label={`Textos de ${npc.name}`}
-          className="flex flex-wrap gap-x-6 border-b border-ink"
+          className="npc-card__tab-list"
         >
           {TABS.map(([key, label]) => (
             <Tabs.Trigger
               key={key}
               value={key}
-              className="-mb-px min-h-11 cursor-pointer border-0 border-b-2 border-transparent bg-transparent px-1 font-serif text-[19px] text-ink-muted hover:text-ink data-[state=active]:border-ink data-[state=active]:font-medium data-[state=active]:text-ink"
+              className="npc-card__tab"
             >
               {label}
             </Tabs.Trigger>
@@ -171,22 +171,22 @@ export function NpcCard({ placeId, npc, chaptersTo }: NpcCardProps) {
         ))}
       </Tabs.Root>
 
-      <div className="flex-1" />
+      <div className="npc-card__spacer" />
 
-      <footer className="flex items-end justify-between gap-4 border-t border-ink pt-1.5">
+      <footer className="npc-card__footer">
         <div>
           {isStory && (
             <Link
               to={chaptersTo}
-              className="link-underline inline-flex min-h-11 items-center gap-2 text-lg text-ink"
+              className="npc-card__next"
             >
               Ver capítulos
               <ArrowRightIcon width={18} />
             </Link>
           )}
         </div>
-        <div className="flex flex-col gap-0.5 pb-2 text-right text-[17px] text-ink-muted">
-          <em className="text-ink">{npc.author}</em>
+        <div className="npc-card__credits">
+          <em className="npc-card__author">{npc.author}</em>
           <span>
             {publicationLabel(npc.published, npc.publishDate, "Publicado")}
           </span>
@@ -208,9 +208,9 @@ export function NpcCard({ placeId, npc, chaptersTo }: NpcCardProps) {
 function TaleText({ tale }: { tale: Tale | null }) {
   const paragraphs = tale?.tale.map((r) => r.text.trim()).filter(Boolean) ?? [];
   if (!paragraphs.length)
-    return <p className="text-[19px] text-ink-muted italic">—</p>;
+    return <p className="npc-card__empty">—</p>;
   return (
-    <div className="flex flex-col gap-3 text-[19px] leading-normal text-pretty text-ink-soft">
+    <div className="npc-card__text">
       {paragraphs.map((p, n) => (
         <p key={n}>{p}</p>
       ))}
@@ -218,12 +218,12 @@ function TaleText({ tale }: { tale: Tale | null }) {
   );
 }
 
-const small = "text-[15px] tracking-[0.08em] text-ink-muted uppercase";
+const small = "npc-card__tag";
 
 function DecisionView({ npc }: { npc: Npc }) {
   const d = npc.decision;
   if (!d)
-    return <p className="text-[19px] text-ink-muted italic">Sin decisión.</p>;
+    return <p className="npc-card__empty">Sin decisión.</p>;
   const type = (DECISION_TYPES as readonly string[]).includes(
     d.decisionType ?? "",
   )
@@ -232,8 +232,8 @@ function DecisionView({ npc }: { npc: Npc }) {
   const isStory = npc.npcType === "story";
 
   return (
-    <div className="flex flex-col gap-4 text-[19px] leading-normal text-ink-soft">
-      <p className="text-[17px] text-ink-muted">{DECISION_HELP[type]}</p>
+    <div className="npc-card__decision">
+      <p className="npc-card__decision-help">{DECISION_HELP[type]}</p>
       {type === "money" && (
         <p>
           <span className={small}>Monto solicitado</span>
@@ -258,7 +258,7 @@ function DecisionView({ npc }: { npc: Npc }) {
                   : "Rechazar · muestra el rechazo"}
               </p>
             )}
-            <p className="font-medium text-ink">{o.name}</p>
+            <p className="npc-card__option-name">{o.name}</p>
             <p>{o.description}</p>
           </div>
         ))}

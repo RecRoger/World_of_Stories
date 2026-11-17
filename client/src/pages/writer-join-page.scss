@@ -1,0 +1,55 @@
+.writer-join-page {
+  align-items: center;
+  justify-content: center;
+  padding-top: 2.5rem;
+  padding-bottom: 2rem;
+
+  &__card {
+    width: min(100%, 500px);
+    padding-inline: clamp(24px, 6vw, 52px);
+    padding-top: 2.75rem;
+    padding-bottom: 3rem;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  &__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  &__title {
+    font-family: var(--font-display);
+    font-size: 44px;
+    line-height: 1;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  &__text {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+    color: var(--color-ink-soft);
+  }
+
+  &__error {
+    background-color: color-mix(in oklab, var(--color-danger) 8%, transparent);
+    padding-inline: 0.875rem;
+    padding-block: 0.625rem;
+    font-size: 17px;
+    color: var(--color-danger);
+  }
+
+  &__code {
+    min-height: 3.5rem;
+    padding-inline: 1rem;
+    font-size: 22px;
+    letter-spacing: 0.18em;
+  }
+}

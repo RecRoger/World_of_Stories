@@ -10,6 +10,7 @@ import { Field } from '@/components/form/field';
 import { applyServerErrors } from '@/components/form/server-errors';
 import { useLogin, useRegister } from '@/features/auth/api';
 import { cn } from '@/lib/utils';
+import './access-page.scss';
 
 type Mode = 'login' | 'register';
 
@@ -29,10 +30,10 @@ export function AccessPage() {
           Volver al inicio
         </Link>
       }
-      className="items-center justify-center pt-10 pb-8"
+      className="access-page"
     >
-      <Paper className="flex w-[min(100%,460px)] flex-col gap-7 px-[clamp(24px,6vw,48px)] pt-10 pb-11">
-        <div className="grid grid-cols-2 border-b border-ink">
+      <Paper className="access-page__card">
+        <div className="access-page__tabs">
           <ModeTab active={mode === 'login'} onClick={() => setMode('login')}>
             Iniciar sesión
           </ModeTab>
@@ -55,8 +56,8 @@ function ModeTab({ active, onClick, children }: { active: boolean; onClick: () =
       aria-pressed={active}
       onClick={onClick}
       className={cn(
-        'min-h-12 cursor-pointer border-0 font-serif text-[19px] transition-colors',
-        active ? 'bg-ink text-paper' : 'bg-transparent text-ink hover:bg-ink/5',
+        'access-page__tab',
+        active ? 'access-page__tab--active' : 'access-page__tab--inactive',
       )}
     >
       {children}
@@ -66,9 +67,9 @@ function ModeTab({ active, onClick, children }: { active: boolean; onClick: () =
 
 function Heading({ title, subtitle }: { title: string; subtitle: string }) {
   return (
-    <div className="flex flex-col gap-2">
-      <h1 className="font-display text-[44px] leading-none font-semibold">{title}</h1>
-      <p className="text-[19px] leading-[1.45] text-ink-muted">{subtitle}</p>
+    <div className="access-page__heading">
+      <h1 className="access-page__title">{title}</h1>
+      <p className="access-page__subtitle">{subtitle}</p>
     </div>
   );
 }
@@ -76,7 +77,7 @@ function Heading({ title, subtitle }: { title: string; subtitle: string }) {
 function FormError({ message }: { message: string | null }) {
   if (!message) return null;
   return (
-    <p role="alert" className="bg-danger/8px-3.5 py-2.5 text-[17px] text-danger">
+    <p role="alert" className="access-page__error">
       {message}
     </p>
   );
@@ -99,10 +100,10 @@ function LoginForm() {
   });
 
   return (
-    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-7">
+    <form onSubmit={onSubmit} noValidate className="access-page__form">
       <Heading title="Bienvenido de vuelta" subtitle="Tus historias te esperan donde las dejaste." />
       <FormError message={formError} />
-      <div className="flex flex-col gap-5">
+      <div className="access-page__fields">
         <Field
           label="Correo o nombre de pluma"
           autoComplete="username"
@@ -142,10 +143,10 @@ function RegisterForm() {
   });
 
   return (
-    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-7">
+    <form onSubmit={onSubmit} noValidate className="access-page__form">
       <Heading title="Abre tu primer capítulo" subtitle="Crea tu cuenta para escribir y leer sin límites." />
       <FormError message={formError} />
-      <div className="flex flex-col gap-5">
+      <div className="access-page__fields">
         <Field label="Nombre de pluma" autoComplete="nickname" error={errors.username?.message} {...register('username')} />
         <Field label="Correo electrónico" type="email" autoComplete="email" error={errors.email?.message} {...register('email')} />
         <Field

@@ -24,6 +24,7 @@ import {
   NEW_CHAPTER,
   type ChapterFormValues,
 } from './chapter-form';
+import './chapter-form-dialog.scss';
 
 type ChapterFormDialogProps = {
   npcId: string;
@@ -44,7 +45,7 @@ export function ChapterFormDialog({ open, onOpenChange, ...props }: ChapterFormD
 
   return (
     <Dialog open={open} onOpenChange={change}>
-      <DialogContent aria-describedby={undefined} className="w-[min(100%,1120px)] px-[clamp(24px,6vw,52px)] pt-12 pb-11">
+      <DialogContent aria-describedby={undefined} className="chapter-form">
         {/* Se monta al abrir, así cada apertura parte de los datos actuales */}
         {open && <ChapterForm {...props} onSavingChange={setSaving} onDone={() => onOpenChange(false)} />}
       </DialogContent>
@@ -52,11 +53,11 @@ export function ChapterFormDialog({ open, onOpenChange, ...props }: ChapterFormD
   );
 }
 
-const groupClass = 'flex min-w-0 flex-col gap-4 border-t border-ink pt-7';
-const groupTitle = 'font-display text-[32px] leading-none font-semibold';
-const subLabel = 'font-serif text-[17px] font-normal';
-const itemClass = 'flex flex-col gap-2.5 border border-paper-line bg-parchment px-5 pt-4 pb-5';
-const itemField = 'bg-paper';
+const groupClass = 'chapter-form__group';
+const groupTitle = 'chapter-form__group-title';
+const subLabel = 'chapter-form__sublabel';
+const itemClass = 'chapter-form__item';
+const itemField = 'chapter-form__item-field';
 
 function ChapterForm({
   npcId,
@@ -100,43 +101,43 @@ function ChapterForm({
   });
 
   return (
-    <form onSubmit={onSubmit} noValidate aria-busy={saving} className="flex flex-col gap-7">
+    <form onSubmit={onSubmit} noValidate aria-busy={saving} className="chapter-form__form">
       <DialogTitle>Editar capítulo</DialogTitle>
 
       {formError && (
-        <p role="alert" className="bg-danger/8 px-3.5 py-2.5 text-[17px] text-danger">
+        <p role="alert" className="chapter-form__error">
           {formError}
         </p>
       )}
 
-      <fieldset disabled={saving} className="m-0 flex min-w-0 flex-col gap-7 border-0 p-0">
+      <fieldset disabled={saving} className="chapter-form__fields">
         <FormField id={id('name')} label="Nombre del capítulo" error={errors.name?.message}>
-          {(a11y) => <Input id={id('name')} autoComplete="off" className="min-h-13 text-xl" {...a11y} {...register('name')} />}
+          {(a11y) => <Input id={id('name')} autoComplete="off" className="chapter-form__control" {...a11y} {...register('name')} />}
         </FormField>
 
         <div role="group" aria-labelledby={id('fragments')} className={groupClass}>
           <h3 id={id('fragments')} className={groupTitle}>
             Fragmentos
           </h3>
-          <ol className="flex flex-col gap-4">
+          <ol className="chapter-form__list">
             {fragments.fields.map((field, i) => (
               <li key={field.id} className={itemClass}>
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-[17px] text-ink-muted">Fragmento {i + 1}</span>
+                <div className="chapter-form__item-header">
+                  <span className="chapter-form__note">Fragmento {i + 1}</span>
                   {fragments.fields.length > 1 && (
                     <button type="button" className={linkButtonClass} onClick={() => fragments.remove(i)}>
                       Quitar
                     </button>
                   )}
                 </div>
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] items-stretch gap-6">
-                  <div className="flex flex-col gap-2.5">
+                <div className="chapter-form__fragment-grid">
+                  <div className="chapter-form__column">
                     <FormField id={id(`fragment-${i}-text`)} label="Texto" labelClassName={subLabel}>
                       {(a11y) => (
                         <Textarea
                           id={id(`fragment-${i}-text`)}
                           rows={3}
-                          className={cn('min-h-24', itemField)}
+                          className={cn('chapter-form__fragment-text', itemField)}
                           {...a11y}
                           {...register(`fragments.${i}.text`)}
                         />
@@ -160,12 +161,12 @@ function ChapterForm({
                       )}
                     </FormField>
                   </div>
-                  <div className="flex flex-col gap-2.5">
-                    <div className="flex min-h-7 items-center justify-between gap-3">
-                      <span className="text-[17px]">Vista previa</span>
+                  <div className="chapter-form__column">
+                    <div className="chapter-form__preview-header">
+                      <span className="chapter-form__preview-label">Vista previa</span>
                       <button
                         type="button"
-                        className={cn(linkButtonClass, 'min-h-8')}
+                        className={cn(linkButtonClass, 'chapter-form__play')}
                         aria-label={`Reproducir animación del fragmento ${i + 1}`}
                         onClick={() => play(field.id)}
                       >
@@ -182,7 +183,7 @@ function ChapterForm({
               </li>
             ))}
           </ol>
-          <button type="button" className={cn(linkButtonClass, 'self-start px-0 text-lg')} onClick={() => fragments.append(blankFragment())}>
+          <button type="button" className={cn(linkButtonClass, 'chapter-form__add')} onClick={() => fragments.append(blankFragment())}>
             + Añadir fragmento
           </button>
         </div>
@@ -191,7 +192,7 @@ function ChapterForm({
           <h3 id={id('final')} className={groupTitle}>
             ¿Es un capítulo final?
           </h3>
-          <div className="flex flex-wrap gap-3">
+          <div className="chapter-form__toggles">
             <ToggleButton pressed={isFinal} onClick={() => setValue('isFinal', true)}>
               Sí, termina en un lugar
             </ToggleButton>
@@ -203,21 +204,21 @@ function ChapterForm({
 
         {!isFinal && (
           <div role="group" aria-labelledby={id('decisions')} className={groupClass}>
-            <div className="flex flex-col gap-1">
+            <div className="chapter-form__group-heading">
               <h3 id={id('decisions')} className={groupTitle}>
                 Decisiones
               </h3>
-              <p className="text-[17px] text-ink-muted">
+              <p className="chapter-form__note">
                 Opciones hacia otros capítulos. Cada una lleva a un capítulo que ya existe o a uno nuevo, que se crea vacío
                 y con el nombre de la decisión al guardar.
               </p>
             </div>
-            {errors.decisions?.message && <p className="text-base text-danger">{errors.decisions.message}</p>}
-            <ol className="flex flex-col gap-4">
+            {errors.decisions?.message && <p className="chapter-form__field-error">{errors.decisions.message}</p>}
+            <ol className="chapter-form__list">
               {decisions.fields.map((field, i) => (
                 <li key={field.id} className={itemClass}>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-[17px] text-ink-muted">Decisión {i + 1}</span>
+                  <div className="chapter-form__item-header">
+                    <span className="chapter-form__note">Decisión {i + 1}</span>
                     <button type="button" className={linkButtonClass} onClick={() => decisions.remove(i)}>
                       Quitar
                     </button>
@@ -237,7 +238,7 @@ function ChapterForm({
                       <Textarea
                         id={id(`decision-${i}-description`)}
                         rows={2}
-                        className={cn('min-h-20', itemField)}
+                        className={cn('chapter-form__decision-description', itemField)}
                         {...a11y}
                         {...register(`decisions.${i}.description`)}
                       />
@@ -260,7 +261,7 @@ function ChapterForm({
               ))}
             </ol>
             {decisions.fields.length < 10 && (
-              <button type="button" className={cn(linkButtonClass, 'self-start px-0 text-lg')} onClick={() => decisions.append(blankDecision())}>
+              <button type="button" className={cn(linkButtonClass, 'chapter-form__add')} onClick={() => decisions.append(blankDecision())}>
                 + Añadir decisión
               </button>
             )}
@@ -269,15 +270,15 @@ function ChapterForm({
 
         {isFinal && (
           <div role="group" aria-labelledby={id('end')} className={groupClass}>
-            <div className="flex flex-col gap-1">
+            <div className="chapter-form__group-heading">
               <h3 id={id('end')} className={groupTitle}>
                 Lugar de finalización
               </h3>
-              <p className="text-[17px] text-ink-muted">La historia termina aquí, en una ciudad o un lugar.</p>
+              <p className="chapter-form__note">La historia termina aquí, en una ciudad o un lugar.</p>
             </div>
-            <FormField id={id('end-kind')} label="Apunta a" labelClassName={cn(subLabel, 'text-ink-muted')}>
+            <FormField id={id('end-kind')} label="Apunta a" labelClassName={cn(subLabel, 'chapter-form__sublabel--muted')}>
               {(a11y) => (
-                <Select id={id('end-kind')} className="min-h-13 text-xl" {...a11y} {...register('endKind')}>
+                <Select id={id('end-kind')} className="chapter-form__control" {...a11y} {...register('endKind')}>
                   <option value="city">Ciudad</option>
                   <option value="place">Lugar</option>
                 </Select>
@@ -291,14 +292,14 @@ function ChapterForm({
         )}
       </fieldset>
 
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-ink pt-7">
-        <Button type="submit" size="md" className="min-h-13 px-9 text-xl" loading={saving} disabled={!name.trim()}>
+      <div className="chapter-form__actions">
+        <Button type="submit" size="md" className="chapter-form__submit" loading={saving} disabled={!name.trim()}>
           {saving ? 'Guardando' : 'Guardar capítulo'}
         </Button>
         <button type="button" className={linkButtonClass} disabled={saving} onClick={onDone}>
           Cancelar
         </button>
-        <span role="status" className="sr-only">
+        <span role="status" className="visually-hidden">
           {saving ? 'Guardando el capítulo…' : ''}
         </span>
       </div>
@@ -313,8 +314,8 @@ function ToggleButton({ pressed, onClick, children }: { pressed: boolean; onClic
       aria-pressed={pressed}
       onClick={onClick}
       className={cn(
-        'min-h-12 cursor-pointer rounded-[2px] border border-ink px-6 font-serif text-[19px] disabled:cursor-default',
-        pressed ? 'bg-ink text-parchment' : 'bg-parchment text-ink hover:bg-paper-edge',
+        'chapter-form__toggle',
+        pressed ? 'chapter-form__toggle--on' : 'chapter-form__toggle--off',
       )}
     >
       {children}
@@ -327,13 +328,13 @@ type RegisterProp = { id: string; register: UseFormRegister<ChapterFormValues>; 
 function CitySelect({ id, register, error, onChange }: RegisterProp & { onChange: () => void }) {
   const { data: cities, isPending } = useCities();
   return (
-    <FormField id={id} label="Ciudad" error={error} labelClassName={cn(subLabel, 'text-ink-muted')}>
+    <FormField id={id} label="Ciudad" error={error} labelClassName={cn(subLabel, 'chapter-form__sublabel--muted')}>
       {/* Hasta tener las opciones no se registra el campo: así el select muestra el valor guardado al montarse */}
       {(a11y) =>
         isPending ? (
           <LoadingSelect id={id} label="Cargando ciudades…" />
         ) : (
-        <Select id={id} className="min-h-13 text-xl" {...a11y} {...register('cityId', { onChange })}>
+        <Select id={id} className="chapter-form__control" {...a11y} {...register('cityId', { onChange })}>
           <option value="">Elige una ciudad</option>
           {cities?.map((c) => (
             <option key={c.id} value={c.id}>
@@ -349,7 +350,7 @@ function CitySelect({ id, register, error, onChange }: RegisterProp & { onChange
 
 function LoadingSelect({ id, label }: { id: string; label: string }) {
   return (
-    <Select id={id} className="min-h-13 text-xl" disabled>
+    <Select id={id} className="chapter-form__control" disabled>
       <option>{label}</option>
     </Select>
   );
@@ -358,12 +359,12 @@ function LoadingSelect({ id, label }: { id: string; label: string }) {
 function PlaceSelect({ id, cityId, register, error }: RegisterProp & { cityId: string }) {
   const { data: places, isPending } = useCityPlaces(cityId);
   return (
-    <FormField id={id} label="Lugar" error={error} labelClassName={cn(subLabel, 'text-ink-muted')}>
+    <FormField id={id} label="Lugar" error={error} labelClassName={cn(subLabel, 'chapter-form__sublabel--muted')}>
       {(a11y) =>
         isPending ? (
           <LoadingSelect id={id} label="Cargando lugares…" />
         ) : (
-        <Select id={id} className="min-h-13 text-xl" {...a11y} {...register('placeId')}>
+        <Select id={id} className="chapter-form__control" {...a11y} {...register('placeId')}>
           <option value="">{places?.length ? 'Elige un lugar' : 'Esta ciudad no tiene lugares'}</option>
           {places?.map((p) => (
             <option key={p.id} value={p.id}>

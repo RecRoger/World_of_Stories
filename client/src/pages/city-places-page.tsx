@@ -5,6 +5,7 @@ import { LocationGrid, WriterPageHeading } from '@/features/locations/location-g
 import { NewLocationDialog } from '@/features/locations/new-location-dialog';
 import { placesResource } from '@/features/locations/resource';
 import { useCityPlaces, useCreatePlace } from '@/features/places/api';
+import './writer-page.scss';
 
 /**
  * 6 · Lugares: los lugares de una ciudad (se llega desde "Ver lugares" en su tarjeta). Funciona igual que
@@ -18,7 +19,7 @@ export function CityPlacesPage() {
   const resource = placesResource(cityId);
 
   return (
-    <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-16 pt-14 pb-6">
+    <div className="writer-page">
       <WriterPageHeading title="Lugares" subtitle={city?.name} />
       <LocationGrid
         isPending={isPending}

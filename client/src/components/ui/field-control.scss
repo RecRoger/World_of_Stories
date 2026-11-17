@@ -1,0 +1,56 @@
+@layer ui {
+  // Base común de los controles de formulario: borde de tinta sobre pergamino
+  .input,
+  .select,
+  .textarea {
+    box-sizing: border-box;
+    width: 100%;
+    border-radius: 2px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--color-ink);
+    background-color: var(--color-parchment);
+    font-family: var(--font-serif);
+    font-size: 19px;
+    color: var(--color-ink);
+
+    &:focus-visible {
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      opacity: 60%;
+    }
+
+    &[aria-invalid='true'] {
+      border-width: 2px;
+      border-color: var(--color-danger);
+    }
+  }
+
+  .input {
+    min-height: 3rem;
+    padding-inline: 0.875rem;
+  }
+
+  // Select nativo
+  .select {
+    min-height: 3rem;
+    cursor: pointer;
+    padding-inline: 0.75rem;
+
+    &:disabled {
+      cursor: default;
+    }
+  }
+
+  // Crece con el contenido (field-sizing) y se puede estirar en vertical
+  .textarea {
+    min-height: 8rem;
+    resize: vertical;
+    padding-inline: 0.875rem;
+    padding-block: 0.75rem;
+    line-height: 1.5;
+    field-sizing: content;
+  }
+}

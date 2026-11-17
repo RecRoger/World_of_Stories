@@ -21,7 +21,7 @@ npm run dev                 # http://localhost:3000/api/v1 · docs en /docs
 | `npm run set-roles -- <usuario> Admin Writer` | Asigna roles desde la terminal (p. ej. tu primer admin) |
 | `npm run seed:example -- <usuario> --yes` | **Borra todas las ciudades, lugares y NPCs** y crea un mundo de ejemplo a nombre de `<usuario>` |
 | `npm run import:<world\|city\|place\|npc> -- <archivo.json> [--publish] [--dry-run] [--strict] [--author=<usuario>]` | Valida contenido generado con la [guía de escritura automática](../docs/guia-escritura-automatica.md) (un mundo, una ciudad, un lugar o un NPC con sus capítulos) y lo añade sin borrar nada, firmado por TellerIA |
-| `npm run import:<place\|npc> -- --city=<ciudad> [--place=<lugar>] [--idea=<texto>]` | Sin archivo: Claude escribe el lugar o el NPC a partir de la ciudad y el lugar de destino, lo valida (pidiendo correcciones), lo guarda en `docs/mundos/generados/` y lo importa. Necesita `ANTHROPIC_API_KEY` |
+| `npm run import:<place\|npc> -- --city=<ciudad> [--place=<lugar>] [--idea=<texto>] [--claude]` | Sin archivo: lee la ciudad y el lugar de destino y prepara en `docs/mundos/encargos/` un encargo para pegar en un chat con un modelo, sin usar la API. Con `--claude`, lo escribe Claude por la API (necesita `ANTHROPIC_API_KEY`), lo valida pidiendo correcciones y lo importa |
 
 ## Estructura
 

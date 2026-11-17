@@ -5,6 +5,8 @@ import { LocationGrid, WriterPageHeading } from '@/features/locations/location-g
 import { useNpcs, usePlace } from '@/features/npcs/api';
 import { NpcCard } from '@/features/npcs/npc-card';
 import { NpcFormDialog } from '@/features/npcs/npc-form-dialog';
+import './writer-page.scss';
+import './place-events-page.scss';
 
 /** 7 · Eventos y NPCs de un lugar (se llega desde "Ver eventos" en su tarjeta). */
 export function PlaceEventsPage() {
@@ -14,7 +16,7 @@ export function PlaceEventsPage() {
   const [creating, setCreating] = useState(false);
 
   return (
-    <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-16 pt-14 pb-6">
+    <div className="writer-page">
       <WriterPageHeading title="Eventos y NPCs" subtitle={place?.name} />
       <LocationGrid
         isPending={isPending}
@@ -34,11 +36,11 @@ export function PlaceEventsPage() {
         <button
           type="button"
           onClick={() => setCreating(true)}
-          className="box-border flex min-h-[360px] w-full cursor-pointer flex-col items-center justify-center gap-4.5 border-0 bg-paper-blank p-8 text-center font-serif text-ink shadow-paper transition-transform duration-250 hover:-translate-y-1"
+          className="place-events-page__new"
         >
           <PlusCircleIcon />
-          <span className="font-display text-[38px] leading-none font-semibold">Añadir nuevo evento</span>
-          <span className="max-w-[16em] text-[19px] leading-[1.45] text-ink-muted">Empieza en una hoja en blanco.</span>
+          <span className="place-events-page__new-title">Añadir nuevo evento</span>
+          <span className="place-events-page__new-text">Empieza en una hoja en blanco.</span>
         </button>
       </LocationGrid>
       <NpcFormDialog placeId={placeId} open={creating} onOpenChange={setCreating} />

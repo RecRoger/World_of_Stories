@@ -1,0 +1,103 @@
+@use "@/styles/mixins" as *;
+
+.reader-layout {
+  // Ancho de la columna de lectura y relleno lateral que alinea con ella lo que va a todo el ancho (el panel de abajo).
+  // El % se resuelve donde se usa la variable: en el panel, sobre el ancho de la pantalla.
+  --reader-width: 440px;
+  --reader-gutter: max(1.25rem, calc((100% - var(--reader-width)) / 2 + 1.25rem));
+
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+  overflow-x: clip;
+  background-color: var(--color-paper);
+
+  // Ancho fijo: la lectura está pensada para el móvil y en tablet y escritorio se ve igual
+  &__column {
+    max-width: var(--reader-width);
+    margin-inline: auto;
+    display: flex;
+    flex: 1;
+    width: 100%;
+    flex-direction: column;
+    padding-inline: 1.25rem;
+    padding-top: 1rem;
+  }
+
+  // Enlace/botón subrayado (readerLinkClass)
+  &__link {
+    display: inline-flex;
+    min-height: 2.75rem;
+    cursor: pointer;
+    align-items: center;
+    border-style: solid;
+    border-width: 0;
+    background-color: transparent;
+    padding: 0;
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    line-height: calc(1.75 / 1.125);
+    color: var(--color-ink);
+    @include link-underline;
+  }
+
+  // Panel fijo abajo, a todo el ancho; lo que contiene usa `reader-inline-padding` para alinearse con la columna
+  &__dock {
+    position: sticky;
+    bottom: 0;
+  }
+
+  &__column--no-panel {
+    padding-bottom: 3.5rem;
+  }
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 1.25rem;
+  }
+
+  &__logo {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: var(--color-ink);
+    text-decoration-line: none;
+  }
+
+  &__main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  &__back {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.625rem;
+    align-self: flex-start;
+    font-size: 1.125rem;
+    line-height: calc(1.75 / 1.125);
+    color: var(--color-ink);
+    text-decoration-line: none;
+  }
+
+  &__back-arrow {
+    transition-property: transform, translate, scale, rotate;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+
+    @media (hover: hover) {
+      .reader-layout__back:hover & {
+        translate: -0.125rem 0;
+      }
+    }
+  }
+}

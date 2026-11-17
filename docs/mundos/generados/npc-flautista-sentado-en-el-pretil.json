@@ -1,0 +1,138 @@
+{
+  "city": "Vado Ámbar",
+  "place": "Puente de los faroleros",
+  "name": "Flautista sentado en el pretil",
+  "title": "La canción del río Lento",
+  "description": "Sobre el pretil del último arco, un hombre muy flaco toca una flauta de madera oscura mirando al agua, de espaldas a la ciudad. A sus pies, un cuenco de barro recoge las monedas que le lanzan los barqueros.",
+  "meeting": [
+    "La música te alcanza antes de que veas de dónde viene. Es una melodía lenta, de notas largas que se estiran sobre el agua como los hilos de humo de los faroles, y que parece ir y volver con la corriente. Los paseantes bajan la voz al pasar a su lado, como si estuvieran en un templo.",
+    "Sobre el pretil del último arco, con las piernas colgando hacia el río, hay un hombre muy flaco, de barba blanca y abrigo remendado. Toca una flauta de madera oscura, gastada en los agujeros, y no mira a nadie: toca de espaldas a la ciudad, hacia el agua, como quien habla con alguien que está debajo del puente.",
+    "Bajo el arco pasa una barca cargada de toneles. El barquero levanta la pértiga a modo de saludo y lanza una moneda que cae, sin fallar, en el cuenco de barro que el músico tiene a su lado. «Para que el Lento siga lento, Ibren», grita desde abajo, y se aleja río abajo sin esperar respuesta.",
+    "La melodía sube hacia una nota alta y, de pronto, se rompe. El hombre tose, una tos larga y seca que le dobla el cuerpo, y la flauta le cuelga de la mano. Cuando por fin recupera el aliento, se queda mirando el agua con una expresión que no es de dolor, sino de vergüenza.",
+    "«Cuarenta años tocándola entera cada atardecer», te dice sin volverse, como si supiera que llevas un rato escuchando. «Y desde este invierno no paso de la mitad. Los barqueros dicen que el río se calma con ella; yo ya no sé si lo creo, pero ellos sí.» Se gira por fin y te mira con unos ojos muy claros. «Tienes cara de saber escuchar, Peregrino. ¿Me ayudas a terminarla?»"
+  ],
+  "accept": {
+    "name": "Ayudarle a terminar la canción",
+    "description": "No sabes tocar la flauta, pero te sientas junto a Ibren en el pretil. Algo te dice que la canción importa más de lo que parece."
+  },
+  "reject": {
+    "name": "Dejarle tocar solo",
+    "description": "Le explicas que no sabes de música y que no quieres estropear algo que es suyo. Lo dejas con su río."
+  },
+  "rejected": [
+    "Le explicas a Ibren que no sabes nada de música y que no te atreverías a tocar una canción que lleva cuarenta años siendo suya. Él asiente despacio, sin ofenderse, y vuelve a mirar el agua.",
+    "«Es justo», murmura. «Una canción no se presta como una manta.» Se lleva la flauta a los labios y empieza otra vez desde el principio, más bajo, guardando el aliento, como quien sube una cuesta sabiendo que no llegará arriba.",
+    "Te alejas por el puente mientras la melodía te acompaña un trecho. Al llegar al arco del medio, oyes cómo vuelve a romperse en la misma nota alta, y después de un silencio largo empieza de nuevo, terca, desde la primera nota.",
+    "Cuando alcanzas la rampa ya no la oyes. Solo queda el murmullo del río contra los pilares, lento como siempre, y te preguntas si de verdad escucha, o si es el puente entero el que está esperando que alguien termine la canción."
+  ],
+  "chapters": [
+    {
+      "id": "inicio",
+      "name": "La canción a medias",
+      "text": [
+        "Te sientas junto a Ibren en el pretil, con las piernas colgando sobre el agua. Desde ahí el río parece más ancho y más oscuro, y el puente entero vibra muy levemente cada vez que una barca roza los tajamares.",
+        "Ibren limpia la boquilla de la flauta con la manga y te cuenta su historia sin que se la pidas. La canción no es suya: la aprendió de su abuela, que la aprendió de los barqueros el año en que el río se llevó el vado. Te señala la raya profunda grabada en el pretil, la que marca hasta dónde llegó el agua aquella vez.",
+        { "text": "«Dicen que la tocaron toda la noche, desde este arco, hasta que el agua bajó», explica. «Desde entonces alguien la toca cada atardecer. Primero mi abuela, luego yo.»", "animation": "chatA" },
+        "Nadie sabe si el río escucha de verdad, reconoce con media sonrisa. Pero los barqueros pasan más tranquilos cuando la oyen, los niños se duermen antes en las casas de la orilla, y él no ha faltado ni un solo atardecer en cuarenta años, ni con fiebre ni con nieve.",
+        "Vuelve a tocar para que la oigas. Es una canción larga, que sube y baja como la respiración de alguien dormido. Hacia la mitad, justo donde la melodía empieza a subir, Ibren aprieta los ojos, toma aire y lo intenta. La nota alta sale rota, y la tos vuelve a doblarlo.",
+        { "text": "Bajo el puente, el agua da una vuelta sobre sí misma, como si buscara la nota que falta.", "animation": "surprise" },
+        "Cuando se recupera, saca del abrigo una segunda flauta, más pequeña y clara, envuelta en un paño. «La de mi hija Liesa», dice, y la sostiene un momento sin dártela. «Se fue río abajo hace tres años, a tocar en las tabernas de la costa. Discutimos: yo le dije que esta canción era del río y no de las tabernas. Ella la sabe entera.»",
+        "Te mira, pesando las palabras. «Puedo enseñártela a ti, aunque sea a trozos, y tocarla contigo esta noche», dice. «O puedes ayudarme a hacer lo que no me atrevo: buscar a Liesa.» ¿Aprendes la canción o le ayudas a buscar a su hija?"
+      ],
+      "options": [
+        { "name": "Aprender la canción", "description": "Tomas la flauta pequeña. No sabes tocar, pero Ibren tiene paciencia y todavía queda luz para una lección.", "to": "leccion" },
+        { "name": "Buscar a Liesa", "description": "La canción no necesita un aprendiz nuevo, sino a quien ya la sabe. Le pides a Ibren que te hable de su hija.", "to": "liesa" }
+      ]
+    },
+    {
+      "id": "leccion",
+      "name": "Lección en el pretil",
+      "text": [
+        "Ibren te pone la flauta pequeña en las manos y te coloca los dedos uno a uno sobre los agujeros, con los suyos fríos y nudosos. Te enseña a soplar de lado, sin fuerza, como quien enfría una sopa. El primer sonido que sacas es un silbido roto que hace reír a un niño que pasa.",
+        { "text": "«Bien», dice Ibren, muy serio. «El río ha oído cosas peores. Otra vez.»", "animation": "chatA" },
+        "Repites la primera frase de la canción una y otra vez mientras el sol baja detrás de los pinos. Poco a poco el silbido se convierte en algo parecido a una nota, y la nota en algo parecido a la melodía. Ibren la canta en voz baja para guiarte, marcando el ritmo con la cabeza.",
+        "A tu espalda, los faroleros empiezan a encender el puente. Una anciana con un pañuelo gris pasa con su pértiga, se detiene un momento a escucharte y, sin decir nada, le deja a Ibren una manzana junto al cuenco de las monedas. Él le responde con una inclinación de cabeza, la de los viejos que se conocen de toda la vida.",
+        "Cuando por fin llegas a la mitad de la canción, la parte en la que Ibren se rompe, la nota alta te sale torcida pero entera. Ibren abre mucho los ojos. Por debajo del puente pasa una barca que lucha contra un remolino junto al pilar, y el barquero levanta la vista hacia vosotros, esperando.",
+        "Ibren se lleva su propia flauta a los labios, pero la baja enseguida, con el pecho silbando. Te mira a ti y luego al agua, donde la barca sigue girando despacio. «Ya sabes lo suficiente para seguir sin mí», dice. «O podemos intentarlo los dos, y que mi aliento llegue hasta donde llegue.»",
+        "El barquero ha dejado de remar y os mira desde abajo. La luz de los faroles tiembla sobre el agua. Tienes la flauta en los labios y la canción, a medias, en la cabeza. ¿La tocas tú solo hasta el final o la tocáis juntos?"
+      ],
+      "options": [
+        { "name": "Tocarla tú solo", "description": "Ibren necesita descansar. Tomas aire y tocas la canción entera tú, aunque te tiemblen los dedos.", "to": "solo" },
+        { "name": "Tocarla con Ibren", "description": "Es su canción. Le pides que toque contigo: tú llevas la parte alta y él, lo que le permita el aliento.", "to": "dos" }
+      ]
+    },
+    {
+      "id": "liesa",
+      "name": "La flauta de Liesa",
+      "text": [
+        "Ibren guarda la flauta pequeña en su paño y se queda un rato callado, mirando río abajo, hacia donde el agua se pierde entre los pinos. Luego saca del abrigo un papel doblado muchas veces, con los bordes blandos de tanto abrirlo y cerrarlo.",
+        "Es una carta de Liesa, la única que le ha mandado. Te la tiende para que la leas tú, porque él, dice, ya se la sabe de memoria y prefiere no oírse leyéndola.",
+        { "text": "«Padre: toco cada noche en una taberna junto al mar, con un ancla partida sobre la puerta. Los marineros piden tu canción y yo se la toco entera. Dicen que el mar se calma con ella. No sé si es verdad, pero ellos sí. Liesa.»", "animation": "paragraph" },
+        "Ibren se ríe por lo bajo, una risa que termina en tos. «Las mismas palabras que digo yo», murmura. «Le dije que la canción era del río, y resulta que el río llega al mar.» Durante tres años no ha contestado a esa carta: no sabe escribir bien, y no sabe qué decirle.",
+        "Te cuenta que los barqueros que bajan con resina a la costa pasan por esa taberna, que alguno podría llevar un mensaje, o a un viajero. Pero también te dice, más bajo, que tiene miedo de que Liesa vuelva solo por lástima, porque su padre ya no puede con la canción.",
+        "En el muelle, al pie del puente, una barca termina de cargar toneles para bajar al sur esta misma noche. El barquero grita que sale con el último farol. Ibren mira la barca y después te mira a ti, con la carta temblando en la mano.",
+        "«Podrías llevarle su flauta y decirle que la espero», dice. «O podrías ayudarme a no necesitarla: a dejar la canción aquí, en otras manos, para que vuelva si quiere y no porque deba.» ¿Bajas el río en busca de Liesa o ayudas a Ibren a dejar la canción en el puente?"
+      ],
+      "options": [
+        { "name": "Bajar el río", "description": "Tomas la flauta de Liesa y subes a la barca de los toneles. En la costa hay una taberna y una hija que espera una respuesta.", "to": "rio" },
+        { "name": "Dejar la canción en el puente", "description": "Le propones a Ibren enseñar la canción a quien quiera aprenderla aquí mismo, para que nunca más dependa de un solo aliento.", "to": "escuela" }
+      ]
+    },
+    {
+      "id": "solo",
+      "name": "Para el río",
+      "text": [
+        "Tomas aire hasta que te duele el pecho y empiezas desde la primera nota. Te tiemblan los dedos y la madera está húmeda de tu aliento, pero la melodía sale, lenta, y se estira sobre el agua como la de Ibren, aunque más torpe y más joven.",
+        "Llegas a la mitad. Ibren, a tu lado, ha cerrado los ojos y mueve los labios sin sonido, siguiendo cada nota. La parte alta se acerca y sientes que el aire no te va a alcanzar. Aprietas los ojos, como él, y soplas.",
+        { "text": "La nota alta sale entera, limpia, y se queda flotando sobre el río.", "animation": "surprise" },
+        "Después todo es más fácil: la canción baja, se calma, se acerca a su final como un barco que entra en puerto. Debajo del puente, la barca del remolino se suelta del pilar y sigue río abajo, y el barquero levanta la pértiga muy alto, sin gritar nada.",
+        "Cuando terminas, el puente está en silencio. Los paseantes se han detenido a escuchar, y uno a uno, sin aplaudir, siguen su camino. Ibren abre los ojos húmedos y te da una palmada en la rodilla.",
+        { "text": "«Ya la tienes», dice. «No es tuya ni mía. Pero ahora sabes dónde vive.»", "animation": "chatA" },
+        "Te deja quedarte con la flauta pequeña, al menos esta noche. Se queda a tu lado mientras los faroles terminan de encenderse, comiendo despacio la manzana de la farolera, y el río sigue pasando bajo vosotros, lento como siempre, como si nada le hubiera pasado nunca."
+      ]
+    },
+    {
+      "id": "dos",
+      "name": "A dos alientos",
+      "text": [
+        "Le pides a Ibren que toque contigo. Él duda un instante, luego asiente y se lleva su flauta oscura a los labios. Empezáis juntos, desde la primera nota: él con la seguridad de cuarenta años, tú con los dedos torpes, siguiendo su sombra.",
+        "Las dos flautas suenan distintas, una grave y gastada, la otra clara y nerviosa, pero se buscan y se encuentran. Por momentos no sabes cuál de las dos está tocando; solo oyes la canción, más ancha que antes, ocupando todo el arco.",
+        "Al llegar a la mitad, Ibren se aparta de la melodía y te deja la parte alta. Tú subes; él sostiene debajo una nota larga y grave, como un suelo para que no te caigas. La nota alta te sale, y en cuanto sale, Ibren vuelve a entrar contigo.",
+        "Debajo del puente, la barca del remolino se suelta y se aleja. El barquero no levanta la pértiga: se queda quieto en la proa, con la cabeza inclinada, escuchando, hasta que la corriente lo saca de debajo del arco.",
+        "Terminan las dos flautas a la vez. Ibren tiene la frente sudada y el pecho le silba, pero sonríe como no lo has visto sonreír. Tose un poco, mira el agua y le dice algo en voz muy baja, algo que no alcanzas a oír y que no es para ti.",
+        { "text": "«Hacía un año que no la oía entera», dice luego. «Y nunca la había oído así, a dos.»", "animation": "chatA" },
+        "Ya es de noche cuando lo ayudas a bajar del pretil. Lo acompañas despacio por el puente, entre los faroles encendidos, y luego por la calle de los Cuencos hasta su puerta, una puerta pequeña con el sello gastado de un cuenco sobre el dintel. Allí se despide de ti con un apretón de manos largo y te deja solo en la calle, con la ciudad encendida de ámbar a tu alrededor."
+      ],
+      "end": { "city": "Vado Ámbar" }
+    },
+    {
+      "id": "rio",
+      "name": "Una canción río abajo",
+      "text": [
+        "Ibren te da la flauta de Liesa envuelta en su paño, y con ella la carta, doblada otra vez con cuidado. No te pide que le digas nada a su hija. Solo te dice su nombre dos veces, como si temiera que se te olvidara por el camino.",
+        "Subes a la barca justo cuando el barquero desamarra con el último farol. Mientras os alejáis, la canción de Ibren empieza sobre el puente, lenta, y os acompaña un buen trecho río abajo. Se rompe en la nota alta, como siempre, y después ya no se oye nada más que el agua.",
+        "Son tres días de río entre pinos, de dormir sobre toneles y comer pescado ahumado. El barquero conoce la canción, como todos en el Lento, y a veces la silba mientras empuja la pértiga, siempre hasta la mitad y nunca más allá, por respeto, dice, a quien la toca entera.",
+        "Al tercer amanecer el agua se vuelve salada e inquieta, y aparecen los muelles de madera de un puerto. El barquero te señala una taberna con un ancla partida colgada sobre la puerta. Desde dentro, aunque es temprano, llega el sonido de una flauta.",
+        "Entras. Hay pocos clientes, marineros con resaca y una mujer que barre. En un rincón, una joven de pelo recogido toca para nadie, con los ojos cerrados. Es la canción del río Lento, entera, y cuando llega a la nota alta la sube sin esfuerzo, como quien abre una ventana.",
+        { "text": "«¿Quién eres?», pregunta Liesa al terminar, al ver la flauta clara que traes envuelta en un paño. «Esa flauta es mía.»", "animation": "chatB" },
+        "Le cuentas lo de su padre, la tos, la nota rota, los cuarenta años sin faltar un atardecer. Le das la carta que él guardó tres años sin contestar. Liesa la lee en silencio, la dobla, y se queda mirando el mar por la ventana de la taberna.",
+        "«Mañana sale una barca hacia el norte», dice al fin, y guarda las dos flautas juntas. No te dice si va a tomarla. Te invita a un vaso de vino caliente, y por la tarde vuelve a tocar para los marineros, que llenan la taberna y bajan la voz al oírla, como en un templo."
+      ],
+      "end": { "city": "Valdoria", "place": "La taberna del ancla rota" }
+    },
+    {
+      "id": "escuela",
+      "name": "La escuela del puente",
+      "text": [
+        "Le propones a Ibren que la canción deje de depender de un solo aliento. Él te mira como si le hubieras propuesto vender el puente, pero luego se queda pensando, y al final se encoge de hombros. «Mi abuela la aprendió de unos barqueros», reconoce. «Nadie se la dio en herencia.»",
+        "Esa misma tarde le ayudas a correr la voz por la calle de los Cuencos. Al día siguiente, al atardecer, hay junto al último arco una docena de niños de los resineros, con las manos manchadas de resina y flautas de caña que ellos mismos han cortado en el bosque.",
+        "Ibren se sienta en el pretil, como siempre, pero esta vez de cara a ellos y de espaldas al río. Les enseña a soplar de lado, como quien enfría una sopa. El primer sonido que sale de doce flautas a la vez es tan horrible que dos faroleros se dan la vuelta para mirar, y los niños se ríen hasta caerse.",
+        { "text": "«Bien», dice Ibren, muy serio. «El río ha oído cosas peores. Otra vez.»", "animation": "chatA" },
+        "Pasan los atardeceres. Tú te quedas varios, ayudando a colocar dedos y a recoger flautas caídas, y ves cómo la canción va pasando de las manos de Ibren a las de los niños, frase a frase, hasta que una niña pelirroja, la más pequeña, consigue llegar a la mitad sin romperse.",
+        "Una tarde, Ibren toca la primera mitad y, al llegar a la nota alta, se calla y señala a la niña. Ella sube la nota como si nada, y los otros once la siguen, torcidos pero enteros, hasta el final. Debajo del puente, una barca de toneles pasa en silencio, y el barquero se quita el gorro.",
+        { "text": "«Ahora sí puedo escribirle a Liesa», te dice Ibren esa noche. «Para decirle que venga a oírla, no a salvarla.»", "animation": "chatA" },
+        "Cuando te despides, el puente está lleno de pequeños sonidos de caña, desafinados y alegres, entre los faroles que se encienden uno a uno. Ibren te levanta la flauta oscura desde el pretil, a modo de adiós, y vuelve a mirar a sus alumnos, de espaldas al río, por primera vez sin miedo a darle la espalda."
+      ]
+    }
+  ]
+}

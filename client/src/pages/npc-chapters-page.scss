@@ -1,0 +1,64 @@
+@use '@/styles/mixins' as *;
+
+.npc-chapters-page {
+  margin-inline: auto;
+  display: flex;
+  width: 100%;
+  max-width: 1000px;
+  flex-direction: column;
+  gap: 3.5rem;
+  padding-top: 2rem;
+  padding-bottom: 1.5rem;
+
+  &__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  &__intro {
+    max-width: 720px;
+    font-size: 19px;
+    color: var(--color-ink-muted);
+  }
+
+  &__loading {
+    display: flex;
+    min-height: 360px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__dots {
+    font-size: 3.75rem;
+    line-height: 1;
+    color: var(--color-ink-muted);
+  }
+
+  &__error {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    line-height: calc(1.75 / 1.25);
+  }
+
+  &__retry {
+    cursor: pointer;
+    border-style: solid;
+    border-width: 0;
+    background-color: transparent;
+    padding: 0;
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    line-height: calc(1.75 / 1.25);
+    @include link-underline;
+  }
+
+  &__chapters {
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+  }
+}

@@ -17,6 +17,7 @@ import {
   useReadingPlaces,
 } from '@/features/reader/api';
 import { taleToText } from '@/features/locations/narrative';
+import './reading-page.scss';
 
 type Target = NonNullable<UpdateCharacterInput['location']> | null;
 
@@ -39,9 +40,9 @@ export function ReadingPage() {
   if (isPending) return <Loading />;
   if (isError || !character) {
     return (
-      <ReaderLayout action={exitLink} className="gap-4 pt-10">
+      <ReaderLayout action={exitLink} className="reading-page__status">
         <ReaderBackLink to="/read">Volver a tus personajes</ReaderBackLink>
-        <p role="alert" className="text-xl">
+        <p role="alert" className="reading-page__status-text">
           {isError ? 'No pudimos cargar a tu personaje.' : 'No encontramos a este personaje.'}
         </p>
         {isError && (
@@ -57,8 +58,8 @@ export function ReadingPage() {
 
 function Loading({ label = 'Cargando la historia' }: { label?: string }) {
   return (
-    <ReaderLayout action={exitLink} className="items-center justify-center">
-      <WritingDots label={label} className="text-6xl text-ink-muted" />
+    <ReaderLayout action={exitLink} className="reading-page__loading">
+      <WritingDots label={label} className="reading-page__dots" />
     </ReaderLayout>
   );
 }
@@ -237,23 +238,37 @@ function SceneView({ scene, character }: { scene: Scene; character: Character })
   // Si ya lo había leído al llegar (se marca como leído al terminar de leerlo)
   const [readBefore] = useState(() => !!scene.readId && character.fragmentsRead.includes(scene.readId));
 
+  // Mientras se escribe el texto, un clic en cualquier parte de la pantalla salta como el botón (salvo en enlaces y botones,
+  // que hacen lo suyo: el propio "Saltar animación" ya suma uno)
+  useEffect(() => {
+    if (finished) return;
+    const onClick = (e: MouseEvent) => {
+      if (e.button !== 0 || (e.target as Element).closest('a, button')) return;
+      // Si el lector está seleccionando texto, no es un clic para saltar
+      if (window.getSelection()?.toString()) return;
+      setSkip((n) => n + 1);
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, [finished]);
+
   const onDone = () => {
     setFinished(true);
     if (scene.readId && !readBefore && !markRead.isPending && !markRead.isSuccess) markRead.mutate(scene.readId);
   };
 
-  const readNote = readBefore && <span className="text-[17px] text-ink-muted italic">Leído anteriormente</span>;
+  const readNote = readBefore && <span className="reading-page__read-note">Leído anteriormente</span>;
 
   return (
     <ReaderLayout
       action={exitLink}
-      className="gap-7 pt-12 pb-10"
+      className="reading-page__scene"
       panel={
         finished ? (
           <OptionsPanel {...scene.panel} />
         ) : (
           // Abajo a la derecha, al alcance del pulgar; cada pulsación salta un elemento (título, párrafo…)
-          <div className="sticky bottom-0 -mx-5 flex flex-col items-end bg-linear-to-t from-parchment from-60% to-transparent px-5 pt-6 pb-4">
+          <div className="reading-page__skip">
             <button type="button" onClick={() => setSkip((n) => n + 1)} className={readerLinkClass}>
               Saltar animación
             </button>
@@ -262,12 +277,12 @@ function SceneView({ scene, character }: { scene: Scene; character: Character })
         )
       }
     >
-      <article className="flex flex-col gap-7">
+      <article className="reading-page__article">
         <ReadingText title={scene.title} fragments={scene.fragments} animate={character.animations} skip={skip} onDone={onDone} />
         {finished && (scene.author || readBefore) && (
-          <p className="flex flex-col items-end text-right">
+          <p className="reading-page__byline">
             {scene.author && (
-              <span className="text-lg text-ink-muted">
+              <span className="reading-page__author">
                 Por <em>{scene.author}</em>
               </span>
             )}
@@ -284,39 +299,39 @@ function Travel({ onTravel }: { onTravel: (cityId: string) => void }) {
   const { data: cities, isPending, isError, refetch } = useReadingCities();
 
   return (
-    <ReaderLayout action={exitLink} className="gap-9 pt-8">
-      <div className="flex flex-col gap-2.5">
+    <ReaderLayout action={exitLink} className="reading-page__travel">
+      <div className="reading-page__travel-heading">
         <ReaderBackLink to="/read">Volver a tus personajes</ReaderBackLink>
-        <h1 className="font-display text-[clamp(40px,11vw,60px)] leading-none font-semibold text-balance">¿A dónde viajas?</h1>
-        <p className="text-xl leading-normal text-pretty text-ink-muted">Elige la ciudad donde comienza la aventura.</p>
+        <h1 className="reading-page__travel-title">¿A dónde viajas?</h1>
+        <p className="reading-page__travel-subtitle">Elige la ciudad donde comienza la aventura.</p>
       </div>
 
       {isPending ? (
-        <div className="flex min-h-40 items-center justify-center">
-          <WritingDots label="Cargando ciudades" className="text-5xl text-ink-muted" />
+        <div className="reading-page__travel-loading">
+          <WritingDots label="Cargando ciudades" className="reading-page__travel-dots" />
         </div>
       ) : isError ? (
-        <div role="alert" className="flex flex-col items-start gap-2 text-xl">
+        <div role="alert" className="reading-page__travel-error">
           <p>No pudimos cargar las ciudades.</p>
           <button type="button" onClick={() => refetch()} className={readerLinkClass}>
             Reintentar
           </button>
         </div>
       ) : cities.length ? (
-        <div className="flex flex-col">
+        <div className="reading-page__cities">
           {cities.map((c) => (
-            <section key={c.id} className="flex flex-col gap-3.5 border-t border-paper-line py-8">
-              <h2 className="font-display text-[40px] leading-[1.02] font-semibold">{c.name}</h2>
+            <section key={c.id} className="reading-page__city">
+              <h2 className="reading-page__city-name">{c.name}</h2>
               {c.description && (
-                <div className="flex flex-col gap-3 text-[21px] leading-[1.55] text-pretty text-ink-soft">
+                <div className="reading-page__city-text">
                   {c.description.tale.map((r, i) => (
                     <p key={i}>{r.text}</p>
                   ))}
                 </div>
               )}
-              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+              <div className="reading-page__city-footer">
                 {c.description && (
-                  <span className="text-lg text-ink-muted">
+                  <span className="reading-page__author">
                     Por <em>{c.description.author}</em>
                   </span>
                 )}
@@ -324,17 +339,17 @@ function Travel({ onTravel }: { onTravel: (cityId: string) => void }) {
                   type="button"
                   onClick={() => onTravel(c.id)}
                   aria-label={`Viajar a ${c.name}`}
-                  className="group ml-auto inline-flex min-h-11 cursor-pointer items-center gap-2.5 border-0 bg-transparent p-0 font-serif text-[21px] text-ink"
+                  className="reading-page__go"
                 >
                   <span className="link-underline">Viajar</span>
-                  <ArrowRightIcon className="transition-transform group-hover:translate-x-1" />
+                  <ArrowRightIcon className="reading-page__go-arrow" />
                 </button>
               </div>
             </section>
           ))}
         </div>
       ) : (
-        <p className="text-xl text-ink-muted italic">Aún no hay ciudades publicadas.</p>
+        <p className="reading-page__empty">Aún no hay ciudades publicadas.</p>
       )}
     </ReaderLayout>
   );

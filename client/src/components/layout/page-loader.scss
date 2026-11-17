@@ -1,0 +1,15 @@
+@layer compose {
+  // Pantalla de espera mientras se comprueba la sesión
+  .page-loader {
+    display: flex;
+    min-height: 100dvh;
+    align-items: center;
+    justify-content: center;
+
+    &__dots {
+      font-size: 3.75rem;
+      line-height: 1;
+      color: var(--color-ink-muted);
+    }
+  }
+}

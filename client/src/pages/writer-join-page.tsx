@@ -12,6 +12,7 @@ import { QuillIcon } from '@/components/icons';
 import { useBecomeWriter, useMe } from '@/features/auth/api';
 import { isWriter } from '@/features/auth/roles';
 import { WritingGuidelines } from '@/features/writer/writing-guidelines';
+import './writer-join-page.scss';
 
 /** 4 · Entrada para escritores: solicitar el rol Writer con el código de invitación. */
 export function WriterJoinPage() {
@@ -44,19 +45,19 @@ export function WriterJoinPage() {
           Volver
         </Link>
       }
-      className="items-center justify-center pt-10 pb-8"
+      className="writer-join-page"
     >
-      <Paper className="w-[min(100%,500px)] px-[clamp(24px,6vw,52px)] pt-11 pb-12">
-        <form onSubmit={onSubmit} noValidate className="flex flex-col gap-7">
+      <Paper className="writer-join-page__card">
+        <form onSubmit={onSubmit} noValidate className="writer-join-page__form">
           <QuillIcon width={44} height={44} />
-          <div className="flex flex-col gap-2.5">
-            <h1 className="font-display text-[44px] leading-none font-semibold text-balance">Entrada para escritores</h1>
-            <p className="text-xl leading-normal text-pretty text-ink-soft">
+          <div className="writer-join-page__heading">
+            <h1 className="writer-join-page__title">Entrada para escritores</h1>
+            <p className="writer-join-page__text">
               Para escribir en World of Stories necesitas el rol de Writer. Ingresa tu código de invitación para solicitarlo.
             </p>
           </div>
           {formError && (
-            <p role="alert" className="bg-danger/8 px-3.5 py-2.5 text-[17px] text-danger">
+            <p role="alert" className="writer-join-page__error">
               {formError}
             </p>
           )}
@@ -64,7 +65,7 @@ export function WriterJoinPage() {
             label="Código de invitación"
             autoComplete="off"
             spellCheck={false}
-            className="min-h-14 px-4 text-[22px] tracking-[0.18em]"
+            className="writer-join-page__code"
             error={formState.errors.code && 'Escribe tu código de invitación'}
             {...register('code')}
           />

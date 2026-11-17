@@ -72,13 +72,13 @@ export async function loadContext(target: GenerateTarget): Promise<{ context: st
 /** Pide un mensaje al modelo; se puede sustituir en los tests */
 export type Ask = (messages: Anthropic.Beta.BetaMessageParam[]) => Promise<Anthropic.Beta.BetaMessage>;
 
-export async function claudeAsk(effort: Effort, kind: GenerateTarget['kind']): Promise<Ask> {
-  const client = new Anthropic();
+/** Las instrucciones fijas para el modelo: su papel, la guía y la plantilla del tipo */
+export async function systemPrompt(kind: GenerateTarget['kind']): Promise<string> {
   const [guide, template] = await Promise.all([
     readFile(path.join(docs, 'guia-escritura-automatica.md'), 'utf8'),
     readFile(path.join(docs, 'plantillas', TEMPLATE[kind]), 'utf8'),
   ]);
-  const system = [
+  return [
     'Eres escritor de World of Stories, un juego de lectura en el que el Peregrino viaja por ciudades y lugares y se encuentra con NPCs que le cuentan historias.',
     'Escribe en español, como narrador omnisciente, en presente, dirigiéndote al Peregrino en segunda persona y sin darle diálogo directo, siguiendo al pie de la letra la guía y el formato de la plantilla.',
     'Lo que escribas debe tener sentido en el lugar donde se crea: usa la ciudad y el lugar que se te describen (su historia, sus oficios, su clima, sus nombres) y no repitas lo que ya existe.',
@@ -86,7 +86,11 @@ export async function claudeAsk(effort: Effort, kind: GenerateTarget['kind']): P
     `# Guía\n\n${guide}`,
     `# Plantilla (${TEMPLATE[kind]})\n\n${template}`,
   ].join('\n\n');
+}
 
+export async function claudeAsk(effort: Effort, kind: GenerateTarget['kind']): Promise<Ask> {
+  const client = new Anthropic();
+  const system = await systemPrompt(kind);
   return async (messages) => {
     const message = await client.beta.messages
       .stream({
@@ -124,6 +128,39 @@ export function extractJson(text: string): unknown {
   return JSON.parse(text.slice(start, end + 1));
 }
 
+/** El primer mensaje para el modelo: el encargo, la idea y el contexto del destino, leído de la base */
+export async function buildRequest(target: GenerateTarget, idea?: string): Promise<{ city: string; text: string }> {
+  const loaded = await loadContext(target);
+  if ('issue' in loaded) throw new Error(loaded.issue.message);
+  const city = loaded.city.name;
+  const encargo = target.kind === 'place' ? ENCARGO.place(city) : ENCARGO.npc(city, target.place);
+  return { city, text: [encargo, idea ? `Idea: ${idea}` : '', `# Contexto del juego\n\n${loaded.context}`].filter(Boolean).join('\n\n') };
+}
+
+/**
+ * Un encargo listo para pegar en cualquier chat con un modelo (claude.ai, Claude Code…), sin usar la API:
+ * las instrucciones, la guía, la plantilla y el contexto del destino, más cómo importar la respuesta.
+ */
+export async function writeBrief(target: GenerateTarget, { idea, importCommand }: { idea?: string; importCommand: string }): Promise<string> {
+  const [system, request] = await Promise.all([systemPrompt(target.kind), buildRequest(target, idea)]);
+  const what = target.kind === 'place' ? `un lugar para «${request.city}»` : `un NPC para «${target.place}» de «${request.city}»`;
+  return [
+    `<!-- Encargo: ${what}.`,
+    '     Pega todo este archivo en un chat con un modelo y guarda su respuesta (solo el JSON) en un archivo .json.',
+    `     Después, desde server/: ${importCommand}`,
+    '     Si el validador encuentra problemas, pásale la lista al modelo y pídele que corrija solo eso y devuelva el JSON completo. -->',
+    '',
+    system,
+    '',
+    '---',
+    '',
+    '# Encargo',
+    '',
+    request.text,
+    '',
+  ].join('\n');
+}
+
 export type GenerateResult = { raw: Record<string, unknown>; world: WorldFile; issues: Issue[]; attempts: number };
 
 /**
@@ -135,16 +172,8 @@ export async function generateElement(
   target: GenerateTarget,
   { ask, idea, author, attempts = 3, onAttempt }: { ask: Ask; idea?: string; author: string; attempts?: number; onAttempt?: (n: number, issues: Issue[]) => void },
 ): Promise<GenerateResult> {
-  const loaded = await loadContext(target);
-  if ('issue' in loaded) throw new Error(loaded.issue.message);
-
-  const encargo = target.kind === 'place' ? ENCARGO.place(loaded.city.name) : ENCARGO.npc(loaded.city.name, target.place);
-  const messages: Anthropic.Beta.BetaMessageParam[] = [
-    {
-      role: 'user',
-      content: [encargo, idea ? `Idea: ${idea}` : '', `# Contexto del juego\n\n${loaded.context}`].filter(Boolean).join('\n\n'),
-    },
-  ];
+  const request = await buildRequest(target, idea);
+  const messages: Anthropic.Beta.BetaMessageParam[] = [{ role: 'user', content: request.text }];
 
   let best: GenerateResult | undefined;
   for (let n = 1; n <= attempts; n++) {
@@ -159,7 +188,7 @@ export async function generateElement(
       const parsed = extractJson(textOf(message));
       if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('El JSON no es un objeto');
       // El destino lo decide quien ejecuta el script, no el modelo
-      raw = { ...(parsed as Record<string, unknown>), city: loaded.city.name, ...(target.kind === 'npc' ? { place: target.place } : {}) };
+      raw = { ...(parsed as Record<string, unknown>), city: request.city, ...(target.kind === 'npc' ? { place: target.place } : {}) };
       const file = parseImportFile(target.kind, raw);
       world = file.world;
       issues = file.issues;

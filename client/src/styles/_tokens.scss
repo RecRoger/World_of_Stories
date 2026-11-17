@@ -1,0 +1,48 @@
+// Tokens del diseño "World of Stories" (Claude Design): pergamino, tinta y papel.
+// Son CSS custom properties: se pueden leer y sobrescribir en tiempo de ejecución.
+:root {
+  --color-parchment: #f7eed9;
+  --color-paper: #fbf5e6;
+  --color-paper-blank: #f7efdb;
+  --color-paper-line: #d6c9a8;
+  --color-paper-edge: #ece2c9;
+  --color-paper-edge-deep: #e2d6b6;
+  --color-ink: #1b1915;
+  --color-ink-soft: #3b362c;
+  --color-ink-muted: #4d473a;
+  --color-ink-shadow: #6b6354;
+  --color-danger: #8a2a1c;
+
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-serif: "EB Garamond", Georgia, serif;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    "Noto Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+
+  // Hoja con dos páginas apiladas debajo
+  --shadow-paper:
+    0 1px 2px rgb(27 25 21 / 0.25), 0 8px 0 -3px var(--color-paper-edge),
+    0 8px 1px -3px rgb(27 25 21 / 0.3),
+    0 16px 0 -6px var(--color-paper-edge-deep),
+    0 16px 1px -6px rgb(27 25 21 / 0.28), 0 38px 44px -18px rgb(27 25 21 / 0.4);
+  // Botón con canto inferior
+  --shadow-press: 0 5px 0 -1px var(--color-ink-shadow);
+
+  // Animaciones (los @keyframes están en _animations.scss)
+  // Puntos suspensivos que se escriben uno a uno; se anima el ancho para que el cursor avance con cada punto
+  --animate-write-dots: write-dots 1.6s steps(4, jump-none) infinite;
+  // Cursor de campo de texto: visible/oculto sin transición
+  --animate-caret-blink: caret-blink 0.8s steps(1, end) infinite;
+  // Aparición diferida: las esperas cortas no llegan a mostrar el loader
+  --animate-appear-late: appear 150ms ease-out 300ms both;
+  // Fragmentos de capítulo (deben coincidir con ENTRANCE_MS de features/chapters/animations.tsx)
+  --animate-fragment-fade: appear 1.4s ease both;
+  --animate-fragment-shake: shake 0.7s ease both;
+  --animate-fragment-slide-left: slide-from-left 1.1s
+    cubic-bezier(0.2, 0.8, 0.3, 1) both;
+  --animate-fragment-slide-right: slide-from-right 1.1s
+    cubic-bezier(0.2, 0.8, 0.3, 1) both;
+  // Panel de opciones de la lectura, que sube desde abajo
+  --animate-sheet-rise: rise 0.5s ease both;
+}

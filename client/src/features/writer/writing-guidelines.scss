@@ -1,0 +1,96 @@
+@use '@/styles/mixins' as *;
+
+.writing-guidelines {
+  gap: 1.75rem;
+  padding-inline: clamp(24px, 6vw, 52px);
+  padding-top: 3rem;
+  padding-bottom: 2.75rem;
+
+  &__trigger {
+    display: inline-flex;
+    min-height: 2.75rem;
+    cursor: pointer;
+    align-items: center;
+    gap: 0.5rem;
+    border-style: solid;
+    border-width: 0;
+    background-color: transparent;
+    padding: 0;
+    font-family: var(--font-serif);
+    font-size: 17px;
+    color: var(--color-ink-muted);
+    @include link-underline;
+
+    @include hover {
+      color: var(--color-ink);
+    }
+  }
+
+  &__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  &__list {
+    display: flex;
+    list-style-type: decimal;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-left: 1.75rem;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+
+  &__item-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: calc(2 / 1.5);
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  &__avoid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.125rem;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-color: var(--color-ink);
+    padding-top: 1.5rem;
+  }
+
+  &__avoid-title {
+    font-family: var(--font-display);
+    font-size: 32px;
+    line-height: 1;
+    font-weight: 600;
+  }
+
+  &__avoid-list {
+    display: flex;
+    list-style-type: disc;
+    flex-direction: column;
+    gap: 1.125rem;
+    padding-left: 1.75rem;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+
+  &__avoid-item-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  &__close {
+    min-height: 3.25rem;
+    align-self: flex-start;
+    padding-inline: 2.25rem;
+    font-size: 1.25rem;
+    line-height: calc(1.75 / 1.25);
+  }
+}

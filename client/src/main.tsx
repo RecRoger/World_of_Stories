@@ -1,11 +1,12 @@
+// Estilos globales primero: fijan el orden de las capas (@layer) antes que las hojas de los componentes
+import '@/styles/fonts';
+import '@/styles/main.scss';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ApiError } from '@/lib/api';
 import { router } from '@/router';
-import '@/styles/fonts';
-import '@/styles/index.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {

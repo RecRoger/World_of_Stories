@@ -1,0 +1,117 @@
+.landing-page {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(min(420px, 100%),1fr));
+  align-content: center;
+  align-items: center;
+  column-gap: 4rem;
+  row-gap: 4.5rem;
+  padding-top: 3.5rem;
+  padding-bottom: 1.5rem;
+
+  &__intro {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.75rem;
+  }
+
+  &__eyebrow {
+    font-size: 17px;
+    letter-spacing: 0.18em;
+    color: var(--color-ink-muted);
+    text-transform: uppercase;
+  }
+
+  &__title {
+    font-family: var(--font-display);
+    font-size: clamp(46px, 7vw, 96px);
+    line-height: 0.98;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  &__lead {
+    max-width: 30em;
+    font-size: 22px;
+    line-height: 1.5;
+    text-wrap: pretty;
+    color: var(--color-ink-soft);
+  }
+
+  &__showcase {
+    display: flex;
+    justify-content: center;
+    padding-inline: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 2rem;
+  }
+
+  &__page {
+    display: flex;
+    aspect-ratio: 3/4;
+    width: min(100%, 380px);
+    rotate: calc(1.5deg * -1);
+    flex-direction: column;
+    gap: 1.125rem;
+    padding-inline: 2.5rem;
+    padding-block: 2.75rem;
+  }
+
+  &__chapter {
+    text-align: center;
+    font-size: 0.875rem;
+    line-height: calc(1.25 / 0.875);
+    letter-spacing: 0.22em;
+    color: var(--color-ink-muted);
+    text-transform: uppercase;
+  }
+
+  &__page-title {
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 31px;
+    line-height: 1.1;
+    font-weight: 600;
+    text-wrap: balance;
+    font-style: italic;
+  }
+
+  &__rule {
+    height: 1px;
+    width: 3.5rem;
+    align-self: center;
+    border-style: solid;
+    border-width: 0;
+    background-color: var(--color-ink);
+  }
+
+  &__page-text {
+    text-align: justify;
+    font-size: 19px;
+    line-height: 1.55;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  &__drop-cap {
+    float: left;
+    padding-top: 0.375rem;
+    padding-right: 0.625rem;
+    font-family: var(--font-display);
+    font-size: 66px;
+    line-height: 0.8;
+    font-weight: 700;
+  }
+
+  &__spacer {
+    flex: 1;
+  }
+
+  &__page-number {
+    text-align: center;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-ink-muted);
+  }
+}

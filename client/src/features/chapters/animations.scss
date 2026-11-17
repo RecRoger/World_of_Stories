@@ -1,0 +1,92 @@
+@use '@/styles/mixins' as *;
+
+// Vista previa de un fragmento en el formulario de capítulo: una hoja pequeña
+.fragment-preview {
+  box-sizing: border-box;
+  min-height: 11.25rem;
+  flex: 1;
+  overflow: hidden;
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--color-paper-line);
+  background-color: var(--color-paper);
+  padding-inline: 1.75rem;
+  padding-block: 1.625rem;
+  box-shadow:
+    0 1px 2px rgb(27 25 21 / 0.2),
+    0 6px 0 -3px var(--color-paper-edge),
+    0 6px 1px -3px rgb(27 25 21 / 0.25);
+
+  &__text {
+    font-size: 21px;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+
+  // Lo que falta por escribirse: invisible, pero reserva su sitio
+  &__rest {
+    visibility: hidden;
+  }
+}
+
+// Un fragmento de capítulo: su forma (bocadillo, título) y, mientras entra, su animación.
+// Lo usan la vista previa y la lectura (fragmentClass en animations.tsx).
+.fragment {
+  margin: 0;
+  white-space: pre-wrap;
+
+  &--chat {
+    width: fit-content;
+    max-width: 85%;
+    border-radius: 14px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--color-paper-line);
+    background-color: var(--color-parchment);
+    padding-inline: 1rem;
+    padding-block: 0.625rem;
+  }
+
+  // El segundo personaje, a la derecha
+  &--chat-b {
+    margin-left: auto;
+  }
+
+  &--title {
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 1.5em;
+    line-height: 1.25;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  // Entradas (duraciones en ENTRANCE_MS)
+  &--fade {
+    animation: var(--animate-fragment-fade);
+  }
+
+  &--slide-left {
+    animation: var(--animate-fragment-slide-left);
+  }
+
+  &--slide-right {
+    animation: var(--animate-fragment-slide-right);
+  }
+
+  // El temblor final de "Sorpresa"
+  &--shaking {
+    animation: var(--animate-fragment-shake);
+  }
+
+  // Con movimiento reducido no hay animaciones (va al final para ganar a los modificadores)
+  @include reduced-motion {
+    animation: none;
+  }
+}
+
+// Texto de ejemplo cuando el fragmento está vacío (gana al color del título)
+.fragment-preview__text--placeholder {
+  color: var(--color-ink-muted);
+  font-style: italic;
+}

@@ -229,31 +229,38 @@ npm run import:npc   -- ../npc.json                 # un NPC con sus capítulos 
 | `--city=<ciudad>` | Lugar y NPC: la ciudad de destino. Manda sobre el `city` del archivo. |
 | `--place=<lugar>` | NPC: el lugar de destino. Manda sobre el `place` del archivo. |
 
-### Generar con Claude
+### Generar a partir del destino
 
-Sin archivo, `import:place` e `import:npc` escriben el elemento con Claude (`claude-opus-5-5`) en el destino indicado:
+Sin archivo, `import:place` e `import:npc` leen de la base la ciudad (y el lugar) de destino para que lo escrito tenga
+sentido ahí: la descripción y el viaje de la ciudad, la descripción y la entrada del lugar, los lugares y NPCs que ya
+existen (para no repetirlos) y, para un NPC, los destinos posibles de sus finales.
+
+**Sin API (por defecto): un encargo para pegar en un chat.**
 
 ```bash
-npm run import:place -- --city="Vado Ámbar" --idea="un muelle donde se cargan los toneles de resina"
-npm run import:npc   -- --city="Vado Ámbar" --place="Puente de los faroleros" --idea="un músico que toca para el río"
+npm run import:npc -- --city="Vado Ámbar" --place="Puente de los faroleros" --idea="un músico que toca para el río"
 ```
 
-1. **Lee el destino de la base:** la descripción y el viaje de la ciudad, la descripción y la entrada del lugar, los
-   lugares y NPCs que ya existen (para no repetirlos) y, para un NPC, los destinos posibles de sus finales.
-2. **Lo escribe** siguiendo esta guía y la plantilla del tipo, con la `--idea` si se da (si no, la elige el modelo).
-3. **Lo valida** como el importador. Si hay errores o avisos, le pasa la lista al modelo para que los corrija
-   (hasta 3 intentos). Si al final quedan avisos, se queda con la última versión importable.
-4. **Guarda el JSON** en `docs/mundos/generados/` (o en `--out=<archivo>`), para revisarlo o reimportarlo, y lo
-   importa como cualquier archivo: en borrador, o publicado con `--publish`. Con `--dry-run` solo lo genera y lo guarda.
+1. Guarda en `docs/mundos/encargos/` un `.md` con las instrucciones, esta guía, la plantilla del tipo, la idea y el
+   contexto del destino.
+2. Pégalo entero en un chat con un modelo (claude.ai, Claude Code…) y guarda su respuesta, solo el JSON, en un `.json`.
+3. Valídalo con el comando que imprime el script:
+   `npm run import:npc -- respuesta.json --city="Vado Ámbar" --place="Puente de los faroleros" --dry-run`.
+   Si hay problemas, pásale la lista al modelo para que corrija solo eso.
+4. Impórtalo con el mismo comando sin `--dry-run` (y con `--publish` para publicarlo).
+
+**Con la API de Claude (`--claude`): todo en un paso.** Escribe el elemento con `claude-opus-5-5`, lo valida y le pide
+correcciones hasta 3 veces (si al final solo quedan avisos, se queda con la última versión importable), guarda el JSON
+en `docs/mundos/generados/` y lo importa. Con `--dry-run` solo lo genera y lo guarda. Necesita una clave de la API de
+Anthropic en `server/.env` (`ANTHROPIC_API_KEY=…`), tiene coste por uso y, si el modelo rechaza la petición, la API la
+repite en otro modelo.
 
 | Opción | Efecto |
 | --- | --- |
-| `--idea=<texto>` | De qué trata el lugar o la historia del NPC. |
-| `--effort=<nivel>` | `low`, `medium` (por defecto), `high`, `xhigh` o `max`: más esfuerzo, más calidad y más coste. |
-| `--out=<archivo>` | Dónde guardar el JSON generado. |
-
-Hace falta una clave de la API de Anthropic en `server/.env` (`ANTHROPIC_API_KEY=…`) o una sesión de `ant auth login`.
-Cada ejecución tiene coste. Si el modelo rechaza la petición, la API la repite automáticamente en otro modelo.
+| `--idea=<texto>` | De qué trata el lugar o la historia del NPC (si no, la elige el modelo). |
+| `--out=<archivo>` | Dónde guardar el encargo o, con `--claude`, el JSON generado. |
+| `--claude` | Lo escribe Claude por la API, en lugar de preparar el encargo. |
+| `--effort=<nivel>` | Con `--claude`: `low`, `medium` (por defecto), `high`, `xhigh` o `max`. Más esfuerzo, más calidad y más coste. |
 
 En PowerShell, `npm run` puede tragarse las opciones que van tras `--`; ahí usa el script directamente, con el tipo
 como primer argumento: `npx tsx src/scripts/import-world.ts npc ../npc.json --dry-run`.

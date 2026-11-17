@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-
-const fieldLabel = 'font-display text-2xl font-bold';
+import './form-field.scss';
 
 export type FieldA11y = { 'aria-invalid'?: true; 'aria-describedby'?: string };
 type FormFieldProps = {
@@ -20,18 +19,18 @@ export function FormField({ id, label, hint, error, labelClassName, children }: 
   const errorId = error ? `${id}-error` : undefined;
   const describedBy = [hintId, errorId].filter(Boolean).join(' ') || undefined;
   return (
-    <div className="flex flex-col gap-2">
-      <Label htmlFor={id} className={cn(fieldLabel, labelClassName)}>
+    <div className="form-field">
+      <Label htmlFor={id} className={cn('form-field__label', labelClassName)}>
         {label}
       </Label>
       {hint && (
-        <p id={hintId} className="text-[17px] text-ink-muted">
+        <p id={hintId} className="form-field__hint">
           {hint}
         </p>
       )}
       {children({ 'aria-invalid': error ? true : undefined, 'aria-describedby': describedBy })}
       {error && (
-        <p id={errorId} className="text-base text-danger">
+        <p id={errorId} className="form-field__error">
           {error}
         </p>
       )}

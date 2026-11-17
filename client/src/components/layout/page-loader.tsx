@@ -1,10 +1,11 @@
 import { WritingDots } from '@/components/ui/writing-dots';
+import './page-loader.scss';
 
 /** Pantalla de espera mientras se comprueba la sesión. */
 export function PageLoader() {
   return (
-    <div className="flex min-h-dvh items-center justify-center">
-      <WritingDots label="Cargando" className="text-6xl text-ink-muted" />
+    <div className="page-loader">
+      <WritingDots label="Cargando" className="page-loader__dots" />
     </div>
   );
 }

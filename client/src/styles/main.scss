@@ -1,0 +1,39 @@
+// Hoja global: tokens, reset y estilos base. Cada componente importa su propia hoja (BEM) junto a su .tsx.
+@use 'tokens';
+@use 'reset';
+@use 'animations';
+@use 'mixins' as *;
+
+// Orden de las capas: lo que va después gana. Las hojas de features y páginas van sin capa y ganan a todas,
+// así una clase que una página le pasa a un componente base (como antes con tailwind-merge) siempre se aplica.
+//   reset → base → ui (components/ui) → compose (components/form y layout)
+@layer reset, base, ui, compose;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: var(--color-parchment);
+    font-family: var(--font-serif);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline-style: solid;
+    outline-width: 2px;
+    outline-offset: 4px;
+    outline-color: var(--color-ink);
+  }
+}
+
+// Utilidad compartida: enlace subrayado (texto de enlaces y botones-enlace)
+.link-underline {
+  @include link-underline;
+}
+
+// Texto solo para lectores de pantalla
+.visually-hidden {
+  @include visually-hidden;
+}

@@ -1,0 +1,215 @@
+@use '@/styles/mixins' as *;
+
+.chapter-form {
+  width: min(100%, 1120px);
+  padding-inline: clamp(24px, 6vw, 52px);
+  padding-top: 3rem;
+  padding-bottom: 2.75rem;
+
+  &__group {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 1rem;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-color: var(--color-ink);
+    padding-top: 1.75rem;
+  }
+
+  &__group-title {
+    font-family: var(--font-display);
+    font-size: 32px;
+    line-height: 1;
+    font-weight: 600;
+  }
+
+  // Etiqueta secundaria: sustituye a la grande de FormField, también en el interlineado (el heredado)
+  &__sublabel {
+    font-family: var(--font-serif);
+    font-size: 17px;
+    line-height: inherit;
+    font-weight: 400;
+  }
+
+  &__sublabel--muted {
+    color: var(--color-ink-muted);
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--color-paper-line);
+    background-color: var(--color-parchment);
+    padding-inline: 1.25rem;
+    padding-top: 1rem;
+    padding-bottom: 1.25rem;
+  }
+
+  &__item-field {
+    background-color: var(--color-paper);
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  &__error {
+    background-color: color-mix(in oklab, var(--color-danger) 8%, transparent);
+    padding-inline: 0.875rem;
+    padding-block: 0.625rem;
+    font-size: 17px;
+    color: var(--color-danger);
+  }
+
+  &__fields {
+    margin: 0;
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 1.75rem;
+    border-style: solid;
+    border-width: 0;
+    padding: 0;
+  }
+
+  &__control {
+    min-height: 3.25rem;
+    font-size: 1.25rem;
+    line-height: calc(1.75 / 1.25);
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  &__note {
+    font-size: 17px;
+    color: var(--color-ink-muted);
+  }
+
+  &__fragment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(min(300px, 100%),1fr));
+    align-items: stretch;
+    gap: 1.5rem;
+  }
+
+  &__column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  &__fragment-text {
+    min-height: 6rem;
+  }
+
+  &__preview-header {
+    display: flex;
+    min-height: 1.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  &__preview-label {
+    font-size: 17px;
+  }
+
+  &__play {
+    min-height: 2rem;
+  }
+
+  &__add {
+    align-self: flex-start;
+    padding-inline: 0;
+    font-size: 1.125rem;
+    line-height: calc(1.75 / 1.125);
+  }
+
+  &__toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  &__group-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__field-error {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-danger);
+  }
+
+  &__decision-description {
+    min-height: 5rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 1.5rem;
+    row-gap: 0.75rem;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-color: var(--color-ink);
+    padding-top: 1.75rem;
+  }
+
+  &__submit {
+    min-height: 3.25rem;
+    padding-inline: 2.25rem;
+    font-size: 1.25rem;
+    line-height: calc(1.75 / 1.25);
+  }
+
+  &__toggle {
+    min-height: 3rem;
+    cursor: pointer;
+    border-radius: 2px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--color-ink);
+    padding-inline: 1.5rem;
+    font-family: var(--font-serif);
+    font-size: 19px;
+
+    &:disabled {
+      cursor: default;
+    }
+  }
+
+  &__toggle--on {
+    background-color: var(--color-ink);
+    color: var(--color-parchment);
+  }
+
+  &__toggle--off {
+    background-color: var(--color-parchment);
+    color: var(--color-ink);
+
+    @include hover {
+      background-color: var(--color-paper-edge);
+    }
+  }
+}

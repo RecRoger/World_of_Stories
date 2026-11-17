@@ -8,7 +8,7 @@ Monorepo con npm workspaces:
 | Paquete | Contenido |
 | --- | --- |
 | [`server/`](server) | API REST (Express 5, MongoDB, zod) — ver su README |
-| [`client/`](client) | Front React (Vite, React Router, TanStack Query, Tailwind + shadcn/ui) — ver su README |
+| [`client/`](client) | Front React (Vite, React Router, TanStack Query, SCSS con BEM) — ver su README |
 | [`packages/shared/`](packages/shared) | Esquemas zod y tipos compartidos entre la API y el front |
 | `Client_Side/` | Front Angular antiguo, solo como referencia de la funcionalidad a replicar en el nuevo front React |
 

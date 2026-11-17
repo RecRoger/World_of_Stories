@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { useDeleteChapter, usePublishChapter } from './api';
 import { ANIMATION_LABELS, asAnimation } from './animations';
 import { isFinalChapter } from './chapter-form';
+import './chapter-card.scss';
 
 type ChapterCardProps = {
   npcId: string;
@@ -32,8 +33,8 @@ type ChapterCardProps = {
 
 type Confirm = { kind: 'delete' } | { kind: 'publish'; names: string[] } | null;
 
-const sectionTitle = 'font-display text-[26px] leading-none font-bold';
-const small = 'text-[15px] tracking-[0.14em] text-ink-muted uppercase';
+const sectionTitle = 'chapter-card__section-title';
+const small = 'chapter-card__tag';
 
 /**
  * Un capítulo en el acordeón de la historia: la cabecera dice a qué capítulos sigue; abierto, muestra sus
@@ -70,27 +71,27 @@ export function ChapterCard({ npcId, npcAuthor, chapter, chapters, isRoot, open,
     <article
       id={`chapter-${chapter.id}`}
       aria-busy={busy}
-      className={cn('scroll-mt-6 bg-paper shadow-paper transition-opacity', remove.isPending && 'opacity-60')}
+      className={cn('chapter-card', remove.isPending && 'chapter-card--busy')}
     >
-      <div className="flex flex-wrap items-center">
+      <div className="chapter-card__header">
         <button
           type="button"
           id={`chapter-toggle-${chapter.id}`}
           aria-expanded={open}
           aria-controls={panelId}
           onClick={onToggle}
-          className="flex min-w-0 flex-[1_1_300px] cursor-pointer items-center gap-4.5 border-0 bg-transparent py-5.5 pr-2 pl-7 text-left font-serif text-ink transition-colors hover:bg-ink/4"
+          className="chapter-card__toggle"
         >
-          {open ? <ChevronUpIcon className="shrink-0" /> : <ChevronDownIcon className="shrink-0" />}
-          <span className="flex min-w-0 flex-col gap-1.5">
-            <span className="font-display text-[34px] leading-[1.05] font-semibold">{chapter.name}</span>
-            <span className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[17px] text-ink-muted">
+          {open ? <ChevronUpIcon className="chapter-card__chevron" /> : <ChevronDownIcon className="chapter-card__chevron" />}
+          <span className="chapter-card__summary">
+            <span className="chapter-card__name">{chapter.name}</span>
+            <span className="chapter-card__nexts">
               {isRoot && <span className={small}>Inicio</span>}
               {nexts.length ? (
                 <>
                   <span>Sigue:</span>
                   {nexts.map((c) => (
-                    <span key={c.id} className="text-ink">
+                    <span key={c.id} className="chapter-card__strong">
                       → {c.name}
                     </span>
                   ))}
@@ -102,13 +103,13 @@ export function ChapterCard({ npcId, npcAuthor, chapter, chapters, isRoot, open,
           </span>
         </button>
 
-        <div className="mr-4 ml-auto flex items-center justify-end py-2">
+        <div className="chapter-card__side">
           {!confirm && (
-            <div className="flex items-center gap-0.5">
+            <div className="chapter-card__tools">
               {busy && (
                 <WritingDots
                   label={`${remove.isPending ? 'Eliminando' : chapter.published ? 'Despublicando' : 'Publicando'} ${chapter.name}`}
-                  className="mr-2 text-3xl text-ink-muted"
+                  className="chapter-card__dots"
                 />
               )}
               {canEdit && (
@@ -135,7 +136,7 @@ export function ChapterCard({ npcId, npcAuthor, chapter, chapters, isRoot, open,
           )}
 
           {confirm && (
-            <div className="flex max-w-[520px] flex-wrap items-center justify-end gap-x-2.5 text-right text-[17px]">
+            <div className="chapter-card__confirm">
               <span>
                 {confirm.kind === 'delete'
                   ? incoming
@@ -163,39 +164,39 @@ export function ChapterCard({ npcId, npcAuthor, chapter, chapters, isRoot, open,
       </div>
 
       {error && (
-        <p role="alert" className="px-7 pb-4 text-base text-danger">
+        <p role="alert" className="chapter-card__error">
           {error instanceof ApiError ? error.message : 'No se pudo completar la acción'}
         </p>
       )}
 
       {open && (
-        <div id={panelId} className="flex flex-col gap-9 border-t border-ink p-7">
-          <section className="flex flex-col gap-4">
+        <div id={panelId} className="chapter-card__panel">
+          <section className="chapter-card__section">
             <h3 className={sectionTitle}>Fragmentos</h3>
             {chapter.story.length ? (
               chapter.story.map((r, i) => (
-                <div key={i} className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2.5">
-                  <p className="m-0 flex-[1_1_380px] text-xl leading-[1.55] text-pretty whitespace-pre-wrap text-ink-soft">{r.text}</p>
-                  <span className="inline-flex min-h-7 items-center border border-ink px-3 text-[15px] tracking-[0.14em] whitespace-nowrap uppercase">
+                <div key={i} className="chapter-card__fragment">
+                  <p className="chapter-card__fragment-text">{r.text}</p>
+                  <span className="chapter-card__animation">
                     {ANIMATION_LABELS[asAnimation(r.animation)]}
                   </span>
                 </div>
               ))
             ) : (
-              <p className="text-[19px] text-ink-muted italic">Este capítulo aún está en blanco.</p>
+              <p className="chapter-card__empty">Este capítulo aún está en blanco.</p>
             )}
           </section>
 
           {!!options.length && (
-            <section className="flex flex-col gap-4">
+            <section className="chapter-card__section">
               <h3 className={sectionTitle}>Decisiones</h3>
-              <div className="flex flex-col gap-3">
+              <div className="chapter-card__decisions">
                 {options.map((o) => {
                   const target = byId(o.value);
                   const body = (
-                    <span className="flex flex-col gap-1">
-                      <span className="font-display text-[23px] leading-[1.1] font-bold">{o.name}</span>
-                      <span className="text-[19px] leading-normal text-ink-soft">{o.description}</span>
+                    <span className="chapter-card__decision-text">
+                      <span className="chapter-card__decision-name">{o.name}</span>
+                      <span className="chapter-card__decision-description">{o.description}</span>
                     </span>
                   );
                   return target ? (
@@ -203,15 +204,15 @@ export function ChapterCard({ npcId, npcAuthor, chapter, chapters, isRoot, open,
                       key={o.id}
                       type="button"
                       onClick={() => onGo(target.id)}
-                      className="flex w-full cursor-pointer items-start justify-between gap-4 border border-paper-line bg-parchment px-4.5 py-3.5 text-left font-serif text-ink transition-colors hover:bg-[#efe4c9]"
+                      className="chapter-card__decision"
                     >
                       {body}
-                      <span className="shrink-0 text-right text-base text-ink-muted">→ {target.name}</span>
+                      <span className="chapter-card__decision-target">→ {target.name}</span>
                     </button>
                   ) : (
-                    <div key={o.id} className="flex items-start justify-between gap-4 border border-paper-line bg-parchment px-4.5 py-3.5">
+                    <div key={o.id} className="chapter-card__decision--orphan">
                       {body}
-                      <em className="shrink-0 text-base text-ink-muted">Sin capítulo</em>
+                      <em className="chapter-card__decision-missing">Sin capítulo</em>
                     </div>
                   );
                 })}
@@ -220,15 +221,15 @@ export function ChapterCard({ npcId, npcAuthor, chapter, chapters, isRoot, open,
           )}
 
           {isFinalChapter(chapter) && (
-            <section className="flex flex-col gap-3">
+            <section className="chapter-card__section chapter-card__section--tight">
               <h3 className={sectionTitle}>Lugar de finalización</h3>
               <Ending chapter={chapter} />
             </section>
           )}
 
-          <footer className="flex justify-end border-t border-ink pt-3.5">
-            <div className="flex flex-col gap-0.5 text-right text-[17px] text-ink-muted">
-              <em className="text-ink">{chapter.author || 'Sin autor todavía'}</em>
+          <footer className="chapter-card__footer">
+            <div className="chapter-card__credits">
+              <em className="chapter-card__strong">{chapter.author || 'Sin autor todavía'}</em>
               <span>{publicationLabel(chapter.published, chapter.publishDate, 'Publicado')}</span>
             </div>
           </footer>
@@ -242,7 +243,7 @@ export function ChapterCard({ npcId, npcAuthor, chapter, chapters, isRoot, open,
 function Ending({ chapter }: { chapter: Chapter }) {
   const end = chapter.endLocation;
   const { data: cities } = useCities();
-  if (!end?.cityId) return <p className="text-[19px] text-ink-muted italic">Sin lugar de finalización.</p>;
+  if (!end?.cityId) return <p className="chapter-card__empty">Sin lugar de finalización.</p>;
   const city = cities?.find((c) => c.id === end.cityId);
   if (end.placeId) return <PlaceEnding cityId={end.cityId} placeId={end.placeId} />;
   return (
@@ -263,9 +264,9 @@ function PlaceEnding({ cityId, placeId }: { cityId: string; placeId: string }) {
 
 function EndingLine({ kind, to, children }: { kind: string; to: string; children: string }) {
   return (
-    <p className="flex flex-wrap items-center gap-x-3.5 gap-y-1 text-[19px]">
+    <p className="chapter-card__ending">
       <span className={small}>{kind}</span>
-      <Link to={to} className="link-underline text-ink">
+      <Link to={to} className="chapter-card__ending-link">
         {children}
       </Link>
     </p>

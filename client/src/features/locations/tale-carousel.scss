@@ -1,0 +1,156 @@
+.tale-carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+
+  // Altura fija para que todas las tarjetas midan lo mismo; lo que no cabe se desplaza dentro de la caja
+  &__box {
+    box-sizing: border-box;
+    display: flex;
+    height: 280px;
+    flex-direction: column;
+    gap: 0.625rem;
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--color-paper-line);
+    background-color: var(--color-parchment);
+    padding-inline: 1.25rem;
+    padding-top: 1rem;
+    padding-bottom: 1.25rem;
+  }
+
+  // Al escribir ocupa también el sitio del paginador (280 + 10 de separación + 44 de la fila), así la tarjeta no salta
+  &__editor {
+    box-sizing: border-box;
+    display: flex;
+    height: 334px;
+    flex-direction: column;
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--color-paper-line);
+    background-color: var(--color-parchment);
+    padding: 1rem;
+  }
+
+  &__scroll {
+    min-height: 0;
+    flex: 1;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-ink-shadow) transparent;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+
+    &:focus-visible {
+      outline-offset: 2px;
+    }
+  }
+
+  &__box--empty {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 19px;
+    color: var(--color-ink-muted);
+    font-style: italic;
+  }
+
+  &__meta {
+    display: flex;
+    min-height: 2.75rem;
+    flex-shrink: 0;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  &__byline {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding-top: 0.25rem;
+    font-size: 1rem;
+    line-height: 1.375;
+    color: var(--color-ink-muted);
+  }
+
+  &__author {
+    color: var(--color-ink);
+  }
+
+  &__tools {
+    margin-top: -0.5rem;
+    margin-right: -0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+  }
+
+  &__dots {
+    margin-right: 0.375rem;
+    font-size: 1.5rem;
+    line-height: calc(2 / 1.5);
+    color: var(--color-ink-muted);
+  }
+
+  &__confirm {
+    margin-top: -0.5rem;
+    margin-right: -0.375rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    column-gap: 0.25rem;
+    font-size: 17px;
+  }
+
+  &__error {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-danger);
+  }
+
+  &__pager {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 0.75rem;
+    row-gap: 0.5rem;
+  }
+
+  &__nav {
+    margin-left: -0.625rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__count {
+    min-width: 4rem;
+    text-align: center;
+    font-size: 17px;
+    color: var(--color-ink-muted);
+  }
+
+  &__add {
+    // Como siempre se vio: conserva el relleno y el tamaño del botón-enlace, con más interlineado
+    line-height: calc(1.75 / 1.125);
+  }
+
+  &__empty-text {
+    font-size: 19px;
+    color: var(--color-ink-muted);
+    font-style: italic;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-size: 19px;
+    line-height: 1.5;
+    text-wrap: pretty;
+    color: var(--color-ink-soft);
+  }
+}

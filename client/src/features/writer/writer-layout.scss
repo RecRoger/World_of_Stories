@@ -1,0 +1,9 @@
+.writer-layout {
+  &__nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    column-gap: 1.75rem;
+    row-gap: 0.5rem;
+  }
+}

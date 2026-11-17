@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { WritingDots } from '@/components/ui/writing-dots';
 import { ArrowLeftIcon } from '@/components/icons';
 import { useBackLink } from '@/features/writer/writer-layout';
+import './location-grid.scss';
 
 type LocationGridProps = {
   isPending: boolean;
@@ -24,43 +25,43 @@ type LocationGridProps = {
 export function LocationGrid({ isPending, isError, refetch, loadingLabel, errorLabel, children }: LocationGridProps) {
   if (isPending) {
     return (
-      <div className="flex min-h-[360px] items-center justify-center">
-        <WritingDots label={loadingLabel} className="text-6xl text-ink-muted" />
+      <div className="location-grid__loading">
+        <WritingDots label={loadingLabel} className="location-grid__dots" />
       </div>
     );
   }
   if (isError) {
     return (
-      <div role="alert" className="flex flex-col items-start gap-3 text-xl">
+      <div role="alert" className="location-grid__error">
         <p>{errorLabel}</p>
-        <button type="button" onClick={() => refetch()} className="link-underline cursor-pointer border-0 bg-transparent p-0 font-serif text-xl">
+        <button type="button" onClick={() => refetch()} className="location-grid__retry">
           Reintentar
         </button>
       </div>
     );
   }
-  return <div className="grid auto-rows-fr grid-cols-[repeat(auto-fill,minmax(min(420px,100%),1fr))] gap-x-10 gap-y-14">{children}</div>;
+  return <div className="location-grid">{children}</div>;
 }
 
 /** Cabecera de las páginas de la sección de escritor: "Sección de escritor" o el enlace de vuelta, y el título. */
 export function WriterPageHeading({ title, subtitle }: { title: string; subtitle?: string }) {
   const back = useBackLink();
   return (
-    <div className="flex flex-col items-start gap-3">
+    <div className="location-grid__heading">
       {/* En Ciudades (la portada de la sección) va el rótulo; en las demás, el enlace de vuelta en su lugar */}
       {back ? (
         <Link
           to={back.to}
-          className="-my-2 inline-flex min-h-11 items-center gap-2.5 text-[19px] text-ink no-underline transition-transform hover:-translate-x-0.5"
+          className="location-grid__back"
         >
           <ArrowLeftIcon />
           <span className="link-underline">{back.label}</span>
         </Link>
       ) : (
-        <p className="text-[17px] tracking-[0.18em] text-ink-muted uppercase">Sección de escritor</p>
+        <p className="location-grid__eyebrow">Sección de escritor</p>
       )}
-      <h1 className="font-display text-[clamp(42px,6vw,72px)] leading-none font-semibold">{title}</h1>
-      {subtitle && <p className="font-display text-2xl text-ink-muted italic">{subtitle}</p>}
+      <h1 className="location-grid__title">{title}</h1>
+      {subtitle && <p className="location-grid__subtitle">{subtitle}</p>}
     </div>
   );
 }

@@ -1,0 +1,49 @@
+@use '@/styles/mixins' as *;
+
+@layer ui {
+  // Loader de la casa: ". . ." que se escribe y un cursor parpadeante. Hereda tamaño y color del texto.
+  .writing-dots {
+    display: inline-flex;
+    align-items: baseline;
+    line-height: 1;
+
+    // Aparece tras 300 ms para no parpadear en peticiones rápidas
+    &--delayed {
+      animation: var(--animate-appear-late);
+    }
+
+    // Cada punto ocupa una celda fija de 0.5em: el ancho total (--dots-width) es lo que se "escribe"
+    &__dots {
+      --dots-width: 1.5em;
+      display: inline-flex;
+      width: var(--dots-width);
+      animation: var(--animate-write-dots);
+      overflow: hidden;
+      font-family: var(--font-display);
+      font-weight: 700;
+      white-space: nowrap;
+
+      @include reduced-motion {
+        animation: none;
+      }
+    }
+
+    &__dot {
+      width: 0.5em;
+      flex-shrink: 0;
+    }
+
+    &__caret {
+      display: inline-block;
+      height: 0.8em;
+      width: 0.07em;
+      min-width: 1px;
+      animation: var(--animate-caret-blink);
+      background-color: currentcolor;
+
+      @include reduced-motion {
+        animation: none;
+      }
+    }
+  }
+}

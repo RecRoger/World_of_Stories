@@ -1,6 +1,7 @@
 import { useId, type ComponentProps } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import './form-field.scss';
 
 type FieldProps = ComponentProps<'input'> & { label: string; error?: string };
 
@@ -11,11 +12,11 @@ export function Field({ label, error, id, ...props }: FieldProps) {
   const errorId = `${inputId}-error`;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="form-field">
       <Label htmlFor={inputId}>{label}</Label>
       <Input id={inputId} aria-invalid={error ? true : undefined} aria-describedby={error ? errorId : undefined} {...props} />
       {error && (
-        <p id={errorId} className="text-base text-danger">
+        <p id={errorId} className="form-field__error">
           {error}
         </p>
       )}

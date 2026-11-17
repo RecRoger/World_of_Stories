@@ -2,6 +2,7 @@ import { Link, Outlet, useMatches } from 'react-router';
 import { headerLinkClass, SiteLayout } from '@/components/layout/site-layout';
 import { LogoutButton } from '@/features/auth/logout-button';
 import { WritingGuidelines } from './writing-guidelines';
+import './writer-layout.scss';
 
 /**
  * Lo que una ruta de escritor declara en su `handle`: el enlace de vuelta de la página (p. ej. "Volver a Ciudades"),
@@ -21,7 +22,7 @@ export function WriterLayout() {
     <SiteLayout
       brandExtra={<WritingGuidelines />}
       action={
-        <nav aria-label="Sección" className="flex flex-wrap justify-end gap-x-7 gap-y-2">
+        <nav aria-label="Sección" className="writer-layout__nav">
           <Link to="/home" className={headerLinkClass}>
             Cambiar de sección
           </Link>

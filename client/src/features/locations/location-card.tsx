@@ -15,6 +15,7 @@ import { InlineEditor, linkButtonClass } from './inline-editor';
 import { TALE_LABELS } from './narrative';
 import type { LocationEntity, LocationResource } from './resource';
 import { TaleCarousel } from './tale-carousel';
+import './location-card.scss';
 
 type Mode = 'view' | 'rename' | 'confirm-delete';
 
@@ -43,13 +44,13 @@ export function LocationCard({ resource, entity, next }: LocationCardProps) {
   const error = publish.error ?? remove.error;
 
   return (
-    <Paper aria-busy={busy} className={cn('flex flex-col gap-4.5 p-8 transition-opacity', remove.isPending && 'opacity-60')}>
-      <header className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
+    <Paper aria-busy={busy} className={cn('location-card', remove.isPending && 'location-card--busy')}>
+      <header className="location-card__header">
         {mode === 'rename' ? (
           <InlineEditor
             label={words.nameLabel}
             initialValue={entity.name}
-            className="min-w-0 flex-[1_1_200px]"
+            className="location-card__rename"
             onCancel={() => setMode('view')}
             onSubmit={async (name) => {
               if (name !== entity.name) await rename.mutateAsync({ id: entity.id, name });
@@ -57,15 +58,15 @@ export function LocationCard({ resource, entity, next }: LocationCardProps) {
             }}
           />
         ) : (
-          <h2 className="min-w-0 flex-[1_1_200px] font-display text-[38px] leading-[1.05] font-semibold">{entity.name}</h2>
+          <h2 className="location-card__name">{entity.name}</h2>
         )}
 
         {manageable && mode === 'view' && (
-          <div className="-mt-0.5 -mr-2.5 ml-auto flex items-center gap-0.5">
+          <div className="location-card__tools">
             {busy && (
               <WritingDots
                 label={`${remove.isPending ? 'Eliminando' : entity.published ? 'Despublicando' : 'Publicando'} ${entity.name}`}
-                className="mr-2 text-3xl text-ink-muted"
+                className="location-card__dots"
               />
             )}
             {/* `aria-disabled` y no `disabled`: así el botón pulsado conserva el foco durante la petición */}
@@ -86,7 +87,7 @@ export function LocationCard({ resource, entity, next }: LocationCardProps) {
         )}
 
         {manageable && mode === 'confirm-delete' && (
-          <div className="ml-auto flex flex-wrap items-center justify-end gap-x-2.5 text-[17px]">
+          <div className="location-card__confirm">
             <span>¿Eliminar {words.this}?</span>
             <button
               type="button"
@@ -106,40 +107,40 @@ export function LocationCard({ resource, entity, next }: LocationCardProps) {
       </header>
 
       {error && (
-        <p role="alert" className="text-base text-danger">
+        <p role="alert" className="location-card__error">
           {error instanceof ApiError ? error.message : 'No se pudo completar la acción'}
         </p>
       )}
 
-      <Tabs.Root defaultValue={resource.kinds[0]} className="flex flex-col gap-4">
-        <Tabs.List aria-label={`Textos de ${entity.name}`} className="flex gap-6 border-b border-ink">
+      <Tabs.Root defaultValue={resource.kinds[0]} className="location-card__tabs">
+        <Tabs.List aria-label={`Textos de ${entity.name}`} className="location-card__tab-list">
           {resource.kinds.map((kind) => (
             <Tabs.Trigger
               key={kind}
               value={kind}
-              className="-mb-px min-h-11 cursor-pointer border-0 border-b-2 border-transparent bg-transparent px-1 font-serif text-[19px] text-ink-muted hover:text-ink data-[state=active]:border-ink data-[state=active]:font-medium data-[state=active]:text-ink"
+              className="location-card__tab"
             >
               {TALE_LABELS[kind].tab} · {entity[kind]?.length ?? 0}
             </Tabs.Trigger>
           ))}
         </Tabs.List>
         {resource.kinds.map((kind) => (
-          <Tabs.Content key={kind} value={kind} className="focus-visible:outline-offset-2">
+          <Tabs.Content key={kind} value={kind} className="location-card__tab-panel">
             <TaleCarousel resource={resource} entity={entity} kind={kind} />
           </Tabs.Content>
         ))}
       </Tabs.Root>
 
       {/* Empuja el pie abajo: así las tarjetas de una fila acaban a la misma altura aunque el nombre ocupe dos líneas */}
-      <div className="flex-1" />
+      <div className="location-card__spacer" />
 
-      <footer className="flex items-end justify-between gap-4 border-t border-ink pt-1.5">
-        <Link to={next.to} className="link-underline inline-flex min-h-11 items-center gap-2 text-lg text-ink">
+      <footer className="location-card__footer">
+        <Link to={next.to} className="location-card__next">
           {next.label}
           <ArrowRightIcon width={18} />
         </Link>
-        <div className="flex flex-col gap-0.5 pb-2 text-right text-[17px] text-ink-muted">
-          <em className="text-ink">{entity.createdBy ?? 'Autor desconocido'}</em>
+        <div className="location-card__credits">
+          <em className="location-card__author">{entity.createdBy ?? 'Autor desconocido'}</em>
           <span>{publicationLabel(entity.published, entity.publishDate, words.published)}</span>
         </div>
       </footer>

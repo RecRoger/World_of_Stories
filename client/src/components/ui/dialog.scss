@@ -1,0 +1,55 @@
+@layer ui {
+  .dialog {
+    &__overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background-color: color-mix(in oklab, var(--color-ink) 55%, transparent);
+    }
+
+    // Centra el contenido; deja pasar los clics al overlay salvo sobre la hoja
+    &__viewport {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+    }
+
+    &__content {
+      pointer-events: auto;
+      position: relative;
+      box-sizing: border-box;
+      display: flex;
+      max-height: calc(100dvh - 40px);
+      width: min(100%, 640px);
+      flex-direction: column;
+      overflow-y: auto;
+      background-color: var(--color-paper);
+      box-shadow: var(--shadow-paper);
+    }
+
+    &__close {
+      position: absolute;
+      top: 0.625rem;
+      right: 0.625rem;
+    }
+
+    &__title {
+      font-family: var(--font-display);
+      font-size: 44px;
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    &__description {
+      font-size: 1.25rem;
+      line-height: 1.5;
+      text-wrap: pretty;
+      color: var(--color-ink-soft);
+    }
+  }
+}

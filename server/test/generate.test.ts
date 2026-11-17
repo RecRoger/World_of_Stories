@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import type Anthropic from '@anthropic-ai/sdk';
 import { describe, expect, it } from 'vitest';
-import { generateElement, loadContext, type Ask } from '../src/import/generate.js';
+import { generateElement, loadContext, writeBrief, type Ask } from '../src/import/generate.js';
 import { importWorld } from '../src/import/import-world.js';
 import { worldFileSchema } from '../src/import/world-file.js';
 
@@ -45,6 +45,20 @@ describe('generación con Claude', () => {
       issue: { level: 'error', path: 'place', message: 'No existe el lugar «El faro» en «Vado Ámbar»' },
     });
     expect(await loadContext({ kind: 'place', city: 'Atlántida' })).toMatchObject({ issue: { path: 'city' } });
+  });
+
+  it('prepara un encargo para pegar en un chat, sin usar la API', async () => {
+    await importWorld(await vado(), { author: 'TellerIA', publish: true });
+    const brief = await writeBrief(
+      { kind: 'npc', city: 'Vado Ámbar', place: 'Puente de los faroleros' },
+      { idea: 'un músico que toca para el río', importCommand: 'npm run import:npc -- r.json --dry-run' },
+    );
+    expect(brief).toContain('npm run import:npc -- r.json --dry-run');
+    expect(brief).toContain('# Guía\n\n# Guía de escritura automática');
+    expect(brief).toContain('# Plantilla (npc.json)');
+    expect(brief).toContain('Idea: un músico que toca para el río');
+    expect(brief).toContain('## El lugar: Puente de los faroleros');
+    await expect(writeBrief({ kind: 'place', city: 'Atlántida' }, { importCommand: '' })).rejects.toThrow('No existe la ciudad «Atlántida»');
   });
 
   it('valida lo generado y le pide al modelo que corrija hasta que no haya problemas', async () => {

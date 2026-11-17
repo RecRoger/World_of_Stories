@@ -1,0 +1,53 @@
+// Mixins compartidos. Uso en un componente: @use '@/styles/mixins' as *;
+
+// Puntos de corte (los mismos que usaba el diseño: sm 40rem, md 48rem, lg 64rem)
+$breakpoints: (
+  sm: 40rem,
+  md: 48rem,
+  lg: 64rem,
+);
+
+@mixin from($name) {
+  @media (width >= map-get($breakpoints, $name)) {
+    @content;
+  }
+}
+
+// Hover solo en dispositivos que lo tienen (en táctiles no queda "pegado" tras tocar)
+@mixin hover {
+  @media (hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+// Enlace subrayado del diseño: más grueso al pasar el ratón
+@mixin link-underline {
+  text-decoration-line: underline;
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1px;
+
+  &:hover {
+    text-decoration-thickness: 2px;
+  }
+}
+
+// Texto solo para lectores de pantalla
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}

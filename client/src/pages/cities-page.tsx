@@ -3,6 +3,7 @@ import { LocationCard } from '@/features/locations/location-card';
 import { LocationGrid, WriterPageHeading } from '@/features/locations/location-grid';
 import { NewLocationDialog } from '@/features/locations/new-location-dialog';
 import { cityResource } from '@/features/locations/resource';
+import './writer-page.scss';
 
 /** 5 · Ciudades: punto de partida de la sección de escritor. */
 export function CitiesPage() {
@@ -10,7 +11,7 @@ export function CitiesPage() {
   const createCity = useCreateCity();
 
   return (
-    <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-16 pt-14 pb-6">
+    <div className="writer-page">
       <WriterPageHeading title="Ciudades" />
       <LocationGrid
         isPending={isPending}

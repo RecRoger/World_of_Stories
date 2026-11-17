@@ -1,0 +1,8 @@
+@layer ui {
+  // Hoja de papel con páginas apiladas debajo
+  .paper {
+    box-sizing: border-box;
+    background-color: var(--color-paper);
+    box-shadow: var(--shadow-paper);
+  }
+}

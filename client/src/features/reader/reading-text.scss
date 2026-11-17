@@ -1,0 +1,30 @@
+.reading-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+
+  &__title {
+    font-family: var(--font-display);
+    font-size: clamp(42px, 12vw, 60px);
+    line-height: 1;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  &__rest {
+    visibility: hidden;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    font-size: 23px;
+    line-height: 1.7;
+    color: var(--color-ink-soft);
+  }
+
+  &__fragment {
+    text-wrap: pretty;
+  }
+}

@@ -1,0 +1,91 @@
+@use '@/styles/mixins' as *;
+
+.access-page {
+  align-items: center;
+  justify-content: center;
+  padding-top: 2.5rem;
+  padding-bottom: 2rem;
+
+  &__card {
+    display: flex;
+    width: min(100%, 460px);
+    flex-direction: column;
+    gap: 1.75rem;
+    padding-inline: clamp(24px, 6vw, 48px);
+    padding-top: 2.5rem;
+    padding-bottom: 2.75rem;
+  }
+
+  &__tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-color: var(--color-ink);
+  }
+
+  &__tab {
+    min-height: 3rem;
+    cursor: pointer;
+    border-style: solid;
+    border-width: 0;
+    font-family: var(--font-serif);
+    font-size: 19px;
+    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+
+  &__tab--active {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  &__tab--inactive {
+    background-color: transparent;
+    color: var(--color-ink);
+
+    @include hover {
+      background-color: color-mix(in oklab, var(--color-ink) 5%, transparent);
+    }
+  }
+
+  &__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__title {
+    font-family: var(--font-display);
+    font-size: 44px;
+    line-height: 1;
+    font-weight: 600;
+  }
+
+  &__subtitle {
+    font-size: 19px;
+    line-height: 1.45;
+    color: var(--color-ink-muted);
+  }
+
+  &__error {
+    background-color: color-mix(in oklab, var(--color-danger) 8%, transparent);
+    padding-inline: 0.875rem;
+    padding-block: 0.625rem;
+    font-size: 17px;
+    color: var(--color-danger);
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+}

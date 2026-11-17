@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react';
 import type { Readable } from '@wos/shared';
 import { cn } from '@/lib/utils';
 import { asAnimation, ENTRANCE_MS, fragmentClass, isTyped } from '@/features/chapters/animations';
+import './reading-text.scss';
 
 /** Milisegundos por letra al escribir (como en el diseño). */
 const TYPE_MS = 28;
 /** Pausa entre un fragmento y el siguiente. */
 const PAUSE_MS = 250;
+/** Pausa entre el final del título y el primer fragmento. */
+const TITLE_PAUSE_MS = 500;
 
 type Progress = { index: number; typed: number; shaking: boolean };
 
@@ -59,7 +62,8 @@ export function ReadingText({ title, fragments, animate, onDone, skip }: Reading
       setProgress((p) => ({ ...p, shaking: true }));
       return;
     }
-    const timer = setTimeout(next, ENTRANCE_MS[animation] + PAUSE_MS);
+    const pause = progress.index === 0 ? TITLE_PAUSE_MS : PAUSE_MS;
+    const timer = setTimeout(next, ENTRANCE_MS[animation] + pause);
     return () => clearTimeout(timer);
     // onDone se llama al terminar; no hace falta reaccionar a su identidad
   }, [progress, done, list.length]);
@@ -73,12 +77,12 @@ export function ReadingText({ title, fragments, animate, onDone, skip }: Reading
   const [titleShown, titleRest] = parts(0);
 
   return (
-    <div className="flex flex-col gap-7" aria-live="off">
-      <h1 className="font-display text-[clamp(42px,12vw,60px)] leading-none font-semibold text-balance">
+    <div className="reading-text" aria-live="off">
+      <h1 className="reading-text__title">
         {titleShown}
-        {titleRest && <span className="invisible">{titleRest}</span>}
+        {titleRest && <span className="reading-text__rest">{titleRest}</span>}
       </h1>
-      <div className="flex flex-col gap-5 text-[23px] leading-[1.7] text-ink-soft">
+      <div className="reading-text__body">
         {list.map((fragment, i) => {
           if (i === 0 || i > progress.index) return null;
           const animation = asAnimation(fragment.animation);
@@ -89,11 +93,11 @@ export function ReadingText({ title, fragments, animate, onDone, skip }: Reading
               key={`${i}-${current && progress.shaking}`}
               className={cn(
                 fragmentClass(animation, { entering: current && !isTyped(animation), shaking: current && progress.shaking }),
-                'text-pretty',
+                'reading-text__fragment',
               )}
             >
               {shown}
-              {rest && <span className="invisible">{rest}</span>}
+              {rest && <span className="reading-text__rest">{rest}</span>}
             </p>
           );
         })}

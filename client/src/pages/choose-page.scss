@@ -1,0 +1,85 @@
+@use '@/styles/mixins' as *;
+
+.choose-page {
+  align-items: center;
+  justify-content: center;
+  gap: 3.5rem;
+  padding-top: 2.5rem;
+  padding-bottom: 2rem;
+
+  &__heading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  &__title {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 6vw, 72px);
+    line-height: 1;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  &__subtitle {
+    font-size: 21px;
+    line-height: 1.45;
+    color: var(--color-ink-muted);
+  }
+
+  &__choices {
+    display: grid;
+    width: 100%;
+    max-width: 900px;
+    grid-template-columns: repeat(auto-fit,minmax(min(320px, 100%),1fr));
+    column-gap: 3rem;
+    row-gap: 3.5rem;
+  }
+
+  &__card {
+    box-sizing: border-box;
+    display: flex;
+    min-height: 340px;
+    flex-direction: column;
+    gap: 1.25rem;
+    background-color: var(--color-paper);
+    padding: 2.5rem;
+    color: var(--color-ink);
+    text-decoration-line: none;
+    box-shadow: var(--shadow-paper);
+    transition-property: transform, translate, scale, rotate;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 250ms;
+
+    @include hover {
+      translate: 0 -0.375rem;
+    }
+  }
+
+  &__card-title {
+    font-family: var(--font-display);
+    font-size: 52px;
+    line-height: 1;
+    font-weight: 600;
+  }
+
+  &__card-text {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+    color: var(--color-ink-soft);
+  }
+
+  &__spacer {
+    flex: 1;
+  }
+
+  &__card-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 19px;
+  }
+}

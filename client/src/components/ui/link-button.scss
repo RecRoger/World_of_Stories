@@ -1,0 +1,28 @@
+@use '@/styles/mixins' as *;
+
+@layer ui {
+  // Botón con aspecto de enlace subrayado (Cancelar, Quitar, + Añadir…): linkButtonClass
+  .link-button {
+    min-height: 2.75rem;
+    cursor: pointer;
+    border-style: solid;
+    border-width: 0;
+    background-color: transparent;
+    padding-inline: 0.375rem;
+    font-family: var(--font-serif);
+    font-size: 17px;
+    color: var(--color-ink);
+    text-decoration-line: underline;
+    text-underline-offset: 4px;
+
+    @include hover {
+      text-decoration-thickness: 2px;
+    }
+
+    &:disabled {
+      cursor: default;
+      text-decoration-line: none;
+      opacity: 40%;
+    }
+  }
+}

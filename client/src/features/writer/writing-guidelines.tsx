@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { QuillIcon } from '@/components/icons';
+import './writing-guidelines.scss';
 
 const GUIDELINES = [
   { title: 'Narrador omnisciente.', text: 'Lo sabe todo, salvo por las decisiones de quien juega.' },
@@ -38,12 +39,12 @@ const AVOID = [
 export function WritingGuidelines() {
   return (
     <Dialog>
-      <DialogTrigger className="link-underline inline-flex min-h-11 cursor-pointer items-center gap-2 border-0 bg-transparent p-0 font-serif text-[17px] text-ink-muted hover:text-ink">
+      <DialogTrigger className="writing-guidelines__trigger">
         <QuillIcon width={18} height={18} strokeWidth={2.5} />
         Sugerencias de escritura
       </DialogTrigger>
-      <DialogContent className="gap-7 px-[clamp(24px,6vw,52px)] pt-12 pb-11">
-        <div className="flex flex-col gap-2.5">
+      <DialogContent className="writing-guidelines">
+        <div className="writing-guidelines__intro">
           <DialogTitle>Sugerencias de escritura</DialogTitle>
           <DialogDescription>
             Puedes crear la historia que quieras en este mundo. Estas pautas ayudan a que todas compartan un mismo esquema
@@ -51,20 +52,20 @@ export function WritingGuidelines() {
           </DialogDescription>
         </div>
 
-        <ol className="flex list-decimal flex-col gap-5 pl-7 text-[19px] leading-normal text-ink-soft">
+        <ol className="writing-guidelines__list">
           {GUIDELINES.map((item) => (
             <li key={item.title}>
-              <span className="font-display text-2xl font-bold text-ink">{item.title}</span> {item.text}
+              <span className="writing-guidelines__item-title">{item.title}</span> {item.text}
             </li>
           ))}
         </ol>
 
-        <section className="flex flex-col gap-4.5 border-t border-ink pt-6">
-          <h3 className="font-display text-[32px] leading-none font-semibold">Evitemos</h3>
-          <ul className="flex list-disc flex-col gap-4.5 pl-7 text-[19px] leading-normal text-ink-soft">
+        <section className="writing-guidelines__avoid">
+          <h3 className="writing-guidelines__avoid-title">Evitemos</h3>
+          <ul className="writing-guidelines__avoid-list">
             {AVOID.map((item) => (
               <li key={item.title}>
-                <span className="font-display text-[22px] font-bold text-ink">{item.title}</span>
+                <span className="writing-guidelines__avoid-item-title">{item.title}</span>
                 {item.text && <> {item.text}</>}
               </li>
             ))}
@@ -72,7 +73,7 @@ export function WritingGuidelines() {
         </section>
 
         <DialogClose asChild>
-          <Button size="md" className="min-h-13 self-start px-9 text-xl">
+          <Button size="md" className="writing-guidelines__close">
             Entendido
           </Button>
         </DialogClose>

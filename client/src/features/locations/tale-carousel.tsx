@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
 import type { Tale } from '@wos/shared';
 import { IconButton } from '@/components/ui/icon-button';
 import { WritingDots } from '@/components/ui/writing-dots';
@@ -11,14 +12,9 @@ import { useAddTale, useDeleteTale, usePublishTale, useUpdateTale } from './api'
 import { InlineEditor, linkButtonClass } from './inline-editor';
 import { TALE_LABELS, taleToText, type TaleKind } from './narrative';
 import type { LocationEntity, LocationResource } from './resource';
+import './tale-carousel.scss';
 
 type Mode = 'view' | 'edit' | 'add' | 'confirm-delete';
-
-// Altura fija para que todas las tarjetas midan lo mismo; lo que no cabe se desplaza dentro de la caja
-const boxClass = 'box-border flex h-[280px] flex-col gap-2.5 border border-paper-line bg-parchment px-5 pt-4 pb-5';
-// Al escribir ocupa también el sitio del paginador (280 + 10 de separación + 44 de la fila), así la tarjeta no salta
-const editorBoxClass = 'box-border flex h-[334px] flex-col border border-paper-line bg-parchment p-4';
-const scrollClass = 'min-h-0 flex-1 overflow-y-auto pr-1 [scrollbar-color:var(--color-ink-shadow)_transparent] [scrollbar-width:thin]';
 
 type TaleCarouselProps = { resource: LocationResource; entity: LocationEntity; kind: TaleKind };
 
@@ -55,7 +51,7 @@ export function TaleCarousel({ resource, entity, kind }: TaleCarouselProps) {
   if (mode === 'add' || (mode === 'edit' && tale)) {
     const editing = mode === 'edit' && tale;
     return (
-      <div className={editorBoxClass}>
+      <div className="tale-carousel__editor">
         <InlineEditor
           fill
           multiline
@@ -78,25 +74,25 @@ export function TaleCarousel({ resource, entity, kind }: TaleCarouselProps) {
   }
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className="tale-carousel">
       {!tale ? (
-        <div className={`${boxClass} items-center justify-center text-center text-[19px] text-ink-muted italic`}>
+        <div className={cn('tale-carousel__box', 'tale-carousel__box--empty')}>
           Aún no hay {labels.plural} en {resource.words.this}.
         </div>
       ) : (
-        <article aria-label={`${labels.item} ${i + 1} de ${tales.length}`} aria-busy={busy} className={boxClass}>
-          <div className="flex min-h-11 shrink-0 items-start justify-between gap-3">
-            <div className="flex flex-col gap-px pt-1 text-base leading-snug text-ink-muted">
-              <em className="text-ink">{tale.author}</em>
+        <article aria-label={`${labels.item} ${i + 1} de ${tales.length}`} aria-busy={busy} className="tale-carousel__box">
+          <div className="tale-carousel__meta">
+            <div className="tale-carousel__byline">
+              <em className="tale-carousel__author">{tale.author}</em>
               <span>{publicationLabel(tale.published, tale.publishDate, labels.published)}</span>
             </div>
 
             {canManage(user, tale.author) && mode === 'view' && (
-              <div className="-mt-2 -mr-3 flex items-center gap-0.5">
+              <div className="tale-carousel__tools">
                 {busy && (
                   <WritingDots
                     label={remove.isPending ? `Eliminando ${labels.item}` : tale.published ? 'Despublicando' : 'Publicando'}
-                    className="mr-1.5 text-2xl text-ink-muted"
+                    className="tale-carousel__dots"
                   />
                 )}
                 <IconButton label={`Editar ${labels.item}`} aria-disabled={busy} onClick={() => !busy && setMode('edit')}>
@@ -116,7 +112,7 @@ export function TaleCarousel({ resource, entity, kind }: TaleCarouselProps) {
             )}
 
             {mode === 'confirm-delete' && (
-              <div className="-mt-2 -mr-1.5 flex flex-wrap items-center justify-end gap-x-1 text-[17px]">
+              <div className="tale-carousel__confirm">
                 <span>¿Eliminar?</span>
                 <button
                   type="button"
@@ -136,9 +132,9 @@ export function TaleCarousel({ resource, entity, kind }: TaleCarouselProps) {
           </div>
 
           {/* Enfocable para poder desplazarlo con el teclado cuando el texto es largo */}
-          <div tabIndex={0} aria-label={`Texto: ${labels.item} ${i + 1}`} className={`${scrollClass} focus-visible:outline-offset-2`}>
+          <div tabIndex={0} aria-label={`Texto: ${labels.item} ${i + 1}`} className="tale-carousel__scroll">
             {error && (
-              <p role="alert" className="mb-2 text-base text-danger">
+              <p role="alert" className="tale-carousel__error">
                 {error instanceof ApiError ? error.message : 'No se pudo completar la acción'}
               </p>
             )}
@@ -147,19 +143,19 @@ export function TaleCarousel({ resource, entity, kind }: TaleCarouselProps) {
         </article>
       )}
 
-      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-        <div className="-ml-2.5 flex items-center gap-2">
+      <div className="tale-carousel__pager">
+        <div className="tale-carousel__nav">
           <IconButton label="Anterior" disabled={i <= 0} onClick={() => go(i - 1)}>
             <ArrowLeftIcon />
           </IconButton>
-          <span aria-live="polite" className="min-w-16 text-center text-[17px] text-ink-muted">
+          <span aria-live="polite" className="tale-carousel__count">
             {tales.length > 0 ? `${i + 1} / ${tales.length}` : ''}
           </span>
           <IconButton label="Siguiente" disabled={i >= tales.length - 1} onClick={() => go(i + 1)}>
             <ArrowRightIcon />
           </IconButton>
         </div>
-        <button type="button" className={`${linkButtonClass} px-1 text-lg`} onClick={() => setMode('add')}>
+        <button type="button" className={cn(linkButtonClass, 'tale-carousel__add')} onClick={() => setMode('add')}>
           + {labels.add}
         </button>
       </div>
@@ -169,9 +165,9 @@ export function TaleCarousel({ resource, entity, kind }: TaleCarouselProps) {
 
 function TaleText({ tale }: { tale: Tale }) {
   const paragraphs = tale.tale.map((r) => r.text.trim()).filter(Boolean);
-  if (!paragraphs.length) return <p className="text-[19px] text-ink-muted italic">Sin texto.</p>;
+  if (!paragraphs.length) return <p className="tale-carousel__empty-text">Sin texto.</p>;
   return (
-    <div className="flex flex-col gap-3 text-[19px] leading-normal text-pretty text-ink-soft">
+    <div className="tale-carousel__text">
       {paragraphs.map((p, n) => (
         <p key={n}>{p}</p>
       ))}

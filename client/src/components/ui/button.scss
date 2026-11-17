@@ -1,0 +1,63 @@
+@use '@/styles/mixins' as *;
+
+@layer ui {
+  .button {
+    display: inline-flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    border-radius: 2px;
+    font-family: var(--font-serif);
+    letter-spacing: 0.04em;
+    transition-property: transform, background-color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+
+    &:disabled {
+      pointer-events: none;
+      opacity: 60%;
+    }
+
+    // Tinta sobre pergamino, con el canto que se levanta al pasar el ratón
+    &--primary {
+      background-color: var(--color-ink);
+      color: var(--color-parchment);
+      box-shadow: var(--shadow-press);
+
+      @include hover {
+        translate: 0 -0.125rem;
+        background-color: #000;
+      }
+    }
+
+    &--ghost {
+      background-color: transparent;
+      color: var(--color-ink);
+
+      @include hover {
+        background-color: color-mix(in oklab, var(--color-ink) 5%, transparent);
+      }
+    }
+
+    &--md {
+      min-height: 3rem;
+      padding-inline: 1.5rem;
+      font-size: 19px;
+    }
+
+    &--lg {
+      min-height: 3.5rem;
+      padding-inline: 2.25rem;
+      font-size: 1.25rem;
+      line-height: calc(1.75 / 1.25);
+    }
+
+    // Texto + puntos suspensivos mientras carga
+    &__loading {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.25rem;
+    }
+  }
+}

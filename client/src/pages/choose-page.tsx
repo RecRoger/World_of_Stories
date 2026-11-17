@@ -3,20 +3,21 @@ import { Link } from 'react-router';
 import { SiteLayout } from '@/components/layout/site-layout';
 import { ArrowRightIcon, BookIcon, QuillIcon } from '@/components/icons';
 import { LogoutButton } from '@/features/auth/logout-button';
+import './choose-page.scss';
 
 /** 3 · Leer o escribir: el reparto tras iniciar sesión. */
 export function ChoosePage() {
   return (
     <SiteLayout
       action={<LogoutButton />}
-      className="items-center justify-center gap-14 pt-10 pb-8"
+      className="choose-page"
     >
-      <div className="flex flex-col items-center gap-3 text-center">
-        <h1 className="font-display text-[clamp(40px,6vw,72px)] leading-none font-semibold text-balance">¿Qué te trae hoy?</h1>
-        <p className="text-[21px] leading-[1.45] text-ink-muted">Elige cómo quieres entrar al mundo.</p>
+      <div className="choose-page__heading">
+        <h1 className="choose-page__title">¿Qué te trae hoy?</h1>
+        <p className="choose-page__subtitle">Elige cómo quieres entrar al mundo.</p>
       </div>
 
-      <div className="grid w-full max-w-[900px] grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-x-12 gap-y-14">
+      <div className="choose-page__choices">
         <ChoiceCard
           to="/read"
           icon={BookIcon}
@@ -45,13 +46,13 @@ function ChoiceCard({ to, icon: Icon, title, description }: ChoiceCardProps) {
   return (
     <Link
       to={to}
-      className="box-border flex min-h-[340px] flex-col gap-5 bg-paper p-10 text-ink no-underline shadow-paper transition-transform duration-250 hover:-translate-y-1.5"
+      className="choose-page__card"
     >
       <Icon />
-      <h2 className="font-display text-[52px] leading-none font-semibold">{title}</h2>
-      <p className="text-xl leading-normal text-pretty text-ink-soft">{description}</p>
-      <div className="flex-1" />
-      <span className="flex items-center gap-3 text-[19px]">
+      <h2 className="choose-page__card-title">{title}</h2>
+      <p className="choose-page__card-text">{description}</p>
+      <div className="choose-page__spacer" />
+      <span className="choose-page__card-link">
         Continuar
         <ArrowRightIcon />
       </span>

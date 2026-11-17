@@ -6,6 +6,7 @@ import { WriterPageHeading } from '@/features/locations/location-grid';
 import { useChapters, useNpc } from '@/features/chapters/api';
 import { ChapterCard } from '@/features/chapters/chapter-card';
 import { ChapterFormDialog } from '@/features/chapters/chapter-form-dialog';
+import './npc-chapters-page.scss';
 
 /**
  * 8 · Capítulos de un NPC de tipo story, como un acordeón: el primero es el inicio y cada decisión lleva a otro.
@@ -33,28 +34,28 @@ export function NpcChaptersPage() {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-[1000px] flex-col gap-14 pt-8 pb-6">
-      <div className="flex flex-col gap-5">
+    <div className="npc-chapters-page">
+      <div className="npc-chapters-page__heading">
         <WriterPageHeading title="Capítulos" subtitle={npc?.name} />
-        <p className="max-w-[720px] text-[19px] text-ink-muted">
+        <p className="npc-chapters-page__intro">
           La historia empieza en el capítulo de inicio. Los capítulos nuevos se crean desde las decisiones: al editar
           un capítulo, cada decisión lleva a uno que ya existe o a uno nuevo.
         </p>
       </div>
 
       {isPending ? (
-        <div className="flex min-h-[360px] items-center justify-center">
-          <WritingDots label="Cargando capítulos" className="text-6xl text-ink-muted" />
+        <div className="npc-chapters-page__loading">
+          <WritingDots label="Cargando capítulos" className="npc-chapters-page__dots" />
         </div>
       ) : isError ? (
-        <div role="alert" className="flex flex-col items-start gap-3 text-xl">
+        <div role="alert" className="npc-chapters-page__error">
           <p>No pudimos cargar los capítulos.</p>
-          <button type="button" onClick={() => refetch()} className="link-underline cursor-pointer border-0 bg-transparent p-0 font-serif text-xl">
+          <button type="button" onClick={() => refetch()} className="npc-chapters-page__retry">
             Reintentar
           </button>
         </div>
       ) : (
-        <div className="flex flex-col gap-9">
+        <div className="npc-chapters-page__chapters">
           {chapters.map((chapter) => (
             <ChapterCard
               key={chapter.id}

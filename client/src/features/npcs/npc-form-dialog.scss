@@ -1,0 +1,138 @@
+.npc-form {
+  padding-inline: clamp(24px, 6vw, 52px);
+  padding-top: 3rem;
+  padding-bottom: 2.75rem;
+
+  // Etiqueta secundaria: sustituye a la grande de FormField, también en el interlineado (el heredado)
+  &__sublabel {
+    font-family: var(--font-serif);
+    font-size: 17px;
+    line-height: inherit;
+    font-weight: 400;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  &__error {
+    background-color: color-mix(in oklab, var(--color-danger) 8%, transparent);
+    padding-inline: 0.875rem;
+    padding-block: 0.625rem;
+    font-size: 17px;
+    color: var(--color-danger);
+  }
+
+  &__fields {
+    margin: 0;
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 1.75rem;
+    border-style: solid;
+    border-width: 0;
+    padding: 0;
+  }
+
+  &__control {
+    min-height: 3.25rem;
+    font-size: 1.25rem;
+    line-height: calc(1.75 / 1.25);
+  }
+
+  &__textarea {
+    min-height: 6rem;
+  }
+
+  &__group {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 1.25rem;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-color: var(--color-ink);
+    padding-top: 1.5rem;
+  }
+
+  &__group-title {
+    font-family: var(--font-display);
+    font-size: 32px;
+    line-height: 1;
+    font-weight: 600;
+  }
+
+  &__options {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  &__note {
+    font-size: 17px;
+    color: var(--color-ink-muted);
+  }
+
+  &__field-error {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-danger);
+  }
+
+  &__option {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--color-paper-line);
+    background-color: color-mix(in oklab, var(--color-parchment) 60%, transparent);
+    padding: 1rem;
+  }
+
+  &__option-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  &__option-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: calc(1.75 / 1.25);
+    font-weight: 700;
+  }
+
+  &__option-description {
+    min-height: 5rem;
+    background-color: var(--color-paper);
+  }
+
+  &__add {
+    align-self: flex-start;
+    // Como siempre se vio: conserva el relleno y el tamaño del botón-enlace, con más interlineado
+    line-height: calc(1.75 / 1.125);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 1.5rem;
+    row-gap: 0.75rem;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-color: var(--color-ink);
+    padding-top: 1.75rem;
+  }
+
+  &__submit {
+    min-height: 3.25rem;
+    padding-inline: 2.25rem;
+    font-size: 1.25rem;
+    line-height: calc(1.75 / 1.25);
+  }
+}

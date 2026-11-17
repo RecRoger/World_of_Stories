@@ -2,7 +2,7 @@
 
 React 19 + Vite + TypeScript. Rutas con React Router, datos del server con TanStack Query, formularios con
 react-hook-form validados con los mismos esquemas zod de [`@wos/shared`](../packages/shared) que usa la API,
-y estilos con Tailwind 4 + componentes estilo shadcn/ui adaptados al diseño de Claude Design.
+y estilos propios en SCSS con clases BEM, según el diseño de Claude Design.
 
 ```bash
 npm run dev -w server   # la API tiene que estar levantada (puerto 3000)
@@ -20,12 +20,34 @@ src/
   router.tsx            mapa de rutas y qué guard protege cada una
   lib/api.ts            fetch con cookie, errores como ApiError y validación zod de la respuesta
   features/auth/        hooks de sesión (useMe, useLogin, useRegister, useLogout) y guards de rutas
-  components/ui/        piezas base (Button, Input, Label, Paper) — estilo shadcn, con los tokens del diseño
+  components/ui/        piezas base (Button, Input, Label, Paper, Dialog…) con los tokens del diseño
   components/layout/    marco de página (cabecera + contenido) y loader
   components/form/      Field y mapeo de errores del server a campos
   pages/                una pantalla por archivo
-  styles/               tokens de Tailwind (@theme) y fuentes autoalojadas
+  styles/               tokens, reset, keyframes, mixins (main.scss) y fuentes autoalojadas
 ```
+
+## Estilos
+
+SCSS con clases [BEM](https://getbem.com/): cada componente tiene su hoja junto al `.tsx` (`button.tsx` + `button.scss`)
+y la importa al final de sus imports. Un bloque por componente (`.chapter-card`), sus partes como elementos
+(`.chapter-card__name`) y sus variantes como modificadores (`.button--primary`). Los estados usan los atributos que ya
+existen (`:disabled`, `[aria-invalid='true']`, `[data-state='active']`) en lugar de clases extra; `cn()` (clsx) une las
+clases condicionales.
+
+```
+styles/
+  _tokens.scss       colores, fuentes, sombras y animaciones como CSS custom properties (var(--color-ink)…)
+  _reset.scss        reset base (el punto de partida del diseño)
+  _animations.scss   @keyframes compartidos
+  _mixins.scss       from(md), hover, reduced-motion, link-underline, visually-hidden
+  main.scss          lo anterior + estilos base; se importa primero en main.tsx
+```
+
+Las hojas usan capas (`@layer`) para que el orden de importación no importe: `reset` → `base` → `ui`
+(`components/ui`) → `compose` (`components/form` y `layout`), y las de features y páginas van sin capa, así que ganan.
+Por eso una página puede ajustar un componente base pasándole una clase propia (`<Button className="npc-form__submit">`)
+sin pelear por especificidad. Para usar un mixin: `@use '@/styles/mixins' as *;`.
 
 | Ruta | Pantalla | Acceso |
 | --- | --- | --- |

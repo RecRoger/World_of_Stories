@@ -1,0 +1,11 @@
+// Columna común de las páginas de escritor (ciudades, lugares, eventos)
+.writer-page {
+  margin-inline: auto;
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  flex-direction: column;
+  gap: 4rem;
+  padding-top: 3.5rem;
+  padding-bottom: 1.5rem;
+}
