@@ -23,6 +23,20 @@ const STORY_DECISION = [
   { name: 'Rechazar', description: 'Seguir tu camino' },
 ];
 
+/** Publica una ciudad con su primera descripción y su primer viaje (sin ellas no se puede publicar) */
+const publishCity = async (city: { id: string; description: { id: string }[]; travel: { id: string }[] }) => {
+  await writer.patch(api(`/cities/${city.id}/description/${city.description[0]!.id}/publish`)).send({ published: true }).expect(200);
+  await writer.patch(api(`/cities/${city.id}/travel/${city.travel[0]!.id}/publish`)).send({ published: true }).expect(200);
+  await writer.patch(api(`/cities/${city.id}/publish`)).send({ published: true }).expect(200);
+};
+
+/** Igual con un lugar: su primera descripción y su primera entrada */
+const publishPlace = async (place: { id: string; description: { id: string }[]; entry: { id: string }[] }) => {
+  await writer.patch(api(`/places/${place.id}/description/${place.description[0]!.id}/publish`)).send({ published: true }).expect(200);
+  await writer.patch(api(`/places/${place.id}/entry/${place.entry[0]!.id}/publish`)).send({ published: true }).expect(200);
+  await writer.patch(api(`/places/${place.id}/publish`)).send({ published: true }).expect(200);
+};
+
 const createCity = async (name = 'Vel Aran') =>
   (await writer.post(api('/cities')).send({ name, description: story('Una ciudad de niebla'), travel: story('El camino') }).expect(201))
     .body;
@@ -48,17 +62,19 @@ describe('ciudades', () => {
     expect((await reader.get(api('/cities')).expect(200)).body).toEqual([]);
     expect((await writer.get(api('/cities')).expect(200)).body).toEqual([]);
 
-    await writer.patch(api(`/cities/${city.id}/publish`)).send({ published: true }).expect(200);
     const extra = (await otherWriter.post(api(`/cities/${city.id}/description`)).send({ tale: story('Otra versión') }).expect(201)).body;
     await otherWriter.patch(api(`/cities/${city.id}/description/${extra.id}/publish`)).send({ published: true }).expect(200);
+    await writer.patch(api(`/cities/${city.id}/travel/${city.travel[0].id}/publish`)).send({ published: true }).expect(200);
+    await writer.patch(api(`/cities/${city.id}/publish`)).send({ published: true }).expect(200);
 
+    // la primera descripción sigue en borrador: los lectores solo ven la publicada
     const seen = (await reader.get(api(`/cities/${city.id}`)).expect(200)).body;
     expect(seen.description.map((t: { id: string }) => t.id)).toEqual([extra.id]);
-    expect(seen.travel).toEqual([]);
+    expect(seen.travel.map((t: { id: string }) => t.id)).toEqual([city.travel[0].id]);
 
-    // listado de lectura: una sola versión publicada de cada relato (null si no hay ninguna)
+    // listado de lectura: una sola versión publicada de cada relato
     const [reading] = (await reader.get(api('/cities')).expect(200)).body;
-    expect(reading).toMatchObject({ id: city.id, name: 'Vel Aran', description: { id: extra.id, published: true }, travel: null });
+    expect(reading).toMatchObject({ id: city.id, name: 'Vel Aran', description: { id: extra.id, published: true }, travel: { id: city.travel[0].id } });
     expect(reading).not.toHaveProperty('published');
 
     // los escritores ven todo en su detalle
@@ -86,7 +102,7 @@ describe('ciudades', () => {
 
   it('el modo lector elige al azar entre las versiones publicadas', async () => {
     const city = await createCity();
-    await writer.patch(api(`/cities/${city.id}/publish`)).send({ published: true }).expect(200);
+    await publishCity(city);
     const published = [city.description[0].id];
     for (const text of ['Segunda', 'Tercera']) {
       const tale = (await writer.post(api(`/cities/${city.id}/description`)).send({ tale: story(text) }).expect(201)).body;
@@ -95,7 +111,6 @@ describe('ciudades', () => {
         published.push(tale.id);
       }
     }
-    await writer.patch(api(`/cities/${city.id}/description/${city.description[0].id}/publish`)).send({ published: true }).expect(200);
 
     const seen = new Set<string>();
     for (let i = 0; i < 30; i++) seen.add((await reader.get(api('/cities')).expect(200)).body[0].description.id);
@@ -159,8 +174,13 @@ describe('lugares, NPCs y capítulos', () => {
     await create({ decision: { options: [STORY_DECISION[0]] } }).expect(400);
     await create({ decision: { options: [...STORY_DECISION, { name: 'Tres', description: 'Una más' }] } }).expect(400);
     await create({}).expect(400); // sin decisión
-    // con dinero o ítem no hay opciones que elegir; las tiendas y postas pueden tener las que quieran
-    await create({ decision: { decisionType: 'money', amount: 5 } }).expect(201);
+    // con dinero también son dos: pagar para aceptar y rechazar; y el monto es obligatorio
+    await create({ decision: { decisionType: 'money', amount: 5 } }).expect(400);
+    await create({ decision: { decisionType: 'money', options: STORY_DECISION } }).expect(400);
+    const paid = (await create({ decision: { decisionType: 'money', amount: 5, options: STORY_DECISION } }).expect(201)).body;
+    expect(paid.decision.options[0].value).not.toBe('');
+    // las tiendas y postas pueden tener las opciones que quieran
+
     await create({ npcType: 'store', decision: { options: [STORY_DECISION[0]] } }).expect(201);
 
     // al editar se valida el resultado: quitar una opción, o pasar a story con tres, no se puede
@@ -177,6 +197,37 @@ describe('lugares, NPCs y capítulos', () => {
     expect(full).toMatchObject({ id: npc.id, npcType: 'story', published: false, meeting: { tale: story('Te saluda') } });
     expect(full.decision.options.map((o: { name: string }) => o.name)).toEqual(['Aceptar', 'Rechazar']);
     expect(full).not.toHaveProperty('chapters');
+  });
+
+  it('una ciudad o un lugar solo se publica con una descripción y un viaje/entrada publicados', async () => {
+    const { city, place } = await createWorld();
+    const publish = (path: string, published = true) => writer.patch(api(`${path}/publish`)).send({ published });
+
+    // sin versiones publicadas no se puede; con solo la descripción, tampoco
+    expect((await publish(`/cities/${city.id}`).expect(409)).body.error.message).toContain('una descripción y un viaje');
+    await publish(`/cities/${city.id}/description/${city.description[0].id}`).expect(200);
+    await publish(`/cities/${city.id}`).expect(409);
+    await publish(`/cities/${city.id}/travel/${city.travel[0].id}`).expect(200);
+    await publish(`/cities/${city.id}`).expect(200);
+    // despublicar la ciudad siempre se puede
+    expect((await publish(`/cities/${city.id}`, false).expect(200)).body.published).toBe(false);
+    await publish(`/cities/${city.id}`).expect(200);
+
+    // despublicar el único viaje publicado despublica la ciudad
+    const extra = (await writer.post(api(`/cities/${city.id}/travel`)).send({ tale: story('Otro camino') }).expect(201)).body;
+    await publish(`/cities/${city.id}/travel/${extra.id}`).expect(200);
+    await publish(`/cities/${city.id}/travel/${city.travel[0].id}`, false).expect(200);
+    expect((await writer.get(api(`/cities/${city.id}`))).body.published).toBe(true); // queda el otro viaje
+    await publish(`/cities/${city.id}/travel/${extra.id}`, false).expect(200);
+    expect((await writer.get(api(`/cities/${city.id}`))).body).toMatchObject({ published: false, publishDate: null });
+
+    // lugares: lo mismo con la entrada, y borrar la última versión publicada también lo despublica
+    expect((await publish(`/places/${place.id}`).expect(409)).body.error.message).toContain('una descripción y una entrada');
+    await publish(`/places/${place.id}/description/${place.description[0].id}`).expect(200);
+    await publish(`/places/${place.id}/entry/${place.entry[0].id}`).expect(200);
+    await publish(`/places/${place.id}`).expect(200);
+    await writer.delete(api(`/places/${place.id}/description/${place.description[0].id}`)).expect(204);
+    expect((await writer.get(api(`/places/${place.id}`))).body.published).toBe(false);
   });
 
   it('crea lugar y NPC con su capítulo inicial', async () => {
@@ -218,17 +269,12 @@ describe('lugares, NPCs y capítulos', () => {
     const { city, place, npc } = await createWorld();
     // ciudad sin publicar: su listado de lectura no existe, tampoco para escritores
     await writer.get(api(`/cities/${city.id}/places`)).expect(404);
-    await writer.patch(api(`/cities/${city.id}/publish`)).send({ published: true }).expect(200);
+    await publishCity(city);
 
     expect((await reader.get(api(`/cities/${city.id}/places`)).expect(200)).body).toEqual([]);
     await reader.get(api(`/places/${place.id}`)).expect(404);
 
-    await writer.patch(api(`/places/${place.id}/publish`)).send({ published: true }).expect(200);
-    // publicado el lugar pero no su descripción: aparece sin versión
-    expect((await reader.get(api(`/cities/${city.id}/places`)).expect(200)).body).toEqual([
-      expect.objectContaining({ id: place.id, name: 'Taberna', description: null, entry: null }),
-    ]);
-    await writer.patch(api(`/places/${place.id}/description/${place.description[0].id}/publish`)).send({ published: true }).expect(200);
+    await publishPlace(place);
     expect((await reader.get(api(`/cities/${city.id}/places`)).expect(200)).body[0].description).toMatchObject({
       tale: story('Huele a cerveza'),
     });
@@ -258,7 +304,7 @@ describe('lugares, NPCs y capítulos', () => {
   it('los personajes saben dónde están', async () => {
     const { city, place, npc } = await createWorld();
     const [root] = (await writer.get(api(`/writer/npcs/${npc.id}/chapters`))).body;
-    const character = (await reader.post(api('/me/characters')).send({ name: 'Elara' }).expect(201)).body;
+    const character = (await reader.post(api('/me/characters')).expect(201)).body;
     expect(character.whereabouts).toBeNull();
 
     const at = async (location: object) =>
@@ -343,6 +389,106 @@ describe('lugares, NPCs y capítulos', () => {
     expect(after.decision.options).toEqual([]);
     chapters = (await writer.get(api(`/npcs/${npc.id}/chapters`))).body;
     expect(chapters.map((c: { name: string }) => c.name)).toEqual(['Inicio', 'Río']);
+  });
+
+  it('las decisiones de dinero cobran al personaje la primera opción', async () => {
+    const { city, place, npc } = await createWorld();
+    const [root] = (await writer.get(api(`/npcs/${npc.id}/chapters`))).body;
+    // encuentro: pagar 300 para empezar la historia
+    await writer
+      .patch(api(`/npcs/${npc.id}`))
+      .send({ decision: { decisionType: 'money', amount: 300, options: STORY_DECISION } })
+      .expect(200);
+    // capítulo: la primera opción cuesta 800; la segunda es gratis. Siempre dos opciones y con monto
+    const send = (decision: object) => writer.patch(api(`/chapters/${root.id}`)).send({ story: story('Un peaje'), decision });
+    const two = [
+      { name: 'Pagar', description: 'Pagar el peaje' },
+      { name: 'Rodear', description: 'Dar la vuelta' },
+    ];
+    await send({ decisionType: 'money', amount: 800, options: [two[0]] }).expect(400);
+    await send({ decisionType: 'money', amount: 0, options: two }).expect(400);
+    const [pay, free] = (await send({ decisionType: 'money', amount: 800, options: two }).expect(200)).body.decision.options;
+    await writer.patch(api(`/chapters/${root.id}/publish`)).send({ published: true }).expect(200);
+    await writer.patch(api(`/npcs/${npc.id}/publish`)).send({ published: true }).expect(200);
+    await publishCity(city);
+    await publishPlace(place);
+    const reading = (await reader.get(api(`/places/${place.id}/npcs`)).expect(200)).body[0];
+    expect(reading.decision).toMatchObject({ decisionType: 'money', amount: 300 });
+
+    const character = (await reader.post(api('/me/characters')).expect(201)).body;
+    const charApi = api(`/me/characters/${character.id}`);
+    const atNpc = { cityId: city.id, placeId: place.id, npcId: npc.id };
+    const accept = reading.decision.options[0].id;
+
+    // hay que estar en la decisión
+    await reader.post(api(`/me/characters/${character.id}/pay`)).send({ npcId: npc.id, optionId: accept }).expect(409);
+    await reader.patch(charApi).send({ location: atNpc }).expect(200);
+    // la opción gratis no se paga
+    await reader.post(api(`/me/characters/${character.id}/pay`)).send({ npcId: npc.id, optionId: reading.decision.options[1].id }).expect(400);
+    const started = (await reader.post(api(`/me/characters/${character.id}/pay`)).send({ npcId: npc.id, optionId: accept }).expect(200)).body;
+    expect(started).toMatchObject({ money: 700, location: { ...atNpc, chapterId: root.id } });
+
+    // en el capítulo: 800 es más de lo que tiene
+    const payInChapter = () =>
+      reader.post(api(`/me/characters/${character.id}/pay`)).send({ npcId: npc.id, chapterId: root.id, optionId: pay.id });
+    expect((await payInChapter().expect(409)).body.error.message).toContain('No tienes suficientes monedas');
+    expect((await reader.get(api('/me/characters')).expect(200)).body[0].money).toBe(700);
+    // el otro camino sigue libre
+    await reader.patch(charApi).send({ location: { ...atNpc, chapterId: free.value } }).expect(200);
+    await payInChapter().expect(409); // ya no está en esa decisión
+  });
+
+  it('las recompensas dan dinero u objetos al terminar el capítulo', async () => {
+    const { city, place, npc } = await createWorld();
+    const [root] = (await writer.get(api(`/npcs/${npc.id}/chapters`))).body;
+    const edit = (body: object) => writer.patch(api(`/chapters/${root.id}`)).send({ story: story('Un cofre'), ...body });
+    // validación: monto mayor que 0, al menos un objeto
+    await edit({ reward: { type: 'money', amount: 0 } }).expect(400);
+    await edit({ reward: { type: 'item', items: [] } }).expect(400);
+    await edit({ reward: { type: 'gema' } }).expect(400);
+    expect((await edit({ reward: { type: 'money', amount: 150 } }).expect(200)).body.reward).toEqual({ type: 'money', amount: 150 });
+
+    await writer.patch(api(`/chapters/${root.id}/publish`)).send({ published: true }).expect(200);
+    await writer.patch(api(`/npcs/${npc.id}/publish`)).send({ published: true }).expect(200);
+    expect((await reader.get(api(`/chapters/${root.id}`)).expect(200)).body.reward).toMatchObject({ type: 'money', amount: 150 });
+
+    const character = (await reader.post(api('/me/characters')).expect(201)).body;
+    const claim = () => reader.post(api(`/me/characters/${character.id}/reward`)).send({ chapterId: root.id });
+    await claim().expect(409); // no está en el capítulo
+    await reader
+      .patch(api(`/me/characters/${character.id}`))
+      .send({ location: { cityId: city.id, placeId: place.id, npcId: npc.id, chapterId: root.id } })
+      .expect(200);
+
+    // dinero: la primera vez sí; al releer, solo si tiene menos de lo que da
+    const first = (await claim().expect(200)).body;
+    expect(first).toMatchObject({ gained: { money: 150, items: [] }, character: { money: 1150 } });
+    expect(first.character).not.toHaveProperty('rewardsClaimed');
+    expect((await claim().expect(200)).body).toMatchObject({ gained: { money: 0 }, character: { money: 1150 } });
+    await Npc.updateOne({ 'chapters._id': root.id }, { $set: { 'chapters.$.reward.amount': 5000 } });
+    expect((await claim().expect(200)).body).toMatchObject({ gained: { money: 5000 }, character: { money: 6150 } });
+
+    // objetos: solo los que no tiene, y sin repetir
+    await edit({ reward: { type: 'item', items: ['Llave de bronce', 'Mapa', 'Mapa'] } }).expect(200);
+    expect((await claim().expect(200)).body).toMatchObject({ gained: { items: ['Llave de bronce', 'Mapa'] } });
+    await edit({ reward: { type: 'item', items: ['Mapa', 'Brújula'] } }).expect(200);
+    const again = (await claim().expect(200)).body;
+    expect(again.gained).toEqual({ money: 0, items: ['Brújula'] });
+    expect(again.character.items).toEqual(['Llave de bronce', 'Mapa', 'Brújula']);
+
+    // al terminar de leer, el cliente marca el capítulo como leído y cobra a la vez: ninguno de los dos falla
+    await edit({ reward: { type: 'item', items: ['Farol'] } }).expect(200);
+    const [read, reward] = await Promise.all([
+      reader.post(api(`/me/characters/${character.id}/read`)).send({ fragmentId: root.id }),
+      claim(),
+    ]);
+    expect([read.status, reward.status]).toEqual([200, 200]);
+    const [saved] = (await reader.get(api('/me/characters')).expect(200)).body;
+    expect(saved.items).toContain('Farol');
+    expect(saved.fragmentsRead).toContain(root.id);
+
+    // quitarla
+    expect((await edit({ reward: null }).expect(200)).body.reward).toBeNull();
   });
 
   it('otro escritor puede escribir un capítulo vacío, pero no editar el ajeno', async () => {

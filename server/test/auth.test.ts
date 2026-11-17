@@ -2,6 +2,7 @@ import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { api, app, signUp, story } from './helpers.js';
 import { City } from '../src/models/city.model.js';
+import { User } from '../src/models/user.model.js';
 
 describe('auth', () => {
   it('registra, deja la cookie httpOnly y no expone la contraseña', async () => {
@@ -75,26 +76,32 @@ describe('auth', () => {
 describe('personajes', () => {
   it('CRUD de personajes y fragmentos leídos sin duplicados', async () => {
     const { agent } = await signUp('ana');
-    const created = (await agent.post(api('/me/characters')).send({ name: 'Elara' }).expect(201)).body;
-    expect(created).toMatchObject({ name: 'Elara', money: 1000, items: [], fragmentsRead: [], animations: true });
+    const created = (await agent.post(api('/me/characters')).expect(201)).body;
+    expect(created).toMatchObject({ money: 1000, items: [], fragmentsRead: [], animations: true, location: null, whereabouts: null });
+    // los personajes no tienen nombre: se distinguen por su ubicación
+    expect(created).not.toHaveProperty('name');
 
     const cityId = '64b7f0c2a1b2c3d4e5f60718';
     const updated = await agent
       .patch(api(`/me/characters/${created.id}`))
       .send({ location: { cityId }, money: 50, items: ['espada'] })
       .expect(200);
-    expect(updated.body).toMatchObject({ location: { cityId }, money: 50, items: ['espada'] });
+    // el dinero no se cambia a mano: solo pagando en una decisión de dinero
+    expect(updated.body).toMatchObject({ location: { cityId }, money: 1000, items: ['espada'] });
 
     await agent.post(api(`/me/characters/${created.id}/read`)).send({ fragmentId: 'f1' }).expect(200);
     const read = await agent.post(api(`/me/characters/${created.id}/read`)).send({ fragmentId: 'f1' }).expect(200);
     expect(read.body.fragmentsRead).toEqual(['f1']);
 
-    // el nombre es opcional: por ahora se distinguen por su ubicación
-    const unnamed = (await agent.post(api('/me/characters')).send({}).expect(201)).body;
-    expect(unnamed).toMatchObject({ name: '', location: null, whereabouts: null });
-    await agent.delete(api(`/me/characters/${unnamed.id}`)).expect(204);
+    const second = (await agent.post(api('/me/characters')).expect(201)).body;
+    expect(second).toMatchObject({ location: null, whereabouts: null });
+    await agent.delete(api(`/me/characters/${second.id}`)).expect(204);
 
-    expect((await agent.get(api('/me/characters')).expect(200)).body).toHaveLength(1);
+    // un personaje antiguo con nombre en la base no lo expone
+    await User.updateOne({ username: 'ana' }, { $set: { 'characters.0.name': 'Elara' } }, { strict: false });
+    const listed = (await agent.get(api('/me/characters')).expect(200)).body;
+    expect(listed).toHaveLength(1);
+    expect(listed[0]).not.toHaveProperty('name');
     await agent.delete(api(`/me/characters/${created.id}`)).expect(204);
     await agent.delete(api(`/me/characters/${created.id}`)).expect(404);
   });

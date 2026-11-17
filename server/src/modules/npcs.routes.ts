@@ -54,13 +54,16 @@ function npcDecision(input: NonNullable<DecisionInput>, previous?: IDecision | n
   };
 }
 
+/** Decisiones de un NPC de historia con aceptar y rechazar: elegir, o pagar (`money`) para aceptar */
+const isStoryDecision = (type: string | null | undefined) => (type ?? 'choose') === 'choose' || type === 'money';
+
 /**
  * En un NPC de historia, aceptar lleva siempre al capítulo inicial (el primero) y rechazar no lleva a ninguno:
  * se muestra su texto de rechazo.
  */
 function linkStoryDecision(npc: NpcDoc) {
   const options = npc.decision?.options;
-  if (npc.npcType !== 'story' || !options?.length || (npc.decision?.decisionType ?? 'choose') !== 'choose') return;
+  if (npc.npcType !== 'story' || !options?.length || !isStoryDecision(npc.decision?.decisionType)) return;
   options.forEach((option, i) => {
     option.value = i === 0 ? (npc.chapters[0]?.id ?? '') : '';
   });
@@ -70,7 +73,7 @@ function linkStoryDecision(npc: NpcDoc) {
 function assertStoryDecision(npcType: string, decision: { decisionType?: string | null; options: unknown[] } | null | undefined) {
   if (npcType !== 'story') return;
   if (!decision) throw HttpError.badRequest('Un NPC de tipo story necesita una decisión');
-  if ((decision.decisionType ?? 'choose') === 'choose' && decision.options.length !== STORY_OPTIONS) {
+  if (isStoryDecision(decision.decisionType) && decision.options.length !== STORY_OPTIONS) {
     throw HttpError.badRequest(`Un NPC de tipo story tiene exactamente ${STORY_OPTIONS} opciones: aceptar y rechazar`);
   }
 }

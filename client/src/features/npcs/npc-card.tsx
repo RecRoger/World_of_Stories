@@ -19,6 +19,7 @@ import { ApiError } from "@/lib/api";
 import { publicationLabel } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useDeleteNpc, usePublishNpc } from "./api";
+import { formatMoney } from "@/lib/format";
 import { DECISION_HELP } from "./npc-form";
 import { NpcFormDialog } from "./npc-form-dialog";
 import './npc-card.scss';
@@ -238,7 +239,7 @@ function DecisionView({ npc }: { npc: Npc }) {
         <p>
           <span className={small}>Monto solicitado</span>
           <br />
-          {d.amount ?? "—"}
+          {d.amount != null ? formatMoney(d.amount) : "—"}
         </p>
       )}
       {type === "item" && (
@@ -248,15 +249,18 @@ function DecisionView({ npc }: { npc: Npc }) {
           {d.item || "—"}
         </p>
       )}
-      {type === "choose" &&
+      {type !== "item" &&
         d.options.map((o, i) => (
           <div key={o.id}>
             {isStory && (
               <p className={small}>
                 {i === 0
-                  ? "Aceptar · empieza el capítulo inicial"
+                  ? `Aceptar${type === "money" ? " pagando" : ""} · empieza el capítulo inicial`
                   : "Rechazar · muestra el rechazo"}
               </p>
+            )}
+            {!isStory && type === "money" && (
+              <p className={small}>{i === 0 ? "Se paga" : "Gratis"}</p>
             )}
             <p className="npc-card__option-name">{o.name}</p>
             <p>{o.description}</p>

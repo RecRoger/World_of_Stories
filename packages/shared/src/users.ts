@@ -50,7 +50,6 @@ export type Whereabouts = z.infer<typeof whereaboutsSchema>;
 export const characterSchema = z
   .object({
     id: objectId,
-    name: z.string(),
     location: locationSchema.nullish(),
     whereabouts: whereaboutsSchema.nullish().meta({ description: 'Nombres de su ubicación (null si aún no ha viajado)' }),
     money: z.number(),
@@ -104,22 +103,40 @@ export const setRolesInputSchema = z
   .meta({ id: 'SetRolesInput' });
 export type SetRolesInput = z.infer<typeof setRolesInputSchema>;
 
-/** Por ahora un personaje se distingue por su ubicación: el nombre es opcional */
-export const createCharacterInputSchema = z
-  .object({ name: z.string().trim().max(40).optional() })
-  .meta({ id: 'CreateCharacterInput' });
-export type CreateCharacterInput = z.infer<typeof createCharacterInputSchema>;
-
 export const updateCharacterInputSchema = z
   .object({
-    name: z.string().trim().min(1).max(40).optional(),
     location: locationInputSchema.nullable().optional(),
-    money: z.number().int().min(0).optional(),
     items: z.array(z.string()).optional(),
     animations: z.boolean().optional(),
   })
   .meta({ id: 'UpdateCharacterInput' });
 export type UpdateCharacterInput = z.infer<typeof updateCharacterInputSchema>;
 
+/** Elegir la opción de pago de una decisión `money`: descuenta el monto y lleva al capítulo de esa opción */
+export const payInputSchema = z
+  .object({
+    npcId: objectId,
+    chapterId: objectId.optional().meta({ description: 'Capítulo de la decisión; si se omite, es la del encuentro del NPC' }),
+    optionId: objectId,
+  })
+  .meta({ id: 'PayInput' });
+export type PayInput = z.infer<typeof payInputSchema>;
+
+/** Cobrar la recompensa del capítulo donde está el personaje, al terminar de leerlo */
+export const claimRewardInputSchema = z.object({ chapterId: objectId }).meta({ id: 'ClaimRewardInput' });
+export type ClaimRewardInput = z.infer<typeof claimRewardInputSchema>;
+
 export const markReadInputSchema = z.object({ fragmentId: z.string().min(1) }).meta({ id: 'MarkReadInput' });
 export type MarkReadInput = z.infer<typeof markReadInputSchema>;
+
+/** Resultado de cobrar una recompensa: el personaje actualizado y lo que ganó de verdad (puede ser nada) */
+export const claimRewardResultSchema = z
+  .object({
+    character: characterSchema,
+    gained: z.object({
+      money: z.number().meta({ description: 'Monedas ganadas (0 si no tocaba)' }),
+      items: z.array(z.string()).meta({ description: 'Objetos nuevos (sin los que ya tenía)' }),
+    }),
+  })
+  .meta({ id: 'ClaimRewardResult' });
+export type ClaimRewardResult = z.infer<typeof claimRewardResultSchema>;

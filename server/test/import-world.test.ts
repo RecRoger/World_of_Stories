@@ -110,6 +110,35 @@ describe('archivos de mundo', () => {
     expect(b1.endLocation).toEqual({ endChapter: true, cityId: city.id, placeId: place.id });
   });
 
+  it('importa decisiones de dinero con `cost`', async () => {
+    const { agent: reader } = await signUp('lectora');
+    await signUp('generador', ['Reader', 'Writer']);
+    const w = world();
+    const npc = w.cities[0]!.places[0]!.npcs[0]!;
+    npc.cost = 30;
+    npc.chapters[1]!.cost = 120;
+    npc.chapters[3]!.reward = { type: 'money', amount: 40 };
+    npc.chapters[6]!.reward = { type: 'item', items: ['Mapa ciego'] };
+    expect(lintWorld(w)).toEqual([]);
+    // un final no puede cobrar: no tiene las dos opciones
+    const broken = world();
+    broken.cities[0]!.places[0]!.npcs[0]!.chapters[3]!.cost = 5;
+    expect(lintWorld(broken)).toEqual([expect.objectContaining({ level: 'error', path: expect.stringMatching(/chapters\[3\]\.cost$/) })]);
+
+    await importWorld(w, { author: 'generador', publish: true });
+    const [city] = (await reader.get(api('/cities')).expect(200)).body;
+    const [place] = (await reader.get(api(`/cities/${city.id}/places`)).expect(200)).body;
+    const [read] = (await reader.get(api(`/places/${place.id}/npcs`)).expect(200)).body;
+    expect(read.decision).toMatchObject({ decisionType: 'money', amount: 30 });
+    const inicio = (await reader.get(api(`/chapters/${read.decision.options[0].value}`)).expect(200)).body;
+    expect(inicio.decision).toMatchObject({ decisionType: 'choose' });
+    const a = (await reader.get(api(`/chapters/${inicio.decision.options[0].value}`)).expect(200)).body;
+    expect(a.decision).toMatchObject({ decisionType: 'money', amount: 120 });
+    const a1 = (await reader.get(api(`/chapters/${a.decision.options[0].value}`)).expect(200)).body;
+    expect(a1.reward).toEqual({ type: 'money', amount: 40 });
+    expect(inicio.reward).toBeNull();
+  });
+
   it('no escribe nada si un final apunta a una ciudad que no existe', async () => {
     await signUp('generador', ['Reader', 'Writer']);
     const w = world();

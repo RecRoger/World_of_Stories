@@ -65,6 +65,7 @@ párrafos de 150–500 caracteres; evita párrafos de una línea salvo para un g
 | Encuentro | 3–8 párrafos (**900–5000 caracteres**). El acercamiento del Peregrino, con imágenes visuales y sensoriales y diálogos. **Termina en una pregunta o una situación de decisión.** |
 | Opción de aceptar | Título (la acción) + descripción **≤ 250 caracteres** (la acción, lo que se piensa o sus consecuencias). Lleva al capítulo inicial. |
 | Opción de rechazar | Igual que aceptar. |
+| Precio (opcional) | `cost`: monedas que cuesta aceptar. Úsalo solo si el encuentro lo justifica (un peaje, una entrada, un soborno); el encuentro y la opción de aceptar lo dejan claro. |
 | Rechazo | 3–6 párrafos. Coherente con la opción de rechazar y con el encuentro: la consecuencia, la despedida y la separación. |
 
 **Coherencia con el lugar:** pescadores en el puerto, una protesta en la plaza, una partida de cartas en la taberna.
@@ -77,6 +78,8 @@ El NPC tiene que poder estar ahí cualquier día.
 | Nombre | Corto y evocador (≤ 80 caracteres). |
 | Texto | 6–18 párrafos (**1000–12000 caracteres**). Profundiza en la historia y el problema del NPC, con imágenes visuales y sensoriales, diálogos y otros personajes. |
 | Decisión | Si no es final: **termina en una pregunta o situación de decisión** y tiene **2 opciones** (título + descripción ≤ 250 caracteres). |
+| Precio (opcional) | `cost`: la primera opción cuesta esas monedas y la segunda es el otro camino, gratis. Pagar debe tener sentido en la historia, y la opción gratis, ser un camino de verdad (quien no tenga dinero solo podrá tomar esa). |
+| Recompensa (opcional) | `reward`: lo que gana el personaje al terminar de leer el capítulo, dinero u objetos. Que el texto lo cuente (encuentra una bolsa, le regalan un mapa). |
 | Final | Sin opciones. Termina en el lugar del NPC (por defecto) o en otra ciudad o lugar. Cierra el relato: la consecuencia de las decisiones y la despedida. |
 
 ---
@@ -202,6 +205,12 @@ El formato del mundo completo (los archivos sueltos usan los mismos campos de ca
   ciudad con un nombre existente le suma versiones nuevas de su descripción y su viaje.
 - **`end`:** `{ "city" }` termina en una ciudad; `{ "place" }`, en un lugar de la ciudad del NPC; `{ "city", "place" }`,
   en un lugar de otra ciudad. Los nombres deben existir en el archivo o en el juego.
+- **`cost` (dinero):** número entero de monedas, opcional. En un NPC, lo que cuesta aceptar (`"cost": 30`); en un
+  capítulo, lo que cuesta su **primera** opción (`"cost": 120`), que entonces debe tener exactamente 2 opciones. Cada
+  personaje empieza con 1000 monedas y las lleva en su inventario; si no le alcanza, solo puede elegir la opción gratis.
+- **`reward` (recompensa de un capítulo):** opcional. Dinero: `{ "type": "money", "amount": 50 }`; objetos, por
+  nombre: `{ "type": "item", "items": ["Llave de bronce"] }`. Se cobra al terminar de leer el capítulo: los objetos que
+  el personaje ya tiene no se repiten, y el dinero se gana la primera vez (al releerlo, solo si tiene menos de lo que da).
 - **Límites técnicos:** nombres ≤ 80 caracteres, títulos de NPC ≤ 120, descripciones de opciones ≤ 500 (la guía
   pide ≤ 250), párrafos ≤ 5000 caracteres, hasta 10 opciones por capítulo (la guía pide 2).
 

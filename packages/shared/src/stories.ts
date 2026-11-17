@@ -11,6 +11,17 @@ export type NpcType = (typeof NPC_TYPES)[number];
  */
 export const STORY_OPTIONS = 2;
 
+/**
+ * Una decisión `money` tiene exactamente dos opciones: la primera cuesta `amount` monedas al personaje y la segunda
+ * toma el otro camino sin pagar. En el encuentro de un NPC de historia, pagar empieza la historia y no pagar la rechaza.
+ */
+export const MONEY_OPTIONS = 2;
+
+/** ¿Cuesta dinero elegir la opción `index` de esta decisión? Devuelve el precio, o 0 si es gratis. */
+export function optionCost(decision: { decisionType?: string | null; amount?: number | null } | null | undefined, index: number): number {
+  return decision?.decisionType === 'money' && index === 0 ? (decision.amount ?? 0) : 0;
+}
+
 export const decisionOptionSchema = z
   .object({
     id: objectId,
@@ -48,9 +59,16 @@ export const decisionOptionInputSchema = z
 export const decisionInputSchema = z
   .object({
     decisionType: z.enum(DECISION_TYPES).default('choose'),
-    amount: z.number().int().min(0).optional(),
+    amount: z.number().int().min(0).optional().meta({ description: 'Con `money`: lo que cuesta la primera opción' }),
     item: z.string().trim().max(80).optional(),
     options: z.array(decisionOptionInputSchema).max(10).default([]),
+  })
+  .superRefine((v, ctx) => {
+    if (v.decisionType !== 'money') return;
+    if (!v.amount) ctx.addIssue({ code: 'custom', path: ['amount'], message: 'Una decisión de dinero necesita un monto mayor que 0' });
+    if (v.options.length !== MONEY_OPTIONS) {
+      ctx.addIssue({ code: 'custom', path: ['options'], message: `Una decisión de dinero tiene exactamente ${MONEY_OPTIONS} opciones: pagar y no pagar` });
+    }
   })
   .meta({ id: 'DecisionInput' });
 export type DecisionInput = z.input<typeof decisionInputSchema>;
@@ -146,6 +164,38 @@ export const endLocationInputSchema = z
   })
   .meta({ id: 'EndLocationInput' });
 
+export const REWARD_TYPES = ['money', 'item'] as const;
+export type RewardType = (typeof REWARD_TYPES)[number];
+
+/**
+ * Lo que gana el personaje al terminar de leer un capítulo: dinero (`amount`) u objetos (`items`, por nombre).
+ * Los objetos que ya tiene no se repiten; el dinero se gana la primera vez que lee el capítulo, o al releerlo si
+ * tiene menos de lo que da la recompensa.
+ */
+export const rewardSchema = z
+  .object({
+    type: z.string().meta({ description: `Uno de: ${REWARD_TYPES.join(', ')}` }),
+    amount: z.number().nullish(),
+    items: z.array(z.string()).nullish(),
+  })
+  .meta({ id: 'Reward' });
+export type Reward = z.infer<typeof rewardSchema>;
+
+export const rewardInputSchema = z
+  .discriminatedUnion('type', [
+    z.object({ type: z.literal('money'), amount: z.number().int().min(1, 'Al menos 1 moneda').max(1_000_000) }),
+    z.object({
+      type: z.literal('item'),
+      items: z
+        .array(z.string().trim().min(1).max(80))
+        .min(1, 'Indica al menos un objeto')
+        .max(20)
+        .transform((items) => [...new Set(items)]),
+    }),
+  ])
+  .meta({ id: 'RewardInput' });
+export type RewardInput = z.input<typeof rewardInputSchema>;
+
 export const chapterSummarySchema = z
   .object({
     id: objectId,
@@ -165,6 +215,7 @@ export const chapterSchema = chapterSummarySchema
     decision: decisionSchema.nullable(),
     endLocation: endLocationSchema.nullable(),
     items: z.array(z.string()),
+    reward: rewardSchema.nullable(),
   })
   .meta({ id: 'Chapter' });
 export type Chapter = z.infer<typeof chapterSchema>;
@@ -197,6 +248,7 @@ export const updateChapterInputSchema = z
     items: z.array(z.string()).optional(),
     endLocation: endLocationInputSchema.nullable().optional(),
     decision: decisionInputSchema.nullable().optional(),
+    reward: rewardInputSchema.nullable().optional().meta({ description: '`null` quita la recompensa' }),
   })
   .meta({ id: 'UpdateChapterInput' });
 export type UpdateChapterInput = z.input<typeof updateChapterInputSchema>;

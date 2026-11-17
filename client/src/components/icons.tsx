@@ -117,3 +117,13 @@ export function ChevronUpIcon(props: IconProps) {
     </svg>
   );
 }
+
+/** Bolsa del inventario (botón de la cabecera de lectura) */
+export function BagIcon(props: IconProps) {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" {...stroke} {...props}>
+      <path d="M6 8h12l1 12H5L6 8z" />
+      <path d="M9 8V6.5a3 3 0 0 1 6 0V8" />
+    </svg>
+  );
+}

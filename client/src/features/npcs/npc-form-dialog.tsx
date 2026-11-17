@@ -65,9 +65,13 @@ function NpcForm({
   const isStory = npcType === 'story';
   const id = (field: string) => `npc-${field}`;
   // Como en el diseño: hace falta el nombre, y en una historia las dos opciones con nombre
-  const canSave = !!name.trim() && !(isStory && decisionType === 'choose' && options.some((o) => !o.name.trim()));
+  const hasOptions = decisionType !== 'item';
+  const isMoney = decisionType === 'money';
+  const canSave = !!name.trim() && !(isStory && hasOptions && options.some((o) => !o.name.trim()));
 
-  const onTypeChange = (next: NpcType) => setValue('options', fitOptions(getValues('options'), next));
+  const onTypeChange = (next: NpcType) => setValue('options', fitOptions(getValues('options'), next, getValues('decisionType')));
+  const onDecisionTypeChange = (next: NpcFormValues['decisionType']) =>
+    setValue('options', fitOptions(getValues('options'), getValues('npcType'), next));
 
   const onSubmit = handleSubmit(async (values) => {
     setFormError(null);
@@ -125,7 +129,11 @@ function NpcForm({
           </h3>
           <FormField id={id('decision-type')} label="Tipo de decisión" hint={DECISION_HELP[decisionType]} labelClassName={subLabel}>
             {(a11y) => (
-              <Select id={id('decision-type')} {...a11y} {...register('decisionType')}>
+              <Select
+                id={id('decision-type')}
+                {...a11y}
+                {...register('decisionType', { onChange: (e) => onDecisionTypeChange(e.target.value as NpcFormValues['decisionType']) })}
+              >
                 {DECISION_TYPES.map((t) => (
                   <option key={t} value={t}>
                     {t}
@@ -146,12 +154,13 @@ function NpcForm({
             </FormField>
           )}
 
-          {decisionType === 'choose' && (
+          {hasOptions && (
             <div className="npc-form__options">
               {isStory && (
                 <p className="npc-form__note">
                   Un NPC de tipo story tiene exactamente dos opciones: aceptar empieza la historia en su capítulo
                   inicial{npc ? '' : ' («Inicio», que se crea vacío con el evento)'} y rechazar muestra el texto de rechazo.
+                  {isMoney && ' Aceptar cuesta el monto: si al lector no le alcanza, solo puede rechazar.'}
                 </p>
               )}
               {errors.options?.message && <p className="npc-form__field-error">{errors.options.message}</p>}
@@ -161,8 +170,9 @@ function NpcForm({
                     <div className="npc-form__option-header">
                       <span className="npc-form__option-title">
                         {isStory ? (i === 0 ? 'Opción para aceptar' : 'Opción para rechazar') : `Opción ${i + 1}`}
+                        {isMoney && (i === 0 ? ' · se paga' : ' · gratis')}
                       </span>
-                      {!isStory && fields.length > 1 && (
+                      {!isStory && !isMoney && fields.length > 1 && (
                         <button type="button" className={linkButtonClass} onClick={() => remove(i)}>
                           Quitar
                         </button>
@@ -190,7 +200,7 @@ function NpcForm({
                   </li>
                 ))}
               </ol>
-              {!isStory && fields.length < 10 && (
+              {!isStory && !isMoney && fields.length < 10 && (
                 <button
                   type="button"
                   className={cn(linkButtonClass, 'npc-form__add')}

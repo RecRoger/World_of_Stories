@@ -49,9 +49,18 @@ export function useDeleteLocation(resource: LocationResource) {
 
 type TaleTarget = { resource: LocationResource; id: string; kind: TaleKind };
 
+/**
+ * Actualiza las versiones de un relato en la caché. Como en el server, si una ciudad o un lugar publicado se queda sin
+ * una descripción o un viaje/entrada publicados (al despublicar o borrar una versión), pasa a estar sin publicar.
+ */
 function useStoreTales({ resource, id, kind }: TaleTarget) {
   const patch = usePatchEntity(resource);
-  return (update: (tales: Tale[]) => Tale[]) => patch(id, (entity) => ({ ...entity, [kind]: update(entity[kind] ?? []) }));
+  return (update: (tales: Tale[]) => Tale[]) =>
+    patch(id, (entity) => {
+      const next = { ...entity, [kind]: update(entity[kind] ?? []) };
+      const complete = resource.kinds.every((k) => (next[k] ?? []).some((t) => t.published));
+      return next.published && !complete ? { ...next, published: false, publishDate: null } : next;
+    });
 }
 
 const talesPath = ({ resource, id, kind }: TaleTarget) => `${resource.path(id)}/${kind}`;

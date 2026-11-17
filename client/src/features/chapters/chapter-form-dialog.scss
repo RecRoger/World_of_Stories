@@ -213,3 +213,32 @@
     }
   }
 }
+
+// Tipo de decisión y, si es de dinero, lo que cuesta: uno al lado del otro cuando hay sitio
+.chapter-form__decision-type {
+  display: grid;
+  gap: 0.75rem 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+// Objetos de la recompensa: un campo por objeto, con "Quitar" al lado
+.chapter-form__reward-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.chapter-form__reward-item {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+
+  > :first-child {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.chapter-form__reward-remove {
+  min-height: 2.75rem;
+}

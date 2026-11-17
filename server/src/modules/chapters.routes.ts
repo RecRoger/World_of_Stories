@@ -72,6 +72,7 @@ function toDto(npc: NpcDoc, chapter: ChapterDoc, user?: AuthUser): ChapterDto {
     ...json,
     npcId: npc.id,
     endLocation: json.endLocation ?? null,
+    reward: json.reward ?? null,
     // los lectores no ven opciones que lleven a capítulos sin publicar
     decision: decision && !isWriter(user) ? { ...decision, options: decision.options.filter((o) => o.published) } : decision,
   };
@@ -185,6 +186,7 @@ chaptersApi
       if (body.decision !== undefined) {
         chapter.set('usersDecisions', body.decision ? buildDecision(npc, chapter, body.decision) : null);
       }
+      if (body.reward !== undefined) chapter.set('reward', body.reward);
       await npc.save();
       return toDto(npc, chapter, user);
     },

@@ -15,7 +15,7 @@ import { HttpError, found } from '../lib/http-error.js';
 import { City, type CityDoc, type PlaceDoc } from '../models/city.model.js';
 import { Npc } from '../models/npc.model.js';
 import { assertCanDelete, assertCanEdit, setPublished } from './permissions.js';
-import { randomPublished, registerTaleRoutes, visibleTales } from './tales.js';
+import { hasPublishedVersions, randomPublished, registerTaleRoutes, visibleTales } from './tales.js';
 import { loadCity } from './cities.routes.js';
 
 /** Rutas anidadas bajo la ciudad: /cities/:cityId/places */
@@ -161,6 +161,9 @@ placesApi
     async ({ params, body, user }) => {
       const { city, place } = await loadPlace(params.placeId, user);
       assertCanEdit(user, place.createdBy);
+      if (body.published && !hasPublishedVersions(place.description, place.entry)) {
+        throw HttpError.conflict('Para publicar el lugar, publica antes al menos una descripción y una entrada');
+      }
       setPublished(place, body.published);
       await city.save();
       return toDto(city, place, user);
@@ -185,7 +188,7 @@ for (const kind of ['description', 'entry'] as const) {
     load: async ({ placeId }) => {
       const city = found(await City.findOne({ 'places._id': placeId }), 'Lugar no encontrado');
       const place = found(city.places.id(placeId), 'Lugar no encontrado');
-      return { root: city, list: place[kind] };
+      return { root: city, list: place[kind], owner: { doc: place, lists: [place.description, place.entry] } };
     },
   });
 }

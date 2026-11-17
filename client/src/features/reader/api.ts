@@ -4,10 +4,11 @@ import {
   chapterSchema,
   characterSchema,
   cityReadingSchema,
+  claimRewardResultSchema,
   npcReadingSchema,
   placeReadingSchema,
   type Character,
-  type CreateCharacterInput,
+  type PayInput,
   type UpdateCharacterInput,
 } from '@wos/shared';
 import { api } from '@/lib/api';
@@ -31,7 +32,7 @@ export function useCharacters() {
 export function useCreateCharacter() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (body: CreateCharacterInput) => api('/me/characters', { method: 'POST', body, schema: characterSchema }),
+    mutationFn: () => api('/me/characters', { method: 'POST', schema: characterSchema }),
     onSuccess: (character) =>
       queryClient.setQueryData<Character[]>(charactersQueryKey, (list) => (list ? [...list, character] : list)),
   });
@@ -54,6 +55,34 @@ export function useMoveCharacter(characterId: string) {
     onSuccess: (character) =>
       queryClient.setQueryData<Character[]>(charactersQueryKey, (list) => list?.map((c) => (c.id === character.id ? character : c))),
     onError: () => queryClient.invalidateQueries({ queryKey: charactersQueryKey }),
+  });
+}
+
+/**
+ * Paga la opción de una decisión de dinero: el server descuenta el monto y mueve al personaje al capítulo de esa
+ * opción. Si falla (p. ej. ya no le alcanza), se vuelve a pedir el listado para mostrar su dinero real.
+ */
+export function usePay(characterId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: PayInput) => api(`/me/characters/${characterId}/pay`, { method: 'POST', body, schema: characterSchema }),
+    onSuccess: (character) =>
+      queryClient.setQueryData<Character[]>(charactersQueryKey, (list) => list?.map((c) => (c.id === character.id ? character : c))),
+    onError: () => queryClient.invalidateQueries({ queryKey: charactersQueryKey }),
+  });
+}
+
+/**
+ * Cobra la recompensa del capítulo donde está el personaje, al terminar de leerlo. El server decide lo que gana de
+ * verdad (`gained`): los objetos que no tenía y, el dinero, la primera vez o si tiene menos de lo que da.
+ */
+export function useClaimReward(characterId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (chapterId: string) =>
+      api(`/me/characters/${characterId}/reward`, { method: 'POST', body: { chapterId }, schema: claimRewardResultSchema }),
+    onSuccess: ({ character }) =>
+      queryClient.setQueryData<Character[]>(charactersQueryKey, (list) => list?.map((c) => (c.id === character.id ? character : c))),
   });
 }
 

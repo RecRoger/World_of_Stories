@@ -173,9 +173,9 @@ export async function importWorld(world: WorldFile, opts: ImportOptions): Promis
           description: version([n.description]),
           meeting: version(n.meeting),
           rejected: version(n.rejected),
-          // Aceptar lleva al capítulo inicial; rechazar, al texto de rechazo
+          // Aceptar lleva al capítulo inicial (pagando `cost`, si lo hay); rechazar, al texto de rechazo
           decision: {
-            decisionType: 'choose',
+            ...(n.cost ? { decisionType: 'money', amount: n.cost } : { decisionType: 'choose' }),
             options: [
               { ...n.accept, value: root, published: true },
               { ...n.reject, value: '', published: true },
@@ -222,9 +222,10 @@ async function toChapter(
     writeDate: new Date(),
     ...state,
     endLocation,
+    reward: ch.reward ?? null,
     usersDecisions: options.length
       ? {
-          decisionType: 'choose',
+          ...(ch.cost ? { decisionType: 'money', amount: ch.cost } : { decisionType: 'choose' }),
           options: options.map((o) => ({ name: o.name, description: o.description, value: ids.get(o.to)!.toString(), published: state.published })),
         }
       : null,

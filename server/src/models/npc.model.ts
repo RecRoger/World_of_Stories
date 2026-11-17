@@ -1,5 +1,5 @@
 import { Schema, model, type HydratedDocument, type Model, type Types } from 'mongoose';
-import type { EndLocation, Readable } from '@wos/shared';
+import type { EndLocation, Readable, RewardType } from '@wos/shared';
 import { ReadableSchema, TaleSchema, type ITale } from './tale.model.js';
 import { jsonOptions } from './json.js';
 
@@ -23,6 +23,13 @@ export interface IDecision {
 /** Decisión en forma plana, para asignarla con `doc.set()` */
 export type DecisionData = Omit<IDecision, 'options'> & { options: Array<Omit<IOption, '_id'> & { _id?: string }> };
 
+/** Lo que gana el personaje al terminar el capítulo: dinero u objetos */
+export interface IReward {
+  type: RewardType;
+  amount?: number;
+  items?: string[];
+}
+
 export interface IChapter {
   _id: Types.ObjectId;
   name: string;
@@ -31,6 +38,7 @@ export interface IChapter {
   usersDecisions?: IDecision | null;
   endLocation?: EndLocation | null;
   items: string[];
+  reward?: IReward | null;
   published: boolean;
   author?: string;
   writeDate?: Date;
@@ -91,6 +99,15 @@ const EndLocationSchema = new Schema<EndLocation>(
   { _id: false },
 );
 
+const RewardSchema = new Schema<IReward>(
+  {
+    type: { type: String, enum: ['money', 'item'], required: true },
+    amount: Number,
+    items: { type: [String], default: undefined },
+  },
+  { _id: false },
+);
+
 const ChapterSchema = new Schema<IChapter>(
   {
     name: { type: String, default: '' },
@@ -98,6 +115,7 @@ const ChapterSchema = new Schema<IChapter>(
     usersDecisions: { type: DecisionSchema, default: null },
     endLocation: { type: EndLocationSchema, default: null },
     items: { type: [String], default: [] },
+    reward: { type: RewardSchema, default: null },
     published: { type: Boolean, default: false },
     author: String,
     writeDate: { type: Date, default: Date.now },

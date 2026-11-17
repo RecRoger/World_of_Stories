@@ -1,16 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
-import type { Character, Location, Readable, Tale, UpdateCharacterInput } from '@wos/shared';
+import { optionCost, type Character, type Decision, type Location, type Readable, type Tale, type UpdateCharacterInput } from '@wos/shared';
 import { WritingDots } from '@/components/ui/writing-dots';
 import { ArrowRightIcon } from '@/components/icons';
 import { ReaderBackLink, ReaderLayout, readerLinkClass } from '@/features/reader/reader-layout';
 import { ReadingText } from '@/features/reader/reading-text';
 import { OptionsPanel, type PanelOption } from '@/features/reader/options-panel';
+import { InventoryDialog, type InventoryNotice } from '@/features/reader/inventory-dialog';
+import { formatMoney } from '@/lib/format';
 import {
   useCharacters,
   useMarkRead,
+  useClaimReward,
   useMoveCharacter,
+  usePay,
   useReadingChapter,
   useReadingCities,
   useReadingNpcs,
@@ -26,6 +30,46 @@ const exitLink = (
     Salir
   </Link>
 );
+
+/** Cuánto se ve el aviso bajo la bolsa (lo pagado o ganado) */
+const NOTICE_MS = 2000;
+
+/** Cabecera de la lectura con un personaje: su inventario y salir */
+function ReaderActions({ character, notice }: { character: Character; notice?: InventoryNotice | null }) {
+  return (
+    <div className="reading-page__actions">
+      <InventoryDialog character={character} notice={notice} />
+      {exitLink}
+    </div>
+  );
+}
+
+/** En una decisión de dinero, lo que tiene el personaje (junto al título del panel) */
+const moneyAside = (decision: Decision | null | undefined, character: Character) =>
+  decision?.decisionType === 'money' ? `Tienes ${formatMoney(character.money)}` : null;
+
+/**
+ * Opciones de una decisión para el panel. En una decisión de dinero, la primera cuesta su monto: si al personaje no
+ * le alcanza, se muestra desactivada; si le alcanza, `pay` cobra y lleva a su capítulo. El resto van con `choose`.
+ */
+function decisionOptions(
+  decision: Decision | null | undefined,
+  character: Character,
+  { choose, pay }: { choose: (o: Decision['options'][number]) => void; pay: (o: Decision['options'][number], cost: number) => void },
+): PanelOption[] {
+  return (decision?.options ?? []).map((o, i) => {
+    const cost = optionCost(decision, i);
+    const missing = cost - character.money;
+    return {
+      key: o.id,
+      name: o.name,
+      description: o.description,
+      ...(cost ? { cost } : {}),
+      ...(missing > 0 ? { disabled: true, note: `Te faltan ${formatMoney(missing)}` } : {}),
+      onSelect: () => (cost ? pay(o, cost) : choose(o)),
+    };
+  });
+}
 
 /** Lector · Viaje y lectura de un personaje: continúa donde lo dejó. */
 export function ReadingPage() {
@@ -71,7 +115,9 @@ type Scene = {
   author?: string | null;
   /** Lo que se marca como leído por el personaje: la versión del relato o el capítulo. */
   readId?: string;
-  panel: { title: string; options: PanelOption[]; empty?: string; loading?: boolean };
+  panel: { title: string; options: PanelOption[]; empty?: string; loading?: boolean; error?: string | null; aside?: string | null };
+  /** Al terminar de escribirse el texto (p. ej. cobrar la recompensa del capítulo) */
+  onFinish?: () => void;
 };
 
 const fromTale = (tale: Tale | null | undefined) => ({ fragments: tale?.tale ?? [], author: tale?.author, readId: tale?.id });
@@ -81,8 +127,17 @@ const summary = (tale: Tale | null | undefined) => (tale ? taleToText(tale.tale)
 function Journey({ character }: { character: Character }) {
   const location = character.location ?? null;
   const move = useMoveCharacter(character.id);
+  const pay = usePay(character.id);
   // Rechazar a un NPC no mueve al personaje: solo muestra su texto de rechazo
   const [rejected, setRejected] = useState<string | null>(null);
+  const claim = useClaimReward(character.id);
+  // Lo último que se pagó o ganó: se muestra bajo la bolsa del inventario durante NOTICE_MS
+  const [notice, setNotice] = useState<InventoryNotice | null>(null);
+  useEffect(() => {
+    if (!notice) return;
+    const timer = window.setTimeout(() => setNotice(null), NOTICE_MS);
+    return () => window.clearTimeout(timer);
+  }, [notice]);
 
   const cities = useReadingCities();
   const places = useReadingPlaces(location?.cityId);
@@ -94,9 +149,32 @@ function Journey({ character }: { character: Character }) {
 
   const go = (target: Target) => {
     setRejected(null);
+    pay.reset();
     window.scrollTo({ top: 0 });
     move.mutate(target);
   };
+  /** Pagar la opción de una decisión de dinero (en el encuentro, sin `chapterId`); se avisa del cobro bajo la bolsa */
+  const payFor = (npcId: string, optionId: string, cost: number, chapterId?: string) => {
+    if (pay.isPending) return;
+    pay.mutate(
+      { npcId, optionId, ...(chapterId ? { chapterId } : {}) },
+      {
+        onSuccess: () => {
+          setNotice({ text: `−${formatMoney(cost)}`, kind: 'debit', id: Date.now() });
+          window.scrollTo({ top: 0 });
+        },
+      },
+    );
+  };
+  /** Al terminar de leer un capítulo con recompensa: se cobra y se avisa de lo que ganó (si ganó algo) */
+  const claimFor = (chapterId: string) =>
+    claim.mutate(chapterId, {
+      onSuccess: ({ gained }) => {
+        const parts = [...(gained.money ? [formatMoney(gained.money)] : []), ...gained.items];
+        if (parts.length) setNotice({ text: `+${gained.money ? '' : ' '}${parts.join(', ')}`, kind: 'gain', id: Date.now() });
+      },
+    });
+  const payError = pay.isError ? (pay.error instanceof Error && pay.error.message) || 'No se pudo pagar. Inténtalo de nuevo.' : null;
 
   if (!location?.cityId) return <Travel onTravel={(cityId) => go({ cityId })} />;
 
@@ -179,12 +257,12 @@ function Journey({ character }: { character: Character }) {
             ...fromTale(npc.meeting),
             panel: {
               title: '¿Qué haces?',
-              options: (npc.decision?.options ?? []).map((o) => ({
-                key: o.id,
-                name: o.name,
-                description: o.description,
-                onSelect: () => (o.value ? go(at({ placeId: place.id, npcId: npc.id, chapterId: o.value })) : setRejected(npc.id)),
-              })),
+              error: payError,
+              aside: moneyAside(npc.decision, character),
+              options: decisionOptions(npc.decision, character, {
+                choose: (o) => (o.value ? go(at({ placeId: place.id, npcId: npc.id, chapterId: o.value })) : setRejected(npc.id)),
+                pay: (o, cost) => payFor(npc.id, o.id, cost),
+              }),
             },
           };
   } else if (!chapter.data) {
@@ -200,12 +278,12 @@ function Journey({ character }: { character: Character }) {
     if (options.length) {
       panel = {
         title: '¿Qué haces?',
-        options: options.map((o) => ({
-          key: o.id,
-          name: o.name,
-          description: o.description,
-          onSelect: () => go(at({ placeId: place.id, npcId: npc.id, chapterId: o.value })),
-        })),
+        error: payError,
+        aside: moneyAside(c.decision, character),
+        options: decisionOptions(c.decision, character, {
+          choose: (o) => go(at({ placeId: place.id, npcId: npc.id, chapterId: o.value })),
+          pay: (o, cost) => payFor(npc.id, o.id, cost, c.id),
+        }),
       };
     } else if (endCity) {
       const target = endPlace ? { cityId: endCity.id, placeId: endPlace.id } : { cityId: endCity.id };
@@ -217,11 +295,11 @@ function Journey({ character }: { character: Character }) {
     } else {
       panel = { title: 'Fin del capítulo', options: [backToPlaceOption(place, () => go(at({ placeId: place.id })))] };
     }
-    scene = { title: c.name, fragments: c.story, author: c.author, readId: c.id, panel };
+    scene = { title: c.name, fragments: c.story, author: c.author, readId: c.id, panel, ...(c.reward ? { onFinish: () => claimFor(c.id) } : {}) };
   }
 
   const sceneKey = `${location.cityId}/${location.placeId ?? ''}/${location.npcId ?? ''}/${location.chapterId ?? ''}/${rejected ?? ''}`;
-  return <SceneView key={sceneKey} scene={scene} character={character} />;
+  return <SceneView key={sceneKey} scene={scene} character={character} notice={notice} />;
 }
 
 const backToPlaceOption = (place: { name: string }, onSelect: () => void): PanelOption => ({
@@ -231,7 +309,7 @@ const backToPlaceOption = (place: { name: string }, onSelect: () => void): Panel
 });
 
 /** Una escena: el título y el texto que se van escribiendo y, al terminar, el panel de opciones. */
-function SceneView({ scene, character }: { scene: Scene; character: Character }) {
+function SceneView({ scene, character, notice }: { scene: Scene; character: Character; notice: InventoryNotice | null }) {
   const [finished, setFinished] = useState(false);
   const [skip, setSkip] = useState(0);
   const markRead = useMarkRead(character.id);
@@ -242,26 +320,41 @@ function SceneView({ scene, character }: { scene: Scene; character: Character })
   // que hacen lo suyo: el propio "Saltar animación" ya suma uno)
   useEffect(() => {
     if (finished) return;
+    // Con el inventario abierto, un clic es para él (o para cerrarlo pulsando fuera), no para saltar
+    let dialogOpen = false;
+    const onPointerDown = () => {
+      dialogOpen = !!document.querySelector('[role="dialog"]');
+    };
     const onClick = (e: MouseEvent) => {
-      if (e.button !== 0 || (e.target as Element).closest('a, button')) return;
+      if (e.button !== 0 || dialogOpen || (e.target as Element).closest('a, button, [role="dialog"]')) return;
       // Si el lector está seleccionando texto, no es un clic para saltar
       if (window.getSelection()?.toString()) return;
       setSkip((n) => n + 1);
     };
+    document.addEventListener('pointerdown', onPointerDown, true);
     document.addEventListener('click', onClick);
-    return () => document.removeEventListener('click', onClick);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown, true);
+      document.removeEventListener('click', onClick);
+    };
   }, [finished]);
 
+  // Lo que se hace al terminar el texto (cobrar la recompensa) va una sola vez por escena
+  const finishedOnce = useRef(false);
   const onDone = () => {
     setFinished(true);
     if (scene.readId && !readBefore && !markRead.isPending && !markRead.isSuccess) markRead.mutate(scene.readId);
+    if (!finishedOnce.current) {
+      finishedOnce.current = true;
+      scene.onFinish?.();
+    }
   };
 
   const readNote = readBefore && <span className="reading-page__read-note">Leído anteriormente</span>;
 
   return (
     <ReaderLayout
-      action={exitLink}
+      action={<ReaderActions character={character} notice={notice} />}
       className="reading-page__scene"
       panel={
         finished ? (

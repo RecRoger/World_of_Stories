@@ -12,6 +12,7 @@ import { applyServerErrors } from '@/components/form/server-errors';
 import { useCities } from '@/features/cities/api';
 import { useCityPlaces } from '@/features/places/api';
 import { linkButtonClass } from '@/features/locations/inline-editor';
+import { formatMoney } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { useUpdateChapter } from './api';
 import { ANIMATION_LABELS, FragmentPreview } from './animations';
@@ -20,6 +21,7 @@ import {
   blankFragment,
   chapterFormSchema,
   chapterToForm,
+  fitMoneyDecisions,
   formToBody,
   NEW_CHAPTER,
   type ChapterFormValues,
@@ -76,14 +78,32 @@ function ChapterForm({
   // Una decisión que apunte a un capítulo que ya no existe se trata como "capítulo nuevo"
   defaults.decisions = defaults.decisions.map((d) => (targets.some((c) => c.id === d.target) ? d : { ...d, target: NEW_CHAPTER }));
 
-  const { register, handleSubmit, control, watch, setValue, setError, formState } = useForm<ChapterFormValues>({
+  const { register, handleSubmit, control, watch, setValue, getValues, setError, formState } = useForm<ChapterFormValues>({
     resolver: zodResolver(chapterFormSchema),
     defaultValues: defaults,
   });
   const fragments = useFieldArray({ control, name: 'fragments' });
   const decisions = useFieldArray({ control, name: 'decisions' });
+  const rewardItems = useFieldArray({ control, name: 'rewardItems' });
+  // Objetos que ya dan otros capítulos del NPC, para reutilizar el mismo nombre
+  const knownItems = [...new Set(chapters.flatMap((c) => (c.reward?.type === 'item' ? (c.reward.items ?? []) : [])))];
   const { errors, isSubmitting: saving } = formState;
-  const [name, isFinal, endKind, cityId, values] = watch(['name', 'isFinal', 'endKind', 'cityId', 'fragments']);
+  const rewardType = watch('rewardType');
+  const [name, isFinal, endKind, cityId, values, decisionType, amount] = watch([
+    'name',
+    'isFinal',
+    'endKind',
+    'cityId',
+    'fragments',
+    'decisionType',
+    'amount',
+  ]);
+  const isMoney = decisionType === 'money';
+  const price = /^\d+$/.test(amount.trim()) && Number(amount) > 0 ? formatMoney(Number(amount)) : 'el monto';
+  // Al pasar a una decisión de dinero, quedan exactamente dos opciones: pagar y no pagar
+  const onDecisionTypeChange = (type: string) => {
+    if (type === 'money') decisions.replace(fitMoneyDecisions(getValues('decisions')));
+  };
   const id = (field: string) => `chapter-${field}`;
   const play = (key: string) => setPlays((p) => ({ ...p, [key]: (p[key] ?? 0) + 1 }));
 
@@ -188,6 +208,89 @@ function ChapterForm({
           </button>
         </div>
 
+        <div role="group" aria-labelledby={id('reward')} className={groupClass}>
+          <div className="chapter-form__group-heading">
+            <h3 id={id('reward')} className={groupTitle}>
+              Recompensa
+            </h3>
+            <p className="chapter-form__note">
+              Lo que gana el lector al terminar de leer el capítulo. Los objetos que ya tiene no se repiten, y el dinero lo
+              gana la primera vez que lo lee (al releerlo, solo si tiene menos de lo que da).
+            </p>
+          </div>
+          <div className="chapter-form__decision-type">
+            <FormField id={id('reward-type')} label="Tipo de recompensa" labelClassName={subLabel}>
+              {(a11y) => (
+                <Select id={id('reward-type')} className="chapter-form__control" {...a11y} {...register('rewardType')}>
+                  <option value="none">Sin recompensa</option>
+                  <option value="money">Dinero</option>
+                  <option value="item">Objetos</option>
+                </Select>
+              )}
+            </FormField>
+            {rewardType === 'money' && (
+              <FormField id={id('reward-amount')} label="Monedas que gana" error={errors.rewardAmount?.message} labelClassName={subLabel}>
+                {(a11y) => (
+                  <Input
+                    id={id('reward-amount')}
+                    type="number"
+                    min={1}
+                    step={1}
+                    inputMode="numeric"
+                    className="chapter-form__control"
+                    {...a11y}
+                    {...register('rewardAmount')}
+                  />
+                )}
+              </FormField>
+            )}
+          </div>
+          {rewardType === 'item' && (
+            <>
+              {errors.rewardItems?.message && <p className="chapter-form__field-error">{errors.rewardItems.message}</p>}
+              <ol className="chapter-form__reward-items">
+                {rewardItems.fields.map((field, i) => (
+                  <li key={field.id} className="chapter-form__reward-item">
+                    <FormField
+                      id={id(`reward-item-${i}`)}
+                      label={`Objeto ${i + 1}`}
+                      error={errors.rewardItems?.[i]?.name?.message}
+                      labelClassName={subLabel}
+                    >
+                      {(a11y) => (
+                        <Input
+                          id={id(`reward-item-${i}`)}
+                          autoComplete="off"
+                          list={id('known-items')}
+                          placeholder="Llave de bronce"
+                          className="chapter-form__control"
+                          {...a11y}
+                          {...register(`rewardItems.${i}.name`)}
+                        />
+                      )}
+                    </FormField>
+                    {rewardItems.fields.length > 1 && (
+                      <button type="button" className={cn(linkButtonClass, 'chapter-form__reward-remove')} onClick={() => rewardItems.remove(i)}>
+                        Quitar
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ol>
+              <datalist id={id('known-items')}>
+                {knownItems.map((item) => (
+                  <option key={item} value={item} />
+                ))}
+              </datalist>
+              {rewardItems.fields.length < 20 && (
+                <button type="button" className={cn(linkButtonClass, 'chapter-form__add')} onClick={() => rewardItems.append({ name: '' })}>
+                  + Añadir objeto
+                </button>
+              )}
+            </>
+          )}
+        </div>
+
         <div role="group" aria-labelledby={id('final')} className={groupClass}>
           <h3 id={id('final')} className={groupTitle}>
             ¿Es un capítulo final?
@@ -213,15 +316,57 @@ function ChapterForm({
                 y con el nombre de la decisión al guardar.
               </p>
             </div>
+            <div className="chapter-form__decision-type">
+              <FormField id={id('decision-type')} label="Tipo de decisión" labelClassName={subLabel}>
+                {(a11y) => (
+                  <Select
+                    id={id('decision-type')}
+                    className="chapter-form__control"
+                    {...a11y}
+                    {...register('decisionType', { onChange: (e) => onDecisionTypeChange(e.target.value) })}
+                  >
+                    <option value="choose">Elegir · todas las opciones son gratis</option>
+                    <option value="money">Dinero · la primera opción se paga</option>
+                  </Select>
+                )}
+              </FormField>
+              {isMoney && (
+                <FormField id={id('amount')} label="Monedas que cuesta" error={errors.amount?.message} labelClassName={subLabel}>
+                  {(a11y) => (
+                    <Input
+                      id={id('amount')}
+                      type="number"
+                      min={1}
+                      step={1}
+                      inputMode="numeric"
+                      className="chapter-form__control"
+                      {...a11y}
+                      {...register('amount')}
+                    />
+                  )}
+                </FormField>
+              )}
+            </div>
+            {isMoney && (
+              <p className="chapter-form__note">
+                El lector paga {price} para tomar la primera decisión; la segunda es el otro camino, gratis. Si no le
+                alcanza, solo puede tomar la segunda.
+              </p>
+            )}
             {errors.decisions?.message && <p className="chapter-form__field-error">{errors.decisions.message}</p>}
             <ol className="chapter-form__list">
               {decisions.fields.map((field, i) => (
                 <li key={field.id} className={itemClass}>
                   <div className="chapter-form__item-header">
-                    <span className="chapter-form__note">Decisión {i + 1}</span>
-                    <button type="button" className={linkButtonClass} onClick={() => decisions.remove(i)}>
-                      Quitar
-                    </button>
+                    <span className="chapter-form__note">
+                      Decisión {i + 1}
+                      {isMoney && (i === 0 ? ` · se paga ${price}` : ' · sin pagar')}
+                    </span>
+                    {!isMoney && (
+                      <button type="button" className={linkButtonClass} onClick={() => decisions.remove(i)}>
+                        Quitar
+                      </button>
+                    )}
                   </div>
                   <FormField id={id(`decision-${i}-name`)} label="Nombre" error={errors.decisions?.[i]?.name?.message} labelClassName={subLabel}>
                     {(a11y) => (
@@ -260,7 +405,7 @@ function ChapterForm({
                 </li>
               ))}
             </ol>
-            {decisions.fields.length < 10 && (
+            {!isMoney && decisions.fields.length < 10 && (
               <button type="button" className={cn(linkButtonClass, 'chapter-form__add')} onClick={() => decisions.append(blankDecision())}>
                 + Añadir decisión
               </button>

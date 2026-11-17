@@ -8,3 +8,8 @@ export function publicationLabel(published: boolean, publishDate: string | null 
   if (!published) return 'Sin publicar';
   return publishDate ? `${word} el ${formatDate(publishDate)}` : word;
 }
+
+const numberFormat = new Intl.NumberFormat('es');
+
+/** 1 → "1 moneda", 1500 → "1500 monedas" (el dinero del personaje y lo que cuesta una decisión) */
+export const formatMoney = (amount: number) => `${numberFormat.format(amount)} ${amount === 1 ? 'moneda' : 'monedas'}`;

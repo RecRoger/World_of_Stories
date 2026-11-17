@@ -6,10 +6,25 @@ import type { ApiRouter } from '../lib/route.js';
 import type { ITale } from '../models/tale.model.js';
 import { assertCanDelete, assertCanEdit, setPublished } from './permissions.js';
 
+type Publishable = { published: boolean; publishDate?: Date | null };
+
+/** ¿Hay al menos una versión publicada en cada lista? (una ciudad o un lugar solo se publica así) */
+export const hasPublishedVersions = (...lists: { published: boolean }[][]) => lists.every((list) => list.some((t) => t.published));
+
 interface TaleTarget {
   /** Documento raíz que hay que guardar tras modificar la lista */
   root: { save(): Promise<unknown> };
   list: Types.DocumentArray<ITale>;
+  /**
+   * La ciudad o el lugar dueño de la versión y sus listas de versiones (descripciones y viajes/entradas): si al
+   * despublicar o borrar una versión alguna lista se queda sin publicadas, el dueño se despublica.
+   */
+  owner?: { doc: Publishable; lists: { published: boolean }[][] };
+}
+
+/** Despublica la ciudad o el lugar si ya no le queda una descripción y un viaje/entrada publicados */
+function unpublishIfIncomplete({ owner }: TaleTarget) {
+  if (owner?.doc.published && !hasPublishedVersions(...owner.lists)) setPublished(owner.doc, false);
 }
 
 interface TaleRoutesOptions<P extends ZodObject> {
@@ -77,11 +92,12 @@ export function registerTaleRoutes<P extends ZodObject>(api: ApiRouter, opts: Ta
         response: taleSchema,
       },
       async ({ params, body, user }) => {
-        const { root, list } = await opts.load(params as z.output<P>);
-        const tale = getTale(list, params.taleId as string);
+        const target = await opts.load(params as z.output<P>);
+        const tale = getTale(target.list, params.taleId as string);
         assertCanEdit(user, tale.author);
         setPublished(tale, body.published);
-        await root.save();
+        if (!body.published) unpublishIfIncomplete(target);
+        await target.root.save();
         return tale.toJSON() as unknown as Tale;
       },
     )
@@ -94,11 +110,12 @@ export function registerTaleRoutes<P extends ZodObject>(api: ApiRouter, opts: Ta
         params: withTale,
       },
       async ({ params, user }) => {
-        const { root, list } = await opts.load(params as z.output<P>);
-        const tale = getTale(list, params.taleId as string);
+        const target = await opts.load(params as z.output<P>);
+        const tale = getTale(target.list, params.taleId as string);
         assertCanDelete(user, tale.author);
         tale.deleteOne();
-        await root.save();
+        unpublishIfIncomplete(target);
+        await target.root.save();
       },
     );
 }

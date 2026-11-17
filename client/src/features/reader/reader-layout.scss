@@ -21,7 +21,6 @@
     width: 100%;
     flex-direction: column;
     padding-inline: 1.25rem;
-    padding-top: 1rem;
   }
 
   // Enlace/botón subrayado (readerLinkClass)
@@ -51,12 +50,22 @@
     padding-bottom: 3.5rem;
   }
 
+  // Fija arriba al hacer scroll (el inventario y Salir siempre a mano). Se funde con el fondo hacia abajo para
+  // separarse del texto que pasa por debajo
   &__header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     column-gap: 1.25rem;
+    padding-top: 1rem;
+    // La franja que se funde: el texto se va desvaneciendo al pasar por debajo (sin mover el contenido: margen negativo)
+    padding-bottom: 1.75rem;
+    margin-bottom: -1.25rem;
+    background: linear-gradient(to bottom, var(--color-paper) 55%, transparent);
   }
 
   &__logo {

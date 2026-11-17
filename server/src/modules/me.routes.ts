@@ -1,10 +1,14 @@
+import mongoose from 'mongoose';
 import { z } from 'zod';
 import {
   becomeWriterInputSchema,
   characterSchema,
-  createCharacterInputSchema,
+  claimRewardInputSchema,
+  claimRewardResultSchema,
   markReadInputSchema,
   objectId,
+  optionCost,
+  payInputSchema,
   updateCharacterInputSchema,
   updateMeInputSchema,
   userSchema,
@@ -27,6 +31,20 @@ const loadMe = async (id: string, withPassword = false) =>
   found(await User.findById(id).select(withPassword ? '+password' : ''), 'Usuario no encontrado');
 
 const characterParams = z.object({ characterId: objectId });
+
+/**
+ * Los personajes van dentro del usuario: dos cambios a la vez (p. ej. marcar el capítulo como leído y cobrar su
+ * recompensa al terminar de leerlo) chocan al guardar (VersionError). Se reintenta con el usuario recargado.
+ */
+async function retrying<T>(change: () => Promise<T>, attempts = 3): Promise<T> {
+  for (let i = 1; ; i++) {
+    try {
+      return await change();
+    } catch (err) {
+      if (!(err instanceof mongoose.Error.VersionError) || i >= attempts) throw err;
+    }
+  }
+}
 const MAX_CHARACTERS = 10;
 
 /** Nombres de la ciudad, lugar, NPC y capítulo donde está el personaje (null si aún no ha viajado) */
@@ -50,7 +68,8 @@ async function whereabouts(location: ICharacter['location']): Promise<Whereabout
 
 /** Personaje con los nombres de su ubicación */
 async function toCharacter(character: ICharacter & { toJSON(): unknown }): Promise<Character> {
-  const json = character.toJSON() as Character;
+  // Los personajes ya no tienen nombre (los guardados antes pueden traerlo en la base); `rewardsClaimed` es interno
+  const { name: _name, rewardsClaimed: _claimed, ...json } = character.toJSON() as Character & { name?: unknown; rewardsClaimed?: unknown };
   return { ...json, whereabouts: await whereabouts(character.location) };
 }
 
@@ -129,16 +148,15 @@ meApi
       path: '/characters',
       summary: 'Crear personaje',
       access: 'user',
-      body: createCharacterInputSchema,
       response: characterSchema,
       status: 201,
     },
-    async ({ user, body }) => {
+    async ({ user }) => {
       const me = await loadMe(user.id);
       if (me.characters.length >= MAX_CHARACTERS) {
         throw HttpError.conflict(`Máximo ${MAX_CHARACTERS} personajes por cuenta`);
       }
-      me.characters.push({ name: body.name ?? '' });
+      me.characters.push({});
       await me.save();
       return toCharacter(me.characters.at(-1)!);
     },
@@ -147,7 +165,7 @@ meApi
     {
       method: 'patch',
       path: '/characters/:characterId',
-      summary: 'Actualizar personaje (ubicación, dinero, objetos...)',
+      summary: 'Actualizar personaje (ubicación, objetos, animaciones...)',
       access: 'user',
       params: characterParams,
       body: updateCharacterInputSchema,
@@ -164,6 +182,83 @@ meApi
   .route(
     {
       method: 'post',
+      path: '/characters/:characterId/pay',
+      summary: 'Pagar para elegir la opción de una decisión de dinero',
+      description:
+        'El personaje debe estar en la decisión (el encuentro del NPC, o el capítulo indicado) y tener dinero suficiente: ' +
+        'se descuenta el monto y pasa al capítulo de la opción. El dinero solo cambia así, no con `PATCH`.',
+      access: 'user',
+      params: characterParams,
+      body: payInputSchema,
+      response: characterSchema,
+    },
+    ({ user, params, body }) => retrying(async () => {
+      const me = await loadMe(user.id);
+      const character = found(me.characters.id(params.characterId), 'Personaje no encontrado');
+      const here = character.location;
+      if (!here?.cityId || here.npcId !== body.npcId || (here.chapterId ?? undefined) !== body.chapterId) {
+        throw HttpError.conflict('El personaje no está en esa decisión');
+      }
+
+      const npc = await Npc.findById(body.npcId);
+      const chapter = body.chapterId ? npc?.chapters.id(body.chapterId) : null;
+      if (!npc?.published || (body.chapterId && !chapter?.published)) throw HttpError.notFound('Decisión no encontrada');
+      const decision = chapter ? chapter.usersDecisions : npc.decision;
+      const index = decision?.options.findIndex((o) => o._id.equals(body.optionId)) ?? -1;
+      const option = decision?.options[index];
+      const cost = optionCost(decision, index);
+      if (!option?.published || !cost) throw HttpError.badRequest('Esa opción no se paga');
+      const target = npc.chapters.id(option.value);
+      if (!target?.published) throw HttpError.notFound('El capítulo de esa opción no está disponible');
+      if (character.money < cost) throw HttpError.conflict(`No tienes suficientes monedas: cuesta ${cost} y tienes ${character.money}`);
+
+      character.money -= cost;
+      character.location = { cityId: here.cityId, placeId: here.placeId, npcId: npc.id, chapterId: target.id };
+      await me.save();
+      return toCharacter(character);
+    }),
+  )
+  .route(
+    {
+      method: 'post',
+      path: '/characters/:characterId/reward',
+      summary: 'Cobrar la recompensa del capítulo al terminar de leerlo',
+      description:
+        'El personaje debe estar en ese capítulo. Objetos: gana los que aún no tiene. Dinero: lo gana la primera vez que ' +
+        'lee el capítulo, o al releerlo si tiene menos de lo que da la recompensa. `gained` dice lo que ganó (puede ser nada).',
+      access: 'user',
+      params: characterParams,
+      body: claimRewardInputSchema,
+      response: claimRewardResultSchema,
+    },
+    ({ user, params, body }) => retrying(async () => {
+      const me = await loadMe(user.id);
+      const character = found(me.characters.id(params.characterId), 'Personaje no encontrado');
+      if (character.location?.chapterId !== body.chapterId) throw HttpError.conflict('El personaje no está en ese capítulo');
+      const npc = await Npc.findOne({ 'chapters._id': body.chapterId });
+      const chapter = npc?.chapters.id(body.chapterId);
+      if (!npc?.published || !chapter?.published) throw HttpError.notFound('Capítulo no encontrado');
+
+      const reward = chapter.reward;
+      const gained = { money: 0, items: [] as string[] };
+      if (reward?.type === 'money' && reward.amount) {
+        const first = !character.rewardsClaimed.includes(chapter.id);
+        if (first || character.money < reward.amount) {
+          gained.money = reward.amount;
+          character.money += reward.amount;
+          if (first) character.rewardsClaimed.push(chapter.id);
+        }
+      } else if (reward?.type === 'item') {
+        gained.items = (reward.items ?? []).filter((item) => !character.items.includes(item));
+        character.items.push(...gained.items);
+      }
+      if (gained.money || gained.items.length) await me.save();
+      return { character: await toCharacter(character), gained };
+    }),
+  )
+  .route(
+    {
+      method: 'post',
       path: '/characters/:characterId/read',
       summary: 'Marcar un fragmento como leído',
       access: 'user',
@@ -171,13 +266,13 @@ meApi
       body: markReadInputSchema,
       response: characterSchema,
     },
-    async ({ user, params, body }) => {
+    ({ user, params, body }) => retrying(async () => {
       const me = await loadMe(user.id);
       const character = found(me.characters.id(params.characterId), 'Personaje no encontrado');
       if (!character.fragmentsRead.includes(body.fragmentId)) character.fragmentsRead.push(body.fragmentId);
       await me.save();
       return toCharacter(character);
-    },
+    }),
   )
   .route(
     {

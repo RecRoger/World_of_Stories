@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { publishChain, type Chapter } from '@wos/shared';
+import { optionCost, publishChain, type Chapter } from '@wos/shared';
 import { IconButton } from '@/components/ui/icon-button';
 import { WritingDots } from '@/components/ui/writing-dots';
 import { ChevronDownIcon, ChevronUpIcon, PencilIcon, PublishIcon, TrashIcon, UnpublishIcon } from '@/components/icons';
@@ -10,7 +10,7 @@ import { useCities } from '@/features/cities/api';
 import { useCityPlaces } from '@/features/places/api';
 import { linkButtonClass } from '@/features/locations/inline-editor';
 import { ApiError } from '@/lib/api';
-import { publicationLabel } from '@/lib/format';
+import { formatMoney, publicationLabel } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { useDeleteChapter, usePublishChapter } from './api';
 import { ANIMATION_LABELS, asAnimation } from './animations';
@@ -187,15 +187,30 @@ export function ChapterCard({ npcId, npcAuthor, chapter, chapters, isRoot, open,
             )}
           </section>
 
+          {chapter.reward && (
+            <section className="chapter-card__section">
+              <h3 className={sectionTitle}>Recompensa</h3>
+              <p className="chapter-card__reward">
+                {chapter.reward.type === 'money'
+                  ? `Gana ${formatMoney(chapter.reward.amount ?? 0)}`
+                  : `Gana ${(chapter.reward.items ?? []).join(', ')}`}
+              </p>
+            </section>
+          )}
+
           {!!options.length && (
             <section className="chapter-card__section">
               <h3 className={sectionTitle}>Decisiones</h3>
               <div className="chapter-card__decisions">
-                {options.map((o) => {
+                {options.map((o, i) => {
                   const target = byId(o.value);
+                  const cost = optionCost(chapter.decision, i);
                   const body = (
                     <span className="chapter-card__decision-text">
                       <span className="chapter-card__decision-name">{o.name}</span>
+                      {chapter.decision?.decisionType === 'money' && (
+                        <span className="chapter-card__decision-cost">{cost ? `Se paga ${formatMoney(cost)}` : 'Gratis'}</span>
+                      )}
                       <span className="chapter-card__decision-description">{o.description}</span>
                     </span>
                   );

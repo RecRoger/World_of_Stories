@@ -21,7 +21,7 @@ export function CharactersPage() {
   const create = useCreateCharacter();
   const navigate = useNavigate();
   // Un personaje nuevo no necesita nombre: se crea y pasa directo a elegir ciudad
-  const onCreate = () => create.mutate({}, { onSuccess: (character) => navigate(`/read/${character.id}`) });
+  const onCreate = () => create.mutate(undefined, { onSuccess: (character) => navigate(`/read/${character.id}`) });
 
   return (
     <ReaderLayout
@@ -90,10 +90,9 @@ function CharacterRow({ character }: { character: Character }) {
       className="characters-page__character"
     >
       <span className="characters-page__character-text">
-        {/* Por ahora el personaje se distingue por su ubicación (el nombre es opcional) */}
+        {/* Los personajes no tienen nombre: se distinguen por su ubicación */}
         <span className="characters-page__kind">
           <em>{where ? KIND_LABELS[where.kind] : 'Nuevo personaje'}</em>
-          {character.name && ` · ${character.name}`}
         </span>
         <span className="characters-page__where">{title}</span>
         {where && where.kind !== 'city' && <span className="characters-page__place">Ciudad: {where.city}</span>}

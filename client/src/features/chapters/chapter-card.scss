@@ -208,6 +208,20 @@
     font-weight: 700;
   }
 
+  &__reward {
+    font-size: 19px;
+    font-style: italic;
+  }
+
+  &__decision-cost {
+    align-self: flex-start;
+    border: 1px solid currentColor;
+    padding: 0.0625rem 0.4375rem;
+    font-size: 0.875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
   &__decision-description {
     font-size: 19px;
     line-height: 1.5;

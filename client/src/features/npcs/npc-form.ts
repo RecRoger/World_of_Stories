@@ -1,20 +1,20 @@
 import { z } from 'zod';
-import { DECISION_TYPES, NPC_TYPES, STORY_OPTIONS, type CreateNpcInput, type Npc, type NpcType } from '@wos/shared';
+import { DECISION_TYPES, MONEY_OPTIONS, NPC_TYPES, STORY_OPTIONS, type CreateNpcInput, type Npc, type NpcType } from '@wos/shared';
 import { taleToText, textToTale } from '@/features/locations/narrative';
 
 /** Ayuda de cada tipo de decisión (como en el diseño). */
 export const DECISION_HELP: Record<(typeof DECISION_TYPES)[number], string> = {
   choose: 'choose · el jugador elige entre opciones',
   item: 'item · se solicita un ítem',
-  money: 'money · se solicita dinero',
+  money: 'money · la primera opción cuesta dinero (en una historia, aceptar se paga)',
 };
 
 const text = z.string().trim().min(1, 'Escribe al menos un párrafo');
 
 /*
  * Valores del formulario del NPC. Los textos (descripción, encuentro, rechazo) van como texto corrido con la
- * animación "Normal", igual que los extractos de ciudades y lugares. Las opciones solo se validan si la decisión
- * es de elegir: con dinero o ítem no se muestran ni se envían.
+ * animación "Normal", igual que los extractos de ciudades y lugares. Las opciones se validan si la decisión es de
+ * elegir o de dinero (la primera se paga y la segunda no); con ítem no se muestran ni se envían.
  */
 export const npcFormSchema = z
   .object({
@@ -29,13 +29,13 @@ export const npcFormSchema = z
     options: z.array(z.object({ id: z.string().optional(), name: z.string(), description: z.string() })),
   })
   .superRefine((v, ctx) => {
-    if (v.decisionType === 'money' && !/^\d+$/.test(v.amount.trim())) {
-      ctx.addIssue({ code: 'custom', path: ['amount'], message: 'Indica un monto (número entero)' });
+    if (v.decisionType === 'money' && !(/^\d+$/.test(v.amount.trim()) && Number(v.amount) > 0)) {
+      ctx.addIssue({ code: 'custom', path: ['amount'], message: 'Indica un monto (número entero mayor que 0)' });
     }
     if (v.decisionType === 'item' && !v.item.trim()) {
       ctx.addIssue({ code: 'custom', path: ['item'], message: 'Indica el ítem que se pide' });
     }
-    if (v.decisionType !== 'choose') return;
+    if (v.decisionType === 'item') return;
     if (!v.options.length) ctx.addIssue({ code: 'custom', path: ['options'], message: 'Añade al menos una opción' });
     v.options.forEach((o, i) => {
       if (!o.name.trim()) ctx.addIssue({ code: 'custom', path: ['options', i, 'name'], message: 'Ponle un nombre' });
@@ -46,11 +46,15 @@ export type NpcFormValues = z.infer<typeof npcFormSchema>;
 
 const blankOption = () => ({ name: '', description: '' });
 
-/** Opciones según el tipo: un NPC de historia tiene exactamente dos (aceptar y rechazar); el resto, al menos una. */
-export function fitOptions(options: NpcFormValues['options'], npcType: NpcType) {
-  if (npcType === 'story') {
-    const two = options.slice(0, STORY_OPTIONS);
-    while (two.length < STORY_OPTIONS) two.push(blankOption());
+/**
+ * Opciones según el tipo: un NPC de historia tiene exactamente dos (aceptar y rechazar), igual que una decisión de
+ * dinero (pagar y no pagar); el resto, al menos una.
+ */
+export function fitOptions(options: NpcFormValues['options'], npcType: NpcType, decisionType?: NpcFormValues['decisionType']) {
+  if (npcType === 'story' || decisionType === 'money') {
+    const count = npcType === 'story' ? STORY_OPTIONS : MONEY_OPTIONS;
+    const two = options.slice(0, count);
+    while (two.length < count) two.push(blankOption());
     return two;
   }
   return options.length ? options : [blankOption()];
@@ -85,7 +89,11 @@ export function npcToForm(npc: Npc): NpcFormValues {
     decisionType: asDecisionType(d?.decisionType),
     amount: d?.amount != null ? String(d.amount) : '',
     item: d?.item ?? '',
-    options: fitOptions(d?.options.map((o) => ({ id: o.id, name: o.name, description: o.description })) ?? [], npcType),
+    options: fitOptions(
+      d?.options.map((o) => ({ id: o.id, name: o.name, description: o.description })) ?? [],
+      npcType,
+      asDecisionType(d?.decisionType),
+    ),
   };
 }
 
@@ -102,7 +110,7 @@ export function formToBody(v: NpcFormValues): CreateNpcInput {
       ...(v.decisionType === 'money' ? { amount: Number(v.amount) } : {}),
       ...(v.decisionType === 'item' ? { item: v.item.trim() } : {}),
       options:
-        v.decisionType === 'choose'
+        v.decisionType !== 'item'
           ? v.options.map((o) => ({ ...(o.id ? { id: o.id } : {}), name: o.name.trim(), description: o.description.trim() }))
           : [],
     },

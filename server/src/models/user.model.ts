@@ -4,11 +4,12 @@ import { jsonOptions } from './json.js';
 
 export interface ICharacter {
   _id: Types.ObjectId;
-  name: string;
   location?: Location | null;
   money: number;
   items: string[];
   fragmentsRead: string[];
+  /** Capítulos cuya recompensa de dinero ya cobró (al releerlos solo vuelve a cobrar si tiene menos de lo que dan) */
+  rewardsClaimed: string[];
   animations: boolean;
 }
 
@@ -35,11 +36,11 @@ const LocationSchema = new Schema<Location>(
 
 const CharacterSchema = new Schema<ICharacter>(
   {
-    name: { type: String, default: '', trim: true },
     location: { type: LocationSchema, default: null },
     money: { type: Number, default: 1000 },
     items: { type: [String], default: [] },
     fragmentsRead: { type: [String], default: [] },
+    rewardsClaimed: { type: [String], default: [] },
     animations: { type: Boolean, default: true },
   },
   { toJSON: jsonOptions() },

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ANIMATIONS } from '@wos/shared';
+import { ANIMATIONS, rewardInputSchema } from '@wos/shared';
 
 /*
  * Formato de los archivos de mundo generados automáticamente (ver docs/guia-escritura-automatica.md).
@@ -29,6 +29,10 @@ const chapter = z.object({
   text: z.array(fragment).min(1, 'Se necesita al menos un párrafo').max(200),
   /** Sin opciones, el capítulo es final */
   options: z.array(option.extend({ to: text })).max(10).optional(),
+  /** Lo que gana el personaje al terminar de leerlo: `{ "type": "money", "amount": 50 }` o `{ "type": "item", "items": ["…"] }` */
+  reward: rewardInputSchema.optional(),
+  /** Decisión de dinero: la primera opción cuesta estas monedas; la segunda es gratis (exactamente 2 opciones) */
+  cost: z.number().int('Un número entero de monedas').min(1, 'Al menos 1 moneda').optional(),
   /** Dónde termina un capítulo final (por nombre). Por defecto, el lugar del NPC */
   end: z.object({ city: text.optional(), place: text.optional() }).optional(),
 });
@@ -40,6 +44,8 @@ const npc = z.object({
   meeting: paragraphs,
   accept: option,
   reject: option,
+  /** Monedas que cuesta aceptar (empezar la historia); sin `cost`, aceptar es gratis */
+  cost: z.number().int('Un número entero de monedas').min(1, 'Al menos 1 moneda').optional(),
   rejected: paragraphs,
   /** El primero es el capítulo inicial */
   chapters: z.array(chapter).min(1, 'Un NPC de historia necesita al menos un capítulo'),
@@ -257,8 +263,11 @@ function lintChapters(np: string, chapters: WorldChapter[], c: Checks) {
     const options = ch.options ?? [];
     const texts = ch.text.map(fragmentText);
     c.narrative(`${path}.text`, texts, RULES.chapter);
+    if (ch.cost !== undefined && options.length !== 2) {
+      c.error(`${path}.cost`, 'Una decisión de dinero necesita exactamente 2 opciones: la primera se paga y la segunda no');
+    }
     if (options.length) {
-      if (options.length !== 2) c.warn(`${path}.options`, `${options.length} opciones (la guía pide 2)`);
+      if (options.length !== 2 && ch.cost === undefined) c.warn(`${path}.options`, `${options.length} opciones (la guía pide 2)`);
       c.endsInDecision(`${path}.text`, texts);
       if (ch.end) c.warn(`${path}.end`, 'Un capítulo con opciones no es final: se ignora `end`');
     }

@@ -11,11 +11,11 @@ import {
   type CityReading,
 } from '@wos/shared';
 import { ApiRouter, isWriter, type AuthUser } from '../lib/route.js';
-import { found } from '../lib/http-error.js';
+import { HttpError, found } from '../lib/http-error.js';
 import { City, type CityDoc } from '../models/city.model.js';
 import { Npc } from '../models/npc.model.js';
 import { assertCanDelete, assertCanEdit, setPublished } from './permissions.js';
-import { randomPublished, registerTaleRoutes, visibleTales } from './tales.js';
+import { hasPublishedVersions, randomPublished, registerTaleRoutes, visibleTales } from './tales.js';
 
 export const citiesApi = new ApiRouter('/cities', 'Ciudades');
 /** Modo escritor: listados con la información completa, para mostrarla y editarla */
@@ -138,6 +138,9 @@ citiesApi
     async ({ params, body, user }) => {
       const city = await loadCity(params.cityId, user);
       assertCanEdit(user, city.createdBy);
+      if (body.published && !hasPublishedVersions(city.description, city.travel)) {
+        throw HttpError.conflict('Para publicar la ciudad, publica antes al menos una descripción y un viaje');
+      }
       setPublished(city, body.published);
       await city.save();
       return toDto(city, user);
@@ -167,7 +170,7 @@ for (const kind of ['description', 'travel'] as const) {
     label: kind === 'description' ? 'la descripción de la ciudad' : 'el viaje a la ciudad',
     load: async ({ cityId }) => {
       const city = found(await City.findById(cityId), 'Ciudad no encontrada');
-      return { root: city, list: city[kind] };
+      return { root: city, list: city[kind], owner: { doc: city, lists: [city.description, city.travel] } };
     },
   });
 }
