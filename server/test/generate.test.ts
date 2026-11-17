@@ -7,7 +7,7 @@ import { worldFileSchema } from '../src/import/world-file.js';
 
 /** El mundo de ejemplo, sin el final que lleva a Valdoria (en los tests no existe) */
 const vado = async () => {
-  const world = worldFileSchema.parse(JSON.parse(await readFile(new URL('../../docs/mundos/vado-ambar.json', import.meta.url), 'utf8')));
+  const world = worldFileSchema.parse(JSON.parse(await readFile(new URL('./fixtures/vado-ambar.json', import.meta.url), 'utf8')));
   for (const ch of world.cities[0]!.places[0]!.npcs[0]!.chapters) if (ch.end?.city === 'Valdoria') delete ch.end;
   return world;
 };

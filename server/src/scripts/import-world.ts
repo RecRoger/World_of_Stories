@@ -1,4 +1,4 @@
-// Importa contenido generado (ver docs/guia-escritura-automatica.md). No borra nada.
+// Importa contenido generado (ver docs/guia-escritura-automatica.md). No borra nada del juego.
 //   npm run import:world -- <archivo.json>   mundo completo: ciudades → lugares → NPCs → capítulos
 //   npm run import:city  -- <archivo.json>   una ciudad (nueva, o versiones nuevas de sus textos)
 //   npm run import:place -- <archivo.json>   un lugar en una ciudad existente
@@ -9,9 +9,11 @@
 // sin usar la API; luego se importa su respuesta. Con --claude, lo escribe Claude por la API y lo importa directamente:
 //   npm run import:place -- --city="Vado Ámbar" [--idea="…"] [--claude]
 //   npm run import:npc   -- --city="Vado Ámbar" --place="Puente de los faroleros" [--idea="…"] [--claude]
-import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
+// Los encargos y los JSON generados van a una carpeta temporal del sistema, fuera del proyecto (--workdir la muestra);
+// tras importar con éxito se borran los de esa carpeta (--keep los conserva). Los archivos de otras rutas no se tocan.
+import { access, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import mongoose from 'mongoose';
 import { env } from '../config/env.js';
 import { EFFORTS, claudeAsk, generateElement, GENERATION_MODEL, writeBrief, type Effort, type GenerateTarget } from '../import/generate.js';
@@ -19,6 +21,13 @@ import { ensureAuthor, GENERATED_AUTHOR, importWorld } from '../import/import-wo
 import { IMPORT_KINDS, parseImportFile, type ImportKind, type Issue } from '../import/world-file.js';
 
 const args = process.argv.slice(2);
+/** Carpeta temporal de trabajo (encargos y JSON escritos para importar), fuera del proyecto */
+const WORKDIR = path.join(os.tmpdir(), 'world-of-stories');
+if (args.includes('--workdir')) {
+  await mkdir(WORKDIR, { recursive: true });
+  console.log(WORKDIR);
+  process.exit(0);
+}
 const [kind, file] = args.filter((a) => !a.startsWith('--')) as [ImportKind | undefined, string | undefined];
 const option = (name: string) => args.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3).trim() || undefined;
 const publish = args.includes('--publish');
@@ -31,6 +40,7 @@ const place = option('place');
 const idea = option('idea');
 const effort = (option('effort') ?? 'medium') as Effort;
 const out = option('out');
+const keep = args.includes('--keep');
 
 const usage = (problem?: string) => {
   if (problem) console.error(`❌ ${problem}\n`);
@@ -44,7 +54,9 @@ const usage = (problem?: string) => {
   console.error('  --city=<c>       ciudad de destino del lugar o del NPC (manda sobre la del archivo)');
   console.error('  --place=<l>      lugar de destino del NPC (manda sobre el del archivo)');
   console.error('  --idea=<texto>   sin archivo: de qué trata el lugar o la historia del NPC');
-  console.error('  --out=<archivo>  sin archivo: dónde guardar el encargo (docs/mundos/encargos/) o, con --claude, el JSON (docs/mundos/generados/)');
+  console.error(`  --out=<archivo>  sin archivo: dónde guardar el encargo o, con --claude, el JSON (por defecto en ${WORKDIR})`);
+  console.error('  --keep           no borra de la carpeta temporal el archivo importado ni su encargo');
+  console.error('  --workdir        muestra la carpeta temporal de trabajo y sale');
   console.error('  --claude         sin archivo: lo escribe Claude por la API (necesita ANTHROPIC_API_KEY) y lo importa');
   console.error(`  --effort=<e>     con --claude: ${EFFORTS.join(' | ')} (por defecto medium)`);
   process.exit(1);
@@ -74,13 +86,14 @@ const print = (issues: Issue[]) => {
 const slug = (s: string) =>
   s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'sin-nombre';
 
-/** Guarda un archivo en docs/mundos/<carpeta> (o en --out) sin pisar otro */
-async function save(content: string, folder: 'generados' | 'encargos', name: string, ext: 'json' | 'md') {
+const inWorkdir = (f: string) => path.dirname(path.resolve(f)).toLowerCase() === WORKDIR.toLowerCase();
+
+/** Guarda un archivo en la carpeta temporal (o en --out) sin pisar otro */
+async function save(content: string, name: string, ext: 'json' | 'md') {
   let target = out ? path.resolve(out) : '';
   if (!target) {
-    const dir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../docs/mundos', folder);
-    await mkdir(dir, { recursive: true });
-    const base = path.join(dir, `${kind}-${slug(name)}`);
+    await mkdir(WORKDIR, { recursive: true });
+    const base = path.join(WORKDIR, `${kind}-${slug(name)}`);
     target = `${base}.${ext}`;
     for (let n = 2; await access(target).then(() => true, () => false); n++) target = `${base}-${n}.${ext}`;
   }
@@ -88,8 +101,22 @@ async function save(content: string, folder: 'generados' | 'encargos', name: str
   return target;
 }
 
+/** Tras importar: borra el archivo importado y los encargos de su destino, si están en la carpeta temporal */
+async function cleanUp(imported: string | undefined, destination: string | undefined) {
+  if (keep) return;
+  const files = imported && inWorkdir(imported) ? [path.resolve(imported)] : [];
+  if (destination) {
+    const brief = new RegExp(`^${kind}-${slug(destination)}(-\d+)?\.md$`);
+    const names = await readdir(WORKDIR).catch(() => [] as string[]);
+    files.push(...names.filter((n) => brief.test(n)).map((n) => path.join(WORKDIR, n)));
+  }
+  for (const f of files) await rm(f, { force: true });
+  if (files.length) console.log(`🧹 Borrados de la carpeta temporal: ${files.map((f) => path.basename(f)).join(', ')}`);
+}
+
 async function main() {
   let raw: unknown;
+  let generated: string | undefined;
   if (file) {
     try {
       raw = JSON.parse(await readFile(file, 'utf8'));
@@ -109,7 +136,7 @@ async function main() {
       // Sin API: un encargo para pegar en un chat con un modelo, y cómo importar su respuesta
       const target: GenerateTarget = kind === 'npc' ? { kind, city: city!, place: place! } : { kind: 'place', city: city! };
       const importCommand = `npm run import:${kind} -- <respuesta.json> --city="${city}"${place ? ` --place="${place}"` : ''} --dry-run`;
-      const saved = await save(await writeBrief(target, { idea, importCommand }), 'encargos', place ?? city!, 'md');
+      const saved = await save(await writeBrief(target, { idea, importCommand }), place ?? city!, 'md');
       console.log(`📝 Encargo guardado en ${saved}`);
       console.log('\n1. Pega el archivo completo en un chat con un modelo (claude.ai, Claude Code…).');
       console.log('2. Guarda su respuesta (solo el JSON) en un archivo .json.');
@@ -134,7 +161,8 @@ async function main() {
           ),
       });
       raw = result.raw;
-      console.log(`📄 Guardado en ${await save(JSON.stringify(result.raw, null, 2) + '\n', 'generados', String(result.raw.name ?? ''), 'json')}`);
+      generated = await save(JSON.stringify(result.raw, null, 2) + '\n', String(result.raw.name ?? ''), 'json');
+      console.log(`📄 Guardado en ${generated}`);
     }
 
     const { world, relabel, issues: lint } = parseImportFile(kind!, raw);
@@ -165,6 +193,9 @@ async function main() {
     list('Lugares nuevos:', summary.places.created);
     list('Lugares con versiones nuevas:', summary.places.extended);
     list(`NPCs (${summary.chapters} capítulos en total):`, summary.npcs);
+    const target = (raw ?? {}) as { city?: unknown; place?: unknown };
+    const destination = kind === 'npc' ? target.place : kind === 'place' ? target.city : undefined;
+    await cleanUp(file ?? generated, typeof destination === 'string' ? destination : undefined);
     return 0;
   } catch (err) {
     console.error(`❌ ${(err as Error).message}`);

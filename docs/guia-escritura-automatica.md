@@ -241,29 +241,40 @@ existen (para no repetirlos) y, para un NPC, los destinos posibles de sus finale
 npm run import:npc -- --city="Vado Ámbar" --place="Puente de los faroleros" --idea="un músico que toca para el río"
 ```
 
-1. Guarda en `docs/mundos/encargos/` un `.md` con las instrucciones, esta guía, la plantilla del tipo, la idea y el
-   contexto del destino.
+1. Guarda en la carpeta temporal de trabajo (fuera del proyecto: `%TEMP%\world-of-stories` en Windows; la muestra
+   `--workdir`) un `.md` con las instrucciones, esta guía, la plantilla del tipo, la idea y el contexto del destino.
 2. Pégalo entero en un chat con un modelo (claude.ai, Claude Code…) y guarda su respuesta, solo el JSON, en un `.json`.
 3. Valídalo con el comando que imprime el script:
    `npm run import:npc -- respuesta.json --city="Vado Ámbar" --place="Puente de los faroleros" --dry-run`.
    Si hay problemas, pásale la lista al modelo para que corrija solo eso.
 4. Impórtalo con el mismo comando sin `--dry-run` (y con `--publish` para publicarlo).
 
+Los encargos y los JSON que estén en la carpeta temporal se borran solos al importarlos con éxito (con `--keep` se
+conservan); los archivos de cualquier otra ruta no se tocan.
+
+**Con un agente que tiene acceso al proyecto (Claude Code, Cursor, Codex…): sin copiar ni pegar.** Basta con
+pedírselo en el chat («crea un NPC en el Puente de los faroleros de Vado Ámbar sobre…»): el agente genera el encargo,
+escribe el JSON, lo valida, corrige e importa él mismo. Los pasos están en la skill
+[`.claude/skills/crear-contenido/SKILL.md`](../.claude/skills/crear-contenido/SKILL.md), que Claude Code usa sola y
+que [`AGENTS.md`](../AGENTS.md) indica a los demás agentes.
+
 **Con la API de Claude (`--claude`): todo en un paso.** Escribe el elemento con `claude-opus-5-5`, lo valida y le pide
 correcciones hasta 3 veces (si al final solo quedan avisos, se queda con la última versión importable), guarda el JSON
-en `docs/mundos/generados/` y lo importa. Con `--dry-run` solo lo genera y lo guarda. Necesita una clave de la API de
+en la carpeta temporal y lo importa (y lo borra). Con `--dry-run` solo lo genera y lo guarda. Necesita una clave de la API de
 Anthropic en `server/.env` (`ANTHROPIC_API_KEY=…`), tiene coste por uso y, si el modelo rechaza la petición, la API la
 repite en otro modelo.
 
 | Opción | Efecto |
 | --- | --- |
 | `--idea=<texto>` | De qué trata el lugar o la historia del NPC (si no, la elige el modelo). |
-| `--out=<archivo>` | Dónde guardar el encargo o, con `--claude`, el JSON generado. |
+| `--out=<archivo>` | Dónde guardar el encargo o, con `--claude`, el JSON generado (por defecto, en la carpeta temporal). |
+| `--keep` | No borra de la carpeta temporal el JSON importado ni su encargo. |
+| `--workdir` | Muestra la carpeta temporal de trabajo y sale. |
 | `--claude` | Lo escribe Claude por la API, en lugar de preparar el encargo. |
 | `--effort=<nivel>` | Con `--claude`: `low`, `medium` (por defecto), `high`, `xhigh` o `max`. Más esfuerzo, más calidad y más coste. |
 
 En PowerShell, `npm run` puede tragarse las opciones que van tras `--`; ahí usa el script directamente, con el tipo
-como primer argumento: `npx tsx src/scripts/import-world.ts npc ../npc.json --dry-run`.
+como primer argumento: `node --import tsx src/scripts/import-world.ts npc ../npc.json --dry-run`.
 
 **Autoría: TellerIA.** Todo lo generado se firma por defecto como **TellerIA**, un autor genérico para los relatos
 escritos por un modelo. Se crea solo la primera vez que se importa, como escritor sin contraseña conocida: nadie inicia
