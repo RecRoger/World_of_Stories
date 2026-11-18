@@ -79,6 +79,7 @@ El NPC tiene que poder estar ahí cualquier día.
 | Texto | 6–18 párrafos (**1000–12000 caracteres**). Profundiza en la historia y el problema del NPC, con imágenes visuales y sensoriales, diálogos y otros personajes. |
 | Decisión | Si no es final: **termina en una pregunta o situación de decisión** y tiene **2 opciones** (título + descripción ≤ 250 caracteres). |
 | Precio (opcional) | `cost`: la primera opción cuesta esas monedas y la segunda es el otro camino, gratis. Pagar debe tener sentido en la historia, y la opción gratis, ser un camino de verdad (quien no tenga dinero solo podrá tomar esa). |
+| Objeto (opcional) | `item`: la primera opción usa ese objeto del catálogo (hay que tenerlo) y la segunda sigue sin usarlo; con `"consumeItem": true` el objeto se gasta. Como con `cost`, la opción sin objeto tiene que ser un camino de verdad. |
 | Recompensa (opcional) | `reward`: lo que gana el personaje al terminar de leer el capítulo, dinero u objetos. Que el texto lo cuente (encuentra una bolsa, le regalan un mapa). |
 | Final | Sin opciones. Termina en el lugar del NPC (por defecto) o en otra ciudad o lugar. Cierra el relato: la consecuencia de las decisiones y la despedida. |
 
@@ -208,9 +209,15 @@ El formato del mundo completo (los archivos sueltos usan los mismos campos de ca
 - **`cost` (dinero):** número entero de monedas, opcional. En un NPC, lo que cuesta aceptar (`"cost": 30`); en un
   capítulo, lo que cuesta su **primera** opción (`"cost": 120`), que entonces debe tener exactamente 2 opciones. Cada
   personaje empieza con 1000 monedas y las lleva en su inventario; si no le alcanza, solo puede elegir la opción gratis.
+- **Objetos:** son los del catálogo (el encargo los lista) y se nombran por su nombre exacto; si alguno no existe, no se
+  importa nada. Un objeto es **único** (se tiene una vez) o **común** (se acumula).
+- **`item` (decisión de objeto):** opcional. En un NPC, el objeto que hay que usar para aceptar; en un capítulo, el que
+  usa su **primera** opción, que entonces debe tener exactamente 2 opciones (`"item": "Ganzúa"`). Con
+  `"consumeItem": true`, se gasta al usarlo. Una decisión pide dinero (`cost`) u objeto (`item`), no las dos cosas.
 - **`reward` (recompensa de un capítulo):** opcional. Dinero: `{ "type": "money", "amount": 50 }`; objetos, por
-  nombre: `{ "type": "item", "items": ["Llave de bronce"] }`. Se cobra al terminar de leer el capítulo: los objetos que
-  el personaje ya tiene no se repiten, y el dinero se gana la primera vez (al releerlo, solo si tiene menos de lo que da).
+  nombre y con cantidad opcional: `{ "type": "item", "items": ["Antorcha", { "name": "Flecha de fresno", "quantity": 5 }] }`.
+  Se cobra al terminar de leer el capítulo. El dinero y los objetos comunes se ganan la primera vez (al releerlo, solo si
+  ya no le quedan); un objeto único, solo si no lo tiene.
 - **Límites técnicos:** nombres ≤ 80 caracteres, títulos de NPC ≤ 120, descripciones de opciones ≤ 500 (la guía
   pide ≤ 250), párrafos ≤ 5000 caracteres, hasta 10 opciones por capítulo (la guía pide 2).
 

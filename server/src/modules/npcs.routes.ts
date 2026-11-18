@@ -19,6 +19,7 @@ import { City } from '../models/city.model.js';
 import { Npc, type DecisionData, type IDecision, type NpcDoc } from '../models/npc.model.js';
 import { assertCanDelete, assertCanEdit, setPublished } from './permissions.js';
 import { loadPlace } from './places.routes.js';
+import { assertCatalogItems, itemsIn } from './inventory.js';
 
 export const placeNpcsApi = new ApiRouter('/places', 'NPCs');
 export const npcsApi = new ApiRouter('/npcs', 'NPCs');
@@ -54,8 +55,8 @@ function npcDecision(input: NonNullable<DecisionInput>, previous?: IDecision | n
   };
 }
 
-/** Decisiones de un NPC de historia con aceptar y rechazar: elegir, o pagar (`money`) para aceptar */
-const isStoryDecision = (type: string | null | undefined) => (type ?? 'choose') === 'choose' || type === 'money';
+/** Decisiones de un NPC de historia con aceptar y rechazar: elegir, pagar (`money`) o usar un objeto (`item`) para aceptar */
+const isStoryDecision = (type: string | null | undefined) => ['choose', 'money', 'item'].includes(type ?? 'choose');
 
 /**
  * En un NPC de historia, aceptar lleva siempre al capítulo inicial (el primero) y rechazar no lleva a ninguno:
@@ -161,6 +162,7 @@ placeNpcsApi
     },
     async ({ params, body, user }) => {
       assertStoryDecision(body.npcType, body.decision);
+      await assertCatalogItems(itemsIn(body));
       const { city, place } = await loadPlace(params.placeId, user);
       // Un NPC nace con su capítulo inicial vacío ("Inicio"), desde el que se ramifica la historia
       const npc = new Npc({
@@ -202,6 +204,7 @@ npcsApi
     async ({ params, body, user }) => {
       const npc = await loadNpc(params.npcId, user);
       assertCanEdit(user, npc.author);
+      await assertCatalogItems(itemsIn(body));
       const { description, meeting, rejected, decision, ...fields } = body;
       npc.set(fields);
       for (const [key, tale] of [['description', description], ['meeting', meeting], ['rejected', rejected]] as const) {

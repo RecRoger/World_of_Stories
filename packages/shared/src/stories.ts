@@ -17,6 +17,17 @@ export const STORY_OPTIONS = 2;
  */
 export const MONEY_OPTIONS = 2;
 
+/**
+ * Una decisión `item` también tiene dos opciones: la primera usa el objeto `item` (un ID del catálogo; hay que tenerlo
+ * en el inventario) y la segunda sigue sin usarlo. Si la primera opción tiene `removeItem`, el objeto se gasta al usarlo.
+ */
+export const ITEM_OPTIONS = 2;
+
+/** ¿Pide un objeto la opción `index` de esta decisión? Devuelve su ID, o null si no pide nada. */
+export function optionItem(decision: { decisionType?: string | null; item?: string | null } | null | undefined, index: number): string | null {
+  return decision?.decisionType === 'item' && index === 0 ? (decision.item ?? null) : null;
+}
+
 /** ¿Cuesta dinero elegir la opción `index` de esta decisión? Devuelve el precio, o 0 si es gratis. */
 export function optionCost(decision: { decisionType?: string | null; amount?: number | null } | null | undefined, index: number): number {
   return decision?.decisionType === 'money' && index === 0 ? (decision.amount ?? 0) : 0;
@@ -38,7 +49,7 @@ export const decisionSchema = z
   .object({
     decisionType: z.string().nullish().meta({ description: `Normalmente uno de: ${DECISION_TYPES.join(', ')}` }),
     amount: z.number().nullish(),
-    item: z.string().nullish(),
+    item: z.string().nullish().meta({ description: 'Con `item`: el ID del objeto del catálogo que usa la primera opción' }),
     options: z.array(decisionOptionSchema),
   })
   .meta({ id: 'Decision' });
@@ -52,7 +63,7 @@ export const decisionOptionInputSchema = z
     value: objectId.optional().meta({
       description: 'Capítulo destino. En capítulos, si se omite se crea un capítulo hijo vacío.',
     }),
-    removeItem: z.boolean().optional(),
+    removeItem: z.boolean().optional().meta({ description: 'En la opción que usa un objeto: se quita del inventario al usarlo' }),
   })
   .meta({ id: 'DecisionOptionInput' });
 
@@ -60,14 +71,21 @@ export const decisionInputSchema = z
   .object({
     decisionType: z.enum(DECISION_TYPES).default('choose'),
     amount: z.number().int().min(0).optional().meta({ description: 'Con `money`: lo que cuesta la primera opción' }),
-    item: z.string().trim().max(80).optional(),
+    item: objectId.optional().meta({ description: 'Con `item`: el objeto del catálogo que usa la primera opción' }),
     options: z.array(decisionOptionInputSchema).max(10).default([]),
   })
   .superRefine((v, ctx) => {
-    if (v.decisionType !== 'money') return;
-    if (!v.amount) ctx.addIssue({ code: 'custom', path: ['amount'], message: 'Una decisión de dinero necesita un monto mayor que 0' });
-    if (v.options.length !== MONEY_OPTIONS) {
-      ctx.addIssue({ code: 'custom', path: ['options'], message: `Una decisión de dinero tiene exactamente ${MONEY_OPTIONS} opciones: pagar y no pagar` });
+    if (v.decisionType === 'money') {
+      if (!v.amount) ctx.addIssue({ code: 'custom', path: ['amount'], message: 'Una decisión de dinero necesita un monto mayor que 0' });
+      if (v.options.length !== MONEY_OPTIONS) {
+        ctx.addIssue({ code: 'custom', path: ['options'], message: `Una decisión de dinero tiene exactamente ${MONEY_OPTIONS} opciones: pagar y no pagar` });
+      }
+    }
+    if (v.decisionType === 'item') {
+      if (!v.item) ctx.addIssue({ code: 'custom', path: ['item'], message: 'Elige el objeto que pide la decisión' });
+      if (v.options.length !== ITEM_OPTIONS) {
+        ctx.addIssue({ code: 'custom', path: ['options'], message: `Una decisión de objeto tiene exactamente ${ITEM_OPTIONS} opciones: usarlo y no usarlo` });
+      }
     }
   })
   .meta({ id: 'DecisionInput' });
@@ -167,16 +185,25 @@ export const endLocationInputSchema = z
 export const REWARD_TYPES = ['money', 'item'] as const;
 export type RewardType = (typeof REWARD_TYPES)[number];
 
+/** Un objeto del catálogo y cuántos */
+export const itemStackSchema = z
+  .object({
+    itemId: objectId,
+    quantity: z.number().int().min(1).max(99),
+  })
+  .meta({ id: 'ItemStack' });
+export type ItemStack = z.infer<typeof itemStackSchema>;
+
 /**
- * Lo que gana el personaje al terminar de leer un capítulo: dinero (`amount`) u objetos (`items`, por nombre).
- * Los objetos que ya tiene no se repiten; el dinero se gana la primera vez que lee el capítulo, o al releerlo si
- * tiene menos de lo que da la recompensa.
+ * Lo que gana el personaje al terminar de leer un capítulo: dinero (`amount`) u objetos del catálogo (`items`, con su
+ * cantidad). El dinero y los objetos comunes se ganan la primera vez que lee el capítulo, o al releerlo si no le queda
+ * (dinero: si tiene menos de lo que da; objeto común: si no tiene ninguno). Un objeto único solo si no lo tiene.
  */
 export const rewardSchema = z
   .object({
     type: z.string().meta({ description: `Uno de: ${REWARD_TYPES.join(', ')}` }),
     amount: z.number().nullish(),
-    items: z.array(z.string()).nullish(),
+    items: z.array(itemStackSchema).nullish(),
   })
   .meta({ id: 'Reward' });
 export type Reward = z.infer<typeof rewardSchema>;
@@ -187,10 +214,15 @@ export const rewardInputSchema = z
     z.object({
       type: z.literal('item'),
       items: z
-        .array(z.string().trim().min(1).max(80))
+        .array(z.object({ itemId: objectId, quantity: z.number().int().min(1).max(99).default(1) }))
         .min(1, 'Indica al menos un objeto')
         .max(20)
-        .transform((items) => [...new Set(items)]),
+        // el mismo objeto dos veces suma sus cantidades
+        .transform((items) => {
+          const merged = new Map<string, number>();
+          for (const { itemId, quantity } of items) merged.set(itemId, Math.min(99, (merged.get(itemId) ?? 0) + quantity));
+          return [...merged].map(([itemId, quantity]) => ({ itemId, quantity }));
+        }),
     }),
   ])
   .meta({ id: 'RewardInput' });

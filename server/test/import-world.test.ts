@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { api, signUp } from './helpers.js';
 import { lintWorld, parseImportFile, worldFileSchema, type WorldFile } from '../src/import/world-file.js';
 import { ensureAuthor, GENERATED_AUTHOR, importWorld } from '../src/import/import-world.js';
+import { Item } from '../src/models/item.model.js';
 import { User } from '../src/models/user.model.js';
 
 /** Párrafo de relleno con la longitud pedida, en presente y sin diálogos */
@@ -118,8 +119,15 @@ describe('archivos de mundo', () => {
     npc.cost = 30;
     npc.chapters[1]!.cost = 120;
     npc.chapters[3]!.reward = { type: 'money', amount: 40 };
-    npc.chapters[6]!.reward = { type: 'item', items: ['Mapa ciego'] };
+    npc.chapters[6]!.reward = { type: 'item', items: ['mapa ciego', { name: 'Flecha', quantity: 5 }] };
+    npc.chapters[2]!.item = 'Flecha';
+    npc.chapters[2]!.consumeItem = true;
     expect(lintWorld(w)).toEqual([]);
+    // los objetos van por nombre y tienen que existir en el catálogo
+    const missing = (await importWorld(w, { author: 'generador', dryRun: true })).issues.map((i) => i.message);
+    expect(missing.sort()).toEqual(['No existe el objeto «Flecha» en el catálogo', 'No existe el objeto «mapa ciego» en el catálogo']);
+    const mapa = await Item.create({ name: 'Mapa ciego', price: 5, author: 'generador' });
+    const flecha = await Item.create({ name: 'Flecha', price: 1, stackable: true, author: 'generador' });
     // un final no puede cobrar: no tiene las dos opciones
     const broken = world();
     broken.cities[0]!.places[0]!.npcs[0]!.chapters[3]!.cost = 5;
@@ -136,6 +144,11 @@ describe('archivos de mundo', () => {
     expect(a.decision).toMatchObject({ decisionType: 'money', amount: 120 });
     const a1 = (await reader.get(api(`/chapters/${a.decision.options[0].value}`)).expect(200)).body;
     expect(a1.reward).toEqual({ type: 'money', amount: 40 });
+    const b = (await reader.get(api(`/chapters/${inicio.decision.options[1].value}`)).expect(200)).body;
+    expect(b.decision).toMatchObject({ decisionType: 'item', item: flecha.id });
+    expect(b.decision.options.map((o: { removeItem: boolean }) => o.removeItem)).toEqual([true, false]);
+    const b2 = (await reader.get(api(`/chapters/${b.decision.options[1].value}`)).expect(200)).body;
+    expect(b2.reward).toEqual({ type: 'item', items: [{ itemId: mapa.id, quantity: 1 }, { itemId: flecha.id, quantity: 5 }] });
     expect(inicio.reward).toBeNull();
   });
 

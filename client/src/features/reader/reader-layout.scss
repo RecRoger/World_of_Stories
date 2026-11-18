@@ -4,13 +4,16 @@
   // Ancho de la columna de lectura y relleno lateral que alinea con ella lo que va a todo el ancho (el panel de abajo).
   // El % se resuelve donde se usa la variable: en el panel, sobre el ancho de la pantalla.
   --reader-width: 440px;
-  --reader-gutter: max(1.25rem, calc((100% - var(--reader-width)) / 2 + 1.25rem));
+  --reader-gutter: max(
+    1.25rem,
+    calc((100% - var(--reader-width)) / 2 + 1.25rem)
+  );
 
   display: flex;
   min-height: 100dvh;
   flex-direction: column;
   overflow-x: clip;
-  background-color: var(--color-paper);
+  background-color: var(--color-parchment);
 
   // Ancho fijo: la lectura está pensada para el móvil y en tablet y escritorio se ve igual
   &__column {
@@ -65,7 +68,11 @@
     // La franja que se funde: el texto se va desvaneciendo al pasar por debajo (sin mover el contenido: margen negativo)
     padding-bottom: 1.75rem;
     margin-bottom: -1.25rem;
-    background: linear-gradient(to bottom, var(--color-paper) 55%, transparent);
+    background: linear-gradient(
+      to bottom,
+      var(--color-parchment) 55%,
+      transparent
+    );
   }
 
   &__logo {

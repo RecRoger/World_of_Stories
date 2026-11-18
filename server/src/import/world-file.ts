@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ANIMATIONS, rewardInputSchema } from '@wos/shared';
+import { ANIMATIONS } from '@wos/shared';
 
 /*
  * Formato de los archivos de mundo generados automáticamente (ver docs/guia-escritura-automatica.md).
@@ -22,6 +22,18 @@ const option = z.object({
   description: text.max(500, 'Máximo 500 caracteres'),
 });
 
+/** Recompensa de un capítulo: dinero, u objetos del catálogo por nombre (con cantidad, opcional) */
+const reward = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('money'), amount: z.number().int('Un número entero de monedas').min(1, 'Al menos 1 moneda') }),
+  z.object({
+    type: z.literal('item'),
+    items: z
+      .array(z.union([text.max(80), z.object({ name: text.max(80), quantity: z.number().int().min(1).max(99).default(1) })]))
+      .min(1, 'Indica al menos un objeto')
+      .max(20),
+  }),
+]);
+
 const chapter = z.object({
   /** Clave local del capítulo, para que las opciones apunten a él (no se guarda) */
   id: text,
@@ -29,8 +41,15 @@ const chapter = z.object({
   text: z.array(fragment).min(1, 'Se necesita al menos un párrafo').max(200),
   /** Sin opciones, el capítulo es final */
   options: z.array(option.extend({ to: text })).max(10).optional(),
-  /** Lo que gana el personaje al terminar de leerlo: `{ "type": "money", "amount": 50 }` o `{ "type": "item", "items": ["…"] }` */
-  reward: rewardInputSchema.optional(),
+  /**
+   * Lo que gana el personaje al terminar de leerlo: `{ "type": "money", "amount": 50 }` u objetos del catálogo por nombre,
+   * `{ "type": "item", "items": ["Antorcha", { "name": "Flecha de fresno", "quantity": 5 }] }`
+   */
+  reward: reward.optional(),
+  /** Decisión de objeto: la primera opción usa este objeto del catálogo (por nombre); la segunda sigue sin usarlo */
+  item: text.max(80).optional(),
+  /** Con `item`: el objeto se gasta al usarlo */
+  consumeItem: z.boolean().optional(),
   /** Decisión de dinero: la primera opción cuesta estas monedas; la segunda es gratis (exactamente 2 opciones) */
   cost: z.number().int('Un número entero de monedas').min(1, 'Al menos 1 moneda').optional(),
   /** Dónde termina un capítulo final (por nombre). Por defecto, el lugar del NPC */
@@ -46,6 +65,9 @@ const npc = z.object({
   reject: option,
   /** Monedas que cuesta aceptar (empezar la historia); sin `cost`, aceptar es gratis */
   cost: z.number().int('Un número entero de monedas').min(1, 'Al menos 1 moneda').optional(),
+  /** Objeto del catálogo (por nombre) que hay que usar para aceptar; con `consumeItem`, se gasta */
+  item: text.max(80).optional(),
+  consumeItem: z.boolean().optional(),
   rejected: paragraphs,
   /** El primero es el capítulo inicial */
   chapters: z.array(chapter).min(1, 'Un NPC de historia necesita al menos un capítulo'),
@@ -266,8 +288,13 @@ function lintChapters(np: string, chapters: WorldChapter[], c: Checks) {
     if (ch.cost !== undefined && options.length !== 2) {
       c.error(`${path}.cost`, 'Una decisión de dinero necesita exactamente 2 opciones: la primera se paga y la segunda no');
     }
+    if (ch.item !== undefined && options.length !== 2) {
+      c.error(`${path}.item`, 'Una decisión de objeto necesita exactamente 2 opciones: la primera usa el objeto y la segunda no');
+    }
+    if (ch.item !== undefined && ch.cost !== undefined) c.error(`${path}.item`, 'Una decisión pide dinero (`cost`) u objeto (`item`), no las dos cosas');
+    if (ch.consumeItem !== undefined && ch.item === undefined) c.warn(`${path}.consumeItem`, '`consumeItem` sin `item`: se ignora');
     if (options.length) {
-      if (options.length !== 2 && ch.cost === undefined) c.warn(`${path}.options`, `${options.length} opciones (la guía pide 2)`);
+      if (options.length !== 2 && ch.cost === undefined && ch.item === undefined) c.warn(`${path}.options`, `${options.length} opciones (la guía pide 2)`);
       c.endsInDecision(`${path}.text`, texts);
       if (ch.end) c.warn(`${path}.end`, 'Un capítulo con opciones no es final: se ignora `end`');
     }

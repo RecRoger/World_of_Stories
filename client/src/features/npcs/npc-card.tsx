@@ -19,6 +19,7 @@ import { ApiError } from "@/lib/api";
 import { publicationLabel } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useDeleteNpc, usePublishNpc } from "./api";
+import { useItems } from "@/features/items/api";
 import { formatMoney } from "@/lib/format";
 import { DECISION_HELP } from "./npc-form";
 import { NpcFormDialog } from "./npc-form-dialog";
@@ -231,6 +232,8 @@ function DecisionView({ npc }: { npc: Npc }) {
     ? (d.decisionType as keyof typeof DECISION_HELP)
     : "choose";
   const isStory = npc.npcType === "story";
+  const { data: catalog } = useItems();
+  const itemName = catalog?.find((i) => i.id === d.item)?.name;
 
   return (
     <div className="npc-card__decision">
@@ -244,23 +247,26 @@ function DecisionView({ npc }: { npc: Npc }) {
       )}
       {type === "item" && (
         <p>
-          <span className={small}>Ítem solicitado</span>
+          <span className={small}>Objeto solicitado</span>
           <br />
-          {d.item || "—"}
+          {itemName ?? "—"}
+          {d.options[0]?.removeItem && " (se gasta al usarlo)"}
         </p>
       )}
-      {type !== "item" &&
-        d.options.map((o, i) => (
+      {d.options.map((o, i) => (
           <div key={o.id}>
             {isStory && (
               <p className={small}>
                 {i === 0
-                  ? `Aceptar${type === "money" ? " pagando" : ""} · empieza el capítulo inicial`
+                  ? `Aceptar${type === "money" ? " pagando" : type === "item" ? " usando el objeto" : ""} · empieza el capítulo inicial`
                   : "Rechazar · muestra el rechazo"}
               </p>
             )}
             {!isStory && type === "money" && (
               <p className={small}>{i === 0 ? "Se paga" : "Gratis"}</p>
+            )}
+            {!isStory && type === "item" && (
+              <p className={small}>{i === 0 ? "Usa el objeto" : "Sin usarlo"}</p>
             )}
             <p className="npc-card__option-name">{o.name}</p>
             <p>{o.description}</p>

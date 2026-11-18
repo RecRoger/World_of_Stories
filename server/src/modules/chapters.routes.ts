@@ -16,6 +16,7 @@ import { HttpError } from '../lib/http-error.js';
 import { Npc, type ChapterDoc, type DecisionData, type NpcDoc } from '../models/npc.model.js';
 import { assertCanDelete, assertCanEdit, setPublished } from './permissions.js';
 import { loadNpc } from './npcs.routes.js';
+import { assertCatalogItems, itemsIn } from './inventory.js';
 
 export const npcChaptersApi = new ApiRouter('/npcs', 'Capítulos');
 export const chaptersApi = new ApiRouter('/chapters', 'Capítulos');
@@ -175,6 +176,7 @@ chaptersApi
     async ({ params, body, user }) => {
       const { npc, chapter } = await loadChapter(params.chapterId, user);
       assertCanEdit(user, chapter.author);
+      await assertCatalogItems(itemsIn(body));
       if (body.name !== undefined) chapter.name = body.name;
       if (body.items !== undefined) chapter.items = body.items;
       if (body.endLocation !== undefined) chapter.endLocation = body.endLocation;

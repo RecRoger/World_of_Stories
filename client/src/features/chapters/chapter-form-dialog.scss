@@ -221,24 +221,74 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
-// Objetos de la recompensa: un campo por objeto, con "Quitar" al lado
+// Objetos de la recompensa: nombre, cantidad (si es común) y "Quitar"; debajo, el selector para añadir otro
 .chapter-form__reward-items {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
 }
 
 .chapter-form__reward-item {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 0.75rem;
+  border-top: 1px solid var(--color-paper-line);
+  padding-block: 0.375rem;
 
-  > :first-child {
-    flex: 1;
-    min-width: 0;
+  &:last-child {
+    border-bottom: 1px solid var(--color-paper-line);
   }
 }
 
-.chapter-form__reward-remove {
+.chapter-form__reward-name {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.5rem;
+  font-size: 19px;
+}
+
+.chapter-form__reward-kind {
+  font-size: 0.875rem;
+  font-style: italic;
+  color: var(--color-ink-muted);
+}
+
+.chapter-form__reward-quantity {
+  width: 5rem;
+}
+
+.chapter-form__reward-add {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+
+  > :first-child {
+    width: 100%;
+  }
+}
+
+// Decisión de objeto: qué objeto pide y si se gasta
+.chapter-form__item-decision {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.chapter-form__check {
+  display: flex;
   min-height: 2.75rem;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 19px;
+  cursor: pointer;
+
+  input {
+    width: 1.25rem;
+    height: 1.25rem;
+    accent-color: var(--color-ink);
+    cursor: pointer;
+  }
 }

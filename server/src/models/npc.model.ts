@@ -27,7 +27,8 @@ export type DecisionData = Omit<IDecision, 'options'> & { options: Array<Omit<IO
 export interface IReward {
   type: RewardType;
   amount?: number;
-  items?: string[];
+  /** Objetos del catálogo y cuántos */
+  items?: { itemId: string; quantity: number }[];
 }
 
 export interface IChapter {
@@ -103,7 +104,10 @@ const RewardSchema = new Schema<IReward>(
   {
     type: { type: String, enum: ['money', 'item'], required: true },
     amount: Number,
-    items: { type: [String], default: undefined },
+    items: {
+      type: [new Schema({ itemId: { type: String, required: true }, quantity: { type: Number, required: true, min: 1 } }, { _id: false })],
+      default: undefined,
+    },
   },
   { _id: false },
 );

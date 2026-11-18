@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto';
 import mongoose from 'mongoose';
 import { hashPassword } from '../lib/auth.js';
 import { City, type CityDoc } from '../models/city.model.js';
+import { Item, ITEM_NAME_COLLATION } from '../models/item.model.js';
 import { Npc } from '../models/npc.model.js';
 import { User } from '../models/user.model.js';
 import type { Issue, WorldChapter, WorldFile } from './world-file.js';
@@ -112,6 +113,27 @@ export async function importWorld(world: WorldFile, opts: ImportOptions): Promis
       ),
     ),
   );
+
+  // Los objetos (decisiones y recompensas) van por nombre: tienen que existir en el catálogo
+  const itemNames = new Set<string>();
+  world.cities.forEach((c) =>
+    c.places.forEach((p) =>
+      p.npcs.forEach((n) => {
+        if (n.item) itemNames.add(n.item);
+        for (const ch of n.chapters) {
+          if (ch.item) itemNames.add(ch.item);
+          if (ch.reward?.type === 'item') for (const it of ch.reward.items) itemNames.add(typeof it === 'string' ? it : it.name);
+        }
+      }),
+    ),
+  );
+  const catalog = itemNames.size ? await Item.find({ name: { $in: [...itemNames] } }).collation(ITEM_NAME_COLLATION) : [];
+  const itemIds = new Map<string, string>();
+  for (const name of itemNames) {
+    const item = catalog.find((i) => fold(i.name) === fold(name));
+    if (item) itemIds.set(name, item.id as string);
+    else issues.push({ level: 'error', path: 'items', message: `No existe el objeto «${name}» en el catálogo` });
+  }
   if (issues.length || opts.dryRun) return { issues };
 
   // 2. Ciudades y lugares (nuevos o con versiones añadidas)
@@ -160,7 +182,7 @@ export async function importWorld(world: WorldFile, opts: ImportOptions): Promis
       for (const n of p.npcs) {
         const ids = new Map(n.chapters.map((ch) => [ch.id, new mongoose.Types.ObjectId()]));
         const chapters = [];
-        for (const ch of n.chapters) chapters.push(await toChapter(ch, ids, { city, place }, cityByName, author, state));
+        for (const ch of n.chapters) chapters.push(await toChapter(ch, ids, { city, place }, cityByName, author, state, itemIds));
         const root = ids.get(n.chapters[0]!.id)!.toString();
         const npc = await Npc.create({
           name: n.name,
@@ -173,11 +195,11 @@ export async function importWorld(world: WorldFile, opts: ImportOptions): Promis
           description: version([n.description]),
           meeting: version(n.meeting),
           rejected: version(n.rejected),
-          // Aceptar lleva al capítulo inicial (pagando `cost`, si lo hay); rechazar, al texto de rechazo
+          // Aceptar lleva al capítulo inicial (pagando `cost` o usando `item`, si los hay); rechazar, al texto de rechazo
           decision: {
-            ...(n.cost ? { decisionType: 'money', amount: n.cost } : { decisionType: 'choose' }),
+            ...decisionKind(n, itemIds),
             options: [
-              { ...n.accept, value: root, published: true },
+              { ...n.accept, value: root, published: true, removeItem: !!(n.item && n.consumeItem) },
               { ...n.reject, value: '', published: true },
             ],
           },
@@ -194,6 +216,16 @@ export async function importWorld(world: WorldFile, opts: ImportOptions): Promis
   return { issues: [], summary };
 }
 
+/** Tipo de la decisión: pagar (`cost`), usar un objeto (`item`, ya resuelto a su ID) o elegir */
+function decisionKind(d: { cost?: number; item?: string }, itemIds: Map<string, string>) {
+  if (d.cost) return { decisionType: 'money', amount: d.cost };
+  if (d.item) return { decisionType: 'item', item: itemIds.get(d.item) };
+  return { decisionType: 'choose' };
+}
+
+/** Sin mayúsculas ni acentos, como compara el catálogo los nombres de los objetos */
+const fold = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().trim();
+
 const same = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
 
 async function toChapter(
@@ -203,6 +235,7 @@ async function toChapter(
   cityByName: (name: string) => Promise<CityDoc>,
   author: string,
   state: { published: boolean; publishDate: Date | null },
+  itemIds: Map<string, string>,
 ) {
   const options = ch.options ?? [];
   let endLocation = null;
@@ -222,11 +255,25 @@ async function toChapter(
     writeDate: new Date(),
     ...state,
     endLocation,
-    reward: ch.reward ?? null,
+    reward:
+      ch.reward?.type === 'item'
+        ? {
+            type: 'item',
+            items: ch.reward.items.map((it) =>
+              typeof it === 'string' ? { itemId: itemIds.get(it)!, quantity: 1 } : { itemId: itemIds.get(it.name)!, quantity: it.quantity },
+            ),
+          }
+        : (ch.reward ?? null),
     usersDecisions: options.length
       ? {
-          ...(ch.cost ? { decisionType: 'money', amount: ch.cost } : { decisionType: 'choose' }),
-          options: options.map((o) => ({ name: o.name, description: o.description, value: ids.get(o.to)!.toString(), published: state.published })),
+          ...decisionKind(ch, itemIds),
+          options: options.map((o, i) => ({
+            name: o.name,
+            description: o.description,
+            value: ids.get(o.to)!.toString(),
+            published: state.published,
+            removeItem: i === 0 && !!(ch.item && ch.consumeItem),
+          })),
         }
       : null,
   };

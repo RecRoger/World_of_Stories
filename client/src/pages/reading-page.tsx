@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
-import { optionCost, type Character, type Decision, type Location, type Readable, type Tale, type UpdateCharacterInput } from '@wos/shared';
+import { optionCost, optionItem, type Character, type Decision, type Location, type Readable, type Tale, type UpdateCharacterInput } from '@wos/shared';
 import { WritingDots } from '@/components/ui/writing-dots';
 import { ArrowRightIcon } from '@/components/icons';
 import { ReaderBackLink, ReaderLayout, readerLinkClass } from '@/features/reader/reader-layout';
 import { ReadingText } from '@/features/reader/reading-text';
 import { OptionsPanel, type PanelOption } from '@/features/reader/options-panel';
 import { InventoryDialog, type InventoryNotice } from '@/features/reader/inventory-dialog';
+import { useItems } from '@/features/items/api';
 import { formatMoney } from '@/lib/format';
 import {
   useCharacters,
@@ -15,6 +16,7 @@ import {
   useClaimReward,
   useMoveCharacter,
   usePay,
+  useUseItem,
   useReadingChapter,
   useReadingCities,
   useReadingNpcs,
@@ -55,21 +57,39 @@ const moneyAside = (decision: Decision | null | undefined, character: Character)
 function decisionOptions(
   decision: Decision | null | undefined,
   character: Character,
-  { choose, pay }: { choose: (o: Decision['options'][number]) => void; pay: (o: Decision['options'][number], cost: number) => void },
+  {
+    choose,
+    pay,
+    use,
+    itemName,
+  }: {
+    choose: (o: Option) => void;
+    pay: (o: Option, cost: number) => void;
+    use: (o: Option, itemId: string) => void;
+    /** Nombre de un objeto del catálogo (para "Usar «…»" aunque el personaje no lo tenga) */
+    itemName: (itemId: string) => string;
+  },
 ): PanelOption[] {
   return (decision?.options ?? []).map((o, i) => {
     const cost = optionCost(decision, i);
     const missing = cost - character.money;
+    const itemId = optionItem(decision, i);
+    const owned = itemId ? character.items.some((it) => it.itemId === itemId) : true;
     return {
       key: o.id,
       name: o.name,
       description: o.description,
       ...(cost ? { cost } : {}),
       ...(missing > 0 ? { disabled: true, note: `Te faltan ${formatMoney(missing)}` } : {}),
-      onSelect: () => (cost ? pay(o, cost) : choose(o)),
+      // la opción que usa un objeto: su sello dice cuál y si se gasta; sin él, no se puede elegir
+      ...(itemId ? { tag: `${o.removeItem ? 'Gastar' : 'Usar'} ${itemName(itemId)}` } : {}),
+      ...(!owned ? { disabled: true, note: `No tienes ${itemName(itemId!)}` } : {}),
+      onSelect: () => (cost ? pay(o, cost) : itemId ? use(o, itemId) : choose(o)),
     };
   });
 }
+
+type Option = Decision['options'][number];
 
 /** Lector · Viaje y lectura de un personaje: continúa donde lo dejó. */
 export function ReadingPage() {
@@ -128,6 +148,13 @@ function Journey({ character }: { character: Character }) {
   const location = character.location ?? null;
   const move = useMoveCharacter(character.id);
   const pay = usePay(character.id);
+  const itemUse = useUseItem(character.id);
+  // El catálogo, para nombrar los objetos que piden las decisiones (aunque el personaje no los tenga)
+  const { data: catalog } = useItems();
+  const itemName = (itemId: string) => {
+    const name = catalog?.find((i) => i.id === itemId)?.name ?? character.items.find((i) => i.itemId === itemId)?.name;
+    return name ? `«${name}»` : 'un objeto';
+  };
   // Rechazar a un NPC no mueve al personaje: solo muestra su texto de rechazo
   const [rejected, setRejected] = useState<string | null>(null);
   const claim = useClaimReward(character.id);
@@ -150,6 +177,7 @@ function Journey({ character }: { character: Character }) {
   const go = (target: Target) => {
     setRejected(null);
     pay.reset();
+    itemUse.reset();
     window.scrollTo({ top: 0 });
     move.mutate(target);
   };
@@ -166,15 +194,30 @@ function Journey({ character }: { character: Character }) {
       },
     );
   };
+  /** Usar un objeto para tomar la opción de una decisión de objeto; si se gasta, se avisa bajo la bolsa */
+  const useFor = (npcId: string, option: Option, itemId: string, chapterId?: string) => {
+    if (itemUse.isPending) return;
+    itemUse.mutate(
+      { npcId, optionId: option.id, ...(chapterId ? { chapterId } : {}) },
+      {
+        onSuccess: () => {
+          if (option.removeItem) setNotice({ text: `− ${itemName(itemId).replace(/[«»]/g, '')}`, kind: 'debit', id: Date.now() });
+          window.scrollTo({ top: 0 });
+        },
+      },
+    );
+  };
   /** Al terminar de leer un capítulo con recompensa: se cobra y se avisa de lo que ganó (si ganó algo) */
   const claimFor = (chapterId: string) =>
     claim.mutate(chapterId, {
       onSuccess: ({ gained }) => {
-        const parts = [...(gained.money ? [formatMoney(gained.money)] : []), ...gained.items];
-        if (parts.length) setNotice({ text: `+${gained.money ? '' : ' '}${parts.join(', ')}`, kind: 'gain', id: Date.now() });
+        const items = gained.items.map((i) => (i.quantity > 1 ? `${i.name} ×${i.quantity}` : i.name));
+        const text = gained.money ? `+${formatMoney(gained.money)}` : items.length ? `+ ${items.join(', ')}` : null;
+        if (text) setNotice({ text, kind: 'gain', id: Date.now() });
       },
     });
-  const payError = pay.isError ? (pay.error instanceof Error && pay.error.message) || 'No se pudo pagar. Inténtalo de nuevo.' : null;
+  const failed = pay.error ?? itemUse.error;
+  const payError = failed ? (failed instanceof Error && failed.message) || 'No se pudo elegir esa opción. Inténtalo de nuevo.' : null;
 
   if (!location?.cityId) return <Travel onTravel={(cityId) => go({ cityId })} />;
 
@@ -262,6 +305,8 @@ function Journey({ character }: { character: Character }) {
               options: decisionOptions(npc.decision, character, {
                 choose: (o) => (o.value ? go(at({ placeId: place.id, npcId: npc.id, chapterId: o.value })) : setRejected(npc.id)),
                 pay: (o, cost) => payFor(npc.id, o.id, cost),
+                use: (o, itemId) => useFor(npc.id, o, itemId),
+                itemName,
               }),
             },
           };
@@ -283,6 +328,8 @@ function Journey({ character }: { character: Character }) {
         options: decisionOptions(c.decision, character, {
           choose: (o) => go(at({ placeId: place.id, npcId: npc.id, chapterId: o.value })),
           pay: (o, cost) => payFor(npc.id, o.id, cost, c.id),
+          use: (o, itemId) => useFor(npc.id, o, itemId, c.id),
+          itemName,
         }),
       };
     } else if (endCity) {

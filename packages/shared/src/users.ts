@@ -47,13 +47,25 @@ export const whereaboutsSchema = z
   .meta({ id: 'Whereabouts' });
 export type Whereabouts = z.infer<typeof whereaboutsSchema>;
 
+/** Un objeto del inventario: del catálogo, con su nombre y descripción, y cuántos tiene */
+export const inventoryItemSchema = z
+  .object({
+    itemId: objectId,
+    name: z.string(),
+    description: z.string(),
+    stackable: z.boolean().meta({ description: 'Elemento común (puede tener varios) u objeto único' }),
+    quantity: z.number(),
+  })
+  .meta({ id: 'InventoryItem' });
+export type InventoryItem = z.infer<typeof inventoryItemSchema>;
+
 export const characterSchema = z
   .object({
     id: objectId,
     location: locationSchema.nullish(),
     whereabouts: whereaboutsSchema.nullish().meta({ description: 'Nombres de su ubicación (null si aún no ha viajado)' }),
     money: z.number(),
-    items: z.array(z.string()),
+    items: z.array(inventoryItemSchema).meta({ description: 'Inventario: objetos del catálogo con su cantidad' }),
     fragmentsRead: z.array(z.string()),
     animations: z.boolean(),
   })
@@ -106,13 +118,16 @@ export type SetRolesInput = z.infer<typeof setRolesInputSchema>;
 export const updateCharacterInputSchema = z
   .object({
     location: locationInputSchema.nullable().optional(),
-    items: z.array(z.string()).optional(),
     animations: z.boolean().optional(),
   })
   .meta({ id: 'UpdateCharacterInput' });
 export type UpdateCharacterInput = z.infer<typeof updateCharacterInputSchema>;
 
-/** Elegir la opción de pago de una decisión `money`: descuenta el monto y lleva al capítulo de esa opción */
+/**
+ * Elegir la opción que cuesta algo en una decisión: la de pago de una decisión `money` (descuenta el monto) o la que
+ * usa un objeto en una decisión `item` (hay que tenerlo; se gasta si la opción tiene `removeItem`). Lleva al capítulo
+ * de esa opción.
+ */
 export const payInputSchema = z
   .object({
     npcId: objectId,
@@ -135,7 +150,9 @@ export const claimRewardResultSchema = z
     character: characterSchema,
     gained: z.object({
       money: z.number().meta({ description: 'Monedas ganadas (0 si no tocaba)' }),
-      items: z.array(z.string()).meta({ description: 'Objetos nuevos (sin los que ya tenía)' }),
+      items: z
+        .array(z.object({ itemId: objectId, name: z.string(), quantity: z.number() }))
+        .meta({ description: 'Objetos ganados y cuántos (los únicos que ya tenía no cuentan)' }),
     }),
   })
   .meta({ id: 'ClaimRewardResult' });

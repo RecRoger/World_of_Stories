@@ -70,6 +70,23 @@
     gap: 1.25rem;
   }
 
+  // Decisión de objeto: si se gasta al usarlo
+  &__check {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 19px;
+    cursor: pointer;
+
+    input {
+      width: 1.25rem;
+      height: 1.25rem;
+      accent-color: var(--color-ink);
+      cursor: pointer;
+    }
+  }
+
   &__note {
     font-size: 17px;
     color: var(--color-ink-muted);

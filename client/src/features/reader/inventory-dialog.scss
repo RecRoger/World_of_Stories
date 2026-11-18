@@ -139,12 +139,38 @@
   }
 
   &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
     border-top: 1px solid var(--color-paper-line);
     padding-block: 0.875rem;
+  }
+
+  &__item-name {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
     font-family: var(--font-display);
     font-size: 28px;
     line-height: 1.05;
     font-weight: 600;
+  }
+
+  // Cuántos lleva de un elemento común
+  &__item-quantity {
+    flex: none;
+    font-family: var(--font-serif);
+    font-size: 19px;
+    font-weight: 400;
+    color: var(--color-ink-soft);
+  }
+
+  &__item-description {
+    font-size: 18px;
+    line-height: 1.4;
+    text-wrap: pretty;
+    color: var(--color-ink-muted);
   }
 
   &__empty {

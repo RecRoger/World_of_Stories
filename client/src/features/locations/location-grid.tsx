@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { WritingDots } from '@/components/ui/writing-dots';
 import { ArrowLeftIcon } from '@/components/icons';
 import { useBackLink } from '@/features/writer/writer-layout';
+import { ItemsDialog } from '@/features/items/items-dialog';
 import './location-grid.scss';
 
 type LocationGridProps = {
@@ -43,23 +44,26 @@ export function LocationGrid({ isPending, isError, refetch, loadingLabel, errorL
   return <div className="location-grid">{children}</div>;
 }
 
-/** Cabecera de las páginas de la sección de escritor: "Sección de escritor" o el enlace de vuelta, y el título. */
+/**
+ * Cabecera de las páginas de la sección de escritor: "Sección de escritor" o el enlace de vuelta y, a la derecha,
+ * "Ver objetos" (el catálogo); debajo, el título.
+ */
 export function WriterPageHeading({ title, subtitle }: { title: string; subtitle?: string }) {
   const back = useBackLink();
   return (
     <div className="location-grid__heading">
-      {/* En Ciudades (la portada de la sección) va el rótulo; en las demás, el enlace de vuelta en su lugar */}
-      {back ? (
-        <Link
-          to={back.to}
-          className="location-grid__back"
-        >
-          <ArrowLeftIcon />
-          <span className="link-underline">{back.label}</span>
-        </Link>
-      ) : (
-        <p className="location-grid__eyebrow">Sección de escritor</p>
-      )}
+      <div className="location-grid__top">
+        {/* En Ciudades (la portada de la sección) va el rótulo; en las demás, el enlace de vuelta en su lugar */}
+        {back ? (
+          <Link to={back.to} className="location-grid__back">
+            <ArrowLeftIcon />
+            <span className="link-underline">{back.label}</span>
+          </Link>
+        ) : (
+          <p className="location-grid__eyebrow">Sección de escritor</p>
+        )}
+        <ItemsDialog />
+      </div>
       <h1 className="location-grid__title">{title}</h1>
       {subtitle && <p className="location-grid__subtitle">{subtitle}</p>}
     </div>

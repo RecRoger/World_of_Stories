@@ -86,6 +86,20 @@ export function useClaimReward(characterId: string) {
   });
 }
 
+/**
+ * Usa un objeto para elegir la opción de una decisión de objeto: el server comprueba que lo tenga, lo gasta si la opción
+ * lo dice y mueve al personaje al capítulo de esa opción.
+ */
+export function useUseItem(characterId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: PayInput) => api(`/me/characters/${characterId}/use-item`, { method: 'POST', body, schema: characterSchema }),
+    onSuccess: (character) =>
+      queryClient.setQueryData<Character[]>(charactersQueryKey, (list) => list?.map((c) => (c.id === character.id ? character : c))),
+    onError: () => queryClient.invalidateQueries({ queryKey: charactersQueryKey }),
+  });
+}
+
 export function useReadingCities() {
   return useQuery({
     queryKey: ['reading', 'cities'],

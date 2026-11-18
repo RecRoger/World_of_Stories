@@ -1,0 +1,6 @@
+// Buscador y select del objeto, uno al lado del otro cuando hay sitio
+.item-select {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+}

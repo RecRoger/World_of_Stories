@@ -8,11 +8,13 @@ import {
   markReadInputSchema,
   objectId,
   optionCost,
+  optionItem,
   payInputSchema,
   updateCharacterInputSchema,
   updateMeInputSchema,
   userSchema,
   type Character,
+  type PayInput,
   type User as UserDto,
   type Whereabouts,
 } from '@wos/shared';
@@ -22,8 +24,10 @@ import { checkPassword, clearAuthCookie, hashPassword } from '../lib/auth.js';
 import { env } from '../config/env.js';
 import { City } from '../models/city.model.js';
 import { Npc } from '../models/npc.model.js';
+import { Item } from '../models/item.model.js';
 import { User, type ICharacter } from '../models/user.model.js';
 import { renameAuthor } from './authors.js';
+import { addItem, inventoryOf, quantityOf, removeItem } from './inventory.js';
 
 export const meApi = new ApiRouter('/me', 'Mi cuenta');
 
@@ -66,11 +70,57 @@ async function whereabouts(location: ICharacter['location']): Promise<Whereabout
   };
 }
 
-/** Personaje con los nombres de su ubicación */
+/** Personaje con los nombres de su ubicación y su inventario con los datos del catálogo */
 async function toCharacter(character: ICharacter & { toJSON(): unknown }): Promise<Character> {
   // Los personajes ya no tienen nombre (los guardados antes pueden traerlo en la base); `rewardsClaimed` es interno
   const { name: _name, rewardsClaimed: _claimed, ...json } = character.toJSON() as Character & { name?: unknown; rewardsClaimed?: unknown };
-  return { ...json, whereabouts: await whereabouts(character.location) };
+  const [where, items] = await Promise.all([whereabouts(character.location), inventoryOf(character)]);
+  return { ...json, items, whereabouts: where };
+}
+
+
+/**
+ * Elegir la opción que cuesta algo en una decisión (dinero o un objeto). El personaje tiene que estar en esa decisión
+ * (el encuentro del NPC, o `chapterId`); la opción tiene que llevar a un capítulo publicado.
+ */
+function takeOption(userId: string, characterId: string, body: PayInput, kind: 'money' | 'item') {
+  return retrying(async () => {
+    const me = await loadMe(userId);
+    const character = found(me.characters.id(characterId), 'Personaje no encontrado');
+    const here = character.location;
+    if (!here?.cityId || here.npcId !== body.npcId || (here.chapterId ?? undefined) !== body.chapterId) {
+      throw HttpError.conflict('El personaje no está en esa decisión');
+    }
+
+    const npc = await Npc.findById(body.npcId);
+    const chapter = body.chapterId ? npc?.chapters.id(body.chapterId) : null;
+    if (!npc?.published || (body.chapterId && !chapter?.published)) throw HttpError.notFound('Decisión no encontrada');
+    const decision = chapter ? chapter.usersDecisions : npc.decision;
+    const index = decision?.options.findIndex((o) => o._id.equals(body.optionId)) ?? -1;
+    const option = decision?.options[index];
+    if (!option?.published) throw HttpError.notFound('Opción no encontrada');
+
+    if (kind === 'money') {
+      const cost = optionCost(decision, index);
+      if (!cost) throw HttpError.badRequest('Esa opción no se paga');
+      if (character.money < cost) throw HttpError.conflict(`No tienes suficientes monedas: cuesta ${cost} y tienes ${character.money}`);
+      character.money -= cost;
+    } else {
+      const itemId = optionItem(decision, index);
+      if (!itemId) throw HttpError.badRequest('Esa opción no usa ningún objeto');
+      if (quantityOf(character, itemId) < 1) {
+        const item = await Item.findById(itemId);
+        throw HttpError.conflict(`No tienes ${item ? `«${item.name}»` : 'ese objeto'}`);
+      }
+      if (option.removeItem) removeItem(character, itemId);
+    }
+
+    const target = npc.chapters.id(option.value);
+    if (!target?.published) throw HttpError.notFound('El capítulo de esa opción no está disponible');
+    character.location = { cityId: here.cityId, placeId: here.placeId, npcId: npc.id, chapterId: target.id };
+    await me.save();
+    return toCharacter(character);
+  });
 }
 
 meApi
@@ -192,31 +242,22 @@ meApi
       body: payInputSchema,
       response: characterSchema,
     },
-    ({ user, params, body }) => retrying(async () => {
-      const me = await loadMe(user.id);
-      const character = found(me.characters.id(params.characterId), 'Personaje no encontrado');
-      const here = character.location;
-      if (!here?.cityId || here.npcId !== body.npcId || (here.chapterId ?? undefined) !== body.chapterId) {
-        throw HttpError.conflict('El personaje no está en esa decisión');
-      }
-
-      const npc = await Npc.findById(body.npcId);
-      const chapter = body.chapterId ? npc?.chapters.id(body.chapterId) : null;
-      if (!npc?.published || (body.chapterId && !chapter?.published)) throw HttpError.notFound('Decisión no encontrada');
-      const decision = chapter ? chapter.usersDecisions : npc.decision;
-      const index = decision?.options.findIndex((o) => o._id.equals(body.optionId)) ?? -1;
-      const option = decision?.options[index];
-      const cost = optionCost(decision, index);
-      if (!option?.published || !cost) throw HttpError.badRequest('Esa opción no se paga');
-      const target = npc.chapters.id(option.value);
-      if (!target?.published) throw HttpError.notFound('El capítulo de esa opción no está disponible');
-      if (character.money < cost) throw HttpError.conflict(`No tienes suficientes monedas: cuesta ${cost} y tienes ${character.money}`);
-
-      character.money -= cost;
-      character.location = { cityId: here.cityId, placeId: here.placeId, npcId: npc.id, chapterId: target.id };
-      await me.save();
-      return toCharacter(character);
-    }),
+    ({ user, params, body }) => takeOption(user.id, params.characterId, body, 'money'),
+  )
+  .route(
+    {
+      method: 'post',
+      path: '/characters/:characterId/use-item',
+      summary: 'Usar un objeto para elegir la opción de una decisión de objeto',
+      description:
+        'El personaje debe estar en la decisión y tener el objeto que pide. Si la opción tiene `removeItem`, se gasta uno. ' +
+        'Pasa al capítulo de la opción. El inventario solo cambia así y con las recompensas, no con `PATCH`.',
+      access: 'user',
+      params: characterParams,
+      body: payInputSchema,
+      response: characterSchema,
+    },
+    ({ user, params, body }) => takeOption(user.id, params.characterId, body, 'item'),
   )
   .route(
     {
@@ -224,8 +265,9 @@ meApi
       path: '/characters/:characterId/reward',
       summary: 'Cobrar la recompensa del capítulo al terminar de leerlo',
       description:
-        'El personaje debe estar en ese capítulo. Objetos: gana los que aún no tiene. Dinero: lo gana la primera vez que ' +
-        'lee el capítulo, o al releerlo si tiene menos de lo que da la recompensa. `gained` dice lo que ganó (puede ser nada).',
+        'El personaje debe estar en ese capítulo. Dinero y objetos comunes: se ganan la primera vez que lee el capítulo, o al ' +
+        'releerlo si no le queda (dinero: si tiene menos de lo que da; objeto común: si no tiene ninguno). Un objeto único, ' +
+        'solo si no lo tiene. `gained` dice lo que ganó (puede ser nada).',
       access: 'user',
       params: characterParams,
       body: claimRewardInputSchema,
@@ -240,19 +282,26 @@ meApi
       if (!npc?.published || !chapter?.published) throw HttpError.notFound('Capítulo no encontrado');
 
       const reward = chapter.reward;
-      const gained = { money: 0, items: [] as string[] };
+      const first = !character.rewardsClaimed.includes(chapter.id);
+      const gained = { money: 0, items: [] as { itemId: string; name: string; quantity: number }[] };
       if (reward?.type === 'money' && reward.amount) {
-        const first = !character.rewardsClaimed.includes(chapter.id);
         if (first || character.money < reward.amount) {
           gained.money = reward.amount;
           character.money += reward.amount;
-          if (first) character.rewardsClaimed.push(chapter.id);
         }
       } else if (reward?.type === 'item') {
-        gained.items = (reward.items ?? []).filter((item) => !character.items.includes(item));
-        character.items.push(...gained.items);
+        const stacks = reward.items ?? [];
+        const catalog = await Item.find({ _id: { $in: stacks.map((s) => s.itemId) } });
+        for (const { itemId, quantity } of stacks) {
+          const item = catalog.find((i) => i.id === itemId);
+          if (!item) continue; // borrado del catálogo
+          if (item.stackable && !first && quantityOf(character, itemId) > 0) continue;
+          const added = addItem(character, itemId, quantity, item.stackable);
+          if (added) gained.items.push({ itemId, name: item.name, quantity: added });
+        }
       }
-      if (gained.money || gained.items.length) await me.save();
+      if (reward && first) character.rewardsClaimed.push(chapter.id);
+      if (gained.money || gained.items.length || (reward && first)) await me.save();
       return { character: await toCharacter(character), gained };
     }),
   )

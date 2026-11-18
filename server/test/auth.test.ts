@@ -86,8 +86,8 @@ describe('personajes', () => {
       .patch(api(`/me/characters/${created.id}`))
       .send({ location: { cityId }, money: 50, items: ['espada'] })
       .expect(200);
-    // el dinero no se cambia a mano: solo pagando en una decisión de dinero
-    expect(updated.body).toMatchObject({ location: { cityId }, money: 1000, items: ['espada'] });
+    // el dinero y los objetos no se cambian a mano: solo con decisiones y recompensas
+    expect(updated.body).toMatchObject({ location: { cityId }, money: 1000, items: [] });
 
     await agent.post(api(`/me/characters/${created.id}/read`)).send({ fragmentId: 'f1' }).expect(200);
     const read = await agent.post(api(`/me/characters/${created.id}/read`)).send({ fragmentId: 'f1' }).expect(200);

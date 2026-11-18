@@ -46,9 +46,13 @@ export function InventoryDialog({ character, notice }: { character: Character; n
             <div className="inventory__label inventory__items-title">Objetos recopilados</div>
             <div className="inventory__items">
               {character.items.length ? (
-                character.items.map((item, i) => (
-                  <div key={`${item}-${i}`} className="inventory__item">
-                    {item}
+                character.items.map((item) => (
+                  <div key={item.itemId} className="inventory__item">
+                    <span className="inventory__item-name">
+                      {item.name}
+                      {item.stackable && <span className="inventory__item-quantity">×{item.quantity}</span>}
+                    </span>
+                    {item.description && <span className="inventory__item-description">{item.description}</span>}
                   </div>
                 ))
               ) : (

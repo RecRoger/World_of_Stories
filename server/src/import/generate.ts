@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Anthropic from '@anthropic-ai/sdk';
 import { City, type CityDoc } from '../models/city.model.js';
+import { Item, ITEM_NAME_COLLATION } from '../models/item.model.js';
 import { Npc } from '../models/npc.model.js';
 import type { ITale } from '../models/tale.model.js';
 import { importWorld } from './import-world.js';
@@ -64,6 +65,17 @@ export async function loadContext(target: GenerateTarget): Promise<{ context: st
         (cities.length
           ? ` o en otra ciudad: ${cities.map((c) => `${c.name} (${c.places.map((p) => p.name).join(', ') || 'sin lugares'})`).join('; ')}.`
           : '.'),
+    );
+  }
+
+  // Objetos que pueden pedir las decisiones (`item`) o dar las recompensas de sus NPCs: los del catálogo, por nombre
+  const items = await Item.find().collation(ITEM_NAME_COLLATION).sort({ name: 1 });
+  if (items.length) {
+    parts.push(
+      '## Objetos del catálogo (para `item` y `reward`, por su nombre exacto)',
+      items
+        .map((i) => `- **${i.name}** (${i.price} monedas, ${i.stackable ? 'común' : 'único'})${i.description ? `: ${i.description}` : ''}`)
+        .join('\n'),
     );
   }
   return { context: parts.filter(Boolean).join('\n\n'), city };

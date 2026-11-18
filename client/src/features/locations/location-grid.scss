@@ -48,6 +48,16 @@
     gap: 0.75rem;
   }
 
+  // Fila de arriba: vuelta (o rótulo) a la izquierda y "Ver objetos" a la derecha
+  &__top {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0 1.5rem;
+  }
+
   &__back {
     margin-block: -0.5rem;
     display: inline-flex;

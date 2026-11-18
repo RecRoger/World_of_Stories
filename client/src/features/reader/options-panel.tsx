@@ -9,6 +9,8 @@ export type PanelOption = {
   description?: string | null;
   /** Monedas que cuesta elegirla (decisiones de dinero) */
   cost?: number;
+  /** Sello con lo que pide, si no es dinero (p. ej. "Usar «Ganzúa»") */
+  tag?: string;
   /** No se puede elegir (p. ej. no le alcanza el dinero); `note` explica por qué */
   disabled?: boolean;
   note?: string;
@@ -60,9 +62,10 @@ export function OptionsPanel({ title, options, empty, loading, error, aside }: O
               <span className="options-panel__option-text">
                 <span className="options-panel__option-name">{o.name}</span>
                 {o.description && <span className="options-panel__option-description">{o.description}</span>}
-                {(o.cost || o.note) && (
+                {(o.cost || o.tag || o.note) && (
                   <span className="options-panel__option-meta">
                     {!!o.cost && <span className="options-panel__cost">Pagar {formatMoney(o.cost)}</span>}
+                    {o.tag && <span className="options-panel__cost">{o.tag}</span>}
                     {o.note && <span className="options-panel__note">{o.note}</span>}
                   </span>
                 )}

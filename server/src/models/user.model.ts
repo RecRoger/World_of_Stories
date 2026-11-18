@@ -2,11 +2,17 @@ import { Schema, model, type HydratedDocument, type Model, type Types } from 'mo
 import { ROLES, type Location, type Role } from '@wos/shared';
 import { jsonOptions } from './json.js';
 
+/** Una entrada del inventario: un objeto del catálogo y cuántos tiene */
+export interface IInventoryEntry {
+  itemId: string;
+  quantity: number;
+}
+
 export interface ICharacter {
   _id: Types.ObjectId;
   location?: Location | null;
   money: number;
-  items: string[];
+  items: IInventoryEntry[];
   fragmentsRead: string[];
   /** Capítulos cuya recompensa de dinero ya cobró (al releerlos solo vuelve a cobrar si tiene menos de lo que dan) */
   rewardsClaimed: string[];
@@ -34,11 +40,16 @@ const LocationSchema = new Schema<Location>(
   { _id: false },
 );
 
+const InventoryEntrySchema = new Schema<IInventoryEntry>(
+  { itemId: { type: String, required: true }, quantity: { type: Number, required: true, min: 1 } },
+  { _id: false },
+);
+
 const CharacterSchema = new Schema<ICharacter>(
   {
     location: { type: LocationSchema, default: null },
     money: { type: Number, default: 1000 },
-    items: { type: [String], default: [] },
+    items: { type: [InventoryEntrySchema], default: [] },
     fragmentsRead: { type: [String], default: [] },
     rewardsClaimed: { type: [String], default: [] },
     animations: { type: Boolean, default: true },

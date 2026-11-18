@@ -1,4 +1,5 @@
 import { City } from '../models/city.model.js';
+import { Item } from '../models/item.model.js';
 import { Npc } from '../models/npc.model.js';
 
 /**
@@ -27,4 +28,5 @@ export async function renameAuthor(from: string, to: string) {
     await Npc.updateMany({ [`${field}.author`]: from }, { $set: { [`${field}.author`]: to } });
   }
   await Npc.updateMany({}, { $set: { 'chapters.$[t].author': to } }, { arrayFilters: byAuthor });
+  await Item.updateMany({ author: from }, { $set: { author: to } });
 }

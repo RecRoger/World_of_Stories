@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { optionCost, publishChain, type Chapter } from '@wos/shared';
+import { optionCost, optionItem, publishChain, type Chapter } from '@wos/shared';
 import { IconButton } from '@/components/ui/icon-button';
 import { WritingDots } from '@/components/ui/writing-dots';
 import { ChevronDownIcon, ChevronUpIcon, PencilIcon, PublishIcon, TrashIcon, UnpublishIcon } from '@/components/icons';
 import { useMe } from '@/features/auth/api';
 import { canManage } from '@/features/auth/roles';
 import { useCities } from '@/features/cities/api';
+import { useItems } from '@/features/items/api';
 import { useCityPlaces } from '@/features/places/api';
 import { linkButtonClass } from '@/features/locations/inline-editor';
 import { ApiError } from '@/lib/api';
@@ -47,6 +48,8 @@ export function ChapterCard({ npcId, npcAuthor, chapter, chapters, isRoot, open,
   const [confirm, setConfirm] = useState<Confirm>(null);
 
   const byId = (id: string) => chapters.find((c) => c.id === id);
+  const { data: catalog } = useItems();
+  const itemName = (itemId: string) => catalog?.find((i) => i.id === itemId)?.name ?? 'un objeto que ya no existe';
   const options = chapter.decision?.options ?? [];
   const nexts = [...new Set(options.map((o) => o.value))].map(byId).filter((c): c is Chapter => !!c);
   // Un capítulo vacío y sin autor es de quien lo escriba primero (como en el server); publicar y borrar, de su
@@ -193,7 +196,9 @@ export function ChapterCard({ npcId, npcAuthor, chapter, chapters, isRoot, open,
               <p className="chapter-card__reward">
                 {chapter.reward.type === 'money'
                   ? `Gana ${formatMoney(chapter.reward.amount ?? 0)}`
-                  : `Gana ${(chapter.reward.items ?? []).join(', ')}`}
+                  : `Gana ${(chapter.reward.items ?? [])
+                      .map((s) => `${itemName(s.itemId)}${s.quantity > 1 ? ` ×${s.quantity}` : ''}`)
+                      .join(', ')}`}
               </p>
             </section>
           )}
@@ -205,11 +210,17 @@ export function ChapterCard({ npcId, npcAuthor, chapter, chapters, isRoot, open,
                 {options.map((o, i) => {
                   const target = byId(o.value);
                   const cost = optionCost(chapter.decision, i);
+                  const usesItem = optionItem(chapter.decision, i);
                   const body = (
                     <span className="chapter-card__decision-text">
                       <span className="chapter-card__decision-name">{o.name}</span>
                       {chapter.decision?.decisionType === 'money' && (
                         <span className="chapter-card__decision-cost">{cost ? `Se paga ${formatMoney(cost)}` : 'Gratis'}</span>
+                      )}
+                      {chapter.decision?.decisionType === 'item' && (
+                        <span className="chapter-card__decision-cost">
+                          {usesItem ? `Usa ${itemName(usesItem)}${o.removeItem ? ' · se gasta' : ''}` : 'Sin usarlo'}
+                        </span>
                       )}
                       <span className="chapter-card__decision-description">{o.description}</span>
                     </span>

@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import type TestAgent from 'supertest/lib/agent.js';
 import { api, app, signUp, story } from './helpers.js';
 import { Npc } from '../src/models/npc.model.js';
+import { User } from '../src/models/user.model.js';
 
 let writer: TestAgent;
 let otherWriter: TestAgent;
@@ -468,27 +469,102 @@ describe('lugares, NPCs y capítulos', () => {
     await Npc.updateOne({ 'chapters._id': root.id }, { $set: { 'chapters.$.reward.amount': 5000 } });
     expect((await claim().expect(200)).body).toMatchObject({ gained: { money: 5000 }, character: { money: 6150 } });
 
-    // objetos: solo los que no tiene, y sin repetir
-    await edit({ reward: { type: 'item', items: ['Llave de bronce', 'Mapa', 'Mapa'] } }).expect(200);
-    expect((await claim().expect(200)).body).toMatchObject({ gained: { items: ['Llave de bronce', 'Mapa'] } });
-    await edit({ reward: { type: 'item', items: ['Mapa', 'Brújula'] } }).expect(200);
-    const again = (await claim().expect(200)).body;
-    expect(again.gained).toEqual({ money: 0, items: ['Brújula'] });
-    expect(again.character.items).toEqual(['Llave de bronce', 'Mapa', 'Brújula']);
+    // objetos del catálogo, con cantidad: tienen que existir
+    const item = async (name: string, stackable: boolean) =>
+      (await writer.post(api('/items')).send({ name, price: 5, stackable }).expect(201)).body;
+    const llave = await item('Llave de bronce', false);
+    const flecha = await item('Flecha', true);
+    await edit({ reward: { type: 'item', items: [{ itemId: '64b7f0c2a1b2c3d4e5f60718', quantity: 1 }] } }).expect(400);
+    const stacks = [{ itemId: llave.id, quantity: 1 }, { itemId: flecha.id, quantity: 2 }, { itemId: flecha.id }];
+    expect((await edit({ reward: { type: 'item', items: stacks } }).expect(200)).body.reward).toEqual({
+      type: 'item',
+      items: [{ itemId: llave.id, quantity: 1 }, { itemId: flecha.id, quantity: 3 }], // el mismo objeto dos veces suma
+    });
+    // el capítulo ya se leyó (dio dinero), pero no tiene ninguno de los dos: los gana
+    const won = (await claim().expect(200)).body;
+    expect(won.gained.items).toEqual([
+      { itemId: llave.id, name: 'Llave de bronce', quantity: 1 },
+      { itemId: flecha.id, name: 'Flecha', quantity: 3 },
+    ]);
+    expect(won.character.items).toEqual([
+      { itemId: llave.id, name: 'Llave de bronce', description: '', stackable: false, quantity: 1 },
+      { itemId: flecha.id, name: 'Flecha', description: '', stackable: true, quantity: 3 },
+    ]);
+    // al releerlo: la llave es única y ya la tiene; de flechas le quedan, así que tampoco
+    expect((await claim().expect(200)).body.gained).toEqual({ money: 0, items: [] });
 
     // al terminar de leer, el cliente marca el capítulo como leído y cobra a la vez: ninguno de los dos falla
-    await edit({ reward: { type: 'item', items: ['Farol'] } }).expect(200);
+    const farol = await item('Farol', false);
+    await edit({ reward: { type: 'item', items: [{ itemId: farol.id, quantity: 1 }] } }).expect(200);
     const [read, reward] = await Promise.all([
       reader.post(api(`/me/characters/${character.id}/read`)).send({ fragmentId: root.id }),
       claim(),
     ]);
     expect([read.status, reward.status]).toEqual([200, 200]);
     const [saved] = (await reader.get(api('/me/characters')).expect(200)).body;
-    expect(saved.items).toContain('Farol');
+    expect(saved.items.map((i: { name: string }) => i.name)).toContain('Farol');
     expect(saved.fragmentsRead).toContain(root.id);
 
     // quitarla
     expect((await edit({ reward: null }).expect(200)).body.reward).toBeNull();
+  });
+
+  it('las decisiones de objeto piden tenerlo y pueden gastarlo', async () => {
+    const { city, place, npc } = await createWorld();
+    const [root] = (await writer.get(api(`/npcs/${npc.id}/chapters`))).body;
+    const item = async (name: string, stackable: boolean) =>
+      (await writer.post(api('/items')).send({ name, price: 5, stackable }).expect(201)).body;
+    const ganzua = await item('Ganzúa', false);
+    const antorcha = await item('Antorcha', true);
+
+    // encuentro: hay que usar la ganzúa para aceptar (no se gasta). Siempre dos opciones y un objeto que exista
+    const npcDecision = (decision: object) => writer.patch(api(`/npcs/${npc.id}`)).send({ decision });
+    await npcDecision({ decisionType: 'item', options: STORY_DECISION }).expect(400);
+    await npcDecision({ decisionType: 'item', item: '64b7f0c2a1b2c3d4e5f60718', options: STORY_DECISION }).expect(400);
+    await npcDecision({ decisionType: 'item', item: ganzua.id, options: STORY_DECISION }).expect(200);
+    // capítulo: encender una antorcha (se gasta) o seguir a oscuras
+    const two = [
+      { name: 'Encender una antorcha', description: 'Se consume', removeItem: true },
+      { name: 'Seguir a oscuras', description: 'A tientas' },
+    ];
+    await writer.patch(api(`/chapters/${root.id}`)).send({ decision: { decisionType: 'item', item: antorcha.id, options: [two[0]] } }).expect(400);
+    const [light, dark] = (
+      await writer.patch(api(`/chapters/${root.id}`)).send({ story: story('Una cueva'), decision: { decisionType: 'item', item: antorcha.id, options: two } }).expect(200)
+    ).body.decision.options;
+    expect([light.removeItem, dark.removeItem]).toEqual([true, false]);
+
+    await publishCity(city);
+    await publishPlace(place);
+    await writer.patch(api(`/chapters/${root.id}/publish`)).send({ published: true }).expect(200);
+    await writer.patch(api(`/npcs/${npc.id}/publish`)).send({ published: true }).expect(200);
+    const [reading] = (await reader.get(api(`/places/${place.id}/npcs`)).expect(200)).body;
+    expect(reading.decision).toMatchObject({ decisionType: 'item', item: ganzua.id });
+    // un objeto en uso no se puede borrar del catálogo
+    expect((await writer.delete(api(`/items/${ganzua.id}`)).expect(409)).body.error.message).toContain('en uso');
+
+    const character = (await reader.post(api('/me/characters')).expect(201)).body;
+    const atNpc = { cityId: city.id, placeId: place.id, npcId: npc.id };
+    await reader.patch(api(`/me/characters/${character.id}`)).send({ location: atNpc }).expect(200);
+    const use = (optionId: string, chapterId?: string) =>
+      reader.post(api(`/me/characters/${character.id}/use-item`)).send({ npcId: npc.id, optionId, ...(chapterId ? { chapterId } : {}) });
+
+    // sin la ganzúa no se puede; la opción gratis no usa objeto; y no se paga con dinero
+    expect((await use(reading.decision.options[0].id).expect(409)).body.error.message).toBe('No tienes «Ganzúa»');
+    await use(reading.decision.options[1].id).expect(400);
+    await reader.post(api(`/me/characters/${character.id}/pay`)).send({ npcId: npc.id, optionId: reading.decision.options[0].id }).expect(400);
+
+    await User.updateOne(
+      { username: 'lector', 'characters._id': character.id },
+      { $set: { 'characters.$.items': [{ itemId: ganzua.id, quantity: 1 }, { itemId: antorcha.id, quantity: 2 }] } },
+    );
+    const inside = (await use(reading.decision.options[0].id).expect(200)).body;
+    expect(inside.location).toMatchObject({ ...atNpc, chapterId: root.id });
+    expect(inside.items.map((i: { name: string; quantity: number }) => [i.name, i.quantity])).toEqual([['Ganzúa', 1], ['Antorcha', 2]]);
+
+    // la antorcha se gasta: de 2 queda 1
+    const lit = (await use(light.id, root.id).expect(200)).body;
+    expect(lit.location.chapterId).toBe(light.value);
+    expect(lit.items.map((i: { name: string; quantity: number }) => [i.name, i.quantity])).toEqual([['Ganzúa', 1], ['Antorcha', 1]]);
   });
 
   it('otro escritor puede escribir un capítulo vacío, pero no editar el ajeno', async () => {
